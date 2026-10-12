@@ -7,6 +7,7 @@ import '../../generated/l10n/app_localizations.dart';
 import '../../services/appimage_update_service.dart';
 import '../../utils/windows_install.dart';
 import 'appimage_self_update_dialog.dart';
+import '../app_snack_bar.dart';
 
 const String _kWindowsStoreId =
     String.fromEnvironment('WINDOWS_STORE_ID', defaultValue: '9n8hxzd3hwx7');
@@ -70,7 +71,7 @@ class UpdateAvailableDialog extends StatelessWidget {
 
   Future<void> _launch(Uri uri, ScaffoldMessengerState messenger, String couldNotOpenLinkMessage) async {
     if (!await launchUrl(uri, mode: LaunchMode.externalApplication)) {
-      messenger.showSnackBar(
+      messenger.showAppSnackBar(
         SnackBar(content: Text(couldNotOpenLinkMessage)),
       );
     }

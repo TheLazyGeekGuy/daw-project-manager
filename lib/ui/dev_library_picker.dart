@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 
 import '../services/dev_library_service.dart';
 import '../utils/app_paths.dart';
+import 'app_snack_bar.dart';
 
 /// Startup gate that asks a dev build which library to open.
 ///
@@ -102,7 +103,7 @@ class _DevLibraryCardState extends State<DevLibraryCard> {
     if (root == null) return;
     DevLibraryService.writeSelection(root, null);
     setState(() => _remembered = null);
-    ScaffoldMessenger.of(context).showSnackBar(
+    ScaffoldMessenger.of(context).showAppSnackBar(
       const SnackBar(
         content: Text('The library picker will ask again on next launch.'),
       ),

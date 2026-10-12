@@ -13,6 +13,7 @@ import '../utils/app_paths.dart';
 import '../utils/mobile_utils.dart';
 import '../utils/file_launcher.dart';
 import '../generated/l10n/app_localizations.dart';
+import 'app_snack_bar.dart';
 
 class ProfileEditPage extends ConsumerStatefulWidget {
   final String profileId;
@@ -70,7 +71,7 @@ class _ProfileEditPageState extends ConsumerState<ProfileEditPage> {
       ref.invalidate(allProfilesProvider);
     } catch (e) {
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
+        ScaffoldMessenger.of(context).showAppSnackBar(
           SnackBar(content: Text(AppLocalizations.of(context)!.failedToRenameProfile(e.toString()))),
         );
       }
@@ -86,7 +87,7 @@ class _ProfileEditPageState extends ConsumerState<ProfileEditPage> {
 
     if (!await sourceFile.exists()) {
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
+        ScaffoldMessenger.of(context).showAppSnackBar(
           SnackBar(content: Text(AppLocalizations.of(context)!.selectedFileDoesNotExist)),
         );
       }
@@ -110,13 +111,13 @@ class _ProfileEditPageState extends ConsumerState<ProfileEditPage> {
       ref.invalidate(allProfilesProvider);
 
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
+        ScaffoldMessenger.of(context).showAppSnackBar(
           SnackBar(content: Text(AppLocalizations.of(context)!.profilePhotoUpdated)),
         );
       }
     } catch (e) {
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
+        ScaffoldMessenger.of(context).showAppSnackBar(
           SnackBar(content: Text(AppLocalizations.of(context)!.failedToSaveProfilePhoto(e.toString()))),
         );
       }
@@ -137,13 +138,13 @@ class _ProfileEditPageState extends ConsumerState<ProfileEditPage> {
       ref.invalidate(allProfilesProvider);
 
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
+        ScaffoldMessenger.of(context).showAppSnackBar(
           SnackBar(content: Text(AppLocalizations.of(context)!.profilePhotoRemoved)),
         );
       }
     } catch (e) {
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
+        ScaffoldMessenger.of(context).showAppSnackBar(
           SnackBar(content: Text(AppLocalizations.of(context)!.failedToRemoveProfilePhoto(e.toString()))),
         );
       }
@@ -165,7 +166,7 @@ class _ProfileEditPageState extends ConsumerState<ProfileEditPage> {
 
     if (!await sourceFile.exists()) {
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
+        ScaffoldMessenger.of(context).showAppSnackBar(
           SnackBar(content: Text(AppLocalizations.of(context)!.selectedFileDoesNotExist)),
         );
       }
@@ -188,7 +189,7 @@ class _ProfileEditPageState extends ConsumerState<ProfileEditPage> {
       onFileSelected(destPath);
     } catch (e) {
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
+        ScaffoldMessenger.of(context).showAppSnackBar(
           SnackBar(content: Text(AppLocalizations.of(context)!.failedToSaveBiography(e.toString()))),
         );
       }
@@ -217,7 +218,7 @@ class _ProfileEditPageState extends ConsumerState<ProfileEditPage> {
       ref.invalidate(currentProfileProvider);
     } catch (e) {
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
+        ScaffoldMessenger.of(context).showAppSnackBar(
           SnackBar(content: Text(AppLocalizations.of(context)!.failedToSaveBiography(e.toString()))),
         );
       }
@@ -230,7 +231,7 @@ class _ProfileEditPageState extends ConsumerState<ProfileEditPage> {
       final sourceFile = File(filePath);
       if (!await sourceFile.exists()) {
         if (mounted) {
-          ScaffoldMessenger.of(context).showSnackBar(
+          ScaffoldMessenger.of(context).showAppSnackBar(
             SnackBar(content: Text(AppLocalizations.of(context)!.fileNotFound)),
           );
         }
@@ -249,13 +250,13 @@ class _ProfileEditPageState extends ConsumerState<ProfileEditPage> {
       await sourceFile.copy(destFile.path);
 
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
+        ScaffoldMessenger.of(context).showAppSnackBar(
           SnackBar(content: Text(AppLocalizations.of(context)!.fileSavedTo(path.basename(savePath)))),
         );
       }
     } catch (e) {
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
+        ScaffoldMessenger.of(context).showAppSnackBar(
           SnackBar(content: Text(AppLocalizations.of(context)!.failedToDownloadFile(e.toString()))),
         );
       }
@@ -300,7 +301,7 @@ class _ProfileEditPageState extends ConsumerState<ProfileEditPage> {
 
     if (filesToDownload.isEmpty) {
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
+        ScaffoldMessenger.of(context).showAppSnackBar(
           SnackBar(content: Text(AppLocalizations.of(context)!.noFilesToDownload)),
         );
       }
@@ -399,14 +400,14 @@ class _ProfileEditPageState extends ConsumerState<ProfileEditPage> {
     
       if (mounted) {
         Navigator.pop(context); // Close loading dialog
-        ScaffoldMessenger.of(context).showSnackBar(
+        ScaffoldMessenger.of(context).showAppSnackBar(
           SnackBar(content: Text(AppLocalizations.of(context)!.allFilesSavedTo(path.basename(savePath)))),
         );
       }
     } catch (e) {
       if (mounted) {
         Navigator.pop(context); // Close loading dialog
-        ScaffoldMessenger.of(context).showSnackBar(
+        ScaffoldMessenger.of(context).showAppSnackBar(
           SnackBar(content: Text(AppLocalizations.of(context)!.failedToCreateZip(e.toString()))),
         );
       }
@@ -436,14 +437,14 @@ class _ProfileEditPageState extends ConsumerState<ProfileEditPage> {
             await profileRepo.updateProfile(updatedProfile);
             ref.invalidate(currentProfileProvider);
             if (mounted) {
-              ScaffoldMessenger.of(context).showSnackBar(
+              ScaffoldMessenger.of(context).showAppSnackBar(
                 SnackBar(content: Text(AppLocalizations.of(context)!.artworkAdded)),
               );
             }
           }
         } catch (e) {
           if (mounted) {
-            ScaffoldMessenger.of(context).showSnackBar(
+            ScaffoldMessenger.of(context).showAppSnackBar(
               SnackBar(content: Text(AppLocalizations.of(context)!.failedToAddArtwork(e.toString()))),
             );
           }
@@ -468,14 +469,14 @@ class _ProfileEditPageState extends ConsumerState<ProfileEditPage> {
         await profileRepo.updateProfile(updatedProfile);
         ref.invalidate(currentProfileProvider);
         if (mounted) {
-          ScaffoldMessenger.of(context).showSnackBar(
+          ScaffoldMessenger.of(context).showAppSnackBar(
             SnackBar(content: Text(AppLocalizations.of(context)!.artworkRemoved)),
           );
         }
       }
     } catch (e) {
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
+        ScaffoldMessenger.of(context).showAppSnackBar(
           SnackBar(content: Text(AppLocalizations.of(context)!.failedToRemoveArtwork(e.toString()))),
         );
       }
@@ -503,14 +504,14 @@ class _ProfileEditPageState extends ConsumerState<ProfileEditPage> {
             await profileRepo.updateProfile(updatedProfile);
             ref.invalidate(currentProfileProvider);
             if (mounted) {
-              ScaffoldMessenger.of(context).showSnackBar(
+              ScaffoldMessenger.of(context).showAppSnackBar(
                 SnackBar(content: Text(AppLocalizations.of(context)!.pressKitFileAdded)),
               );
             }
           }
         } catch (e) {
           if (mounted) {
-            ScaffoldMessenger.of(context).showSnackBar(
+            ScaffoldMessenger.of(context).showAppSnackBar(
               SnackBar(content: Text(AppLocalizations.of(context)!.failedToAddPressKitFile(e.toString()))),
             );
           }
@@ -533,14 +534,14 @@ class _ProfileEditPageState extends ConsumerState<ProfileEditPage> {
         await profileRepo.updateProfile(updatedProfile);
         ref.invalidate(currentProfileProvider);
         if (mounted) {
-          ScaffoldMessenger.of(context).showSnackBar(
+          ScaffoldMessenger.of(context).showAppSnackBar(
             SnackBar(content: Text(AppLocalizations.of(context)!.pressKitFileRemoved)),
           );
         }
       }
     } catch (e) {
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
+        ScaffoldMessenger.of(context).showAppSnackBar(
           SnackBar(content: Text(AppLocalizations.of(context)!.failedToRemovePressKitFile(e.toString()))),
         );
       }
@@ -787,14 +788,14 @@ class _ProfileEditPageState extends ConsumerState<ProfileEditPage> {
     
       if (mounted) {
         Navigator.pop(context); // Close loading dialog
-        ScaffoldMessenger.of(context).showSnackBar(
+        ScaffoldMessenger.of(context).showAppSnackBar(
           SnackBar(content: Text(AppLocalizations.of(context)!.nFilesSavedTo(selectedFiles.length, selectedFiles.length == 1 ? '' : 's', path.basename(savePath)))),
         );
       }
     } catch (e) {
       if (mounted) {
         Navigator.pop(context); // Close loading dialog
-        ScaffoldMessenger.of(context).showSnackBar(
+        ScaffoldMessenger.of(context).showAppSnackBar(
           SnackBar(content: Text(AppLocalizations.of(context)!.failedToCreateZip(e.toString()))),
         );
       }
@@ -853,14 +854,14 @@ class _ProfileEditPageState extends ConsumerState<ProfileEditPage> {
             await profileRepo.updateProfile(updatedProfile);
             ref.invalidate(currentProfileProvider);
             if (mounted) {
-              ScaffoldMessenger.of(context).showSnackBar(
+              ScaffoldMessenger.of(context).showAppSnackBar(
                 SnackBar(content: Text(AppLocalizations.of(context)!.assetAddedSuccessfully(assetName))),
               );
             }
           }
         } catch (e) {
           if (mounted) {
-            ScaffoldMessenger.of(context).showSnackBar(
+            ScaffoldMessenger.of(context).showAppSnackBar(
               SnackBar(content: Text(AppLocalizations.of(context)!.failedToAddAsset(e.toString()))),
             );
           }
@@ -880,14 +881,14 @@ class _ProfileEditPageState extends ConsumerState<ProfileEditPage> {
         await profileRepo.updateProfile(updatedProfile);
         ref.invalidate(currentProfileProvider);
         if (mounted) {
-          ScaffoldMessenger.of(context).showSnackBar(
+          ScaffoldMessenger.of(context).showAppSnackBar(
             SnackBar(content: Text(AppLocalizations.of(context)!.assetRemoved(assetName))),
           );
         }
       }
     } catch (e) {
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
+        ScaffoldMessenger.of(context).showAppSnackBar(
           SnackBar(content: Text(AppLocalizations.of(context)!.failedToRemoveAsset(e.toString()))),
         );
       }
@@ -897,7 +898,7 @@ class _ProfileEditPageState extends ConsumerState<ProfileEditPage> {
   Future<void> _openFile(String filePath) async {
     final success = await FileLauncher.openFile(filePath);
     if (!success && mounted) {
-      ScaffoldMessenger.of(context).showSnackBar(
+      ScaffoldMessenger.of(context).showAppSnackBar(
         SnackBar(content: Text(AppLocalizations.of(context)!.failedToOpenFile)),
       );
     }

@@ -10,6 +10,7 @@ import '../models/music_project.dart';
 import '../services/audio_analysis_service.dart';
 import '../utils/mobile_utils.dart';
 import 'widgets/conversion_progress_dialog.dart';
+import 'app_snack_bar.dart';
 
 /// The preview-song file a project would actually play: a manually chosen one
 /// wins over an auto-detected mixdown.
@@ -91,7 +92,7 @@ Future<void> shareProjectPreview(
   final effectivePath = effectivePreviewPathFor(project);
   if (effectivePath == null || effectivePath.isEmpty) return;
   if (effectivePath.startsWith('drive://')) {
-    messenger.showSnackBar(
+    messenger.showAppSnackBar(
       SnackBar(content: Text(l10n.previewSongNotAvailableDownloadFirst)),
     );
     return;
@@ -100,7 +101,7 @@ Future<void> shareProjectPreview(
   try {
     final sourceFile = File(effectivePath);
     if (!await sourceFile.exists()) {
-      messenger.showSnackBar(
+      messenger.showAppSnackBar(
         SnackBar(content: Text(l10n.previewSongFileNotFound)),
       );
       return;
@@ -126,7 +127,7 @@ Future<void> shareProjectPreview(
         fileToShare = converted;
         shareFileName = p.basename(converted.path);
       } else {
-        messenger.showSnackBar(
+        messenger.showAppSnackBar(
           SnackBar(content: Text(l10n.mp3ConversionFailed)),
         );
       }
@@ -140,7 +141,7 @@ Future<void> shareProjectPreview(
         shareFileName,
       );
       if (shareFile == null) {
-        messenger.showSnackBar(
+        messenger.showAppSnackBar(
           SnackBar(content: Text(l10n.failedToSharePreviewSong(shareFileName))),
         );
         return;
@@ -167,7 +168,7 @@ Future<void> shareProjectPreview(
       );
     }
   } catch (e) {
-    messenger.showSnackBar(
+    messenger.showAppSnackBar(
       SnackBar(content: Text(l10n.failedToSharePreviewSong(e.toString()))),
     );
   }

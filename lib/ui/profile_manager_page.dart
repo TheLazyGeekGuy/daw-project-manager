@@ -15,6 +15,7 @@ import '../services/crash_logger.dart';
 import 'widgets/theme_switcher.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'widgets/language_switcher.dart';
+import 'app_snack_bar.dart';
 
 // TODO: Set this back to `kDebugMode` once promotional screenshots are done.
 // The demo-data generator/remover is normally a debug-only tool, but it's
@@ -88,13 +89,13 @@ class _ProfileManagerPageState extends ConsumerState<ProfileManagerPage> {
       final profileRepo = await ref.read(profileRepositoryProvider.future);
       await profileRepo.createProfile(name);
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
+        ScaffoldMessenger.of(context).showAppSnackBar(
           SnackBar(content: Text(AppLocalizations.of(context)!.profileCreated(name))),
         );
       }
     } catch (e) {
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
+        ScaffoldMessenger.of(context).showAppSnackBar(
           SnackBar(content: Text(AppLocalizations.of(context)!.failedToCreateProfile(e.toString()))),
         );
       }
@@ -210,13 +211,13 @@ class _ProfileManagerPageState extends ConsumerState<ProfileManagerPage> {
         ref.invalidate(repositoryProvider);
         
         if (mounted) {
-          ScaffoldMessenger.of(context).showSnackBar(
+          ScaffoldMessenger.of(context).showAppSnackBar(
             SnackBar(content: Text(AppLocalizations.of(context)!.profileDeleted(profile.name))),
           );
         }
       } catch (e) {
         if (mounted) {
-          ScaffoldMessenger.of(context).showSnackBar(
+          ScaffoldMessenger.of(context).showAppSnackBar(
             SnackBar(content: Text(AppLocalizations.of(context)!.failedToDeleteProfile(e.toString()))),
           );
         }
@@ -228,7 +229,7 @@ class _ProfileManagerPageState extends ConsumerState<ProfileManagerPage> {
     final files = await CrashLogger.existingLogFiles();
     if (files.isEmpty) {
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
+        ScaffoldMessenger.of(context).showAppSnackBar(
           SnackBar(content: Text(AppLocalizations.of(context)!.shareDiagnosticLogEmpty)),
         );
       }
@@ -236,7 +237,7 @@ class _ProfileManagerPageState extends ConsumerState<ProfileManagerPage> {
     }
     final shared = await CrashLogger.shareOrRevealLogFiles(files);
     if (!shared && mounted) {
-      ScaffoldMessenger.of(context).showSnackBar(
+      ScaffoldMessenger.of(context).showAppSnackBar(
         SnackBar(content: Text(AppLocalizations.of(context)!.shareDiagnosticLogFolderOpened)),
       );
     }
@@ -267,7 +268,7 @@ class _ProfileManagerPageState extends ConsumerState<ProfileManagerPage> {
 
     await CrashLogger.clearLogs();
     if (mounted) {
-      ScaffoldMessenger.of(context).showSnackBar(
+      ScaffoldMessenger.of(context).showAppSnackBar(
         SnackBar(content: Text(l10n.diagnosticLogCleared)),
       );
     }
@@ -316,7 +317,7 @@ class _ProfileManagerPageState extends ConsumerState<ProfileManagerPage> {
       await ref.read(repositoryProvider.future);
 
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
+        ScaffoldMessenger.of(context).showAppSnackBar(
           SnackBar(
             content: Text(AppLocalizations.of(context)!.testingDatabaseGenerated),
             backgroundColor: Colors.green,
@@ -325,7 +326,7 @@ class _ProfileManagerPageState extends ConsumerState<ProfileManagerPage> {
       }
     } catch (e) {
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
+        ScaffoldMessenger.of(context).showAppSnackBar(
           SnackBar(
             content: Text(AppLocalizations.of(context)!.failedToGenerateTestingDatabase(e.toString())),
             backgroundColor: Colors.red,
@@ -379,7 +380,7 @@ class _ProfileManagerPageState extends ConsumerState<ProfileManagerPage> {
       await ref.read(repositoryProvider.future);
 
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
+        ScaffoldMessenger.of(context).showAppSnackBar(
           SnackBar(
             content: Text(removed
                 ? AppLocalizations.of(context)!.testingDatabaseRemoved
@@ -390,7 +391,7 @@ class _ProfileManagerPageState extends ConsumerState<ProfileManagerPage> {
       }
     } catch (e) {
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
+        ScaffoldMessenger.of(context).showAppSnackBar(
           SnackBar(
             content: Text(AppLocalizations.of(context)!.failedToRemoveTestingDatabase(e.toString())),
             backgroundColor: Colors.red,
@@ -560,7 +561,7 @@ class _ProfileManagerPageState extends ConsumerState<ProfileManagerPage> {
                                       );
                                       
                                       if (!launched && mounted) {
-                                        ScaffoldMessenger.of(context).showSnackBar(
+                                        ScaffoldMessenger.of(context).showAppSnackBar(
                                           SnackBar(
                                             content: Text(AppLocalizations.of(context)!.couldNotOpenBrowser('https://www.paypal.com/donate/?hosted_button_id=QHVVZ3LAF39BL')),
                                             duration: const Duration(seconds: 5),
@@ -569,7 +570,7 @@ class _ProfileManagerPageState extends ConsumerState<ProfileManagerPage> {
                                       }
                                     } catch (e) {
                                       if (mounted) {
-                                        ScaffoldMessenger.of(context).showSnackBar(
+                                        ScaffoldMessenger.of(context).showAppSnackBar(
                                           SnackBar(
                                             content: Text(AppLocalizations.of(context)!.errorOpeningBrowser(e.toString())),
                                             duration: const Duration(seconds: 3),

@@ -8,6 +8,7 @@ import '../services/deadline_notification_service.dart';
 import '../providers/providers.dart';
 import '../utils/mobile_utils.dart';
 import 'widgets/desktop_title_bar.dart';
+import 'app_snack_bar.dart';
 
 /// Page for configuring deadline notification preferences
 class NotificationSettingsPage extends ConsumerStatefulWidget {
@@ -58,7 +59,7 @@ class _NotificationSettingsPageState extends ConsumerState<NotificationSettingsP
     if (mounted) {
       setState(() => _hasPermission = granted);
       if (!granted) {
-        ScaffoldMessenger.of(context).showSnackBar(
+        ScaffoldMessenger.of(context).showAppSnackBar(
           SnackBar(
             content: Text(AppLocalizations.of(context)!.notificationPermissionDenied),
             action: SnackBarAction(
@@ -79,13 +80,13 @@ class _NotificationSettingsPageState extends ConsumerState<NotificationSettingsP
     try {
       await _notificationService.savePreferences(_preferences!);
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
+        ScaffoldMessenger.of(context).showAppSnackBar(
           SnackBar(content: Text(AppLocalizations.of(context)!.notificationSettingsSaved)),
         );
       }
     } catch (e) {
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
+        ScaffoldMessenger.of(context).showAppSnackBar(
           SnackBar(content: Text(AppLocalizations.of(context)!.errorSavingSettings)),
         );
       }
@@ -310,7 +311,7 @@ class _NotificationSettingsPageState extends ConsumerState<NotificationSettingsP
                                     try {
                                       await _notificationService.sendTestNotification();
                                       if (mounted) {
-                                        ScaffoldMessenger.of(context).showSnackBar(
+                                        ScaffoldMessenger.of(context).showAppSnackBar(
                                           SnackBar(
                                             content: Text(AppLocalizations.of(context)!.notificationTestSent),
                                             duration: const Duration(seconds: 2),
@@ -319,7 +320,7 @@ class _NotificationSettingsPageState extends ConsumerState<NotificationSettingsP
                                       }
                                     } catch (e) {
                                       if (mounted) {
-                                        ScaffoldMessenger.of(context).showSnackBar(
+                                        ScaffoldMessenger.of(context).showAppSnackBar(
                                           SnackBar(
                                             content: Text(AppLocalizations.of(context)!.notificationTestError(e.toString())),
                                             backgroundColor: Colors.red,
@@ -345,7 +346,7 @@ class _NotificationSettingsPageState extends ConsumerState<NotificationSettingsP
                                     try {
                                       await _notificationService.scheduleTestNotification(secondsFromNow: 30);
                                       if (mounted) {
-                                        ScaffoldMessenger.of(context).showSnackBar(
+                                        ScaffoldMessenger.of(context).showAppSnackBar(
                                           SnackBar(
                                             content: Text(AppLocalizations.of(context)!.notificationTestScheduled),
                                             duration: const Duration(seconds: 3),
@@ -354,7 +355,7 @@ class _NotificationSettingsPageState extends ConsumerState<NotificationSettingsP
                                       }
                                     } catch (e) {
                                       if (mounted) {
-                                        ScaffoldMessenger.of(context).showSnackBar(
+                                        ScaffoldMessenger.of(context).showAppSnackBar(
                                           SnackBar(
                                             content: Text(AppLocalizations.of(context)!.notificationTestError(e.toString())),
                                             backgroundColor: Colors.red,
@@ -445,7 +446,7 @@ class _NotificationSettingsPageState extends ConsumerState<NotificationSettingsP
                                       final pending = await _notificationService.getPendingNotifications();
                                       
                                       if (mounted) {
-                                        ScaffoldMessenger.of(context).showSnackBar(
+                                        ScaffoldMessenger.of(context).showAppSnackBar(
                                           SnackBar(
                                             content: Text('✅ Scheduled ${pending.length} notifications (check console for details)'),
                                             duration: const Duration(seconds: 3),
@@ -457,7 +458,7 @@ class _NotificationSettingsPageState extends ConsumerState<NotificationSettingsP
                                         print('❌ Error re-scheduling: $e');
                                       }
                                       if (mounted) {
-                                        ScaffoldMessenger.of(context).showSnackBar(
+                                        ScaffoldMessenger.of(context).showAppSnackBar(
                                           SnackBar(
                                             content: Text(AppLocalizations.of(context)!.notificationTestError(e.toString())),
                                             backgroundColor: Colors.red,
@@ -646,13 +647,13 @@ class _WorkTimerSectionState extends ConsumerState<WorkTimerSection> {
         l10n.testNotificationBody,
       );
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
+        ScaffoldMessenger.of(context).showAppSnackBar(
           SnackBar(content: Text(l10n.notificationTestSent)),
         );
       }
     } catch (e) {
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
+        ScaffoldMessenger.of(context).showAppSnackBar(
           SnackBar(
             content: Text(l10n.notificationTestError(e.toString())),
             backgroundColor: Colors.red,

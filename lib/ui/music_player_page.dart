@@ -16,6 +16,7 @@ import 'marker_navigation.dart';
 import 'project_detail_page.dart';
 import 'widgets/project_markers_section.dart';
 import 'widgets/project_notes_section.dart';
+import 'app_snack_bar.dart';
 
 enum _PlayerLoopMode { none, repeatAll, shuffle }
 
@@ -314,7 +315,7 @@ class _MusicPlayerPageState extends ConsumerState<MusicPlayerPage>
                   _playlistIndex = -1;
                   _playingFromPlaylist = false;
                 });
-                ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                ScaffoldMessenger.of(context).showAppSnackBar(SnackBar(
                   content: Text(l10n.camelotQueueGenerated(result.ordered.length)),
                   duration: const Duration(seconds: 3),
                 ));

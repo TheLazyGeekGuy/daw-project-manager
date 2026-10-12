@@ -14,6 +14,7 @@ import '../providers/providers.dart';
 import '../utils/mobile_utils.dart';
 import '../generated/l10n/app_localizations.dart';
 import 'google_drive_sync_page_download_dialog.dart';
+import 'app_snack_bar.dart';
 
 class GoogleDriveSyncPage extends StatelessWidget {
   const GoogleDriveSyncPage({super.key});
@@ -306,7 +307,7 @@ class _GoogleDriveSyncSectionState extends ConsumerState<GoogleDriveSyncSection>
             });
 
             if (mounted) {
-              ScaffoldMessenger.of(context).showSnackBar(
+              ScaffoldMessenger.of(context).showAppSnackBar(
                 SnackBar(
                   content: Text(AppLocalizations.of(context)!.successfullySignedInToGoogleDriveMessage),
                   backgroundColor: Colors.green,
@@ -364,7 +365,7 @@ class _GoogleDriveSyncSectionState extends ConsumerState<GoogleDriveSyncSection>
           });
 
           if (mounted) {
-            ScaffoldMessenger.of(context).showSnackBar(
+            ScaffoldMessenger.of(context).showAppSnackBar(
               SnackBar(
                 content: Text(AppLocalizations.of(context)!.successfullySignedInToGoogleDriveMessage),
                 backgroundColor: Colors.green,
@@ -381,7 +382,7 @@ class _GoogleDriveSyncSectionState extends ConsumerState<GoogleDriveSyncSection>
           });
 
           if (mounted) {
-            ScaffoldMessenger.of(context).showSnackBar(
+            ScaffoldMessenger.of(context).showAppSnackBar(
               SnackBar(
                 content: Text(AppLocalizations.of(context)!.errorSigningIn(e.toString())),
                 backgroundColor: Colors.red,
@@ -412,7 +413,7 @@ class _GoogleDriveSyncSectionState extends ConsumerState<GoogleDriveSyncSection>
       }
 
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
+        ScaffoldMessenger.of(context).showAppSnackBar(
           SnackBar(
             content: Text('$errorMessage: $errorDetails'),
             backgroundColor: Colors.red,
@@ -475,7 +476,7 @@ class _GoogleDriveSyncSectionState extends ConsumerState<GoogleDriveSyncSection>
         });
         
         if (mounted) {
-          ScaffoldMessenger.of(context).showSnackBar(
+          ScaffoldMessenger.of(context).showAppSnackBar(
             SnackBar(
               duration: const Duration(seconds: 4),
               backgroundColor: Colors.orange,
@@ -517,7 +518,7 @@ class _GoogleDriveSyncSectionState extends ConsumerState<GoogleDriveSyncSection>
         });
         
         if (mounted) {
-          ScaffoldMessenger.of(context).showSnackBar(
+          ScaffoldMessenger.of(context).showAppSnackBar(
             SnackBar(
               content: Text(AppLocalizations.of(context)!.backupUpToDate),
               backgroundColor: Colors.green,
@@ -531,7 +532,7 @@ class _GoogleDriveSyncSectionState extends ConsumerState<GoogleDriveSyncSection>
       });
       
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
+        ScaffoldMessenger.of(context).showAppSnackBar(
           SnackBar(
             content: Text(AppLocalizations.of(context)!.errorCheckingBackup(e.toString())),
             backgroundColor: Colors.red,
@@ -630,14 +631,14 @@ class _GoogleDriveSyncSectionState extends ConsumerState<GoogleDriveSyncSection>
       if (mounted) {
         final warnings = _syncService.lastUploadWarnings;
         if (warnings.isEmpty) {
-          ScaffoldMessenger.of(context).showSnackBar(
+          ScaffoldMessenger.of(context).showAppSnackBar(
             SnackBar(
               content: Text(AppLocalizations.of(context)!.backupUploadedSuccessfullyMessage),
               backgroundColor: Colors.green,
             ),
           );
         } else {
-          ScaffoldMessenger.of(context).showSnackBar(
+          ScaffoldMessenger.of(context).showAppSnackBar(
             SnackBar(
               content: Text(
                 '${AppLocalizations.of(context)!.backupUploadedSuccessfullyMessage}'
@@ -660,7 +661,7 @@ class _GoogleDriveSyncSectionState extends ConsumerState<GoogleDriveSyncSection>
       });
 
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
+        ScaffoldMessenger.of(context).showAppSnackBar(
           SnackBar(
             content: Text(AppLocalizations.of(context)!.backupUploadCancelledByUser),
             backgroundColor: Colors.orange,
@@ -678,7 +679,7 @@ class _GoogleDriveSyncSectionState extends ConsumerState<GoogleDriveSyncSection>
       });
 
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
+        ScaffoldMessenger.of(context).showAppSnackBar(
           SnackBar(
             content: Text(AppLocalizations.of(context)!.errorUploadingBackup(e.toString())),
             backgroundColor: Colors.red,
@@ -746,7 +747,7 @@ class _GoogleDriveSyncSectionState extends ConsumerState<GoogleDriveSyncSection>
             Navigator.of(context, rootNavigator: true).pop();
           }
           if (mounted) {
-            ScaffoldMessenger.of(context).showSnackBar(
+            ScaffoldMessenger.of(context).showAppSnackBar(
               SnackBar(
                 content: Text(AppLocalizations.of(context)!.noBackupFileFound),
                 backgroundColor: Colors.orange,
@@ -853,7 +854,7 @@ class _GoogleDriveSyncSectionState extends ConsumerState<GoogleDriveSyncSection>
       }
 
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
+        ScaffoldMessenger.of(context).showAppSnackBar(
           SnackBar(
             content: Text(AppLocalizations.of(context)!.backupDownloaded(
               result.projectsAdded,
@@ -875,7 +876,7 @@ class _GoogleDriveSyncSectionState extends ConsumerState<GoogleDriveSyncSection>
         setState(() {
           _syncStatus = AppLocalizations.of(context)!.errorDownloadingBackup(e.toString());
         });
-        ScaffoldMessenger.of(context).showSnackBar(
+        ScaffoldMessenger.of(context).showAppSnackBar(
           SnackBar(
             content: Text(AppLocalizations.of(context)!.errorDownloadingBackup(e.toString())),
             backgroundColor: Colors.red,

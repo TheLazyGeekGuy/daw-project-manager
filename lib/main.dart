@@ -60,6 +60,7 @@ import 'ui/widgets/quit_confirm_dialog.dart';
 import 'ui/widgets/update_available_dialog.dart';
 import 'providers/theme_provider.dart';
 import 'utils/route_observer.dart';
+import 'ui/app_snack_bar.dart';
 
 // Global navigator key for deep linking
 final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
@@ -171,7 +172,7 @@ Future<void> _triggerProjectScan() async {
               foundCount,
               foundCount == 1 ? '' : 's',
             );
-      ScaffoldMessenger.of(ctx).showSnackBar(SnackBar(content: Text(msg)));
+      ScaffoldMessenger.of(ctx).showAppSnackBar(SnackBar(content: Text(msg)));
     });
   } catch (_) {}
 }

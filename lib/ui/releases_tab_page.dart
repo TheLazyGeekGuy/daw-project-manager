@@ -23,6 +23,7 @@ import '../providers/theme_provider.dart';
 import '../services/release_artwork_service.dart';
 import 'dialogs/release_artwork_carryover_dialog.dart';
 import 'release_detail_page.dart';
+import 'app_snack_bar.dart';
 
 class ReleasesTabPage extends ConsumerStatefulWidget {
   const ReleasesTabPage({super.key});
@@ -73,7 +74,7 @@ class _ReleasesTabPageState extends ConsumerState<ReleasesTabPage> {
     // their own — only the selection (now pointing at deleted ids) needs reset.
     ref.read(selectedReleasesProvider.notifier).clear();
     if (mounted) {
-      ScaffoldMessenger.of(context).showSnackBar(
+      ScaffoldMessenger.of(context).showAppSnackBar(
         SnackBar(content: Text(l10n.releasesDeleted(selected.length, plural))),
       );
     }
@@ -124,7 +125,7 @@ class _ReleasesTabPageState extends ConsumerState<ReleasesTabPage> {
     
     if (projects.isEmpty) {
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
+        ScaffoldMessenger.of(context).showAppSnackBar(
           SnackBar(content: Text(AppLocalizations.of(context)!.noProjectsAvailable)),
         );
       }
@@ -190,7 +191,7 @@ class _ReleasesTabPageState extends ConsumerState<ReleasesTabPage> {
           ref.invalidate(releasesProvider);
         }
       } else {
-        ScaffoldMessenger.of(context).showSnackBar(
+        ScaffoldMessenger.of(context).showAppSnackBar(
           SnackBar(content: Text(AppLocalizations.of(context)!.releaseCreated(releaseTitle))),
         );
       }
@@ -533,7 +534,7 @@ class _ReleasesTableState extends ConsumerState<_ReleasesTable> {
       // bar would keep counting it.
       _clickSelection.removeAll([release.id]);
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
+        ScaffoldMessenger.of(context).showAppSnackBar(
           SnackBar(content: Text(AppLocalizations.of(context)!.releaseDeleted(release.title))),
         );
       }
@@ -1292,7 +1293,7 @@ class _MobileReleasesList extends ConsumerWidget {
                           final repo = await ref.read(repositoryProvider.future);
                           await repo.deleteRelease(release.id);
                           if (context.mounted) {
-                            ScaffoldMessenger.of(context).showSnackBar(
+                            ScaffoldMessenger.of(context).showAppSnackBar(
                               SnackBar(content: Text(AppLocalizations.of(context)!.releaseDeleted(release.title))),
                             );
                           }

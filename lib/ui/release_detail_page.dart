@@ -45,6 +45,7 @@ import 'widgets/scroll_more_hint.dart';
 import 'widgets/release_total_length_footer.dart';
 import 'widgets/release_tracks_table.dart';
 import 'widgets/waveform_widget.dart';
+import 'app_snack_bar.dart';
 
 class ReleaseDetailPage extends ConsumerStatefulWidget {
   final String releaseId;
@@ -176,13 +177,13 @@ class _ReleaseDetailPageState extends ConsumerState<ReleaseDetailPage>
       );
       await repo.updateRelease(updatedRelease);
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
+        ScaffoldMessenger.of(context).showAppSnackBar(
           SnackBar(content: Text(date != null ? AppLocalizations.of(context)!.releaseDateSaved : AppLocalizations.of(context)!.releaseDateCleared)),
         );
       }
     } catch (e) {
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
+        ScaffoldMessenger.of(context).showAppSnackBar(
           SnackBar(content: Text(AppLocalizations.of(context)!.failedToSaveReleaseDate(e.toString()))),
         );
       }
@@ -268,7 +269,7 @@ class _ReleaseDetailPageState extends ConsumerState<ReleaseDetailPage>
     if (newFiles.isNotEmpty) {
       await repo.updateRelease(release.copyWith(files: [...release.files, ...newFiles]));
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
+        ScaffoldMessenger.of(context).showAppSnackBar(
           SnackBar(content: Text(AppLocalizations.of(context)!.addedFilesToRelease(newFiles.length, newFiles.length == 1 ? '' : 's'))),
         );
       }
@@ -283,7 +284,7 @@ class _ReleaseDetailPageState extends ConsumerState<ReleaseDetailPage>
       await _saveFilesFromPaths(paths, release);
     } catch (e) {
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
+        ScaffoldMessenger.of(context).showAppSnackBar(
           SnackBar(content: Text(AppLocalizations.of(context)!.failedToAddFiles(e.toString()))),
         );
       }
@@ -295,7 +296,7 @@ class _ReleaseDetailPageState extends ConsumerState<ReleaseDetailPage>
       await _saveFilesFromPaths(filePaths, release);
     } catch (e) {
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
+        ScaffoldMessenger.of(context).showAppSnackBar(
           SnackBar(content: Text(AppLocalizations.of(context)!.failedToAddFiles(e.toString()))),
         );
       }
@@ -304,7 +305,7 @@ class _ReleaseDetailPageState extends ConsumerState<ReleaseDetailPage>
 
   Future<void> _downloadAsZip(BuildContext context, Release release) async {
     if (release.files.isEmpty) {
-      ScaffoldMessenger.of(context).showSnackBar(
+      ScaffoldMessenger.of(context).showAppSnackBar(
         SnackBar(content: Text(AppLocalizations.of(context)!.noFilesToDownload)),
       );
       return;
@@ -401,7 +402,7 @@ class _ReleaseDetailPageState extends ConsumerState<ReleaseDetailPage>
       if (mounted) {
         Navigator.of(context).pop();
         
-        ScaffoldMessenger.of(context).showSnackBar(
+        ScaffoldMessenger.of(context).showAppSnackBar(
           SnackBar(
             content: Text(AppLocalizations.of(context)!.zipFileSaved(zipFile.path)),
             action: SnackBarAction(
@@ -418,7 +419,7 @@ class _ReleaseDetailPageState extends ConsumerState<ReleaseDetailPage>
       // Close loading dialog if still open
       if (mounted) {
         Navigator.of(context).pop();
-        ScaffoldMessenger.of(context).showSnackBar(
+        ScaffoldMessenger.of(context).showAppSnackBar(
           SnackBar(content: Text(AppLocalizations.of(context)!.failedToCreateZip(e.toString()))),
         );
       }
@@ -440,7 +441,7 @@ class _ReleaseDetailPageState extends ConsumerState<ReleaseDetailPage>
     final sourceFile = File(sourcePath);
     if (!await sourceFile.exists()) {
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
+        ScaffoldMessenger.of(context).showAppSnackBar(
           SnackBar(content: Text(AppLocalizations.of(context)!.selectedFileDoesNotExist)),
         );
       }
@@ -470,13 +471,13 @@ class _ReleaseDetailPageState extends ConsumerState<ReleaseDetailPage>
 
       if (mounted) {
         setState(() => _artworkImagePath = newImagePath);
-        ScaffoldMessenger.of(context).showSnackBar(
+        ScaffoldMessenger.of(context).showAppSnackBar(
           SnackBar(content: Text(AppLocalizations.of(context)!.imageSavedSuccessfully)),
         );
       }
     } catch (e) {
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
+        ScaffoldMessenger.of(context).showAppSnackBar(
           SnackBar(content: Text(AppLocalizations.of(context)!.failedToSaveImage(e.toString()))),
         );
       }
@@ -487,7 +488,7 @@ class _ReleaseDetailPageState extends ConsumerState<ReleaseDetailPage>
     final release = _currentRelease();
     if (release == null) {
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
+        ScaffoldMessenger.of(context).showAppSnackBar(
           SnackBar(content: Text(AppLocalizations.of(context)!.releaseNotFound)),
         );
       }
@@ -510,7 +511,7 @@ class _ReleaseDetailPageState extends ConsumerState<ReleaseDetailPage>
       }
     }
     if (mounted) {
-      ScaffoldMessenger.of(context).showSnackBar(
+      ScaffoldMessenger.of(context).showAppSnackBar(
         SnackBar(content: Text(AppLocalizations.of(context)!.selectedFileDoesNotExist)),
       );
     }
@@ -547,13 +548,13 @@ class _ReleaseDetailPageState extends ConsumerState<ReleaseDetailPage>
       await repo.updateRelease(release.copyWith(clearArtworkImagePath: true));
       if (mounted) {
         setState(() => _artworkImagePath = null);
-        ScaffoldMessenger.of(context).showSnackBar(
+        ScaffoldMessenger.of(context).showAppSnackBar(
           SnackBar(content: Text(l10n.artworkRemoved)),
         );
       }
     } catch (e) {
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
+        ScaffoldMessenger.of(context).showAppSnackBar(
           SnackBar(content: Text(l10n.failedToRemoveArtwork(e.toString()))),
         );
       }
@@ -1309,7 +1310,7 @@ class _ReleaseDetailPageState extends ConsumerState<ReleaseDetailPage>
     
     if (availableProjects.isEmpty) {
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
+        ScaffoldMessenger.of(context).showAppSnackBar(
           SnackBar(content: Text(AppLocalizations.of(context)!.allProjectsAlreadyInRelease)),
         );
       }
@@ -1327,7 +1328,7 @@ class _ReleaseDetailPageState extends ConsumerState<ReleaseDetailPage>
       final updatedRelease = release.copyWith(trackIds: updatedTrackIds);
       await repo.updateRelease(updatedRelease);
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
+        ScaffoldMessenger.of(context).showAppSnackBar(
           SnackBar(content: Text(AppLocalizations.of(context)!.addedTracksToRelease(selectedIds.length, selectedIds.length == 1 ? '' : 's'))),
         );
       }
@@ -1359,7 +1360,7 @@ class _ReleaseDetailPageState extends ConsumerState<ReleaseDetailPage>
     final exists = Directory(folderPath).existsSync();
     if (!exists) {
       if (context.mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
+        ScaffoldMessenger.of(context).showAppSnackBar(
           SnackBar(content: Text(AppLocalizations.of(context)!.fileMissing)),
         );
       }
@@ -1369,7 +1370,7 @@ class _ReleaseDetailPageState extends ConsumerState<ReleaseDetailPage>
     final success = await FileLauncher.openFolder(folderPath);
     
     if (success && context.mounted) {
-      ScaffoldMessenger.of(context).showSnackBar(
+      ScaffoldMessenger.of(context).showAppSnackBar(
         SnackBar(content: Text(AppLocalizations.of(context)!.openingFolder(project.displayName))),
       );
     }
@@ -1582,7 +1583,7 @@ class _ReleaseDetailPageState extends ConsumerState<ReleaseDetailPage>
                             
                             if (availableProjects.isEmpty) {
                               if (mounted) {
-                                ScaffoldMessenger.of(context).showSnackBar(
+                                ScaffoldMessenger.of(context).showAppSnackBar(
                                   SnackBar(content: Text(AppLocalizations.of(context)!.allProjectsAlreadyInRelease)),
                                 );
                               }
@@ -1600,7 +1601,7 @@ class _ReleaseDetailPageState extends ConsumerState<ReleaseDetailPage>
                               final updatedRelease = release.copyWith(trackIds: updatedTrackIds);
                               await repo.updateRelease(updatedRelease);
                               if (mounted) {
-                                ScaffoldMessenger.of(context).showSnackBar(
+                                ScaffoldMessenger.of(context).showAppSnackBar(
                                   SnackBar(content: Text(AppLocalizations.of(context)!.addedTracksToRelease(selectedIds.length, selectedIds.length == 1 ? '' : 's'))),
                                 );
                               }
@@ -1885,13 +1886,13 @@ class _FilesSectionState extends ConsumerState<_FilesSection> {
       await repo.updateRelease(updatedRelease);
       
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
+        ScaffoldMessenger.of(context).showAppSnackBar(
           SnackBar(content: Text(AppLocalizations.of(context)!.fileNameUpdated)),
         );
       }
     } catch (e) {
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
+        ScaffoldMessenger.of(context).showAppSnackBar(
           SnackBar(content: Text(AppLocalizations.of(context)!.errorUpdatingFileName(e.toString()))),
         );
       }
@@ -1936,13 +1937,13 @@ class _FilesSectionState extends ConsumerState<_FilesSection> {
         await repo.updateRelease(updatedRelease);
         
         if (mounted) {
-          ScaffoldMessenger.of(context).showSnackBar(
+          ScaffoldMessenger.of(context).showAppSnackBar(
             SnackBar(content: Text(AppLocalizations.of(context)!.fileDeleted(file.fileName))),
           );
         }
       } catch (e) {
         if (mounted) {
-          ScaffoldMessenger.of(context).showSnackBar(
+          ScaffoldMessenger.of(context).showAppSnackBar(
             SnackBar(content: Text(AppLocalizations.of(context)!.failedToDeleteFile(e.toString()))),
           );
         }
@@ -2075,7 +2076,7 @@ class _FilesSectionState extends ConsumerState<_FilesSection> {
                       // Open file
                       final success = await FileLauncher.openFile(file.filePath);
                       if (!success && context.mounted) {
-                        ScaffoldMessenger.of(context).showSnackBar(
+                        ScaffoldMessenger.of(context).showAppSnackBar(
                           SnackBar(content: Text(AppLocalizations.of(context)!.failedToOpenFile)),
                         );
                       }
@@ -2296,7 +2297,7 @@ class _AudioFileItemState extends ConsumerState<_AudioFileItem> {
       onStale: () {
         if (!mounted) return;
         setState(() => _peaks = null);
-        ScaffoldMessenger.maybeOf(context)?.showSnackBar(SnackBar(
+        ScaffoldMessenger.maybeOf(context)?.showAppSnackBar(SnackBar(
           content: Text(AppLocalizations.of(context)!.audioFileChangedRefreshing),
           duration: const Duration(seconds: 3),
         ));
@@ -2333,13 +2334,13 @@ class _AudioFileItemState extends ConsumerState<_AudioFileItem> {
 
   Future<void> _toggleMono(bool newMono) async {
     if (!_supportsMonoMix()) {
-      ScaffoldMessenger.of(context).showSnackBar(
+      ScaffoldMessenger.of(context).showAppSnackBar(
         SnackBar(content: Text(AppLocalizations.of(context)!.monoRequiresWav)),
       );
       return;
     }
     if (newMono && _monoFilePath == null) {
-      ScaffoldMessenger.of(context).showSnackBar(
+      ScaffoldMessenger.of(context).showAppSnackBar(
         SnackBar(content: Text(AppLocalizations.of(context)!.monoUnsupportedFormat)),
       );
       return;
@@ -2368,7 +2369,7 @@ class _AudioFileItemState extends ConsumerState<_AudioFileItem> {
       }
     } catch (e) {
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
+        ScaffoldMessenger.of(context).showAppSnackBar(
           SnackBar(content: Text(AppLocalizations.of(context)!.monoSwitchFailed(e.toString()))),
         );
       }
@@ -2426,7 +2427,7 @@ class _AudioFileItemState extends ConsumerState<_AudioFileItem> {
       }
     } catch (e) {
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
+        ScaffoldMessenger.of(context).showAppSnackBar(
           SnackBar(content: Text(AppLocalizations.of(context)!.failedToPlayAudio(e.toString()))),
         );
       }

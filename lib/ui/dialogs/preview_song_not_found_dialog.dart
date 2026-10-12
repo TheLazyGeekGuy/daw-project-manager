@@ -8,6 +8,7 @@ import '../../models/music_project.dart';
 import '../../providers/providers.dart';
 import '../../services/mixdown_detector_service.dart';
 import '../../utils/mobile_utils.dart';
+import '../app_snack_bar.dart';
 
 /// Audio extensions offered by every "select a preview song" picker. Single
 /// source of truth in [MixdownDetectorService.audioExtensions] so the picker,
@@ -169,7 +170,7 @@ Future<RecoveredPreview?> recoverMissingPreviewSong(
     case PreviewNotFoundAction.autoFind:
       final found = await clearAndAutoFindPreview(ref, project);
       if (found == null) {
-        messenger.showSnackBar(
+        messenger.showAppSnackBar(
           SnackBar(content: Text(l10n.noPreviewSongFoundAutomatically)),
         );
         return null;

@@ -34,6 +34,7 @@ import 'dialogs/duplicate_template_dialog.dart';
 import 'template_detail_page.dart';
 import 'widgets/desktop_title_bar.dart';
 import 'widgets/filter_dropdown.dart';
+import 'app_snack_bar.dart';
 
 /// Same comparator shape as the main dashboard table's
 /// `compareLastModifiedCellValues` — cell values are raw `DateTime?`s (not
@@ -192,7 +193,7 @@ class _ProjectTemplatesPageState extends ConsumerState<ProjectTemplatesPage> {
     }
     _clearTemplateSelection();
     if (mounted) {
-      ScaffoldMessenger.of(context).showSnackBar(
+      ScaffoldMessenger.of(context).showAppSnackBar(
         SnackBar(content: Text(l10n.templatesDeleted(selected.length, plural))),
       );
     }
@@ -270,7 +271,7 @@ class _ProjectTemplatesPageState extends ConsumerState<ProjectTemplatesPage> {
               Navigator.pop(dialogContext);
               ScaffoldMessenger.of(
                 context,
-              ).showSnackBar(SnackBar(content: Text(l10n.templateCreated)));
+              ).showAppSnackBar(SnackBar(content: Text(l10n.templateCreated)));
             },
             child: Text(l10n.create),
           ),
@@ -316,7 +317,7 @@ class _ProjectTemplatesPageState extends ConsumerState<ProjectTemplatesPage> {
     final roots = rootsBox.values.toList();
     if (roots.isEmpty) {
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
+        ScaffoldMessenger.of(context).showAppSnackBar(
           SnackBar(content: Text(l10n.noTemplateFoldersRegistered)),
         );
       }
@@ -397,7 +398,7 @@ class _ProjectTemplatesPageState extends ConsumerState<ProjectTemplatesPage> {
     }
 
     if (mounted) {
-      ScaffoldMessenger.of(context).showSnackBar(
+      ScaffoldMessenger.of(context).showAppSnackBar(
         SnackBar(
           content: Text(l10n.templatesRefreshedSummary(newCandidates.length)),
         ),
@@ -560,7 +561,7 @@ class _ProjectTemplatesPageState extends ConsumerState<ProjectTemplatesPage> {
       if (mounted) {
         ScaffoldMessenger.of(
           context,
-        ).showSnackBar(SnackBar(content: Text(l10n.templateDeleted)));
+        ).showAppSnackBar(SnackBar(content: Text(l10n.templateDeleted)));
       }
     }
   }
@@ -593,13 +594,13 @@ class _ProjectTemplatesPageState extends ConsumerState<ProjectTemplatesPage> {
           .read(projectTemplatesNotifierProvider.notifier)
           .extractMetadataForTemplate(template.id);
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
+        ScaffoldMessenger.of(context).showAppSnackBar(
           SnackBar(content: Text(l10n.metadataExtractedSuccessfully)),
         );
       }
     } catch (e) {
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
+        ScaffoldMessenger.of(context).showAppSnackBar(
           SnackBar(content: Text(l10n.failedToExtractMetadata(e.toString()))),
         );
       }

@@ -10,6 +10,7 @@ import '../generated/l10n/app_localizations.dart';
 import '../services/midi/midi_clip_service.dart';
 import '../services/midi/midi_file_writer.dart';
 import '../utils/file_launcher.dart';
+import 'app_snack_bar.dart';
 
 /// Whether to try the OS share sheet for files on this platform. Mobile,
 /// macOS and Windows have one that takes files; Linux's share_plus can only
@@ -130,7 +131,7 @@ Future<void> shareMidiClips(
       case ShareFollowUp.none:
         break;
       case ShareFollowUp.offerFolder:
-        messenger.showSnackBar(SnackBar(
+        messenger.showAppSnackBar(SnackBar(
           content: Text(l10n.midiClipsShareOfferFolder),
           action: SnackBarAction(
             label: l10n.midiClipsShowInFolder,
@@ -139,12 +140,12 @@ Future<void> shareMidiClips(
         ));
       case ShareFollowUp.openFolder:
         await FileLauncher.openFolder(shown.path);
-        messenger.showSnackBar(
+        messenger.showAppSnackBar(
           SnackBar(content: Text(l10n.midiClipsShareFallback)),
         );
     }
   } catch (e) {
-    messenger.showSnackBar(
+    messenger.showAppSnackBar(
       SnackBar(content: Text(l10n.midiClipShareFailed(e.toString()))),
     );
   }

@@ -10,6 +10,7 @@ import '../utils/file_launcher.dart';
 import 'dialogs/daw_launch_command_dialog.dart';
 import 'dialogs/daw_launch_picker_dialog.dart';
 import 'dialogs/stack_version_picker_dialog.dart';
+import 'app_snack_bar.dart';
 
 /// What [launchProjectInDaw] should do for a project, once its DAW type and
 /// any configured executable overrides are known. Pure decision, split out so
@@ -150,7 +151,7 @@ Future<void> launchProjectInDaw(
 
   if (!FileLauncher.targetExists(project.filePath)) {
     if (context.mounted) {
-      ScaffoldMessenger.of(context).showSnackBar(
+      ScaffoldMessenger.of(context).showAppSnackBar(
         SnackBar(content: Text(l10n.fileMissing)),
       );
     }
@@ -244,7 +245,7 @@ void _showLaunchResultSnackBar(
   MusicProject project,
   bool launched,
 ) {
-  ScaffoldMessenger.of(context).showSnackBar(
+  ScaffoldMessenger.of(context).showAppSnackBar(
     SnackBar(
       content: Text(
         launched

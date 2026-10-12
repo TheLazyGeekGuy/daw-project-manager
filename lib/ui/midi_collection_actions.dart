@@ -13,6 +13,7 @@ import '../repository/midi_collection_store.dart';
 import '../services/midi/midi_file_import.dart';
 import '../services/midi/synth_voice.dart';
 import '../utils/time_signature.dart';
+import 'app_snack_bar.dart';
 
 /// The tempo a new idea is drafted at.
 const double kNewIdeaBpm = 120;
@@ -123,7 +124,7 @@ Future<bool> addToCollectionFlow(
   final collectionId = target.id;
   // Only when there is a MIDI tab to open it in (the user may hide it).
   final canOpen = ref.read(visibleTabsProvider).contains(AppTab.midi);
-  messenger.showSnackBar(
+  messenger.showAppSnackBar(
     SnackBar(
       content: Text(
         added == 0
@@ -367,7 +368,7 @@ Future<void> importMidiFilesFlow(
   }
   if (!context.mounted) return;
   if (skipped.isNotEmpty) {
-    messenger.showSnackBar(
+    messenger.showAppSnackBar(
       SnackBar(content: Text(l10n.midiImportSkipped(skipped.join(', ')))),
     );
   }
@@ -379,7 +380,7 @@ Future<void> importMidiFilesFlow(
   }
   final repo = await ref.read(repositoryProvider.future);
   final added = await repo.midiCollections.addItems(into.id, items);
-  messenger.showSnackBar(
+  messenger.showAppSnackBar(
     SnackBar(
       content: Text(
         added == 0

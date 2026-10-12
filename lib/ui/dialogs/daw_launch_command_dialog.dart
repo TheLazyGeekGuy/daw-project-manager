@@ -7,6 +7,7 @@ import '../../models/music_project.dart';
 import '../../providers/providers.dart';
 import '../../services/daw_detector.dart';
 import '../../utils/file_launcher.dart';
+import '../app_snack_bar.dart';
 
 /// Shows the Linux "configure a launch command for this DAW" dialog. The
 /// dialog persists the change (or removal) itself via
@@ -151,7 +152,7 @@ class _DawLaunchCommandDialogState
     final launched = await FileLauncher.launchWithBinary(path, project.filePath);
     if (!mounted) return;
     Navigator.of(context).pop();
-    messenger.showSnackBar(
+    messenger.showAppSnackBar(
       SnackBar(
         content: Text(
           launched

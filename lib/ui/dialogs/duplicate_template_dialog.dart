@@ -5,6 +5,7 @@ import '../../generated/l10n/app_localizations.dart';
 import '../../models/project_template.dart';
 import '../../providers/providers.dart';
 import '../../services/template_duplication_service.dart';
+import '../app_snack_bar.dart';
 
 /// Duplicates [template] into a brand new, independent [ProjectTemplate] —
 /// see `TemplateDuplicationService` for what "independent" means here (a
@@ -44,11 +45,11 @@ class _DuplicateTemplateDialogState extends ConsumerState<DuplicateTemplateDialo
       Navigator.of(context).pop(true);
       ScaffoldMessenger.of(
         context,
-      ).showSnackBar(SnackBar(content: Text(l10n.templateDuplicated)));
+      ).showAppSnackBar(SnackBar(content: Text(l10n.templateDuplicated)));
     } catch (e) {
       if (!mounted) return;
       setState(() => _busy = false);
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(e.toString())));
+      ScaffoldMessenger.of(context).showAppSnackBar(SnackBar(content: Text(e.toString())));
     }
   }
 

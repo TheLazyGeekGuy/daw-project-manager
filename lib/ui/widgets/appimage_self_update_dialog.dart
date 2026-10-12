@@ -6,6 +6,7 @@ import 'package:url_launcher/url_launcher.dart';
 
 import '../../generated/l10n/app_localizations.dart';
 import '../../services/appimage_update_service.dart';
+import '../app_snack_bar.dart';
 
 enum _Stage { fetching, downloading, verifying, cancelling, ready, error }
 
@@ -102,7 +103,7 @@ class _AppImageSelfUpdateDialogState extends State<AppImageSelfUpdateDialog> {
   Future<void> _copyErrorDetails(AppLocalizations l10n) async {
     await Clipboard.setData(ClipboardData(text: _errorDetails ?? ''));
     if (!mounted) return;
-    ScaffoldMessenger.of(context).showSnackBar(
+    ScaffoldMessenger.of(context).showAppSnackBar(
       SnackBar(
         content: Text(l10n.appImageUpdateErrorDetailsCopied),
         duration: const Duration(seconds: 2),

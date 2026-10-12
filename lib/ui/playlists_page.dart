@@ -10,6 +10,7 @@ import '../models/playlist.dart';
 import '../models/music_project.dart';
 import '../providers/providers.dart';
 import '../generated/l10n/app_localizations.dart';
+import 'app_snack_bar.dart';
 
 /// Playlists page - Android only
 /// Allows creating playlists with preview songs and playing them in sequence
@@ -237,7 +238,7 @@ class _PlaylistsPageState extends ConsumerState<PlaylistsPage> {
             onPressed: () async {
               final name = nameController.text.trim();
               if (name.isEmpty) {
-                ScaffoldMessenger.of(context).showSnackBar(
+                ScaffoldMessenger.of(context).showAppSnackBar(
                   SnackBar(
                     content: Text(AppLocalizations.of(context)!.playlistNameRequired),
                   ),
@@ -400,7 +401,7 @@ class _PlaylistsPageState extends ConsumerState<PlaylistsPage> {
                         onPressed: () async {
                           final name = nameController.text.trim();
                           if (name.isEmpty) {
-                            ScaffoldMessenger.of(context).showSnackBar(
+                            ScaffoldMessenger.of(context).showAppSnackBar(
                               SnackBar(
                                 content: Text(AppLocalizations.of(context)!.playlistNameRequired),
                               ),
@@ -468,7 +469,7 @@ class _PlaylistsPageState extends ConsumerState<PlaylistsPage> {
     final availableProjectsCheck = getFilteredProjects();
     if (availableProjectsCheck.isEmpty) {
       if (context.mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
+        ScaffoldMessenger.of(context).showAppSnackBar(
           SnackBar(
             content: Text(AppLocalizations.of(context)!.noProjectsAvailableForPlaylist),
             duration: const Duration(seconds: 3),
@@ -612,7 +613,7 @@ class _PlaylistsPageState extends ConsumerState<PlaylistsPage> {
       ref.invalidate(playlistsProvider);
       
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
+        ScaffoldMessenger.of(context).showAppSnackBar(
           SnackBar(
             content: Text(AppLocalizations.of(context)!.playlistDeleted),
           ),
@@ -825,7 +826,7 @@ class _PlaylistPlayerPageState extends ConsumerState<PlaylistPlayerPage> {
     final file = File(item.previewSongPath!);
     if (!await file.exists()) {
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
+        ScaffoldMessenger.of(context).showAppSnackBar(
           SnackBar(content: Text(AppLocalizations.of(context)!.audioFileNotFound)),
         );
       }
@@ -836,7 +837,7 @@ class _PlaylistPlayerPageState extends ConsumerState<PlaylistPlayerPage> {
       await _audioPlayer.play(DeviceFileSource(item.previewSongPath!));
     } catch (e) {
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
+        ScaffoldMessenger.of(context).showAppSnackBar(
           SnackBar(content: Text(AppLocalizations.of(context)!.errorPlayingAudio(e.toString()))),
         );
       }
@@ -934,7 +935,7 @@ class _PlaylistPlayerPageState extends ConsumerState<PlaylistPlayerPage> {
                 // Don't allow editing while playing
                 if (_isPlaying) {
                   if (mounted) {
-                    ScaffoldMessenger.of(context).showSnackBar(
+                    ScaffoldMessenger.of(context).showAppSnackBar(
                       SnackBar(
                         content: Text(AppLocalizations.of(context)!.stopPlaybackBeforeEditing),
                       ),
@@ -949,7 +950,7 @@ class _PlaylistPlayerPageState extends ConsumerState<PlaylistPlayerPage> {
                 // Check if projects failed to load
                 if (allProjectsValue == null) {
                   if (mounted) {
-                    ScaffoldMessenger.of(context).showSnackBar(
+                    ScaffoldMessenger.of(context).showAppSnackBar(
                       SnackBar(
                         content: Text(AppLocalizations.of(context)!.errorLoadingProjects),
                       ),
@@ -961,7 +962,7 @@ class _PlaylistPlayerPageState extends ConsumerState<PlaylistPlayerPage> {
                 // Check if there are no projects in database at all
                 if (allProjectsValue.isEmpty) {
                   if (mounted) {
-                    ScaffoldMessenger.of(context).showSnackBar(
+                    ScaffoldMessenger.of(context).showAppSnackBar(
                       SnackBar(
                         content: Text(AppLocalizations.of(context)!.noProjectsInDatabase),
                         duration: const Duration(seconds: 3),
@@ -980,7 +981,7 @@ class _PlaylistPlayerPageState extends ConsumerState<PlaylistPlayerPage> {
                 
                 if (projectsWithPreview.isEmpty) {
                   if (mounted) {
-                    ScaffoldMessenger.of(context).showSnackBar(
+                    ScaffoldMessenger.of(context).showAppSnackBar(
                       SnackBar(
                         content: Text(AppLocalizations.of(context)!.noProjectsAvailableForPlaylist),
                         duration: const Duration(seconds: 3),
@@ -1042,7 +1043,7 @@ class _PlaylistPlayerPageState extends ConsumerState<PlaylistPlayerPage> {
                     
                     if (mounted) {
                       Navigator.of(context).pop(); // Close player page
-                      ScaffoldMessenger.of(context).showSnackBar(
+                      ScaffoldMessenger.of(context).showAppSnackBar(
                         SnackBar(
                           content: Text(AppLocalizations.of(context)!.playlistDeleted),
                         ),
@@ -1050,7 +1051,7 @@ class _PlaylistPlayerPageState extends ConsumerState<PlaylistPlayerPage> {
                     }
                   } catch (e) {
                     if (mounted) {
-                      ScaffoldMessenger.of(context).showSnackBar(
+                      ScaffoldMessenger.of(context).showAppSnackBar(
                         SnackBar(
                           content: Text(AppLocalizations.of(context)!.errorDeletingPlaylist),
                         ),
@@ -1113,7 +1114,7 @@ class _PlaylistPlayerPageState extends ConsumerState<PlaylistPlayerPage> {
             onPressed: () async {
               // Don't allow editing while playing
               if (_isPlaying) {
-                ScaffoldMessenger.of(context).showSnackBar(
+                ScaffoldMessenger.of(context).showAppSnackBar(
                   SnackBar(
                     content: Text(AppLocalizations.of(context)!.stopPlaybackBeforeEditing),
                   ),
@@ -1126,7 +1127,7 @@ class _PlaylistPlayerPageState extends ConsumerState<PlaylistPlayerPage> {
               
               // Check if projects failed to load
               if (allProjectsValue == null) {
-                ScaffoldMessenger.of(context).showSnackBar(
+                ScaffoldMessenger.of(context).showAppSnackBar(
                   SnackBar(
                     content: Text(AppLocalizations.of(context)!.errorLoadingProjects),
                   ),
@@ -1136,7 +1137,7 @@ class _PlaylistPlayerPageState extends ConsumerState<PlaylistPlayerPage> {
               
               // Check if there are no projects in database at all
               if (allProjectsValue.isEmpty) {
-                ScaffoldMessenger.of(context).showSnackBar(
+                ScaffoldMessenger.of(context).showAppSnackBar(
                   SnackBar(
                     content: Text(AppLocalizations.of(context)!.noProjectsInDatabase),
                     duration: const Duration(seconds: 3),
@@ -1210,7 +1211,7 @@ class _PlaylistPlayerPageState extends ConsumerState<PlaylistPlayerPage> {
                 
                 if (mounted) {
                   Navigator.of(context).pop(); // Go back to playlists page
-                  ScaffoldMessenger.of(context).showSnackBar(
+                  ScaffoldMessenger.of(context).showAppSnackBar(
                     SnackBar(
                       content: Text(AppLocalizations.of(context)!.playlistDeleted),
                     ),
@@ -1451,7 +1452,7 @@ class _EditPlaylistFormState extends ConsumerState<_EditPlaylistForm> {
     final availableProjectsCheck = getFilteredProjects();
     if (availableProjectsCheck.isEmpty) {
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
+        ScaffoldMessenger.of(context).showAppSnackBar(
           SnackBar(
             content: Text(AppLocalizations.of(context)!.noProjectsAvailableForPlaylist),
             duration: const Duration(seconds: 3),
@@ -1641,7 +1642,7 @@ class _EditPlaylistFormState extends ConsumerState<_EditPlaylistForm> {
                 onPressed: () async {
                   final name = _nameController.text.trim();
                   if (name.isEmpty) {
-                    ScaffoldMessenger.of(context).showSnackBar(
+                    ScaffoldMessenger.of(context).showAppSnackBar(
                       SnackBar(
                         content: Text(AppLocalizations.of(context)!.playlistNameRequired),
                       ),
@@ -1662,7 +1663,7 @@ class _EditPlaylistFormState extends ConsumerState<_EditPlaylistForm> {
                   
                   if (mounted) {
                     Navigator.pop(context, true); // Return true to signal success
-                    ScaffoldMessenger.of(context).showSnackBar(
+                    ScaffoldMessenger.of(context).showAppSnackBar(
                       SnackBar(
                         content: Text(AppLocalizations.of(context)!.playlistUpdated),
                       ),

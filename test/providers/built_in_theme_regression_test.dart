@@ -39,7 +39,17 @@ void expectSameStyling(ThemeData built, ThemeData original) {
       reason: 'inputDecorationTheme');
   expect(built.chipTheme, original.chipTheme, reason: 'chipTheme');
   expect(built.dialogTheme, original.dialogTheme, reason: 'dialogTheme');
-  expect(built.snackBarTheme, original.snackBarTheme, reason: 'snackBarTheme');
+  // Deliberate deviation: the snackbar's close icon and action label used
+  // Flutter's inverted-snackbar defaults, which were close to invisible on
+  // the card-colored snackbar (see snack_bar_theme_contrast_test.dart).
+  expect(
+    built.snackBarTheme,
+    original.snackBarTheme.copyWith(
+      closeIconColor: built.snackBarTheme.contentTextStyle?.color,
+      actionTextColor: built.snackBarTheme.actionTextColor,
+    ),
+    reason: 'snackBarTheme',
+  );
   expect(built.useMaterial3, original.useMaterial3, reason: 'useMaterial3');
   expect(built.brightness, original.brightness, reason: 'brightness');
 }

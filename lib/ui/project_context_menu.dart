@@ -17,6 +17,7 @@ import 'dialogs/move_project_dialog.dart';
 import 'preview_share.dart';
 import 'project_detail_page.dart';
 import 'session_actions.dart';
+import 'app_snack_bar.dart';
 
 /// The right-click menu on a project, and the three navigation actions it
 /// shares with the rest of the dashboard.
@@ -65,7 +66,7 @@ Future<void> openProjectFolder(
   final exists = Directory(folderPath).existsSync();
   if (!exists) {
     if (context.mounted) {
-      ScaffoldMessenger.of(context).showSnackBar(
+      ScaffoldMessenger.of(context).showAppSnackBar(
         SnackBar(content: Text(AppLocalizations.of(context)!.fileMissing)),
       );
     }
@@ -76,7 +77,7 @@ Future<void> openProjectFolder(
 
   if (success) {
     if (context.mounted) {
-      ScaffoldMessenger.of(context).showSnackBar(
+      ScaffoldMessenger.of(context).showAppSnackBar(
         SnackBar(
           content: Text(
             AppLocalizations.of(context)!.openingFolder(project.displayName),
@@ -86,7 +87,7 @@ Future<void> openProjectFolder(
     }
   } else {
     if (context.mounted) {
-      ScaffoldMessenger.of(context).showSnackBar(
+      ScaffoldMessenger.of(context).showAppSnackBar(
         SnackBar(
           content: Text(
             AppLocalizations.of(
@@ -398,7 +399,7 @@ Future<void> showProjectContextMenu({
           if (context.mounted) {
             ScaffoldMessenger.of(
               context,
-            ).showSnackBar(SnackBar(content: Text('${l10n.error}: $e')));
+            ).showAppSnackBar(SnackBar(content: Text('${l10n.error}: $e')));
           }
         }
         break;
@@ -412,14 +413,14 @@ Future<void> showProjectContextMenu({
             final msg = l10n.metadataExtractedForProjects(1, '', '');
             ScaffoldMessenger.of(
               context,
-            ).showSnackBar(SnackBar(content: Text(msg)));
+            ).showAppSnackBar(SnackBar(content: Text(msg)));
           }
         } catch (e) {
           if (context.mounted) {
             final msg = '${l10n.error}: $e';
             ScaffoldMessenger.of(
               context,
-            ).showSnackBar(SnackBar(content: Text(msg)));
+            ).showAppSnackBar(SnackBar(content: Text(msg)));
           }
         } finally {
           onExtractingMetadataChanged(false);
@@ -457,7 +458,7 @@ Future<void> showProjectContextMenu({
           if (context.mounted) {
             Navigator.of(context, rootNavigator: true).pop();
             ref.invalidate(allProjectsStreamProvider);
-            ScaffoldMessenger.of(context).showSnackBar(
+            ScaffoldMessenger.of(context).showAppSnackBar(
               SnackBar(content: Text(l10n.projectRestoredFromDrive)),
             );
           }
@@ -476,7 +477,7 @@ Future<void> showProjectContextMenu({
             }
             ScaffoldMessenger.of(
               context,
-            ).showSnackBar(SnackBar(content: Text(msg)));
+            ).showAppSnackBar(SnackBar(content: Text(msg)));
           }
         }
         break;

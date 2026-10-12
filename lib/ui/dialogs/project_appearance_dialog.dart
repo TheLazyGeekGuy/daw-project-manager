@@ -17,6 +17,7 @@ import '../../repository/project_repository.dart';
 import '../../utils/cover_art_refs.dart';
 import '../widgets/project_cover_avatar.dart';
 import 'color_picker_dialog.dart';
+import '../app_snack_bar.dart';
 
 /// Extensions the cover picker accepts on a drop. Same set the release
 /// artwork picker takes — `.gif` included.
@@ -82,7 +83,7 @@ class _ProjectAppearanceDialogState
     final sourceFile = File(sourcePath);
     if (!await sourceFile.exists()) {
       if (!mounted) return;
-      ScaffoldMessenger.of(context).showSnackBar(
+      ScaffoldMessenger.of(context).showAppSnackBar(
         SnackBar(content: Text(l10n.selectedFileDoesNotExist)),
       );
       return;
@@ -108,12 +109,12 @@ class _ProjectAppearanceDialogState
       await _deleteManagedCover(previous, repo);
 
       if (!mounted) return;
-      ScaffoldMessenger.of(context).showSnackBar(
+      ScaffoldMessenger.of(context).showAppSnackBar(
         SnackBar(content: Text(l10n.imageSavedSuccessfully)),
       );
     } catch (e) {
       if (!mounted) return;
-      ScaffoldMessenger.of(context).showSnackBar(
+      ScaffoldMessenger.of(context).showAppSnackBar(
         SnackBar(content: Text(l10n.failedToSaveImage(e.toString()))),
       );
     }
@@ -162,7 +163,7 @@ class _ProjectAppearanceDialogState
       }
     }
     if (!mounted) return;
-    ScaffoldMessenger.of(context).showSnackBar(
+    ScaffoldMessenger.of(context).showAppSnackBar(
       SnackBar(
         content: Text(AppLocalizations.of(context)!.selectedFileDoesNotExist),
       ),
@@ -196,12 +197,12 @@ class _ProjectAppearanceDialogState
       await repo.updateProject(project.copyWith(clearThumbnailPath: true));
       await _deleteManagedCover(project.thumbnailPath, repo);
       if (!mounted) return;
-      ScaffoldMessenger.of(context).showSnackBar(
+      ScaffoldMessenger.of(context).showAppSnackBar(
         SnackBar(content: Text(l10n.coverArtRemoved)),
       );
     } catch (e) {
       if (!mounted) return;
-      ScaffoldMessenger.of(context).showSnackBar(
+      ScaffoldMessenger.of(context).showAppSnackBar(
         SnackBar(content: Text(l10n.failedToRemoveCoverArt(e.toString()))),
       );
     }
