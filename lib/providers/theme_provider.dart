@@ -260,6 +260,10 @@ class AppThemes {
       snackBarTheme: SnackBarThemeData(
         backgroundColor: spec.resolvedSnackBarBackground,
         contentTextStyle: TextStyle(color: spec.resolvedSnackBarForeground),
+        // Flutter's defaults for both assume an inverted snackbar; on the
+        // card-colored one they were close to invisible.
+        closeIconColor: spec.resolvedSnackBarForeground,
+        actionTextColor: spec.resolvedSnackBarAction,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(spec.controlRadius),
         ),

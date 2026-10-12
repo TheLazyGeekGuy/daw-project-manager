@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import '../utils/color_contrast.dart' show meetsWcagAa;
 import '../utils/phase_colors.dart' show colorToHex, hexToColor;
 
 /// How strongly a theme leans on its accent color for interactive surfaces.
@@ -188,6 +189,15 @@ class CustomTheme {
               Brightness.dark
           ? Colors.white
           : Colors.black;
+
+  /// The snackbar's action label (Undo, Open…): the accent when it reads on
+  /// the snackbar, the plain label color when it doesn't. Flutter's default,
+  /// `inversePrimary`, assumes an inverted snackbar and was ~2:1 on the dark
+  /// themes' card-colored one.
+  Color get resolvedSnackBarAction =>
+      meetsWcagAa(primary, resolvedSnackBarBackground)
+          ? primary
+          : resolvedSnackBarForeground;
 
   CustomTheme copyWith({
     String? id,
