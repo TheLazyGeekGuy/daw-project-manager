@@ -7,6 +7,7 @@ import 'package:window_manager/window_manager.dart' if (dart.library.html) 'pack
 import '../models/todo_template.dart';
 import '../providers/providers.dart';
 import '../generated/l10n/app_localizations.dart';
+import 'app_snack_bar.dart';
 
 // Window control buttons for desktop platforms
 class _WindowButtons extends StatelessWidget {
@@ -103,7 +104,7 @@ class _TodoTemplatesPageState extends ConsumerState<TodoTemplatesPage> {
               final itemsText = itemsController.text.trim();
               
               if (name.isEmpty || itemsText.isEmpty) {
-                ScaffoldMessenger.of(context).showSnackBar(
+                ScaffoldMessenger.of(context).showAppSnackBar(
                   SnackBar(
                     content: Text(AppLocalizations.of(context)!.templateNameAndItemsRequired),
                   ),
@@ -118,7 +119,7 @@ class _TodoTemplatesPageState extends ConsumerState<TodoTemplatesPage> {
                   .toList();
 
               if (items.isEmpty) {
-                ScaffoldMessenger.of(context).showSnackBar(
+                ScaffoldMessenger.of(context).showAppSnackBar(
                   SnackBar(
                     content: Text(AppLocalizations.of(context)!.templateItemsRequired),
                   ),
@@ -137,7 +138,7 @@ class _TodoTemplatesPageState extends ConsumerState<TodoTemplatesPage> {
               ref.read(todoTemplatesNotifierProvider.notifier).addTemplate(template);
               Navigator.pop(dialogContext);
 
-              ScaffoldMessenger.of(context).showSnackBar(
+              ScaffoldMessenger.of(context).showAppSnackBar(
                 SnackBar(
                   content: Text(AppLocalizations.of(context)!.templateCreated),
                 ),
@@ -191,7 +192,7 @@ class _TodoTemplatesPageState extends ConsumerState<TodoTemplatesPage> {
               final itemsText = itemsController.text.trim();
               
               if (name.isEmpty || itemsText.isEmpty) {
-                ScaffoldMessenger.of(context).showSnackBar(
+                ScaffoldMessenger.of(context).showAppSnackBar(
                   SnackBar(
                     content: Text(AppLocalizations.of(context)!.templateNameAndItemsRequired),
                   ),
@@ -206,7 +207,7 @@ class _TodoTemplatesPageState extends ConsumerState<TodoTemplatesPage> {
                   .toList();
 
               if (items.isEmpty) {
-                ScaffoldMessenger.of(context).showSnackBar(
+                ScaffoldMessenger.of(context).showAppSnackBar(
                   SnackBar(
                     content: Text(AppLocalizations.of(context)!.templateItemsRequired),
                   ),
@@ -223,7 +224,7 @@ class _TodoTemplatesPageState extends ConsumerState<TodoTemplatesPage> {
               ref.read(todoTemplatesNotifierProvider.notifier).updateTemplate(updated);
               Navigator.pop(dialogContext);
 
-              ScaffoldMessenger.of(context).showSnackBar(
+              ScaffoldMessenger.of(context).showAppSnackBar(
                 SnackBar(
                   content: Text(AppLocalizations.of(context)!.templateUpdated),
                 ),
@@ -265,7 +266,7 @@ class _TodoTemplatesPageState extends ConsumerState<TodoTemplatesPage> {
     if (confirmed == true) {
       ref.read(todoTemplatesNotifierProvider.notifier).deleteTemplate(template.id);
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
+        ScaffoldMessenger.of(context).showAppSnackBar(
           SnackBar(
             content: Text(AppLocalizations.of(context)!.templateDeleted),
           ),

@@ -19,6 +19,7 @@ import '../utils/search_utils.dart';
 import 'part_templates_page.dart';
 import 'widgets/desktop_title_bar.dart';
 import 'widgets/part_editor_dialog.dart';
+import 'app_snack_bar.dart';
 
 /// Which column the table is sorted by. [manual] is the stored order — the
 /// order the parts were arranged in — and is the only mode where dragging a
@@ -315,7 +316,7 @@ class _ProjectPartsViewState extends State<ProjectPartsView> {
     );
     if (!mounted) return;
     setState(() => _selectedIds = {});
-    ScaffoldMessenger.of(context).showSnackBar(
+    ScaffoldMessenger.of(context).showAppSnackBar(
       SnackBar(content: Text(l10n.partsDeleted(count))),
     );
   }
@@ -394,7 +395,7 @@ class _ProjectPartsViewState extends State<ProjectPartsView> {
     final imported = selected.instantiate();
     await _save(project, [...project.parts, ...imported]);
     if (!mounted) return;
-    ScaffoldMessenger.of(context).showSnackBar(
+    ScaffoldMessenger.of(context).showAppSnackBar(
       SnackBar(
         content:
             Text(l10n.partTemplateImported(selected.name, imported.length)),
@@ -425,7 +426,7 @@ class _ProjectPartsViewState extends State<ProjectPartsView> {
 
       if (result.isEmpty) {
         if (!mounted) return;
-        ScaffoldMessenger.of(context).showSnackBar(
+        ScaffoldMessenger.of(context).showAppSnackBar(
           SnackBar(content: Text(l10n.partsImportNothingFound)),
         );
         return;
@@ -433,14 +434,14 @@ class _ProjectPartsViewState extends State<ProjectPartsView> {
 
       await _save(project, result.parts);
       if (!mounted) return;
-      ScaffoldMessenger.of(context).showSnackBar(
+      ScaffoldMessenger.of(context).showAppSnackBar(
         SnackBar(
           content: Text(l10n.partsImported(result.added, result.updated)),
         ),
       );
     } catch (e) {
       if (!mounted) return;
-      ScaffoldMessenger.of(context).showSnackBar(
+      ScaffoldMessenger.of(context).showAppSnackBar(
         SnackBar(content: Text(l10n.partsImportFailed(e.toString()))),
       );
     }
@@ -449,7 +450,7 @@ class _ProjectPartsViewState extends State<ProjectPartsView> {
   Future<void> _export(MusicProject project, {required bool asXlsx}) async {
     final l10n = AppLocalizations.of(context)!;
     if (project.parts.isEmpty) {
-      ScaffoldMessenger.of(context).showSnackBar(
+      ScaffoldMessenger.of(context).showAppSnackBar(
         SnackBar(content: Text(l10n.noPartsToExport)),
       );
       return;
@@ -477,12 +478,12 @@ class _ProjectPartsViewState extends State<ProjectPartsView> {
       }
 
       if (!mounted) return;
-      ScaffoldMessenger.of(context).showSnackBar(
+      ScaffoldMessenger.of(context).showAppSnackBar(
         SnackBar(content: Text(l10n.savedCopyTo(destPath))),
       );
     } catch (e) {
       if (!mounted) return;
-      ScaffoldMessenger.of(context).showSnackBar(
+      ScaffoldMessenger.of(context).showAppSnackBar(
         SnackBar(content: Text(l10n.failedToExportProjectInfo(e.toString()))),
       );
     }

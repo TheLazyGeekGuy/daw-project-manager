@@ -18,6 +18,7 @@ import 'dialogs/create_project_dialog.dart';
 import 'dialogs/duplicate_template_dialog.dart';
 import 'project_detail_page.dart';
 import 'widgets/desktop_title_bar.dart';
+import 'app_snack_bar.dart';
 
 /// A trimmed-down counterpart to `ProjectDetailPage`, scoped to what a
 /// [ProjectTemplate] actually has: name/BPM/key/DAW/notes fields and basic
@@ -156,13 +157,13 @@ class _TemplateDetailPageState extends ConsumerState<TemplateDetailPage> {
           .read(projectTemplatesNotifierProvider.notifier)
           .extractMetadataForTemplate(template.id);
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
+        ScaffoldMessenger.of(context).showAppSnackBar(
           SnackBar(content: Text(l10n.metadataExtractedSuccessfully)),
         );
       }
     } catch (e) {
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
+        ScaffoldMessenger.of(context).showAppSnackBar(
           SnackBar(content: Text(l10n.failedToExtractMetadata(e.toString()))),
         );
       }

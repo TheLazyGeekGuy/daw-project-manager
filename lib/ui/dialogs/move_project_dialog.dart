@@ -8,6 +8,7 @@ import '../../models/music_project.dart';
 import '../../providers/providers.dart';
 import '../../services/project_move_service.dart';
 import '../../utils/project_folder_utils.dart';
+import '../app_snack_bar.dart';
 
 /// The user-facing message for a refused move.
 ///
@@ -40,7 +41,7 @@ Future<bool> showMoveProjectDialog(
   // there is nothing on disk to move, and moving its members would silently
   // re-parent the stack. Versions are moved individually instead.
   if (project.isVirtual) {
-    ScaffoldMessenger.of(context).showSnackBar(
+    ScaffoldMessenger.of(context).showAppSnackBar(
       SnackBar(
         content: Text(AppLocalizations.of(context)!.moveProjectStackUnsupported),
       ),
@@ -76,7 +77,7 @@ Future<bool> showMoveProjectDialog(
 
   if (context.mounted) {
     final l10n = AppLocalizations.of(context)!;
-    ScaffoldMessenger.of(context).showSnackBar(
+    ScaffoldMessenger.of(context).showAppSnackBar(
       SnackBar(
         content: Text(
           l10n.moveProjectSuccess(moved.displayName, p.dirname(moved.filePath)),
@@ -129,11 +130,11 @@ Future<void> _undoMove(
     final repo = await ref.read(repositoryProvider.future);
     await repo.updateProject(back.project);
     ref.invalidate(allProjectsStreamProvider);
-    messenger.showSnackBar(SnackBar(content: Text(l10n.moveUndone)));
+    messenger.showAppSnackBar(SnackBar(content: Text(l10n.moveUndone)));
   } on ProjectMoveException catch (e) {
-    messenger.showSnackBar(SnackBar(content: Text(moveErrorMessage(l10n, e))));
+    messenger.showAppSnackBar(SnackBar(content: Text(moveErrorMessage(l10n, e))));
   } catch (e) {
-    messenger.showSnackBar(
+    messenger.showAppSnackBar(
       SnackBar(content: Text(l10n.moveUndoFailed(e.toString()))),
     );
   }

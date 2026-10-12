@@ -114,6 +114,7 @@ import '../utils/custom_fields.dart';
 import 'widgets/custom_field_column.dart';
 import '../models/custom_field.dart';
 import 'package:uuid/uuid.dart';
+import 'app_snack_bar.dart';
 
 /// App version embedded at build-time (CI passes `--dart-define=APP_VERSION=x.y.z`).
 /// For PR/local builds, we fall back to a dummy version.
@@ -845,7 +846,7 @@ class _DashboardPageState extends ConsumerState<DashboardPage>
 
       if (_scanCancelRequested) {
         if (mounted) {
-          ScaffoldMessenger.of(context).showSnackBar(
+          ScaffoldMessenger.of(context).showAppSnackBar(
             SnackBar(content: Text(AppLocalizations.of(context)!.scanCancelled)),
           );
         }
@@ -897,7 +898,7 @@ class _DashboardPageState extends ConsumerState<DashboardPage>
         // Partial results already upserted above are kept — cancelling
         // doesn't roll those back, it just stops finding/processing more.
         if (mounted) {
-          ScaffoldMessenger.of(context).showSnackBar(
+          ScaffoldMessenger.of(context).showAppSnackBar(
             SnackBar(content: Text(AppLocalizations.of(context)!.scanCancelled)),
           );
           ref.invalidate(allProjectsStreamProvider);
@@ -1113,7 +1114,7 @@ class _DashboardPageState extends ConsumerState<DashboardPage>
               )!.scanComplete(scanType, foundCount, foundCount == 1 ? '' : 's');
         ScaffoldMessenger.of(
           context,
-        ).showSnackBar(SnackBar(content: Text(msg)));
+        ).showAppSnackBar(SnackBar(content: Text(msg)));
 
         // A failed file must never look like data loss with no explanation —
         // surfaced separately (rather than folded into the success message
@@ -1121,7 +1122,7 @@ class _DashboardPageState extends ConsumerState<DashboardPage>
         // the same line of text.
         if (allFailures.isNotEmpty) {
           final l10n = AppLocalizations.of(context)!;
-          ScaffoldMessenger.of(context).showSnackBar(
+          ScaffoldMessenger.of(context).showAppSnackBar(
             SnackBar(
               content: Text(
                 l10n.scanFailuresSnackbar(
@@ -1266,7 +1267,7 @@ class _DashboardPageState extends ConsumerState<DashboardPage>
         .toList();
 
     if (stackable.length < 2) {
-      messenger.showSnackBar(
+      messenger.showAppSnackBar(
         SnackBar(content: Text(l10n.stackNeedsTwoVersions)),
       );
       return;
@@ -1301,7 +1302,7 @@ class _DashboardPageState extends ConsumerState<DashboardPage>
 
     ref.read(selectedProjectsProvider.notifier).clear();
     ref.invalidate(allProjectsStreamProvider);
-    messenger.showSnackBar(
+    messenger.showAppSnackBar(
       SnackBar(content: Text(l10n.stackCreatedMessage(stackable.length))),
     );
   }
@@ -1369,7 +1370,7 @@ class _DashboardPageState extends ConsumerState<DashboardPage>
 
       if (mounted) {
         final l10n = AppLocalizations.of(context)!;
-        ScaffoldMessenger.of(context).showSnackBar(
+        ScaffoldMessenger.of(context).showAppSnackBar(
           SnackBar(
             content: Text(
               l10n.projectsHidden(
@@ -1395,7 +1396,7 @@ class _DashboardPageState extends ConsumerState<DashboardPage>
       }
     } catch (e) {
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
+        ScaffoldMessenger.of(context).showAppSnackBar(
           SnackBar(
             content: Text(
               AppLocalizations.of(context)!.failedToHideProjects(e.toString()),
@@ -1463,7 +1464,7 @@ class _DashboardPageState extends ConsumerState<DashboardPage>
 
       if (mounted) {
         final l10n = AppLocalizations.of(context)!;
-        ScaffoldMessenger.of(context).showSnackBar(
+        ScaffoldMessenger.of(context).showAppSnackBar(
           SnackBar(
             content: Text(
               l10n.projectsUnhidden(
@@ -1487,7 +1488,7 @@ class _DashboardPageState extends ConsumerState<DashboardPage>
       }
     } catch (e) {
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
+        ScaffoldMessenger.of(context).showAppSnackBar(
           SnackBar(
             content: Text(
               AppLocalizations.of(
@@ -1610,7 +1611,7 @@ class _DashboardPageState extends ConsumerState<DashboardPage>
       ref.invalidate(allProjectsStreamProvider);
       if (mounted) {
         final plural = idsToDelete.length == 1 ? '' : 's';
-        ScaffoldMessenger.of(context).showSnackBar(
+        ScaffoldMessenger.of(context).showAppSnackBar(
           SnackBar(
             content: Text(
               l10n.missingProjectsDeleted(idsToDelete.length, plural),
@@ -1622,7 +1623,7 @@ class _DashboardPageState extends ConsumerState<DashboardPage>
       if (mounted) {
         ScaffoldMessenger.of(
           context,
-        ).showSnackBar(SnackBar(content: Text('${l10n.error}: $e')));
+        ).showAppSnackBar(SnackBar(content: Text('${l10n.error}: $e')));
       }
     }
   }
@@ -1646,7 +1647,7 @@ class _DashboardPageState extends ConsumerState<DashboardPage>
       await repo.addRelease(newRelease);
 
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
+        ScaffoldMessenger.of(context).showAppSnackBar(
           SnackBar(
             content: Text(
               AppLocalizations.of(context)!.releaseCreated(releaseTitle),
@@ -1670,7 +1671,7 @@ class _DashboardPageState extends ConsumerState<DashboardPage>
       }
     } catch (e) {
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
+        ScaffoldMessenger.of(context).showAppSnackBar(
           SnackBar(
             content: Text(
               AppLocalizations.of(context)!.failedToCreateRelease(e.toString()),
@@ -4775,7 +4776,7 @@ class _PlutoProjectsTableWithSelectionState
     }
     if (!mounted) return;
     ref.invalidate(allProjectsStreamProvider);
-    ScaffoldMessenger.of(this.context).showSnackBar(
+    ScaffoldMessenger.of(this.context).showAppSnackBar(
       SnackBar(
         content: Text(
           AppLocalizations.of(this.context)!.bulkTagsUpdated(changes.length),
@@ -4822,7 +4823,7 @@ class _PlutoProjectsTableWithSelectionState
       if (mounted) {
         final statusText = _translateStatus(context, newStatus);
         if (failCount == 0) {
-          ScaffoldMessenger.of(context).showSnackBar(
+          ScaffoldMessenger.of(context).showAppSnackBar(
             SnackBar(
               content: Text(
                 AppLocalizations.of(context)!.statusChangedForProjects(
@@ -4834,7 +4835,7 @@ class _PlutoProjectsTableWithSelectionState
             ),
           );
         } else {
-          ScaffoldMessenger.of(context).showSnackBar(
+          ScaffoldMessenger.of(context).showAppSnackBar(
             SnackBar(
               content: Text(
                 AppLocalizations.of(
@@ -4855,7 +4856,7 @@ class _PlutoProjectsTableWithSelectionState
       _clearSelection();
     } catch (e) {
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
+        ScaffoldMessenger.of(context).showAppSnackBar(
           SnackBar(
             content: Text(
               AppLocalizations.of(context)!.failedToChangeStatus(e.toString()),
@@ -5689,7 +5690,7 @@ class _PlutoProjectsTableWithSelectionState
                                             );
                                         ScaffoldMessenger.of(
                                           context,
-                                        ).showSnackBar(
+                                        ).showAppSnackBar(
                                           SnackBar(content: Text(message)),
                                         );
                                       }
@@ -7067,7 +7068,7 @@ class _PlutoProjectsTableState extends ConsumerState<_PlutoProjectsTable>
     await repo.updateProject(updated);
     ref.invalidate(allProjectsStreamProvider);
     if (mounted) {
-      ScaffoldMessenger.of(context).showSnackBar(
+      ScaffoldMessenger.of(context).showAppSnackBar(
         SnackBar(
           content: Text(
             '${updated.previewSongFileName} set as preview for ${updated.displayName}',
@@ -9006,7 +9007,7 @@ class _PreviewSongDialogState extends ConsumerState<_PreviewSongDialog> {
 
   Future<void> _toggleMono() async {
     if (!_supportsMonoMix()) {
-      ScaffoldMessenger.of(context).showSnackBar(
+      ScaffoldMessenger.of(context).showAppSnackBar(
         SnackBar(content: Text(AppLocalizations.of(context)!.monoRequiresWav)),
       );
       return;
@@ -9033,7 +9034,7 @@ class _PreviewSongDialogState extends ConsumerState<_PreviewSongDialog> {
           });
         } else {
           setState(() => _isGeneratingMono = false);
-          ScaffoldMessenger.of(context).showSnackBar(
+          ScaffoldMessenger.of(context).showAppSnackBar(
             SnackBar(
               content: Text(
                 AppLocalizations.of(context)!.monoUnsupportedFormat,
@@ -9073,7 +9074,7 @@ class _PreviewSongDialogState extends ConsumerState<_PreviewSongDialog> {
       }
     } catch (e) {
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
+        ScaffoldMessenger.of(context).showAppSnackBar(
           SnackBar(
             content: Text(
               AppLocalizations.of(context)!.monoSwitchFailed(e.toString()),
@@ -9102,7 +9103,7 @@ class _PreviewSongDialogState extends ConsumerState<_PreviewSongDialog> {
     final file = File(_effectivePreviewPath!);
     if (!await file.exists()) {
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
+        ScaffoldMessenger.of(context).showAppSnackBar(
           SnackBar(
             content: Text(
               AppLocalizations.of(context)!.previewSongFileNotFound,
@@ -9118,7 +9119,7 @@ class _PreviewSongDialogState extends ConsumerState<_PreviewSongDialog> {
       await _audioPlayer.play(_currentSource(), volume: _volume);
     } catch (e) {
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
+        ScaffoldMessenger.of(context).showAppSnackBar(
           SnackBar(
             content: Text(
               AppLocalizations.of(context)!.failedToPlayPreview(e.toString()),
@@ -9152,7 +9153,7 @@ class _PreviewSongDialogState extends ConsumerState<_PreviewSongDialog> {
       }
     } catch (e) {
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
+        ScaffoldMessenger.of(context).showAppSnackBar(
           SnackBar(
             content: Text(
               AppLocalizations.of(context)!.failedToPlayPreview(e.toString()),
@@ -9581,7 +9582,7 @@ class _PreviewSongDialogState extends ConsumerState<_PreviewSongDialog> {
         );
       }
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
+        ScaffoldMessenger.of(context).showAppSnackBar(
           SnackBar(
             content: Text(
               AppLocalizations.of(context)!.previewSongFileNotFound,
@@ -9600,7 +9601,7 @@ class _PreviewSongDialogState extends ConsumerState<_PreviewSongDialog> {
         );
       }
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
+        ScaffoldMessenger.of(context).showAppSnackBar(
           SnackBar(
             content: Text(
               AppLocalizations.of(
@@ -9623,7 +9624,7 @@ class _PreviewSongDialogState extends ConsumerState<_PreviewSongDialog> {
           debugPrint('[preview_share] sourceFile does not exist');
         }
         if (mounted) {
-          ScaffoldMessenger.of(context).showSnackBar(
+          ScaffoldMessenger.of(context).showAppSnackBar(
             SnackBar(
               content: Text(
                 AppLocalizations.of(context)!.previewSongFileNotFound,
@@ -9672,7 +9673,7 @@ class _PreviewSongDialogState extends ConsumerState<_PreviewSongDialog> {
           fileToShare = converted;
           shareFileName = path.basename(converted.path);
         } else if (mounted) {
-          ScaffoldMessenger.of(context).showSnackBar(
+          ScaffoldMessenger.of(context).showAppSnackBar(
             SnackBar(
               content: Text(AppLocalizations.of(context)!.mp3ConversionFailed),
             ),
@@ -9693,7 +9694,7 @@ class _PreviewSongDialogState extends ConsumerState<_PreviewSongDialog> {
         );
         if (shareFile == null) {
           if (mounted) {
-            ScaffoldMessenger.of(context).showSnackBar(
+            ScaffoldMessenger.of(context).showAppSnackBar(
               SnackBar(
                 content: Text(
                   AppLocalizations.of(
@@ -9753,7 +9754,7 @@ class _PreviewSongDialogState extends ConsumerState<_PreviewSongDialog> {
         debugPrint('$st');
       }
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
+        ScaffoldMessenger.of(context).showAppSnackBar(
           SnackBar(
             content: Text(
               AppLocalizations.of(
@@ -9773,7 +9774,7 @@ class _PreviewSongDialogState extends ConsumerState<_PreviewSongDialog> {
     final effectivePath = _effectivePreviewPath;
     if (effectivePath == null || effectivePath.isEmpty) {
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
+        ScaffoldMessenger.of(context).showAppSnackBar(
           SnackBar(
             content: Text(
               AppLocalizations.of(context)!.previewSongFileNotFound,
@@ -9787,7 +9788,7 @@ class _PreviewSongDialogState extends ConsumerState<_PreviewSongDialog> {
     // Skip if it's a Drive file reference (not downloaded)
     if (effectivePath.startsWith('drive://')) {
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
+        ScaffoldMessenger.of(context).showAppSnackBar(
           SnackBar(
             content: Text(
               AppLocalizations.of(
@@ -9804,7 +9805,7 @@ class _PreviewSongDialogState extends ConsumerState<_PreviewSongDialog> {
       final sourceFile = File(effectivePath);
       if (!await sourceFile.exists()) {
         if (mounted) {
-          ScaffoldMessenger.of(context).showSnackBar(
+          ScaffoldMessenger.of(context).showAppSnackBar(
             SnackBar(
               content: Text(
                 AppLocalizations.of(context)!.previewSongFileNotFound,
@@ -9877,7 +9878,7 @@ class _PreviewSongDialogState extends ConsumerState<_PreviewSongDialog> {
         debugPrint('$st');
       }
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
+        ScaffoldMessenger.of(context).showAppSnackBar(
           SnackBar(
             content: Text(
               AppLocalizations.of(
@@ -10242,7 +10243,7 @@ class _DesktopPlayerBarState extends ConsumerState<_DesktopPlayerBar> {
           onStale: () {
             if (!mounted) return;
             setState(() => _peaks = null);
-            ScaffoldMessenger.maybeOf(context)?.showSnackBar(
+            ScaffoldMessenger.maybeOf(context)?.showAppSnackBar(
               SnackBar(
                 content: Text(
                   AppLocalizations.of(context)!.previewAudioChangedRefreshing,
@@ -10434,7 +10435,7 @@ class _DesktopPlayerBarState extends ConsumerState<_DesktopPlayerBar> {
 
     if (!mounted) return;
     ref.invalidate(allProjectsStreamProvider);
-    ScaffoldMessenger.of(context).showSnackBar(
+    ScaffoldMessenger.of(context).showAppSnackBar(
       SnackBar(content: Text(l10n.todoAddedAtTimestamp(timestamp))),
     );
   }
@@ -12998,7 +12999,7 @@ class _PendingFolderRow extends ConsumerWidget {
               onPressed: () async {
                 await Clipboard.setData(ClipboardData(text: pf.folderName));
                 if (context.mounted) {
-                  ScaffoldMessenger.of(context).showSnackBar(
+                  ScaffoldMessenger.of(context).showAppSnackBar(
                     SnackBar(
                       content: Text(l10n.createProjectNameCopied),
                       duration: const Duration(seconds: 2),
@@ -13067,7 +13068,7 @@ class _PendingFolderRow extends ConsumerWidget {
                 }
                 if (!resolved.contains(pf.id)) {
                   if (context.mounted) {
-                    ScaffoldMessenger.of(context).showSnackBar(
+                    ScaffoldMessenger.of(context).showAppSnackBar(
                       SnackBar(content: Text(l10n.pendingProjectNotFound)),
                     );
                   }

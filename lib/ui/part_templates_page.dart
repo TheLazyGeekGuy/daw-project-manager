@@ -9,6 +9,7 @@ import '../providers/providers.dart';
 import '../utils/mobile_utils.dart';
 import '../utils/part_status_display.dart';
 import 'widgets/desktop_title_bar.dart';
+import 'app_snack_bar.dart';
 
 /// CRUD for reusable lineups — the fixed set of parts a band records for
 /// every song — so the same instrument list isn't retyped per project.
@@ -37,7 +38,7 @@ class _PartTemplatesPageState extends ConsumerState<PartTemplatesPage> {
           ),
         );
     if (!mounted) return;
-    ScaffoldMessenger.of(context).showSnackBar(
+    ScaffoldMessenger.of(context).showAppSnackBar(
       SnackBar(content: Text(AppLocalizations.of(context)!.partTemplateCreated)),
     );
   }
@@ -54,7 +55,7 @@ class _PartTemplatesPageState extends ConsumerState<PartTemplatesPage> {
           ),
         );
     if (!mounted) return;
-    ScaffoldMessenger.of(context).showSnackBar(
+    ScaffoldMessenger.of(context).showAppSnackBar(
       SnackBar(content: Text(AppLocalizations.of(context)!.partTemplateUpdated)),
     );
   }
@@ -89,7 +90,7 @@ class _PartTemplatesPageState extends ConsumerState<PartTemplatesPage> {
         .read(partTemplatesNotifierProvider.notifier)
         .deleteTemplate(template.id);
     if (!mounted) return;
-    ScaffoldMessenger.of(context).showSnackBar(
+    ScaffoldMessenger.of(context).showAppSnackBar(
       SnackBar(content: Text(l10n.partTemplateDeleted)),
     );
   }
@@ -148,7 +149,7 @@ class _PartTemplatesPageState extends ConsumerState<PartTemplatesPage> {
               final name = nameController.text.trim();
               final itemsText = itemsController.text.trim();
               if (name.isEmpty || itemsText.isEmpty) {
-                ScaffoldMessenger.of(dialogContext).showSnackBar(
+                ScaffoldMessenger.of(dialogContext).showAppSnackBar(
                   SnackBar(
                     content: Text(l10n.partTemplateNameAndItemsRequired),
                   ),
@@ -157,7 +158,7 @@ class _PartTemplatesPageState extends ConsumerState<PartTemplatesPage> {
               }
               final items = PartTemplate.parseItems(itemsText);
               if (items.isEmpty) {
-                ScaffoldMessenger.of(dialogContext).showSnackBar(
+                ScaffoldMessenger.of(dialogContext).showAppSnackBar(
                   SnackBar(content: Text(l10n.partTemplateItemsRequired)),
                 );
                 return;

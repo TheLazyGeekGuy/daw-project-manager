@@ -20,6 +20,7 @@ import '../../utils/daw_logo.dart';
 import '../../utils/file_launcher.dart';
 import '../project_templates_page.dart';
 import '../session_actions.dart';
+import '../app_snack_bar.dart';
 
 enum _NamingScheme { artistTrack, collab, dateTrack, custom, remix }
 
@@ -277,7 +278,7 @@ class _CreateProjectDialogState extends ConsumerState<CreateProjectDialog> {
       await PendingFolder.createEmptyFolder(targetPath);
     } catch (e) {
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
+        ScaffoldMessenger.of(context).showAppSnackBar(
           SnackBar(
             content: Text(
               '${AppLocalizations.of(context)!.createProjectError}: $e',
@@ -315,7 +316,7 @@ class _CreateProjectDialogState extends ConsumerState<CreateProjectDialog> {
         }
       } catch (e) {
         if (mounted) {
-          ScaffoldMessenger.of(context).showSnackBar(
+          ScaffoldMessenger.of(context).showAppSnackBar(
             SnackBar(
               content: Text(
                 AppLocalizations.of(
@@ -386,7 +387,7 @@ class _CreateProjectDialogState extends ConsumerState<CreateProjectDialog> {
       );
     } catch (e) {
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
+        ScaffoldMessenger.of(context).showAppSnackBar(
           SnackBar(
             content: Text(
               '${AppLocalizations.of(context)!.createProjectError}: $e',
@@ -545,7 +546,7 @@ class _CreateProjectDialogState extends ConsumerState<CreateProjectDialog> {
                     ClipboardData(text: _createdFolderName),
                   );
                   if (mounted) {
-                    ScaffoldMessenger.of(context).showSnackBar(
+                    ScaffoldMessenger.of(context).showAppSnackBar(
                       SnackBar(
                         content: Text(l10n.createProjectNameCopied),
                         duration: const Duration(seconds: 2),

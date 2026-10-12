@@ -7,6 +7,7 @@ import '../../generated/l10n/app_localizations.dart';
 import '../../models/music_project.dart';
 import '../../models/project_template.dart';
 import '../../providers/providers.dart';
+import '../app_snack_bar.dart';
 
 /// Promotes [project] into a brand new [ProjectTemplate] — a copy, never a
 /// move: the project itself is left completely untouched. Mirrors how
@@ -56,7 +57,7 @@ class _SaveAsTemplateDialogState extends ConsumerState<SaveAsTemplateDialog> {
     Navigator.of(context).pop();
     ScaffoldMessenger.of(
       context,
-    ).showSnackBar(SnackBar(content: Text(l10n.savedAsTemplate)));
+    ).showAppSnackBar(SnackBar(content: Text(l10n.savedAsTemplate)));
   }
 
   @override

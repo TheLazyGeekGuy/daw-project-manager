@@ -21,6 +21,7 @@ import 'widgets/conversion_progress_dialog.dart';
 import 'widgets/project_cover_avatar.dart';
 import 'widgets/project_notes_section.dart';
 import 'widgets/waveform_widget.dart';
+import 'app_snack_bar.dart';
 
 /// Route for the full mobile player. On Android it slides up from the bottom
 /// on push and back down on pop (the "now playing" sheet gesture) instead of
@@ -201,7 +202,7 @@ class _MobilePlayerPageState extends ConsumerState<MobilePlayerPage> {
     await _addTodoAtTimestamp(project, position, text.trim());
     if (!mounted) return;
     ScaffoldMessenger.of(context)
-        .showSnackBar(SnackBar(content: Text(l10n.taskAdded)));
+        .showAppSnackBar(SnackBar(content: Text(l10n.taskAdded)));
   }
 
   Future<void> _addTodoAtTimestamp(
@@ -268,7 +269,7 @@ class _MobilePlayerPageState extends ConsumerState<MobilePlayerPage> {
     if (project == null || songPath == null) return;
     if (songPath.startsWith('drive://')) {
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
+        ScaffoldMessenger.of(context).showAppSnackBar(
           SnackBar(content: Text(AppLocalizations.of(context)!.previewSongNotAvailableDownloadFirst)),
         );
       }
@@ -278,7 +279,7 @@ class _MobilePlayerPageState extends ConsumerState<MobilePlayerPage> {
       final sourceFile = File(songPath);
       if (!await sourceFile.exists()) {
         if (mounted) {
-          ScaffoldMessenger.of(context).showSnackBar(
+          ScaffoldMessenger.of(context).showAppSnackBar(
             SnackBar(content: Text(AppLocalizations.of(context)!.previewSongFileNotFound)),
           );
         }
@@ -300,7 +301,7 @@ class _MobilePlayerPageState extends ConsumerState<MobilePlayerPage> {
           fileToShare = converted;
           shareFileName = p.basename(converted.path);
         } else if (mounted) {
-          ScaffoldMessenger.of(context).showSnackBar(
+          ScaffoldMessenger.of(context).showAppSnackBar(
             SnackBar(content: Text(AppLocalizations.of(context)!.mp3ConversionFailed)),
           );
         }
@@ -309,7 +310,7 @@ class _MobilePlayerPageState extends ConsumerState<MobilePlayerPage> {
       final shareFile = await stageFileForMobileShare(fileToShare, shareFileName);
       if (shareFile == null) {
         if (mounted) {
-          ScaffoldMessenger.of(context).showSnackBar(
+          ScaffoldMessenger.of(context).showAppSnackBar(
             SnackBar(
               content: Text(
                 AppLocalizations.of(context)!.failedToSharePreviewSong(shareFileName),
@@ -332,7 +333,7 @@ class _MobilePlayerPageState extends ConsumerState<MobilePlayerPage> {
       ));
     } catch (e) {
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
+        ScaffoldMessenger.of(context).showAppSnackBar(
           SnackBar(content: Text(AppLocalizations.of(context)!.failedToSharePreviewSong(e.toString()))),
         );
       }
@@ -345,7 +346,7 @@ class _MobilePlayerPageState extends ConsumerState<MobilePlayerPage> {
     if (project == null || songPath == null) return;
     if (songPath.startsWith('drive://')) {
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
+        ScaffoldMessenger.of(context).showAppSnackBar(
           SnackBar(content: Text(AppLocalizations.of(context)!.previewSongNotAvailableDownloadFirst)),
         );
       }
@@ -355,7 +356,7 @@ class _MobilePlayerPageState extends ConsumerState<MobilePlayerPage> {
       final sourceFile = File(songPath);
       if (!await sourceFile.exists()) {
         if (mounted) {
-          ScaffoldMessenger.of(context).showSnackBar(
+          ScaffoldMessenger.of(context).showAppSnackBar(
             SnackBar(content: Text(AppLocalizations.of(context)!.previewSongFileNotFound)),
           );
         }
@@ -369,7 +370,7 @@ class _MobilePlayerPageState extends ConsumerState<MobilePlayerPage> {
       final shareFile = await stageFileForMobileShare(sourceFile, originalFileName);
       if (shareFile == null) {
         if (mounted) {
-          ScaffoldMessenger.of(context).showSnackBar(
+          ScaffoldMessenger.of(context).showAppSnackBar(
             SnackBar(
               content: Text(
                 AppLocalizations.of(context)!.failedToSharePreviewSongAsZip(originalFileName),
@@ -399,7 +400,7 @@ class _MobilePlayerPageState extends ConsumerState<MobilePlayerPage> {
       ));
     } catch (e) {
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
+        ScaffoldMessenger.of(context).showAppSnackBar(
           SnackBar(content: Text(AppLocalizations.of(context)!.failedToSharePreviewSongAsZip(e.toString()))),
         );
       }
@@ -426,7 +427,7 @@ class _MobilePlayerPageState extends ConsumerState<MobilePlayerPage> {
 
     if (!_supportsMonoMix(stereoPath)) {
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
+        ScaffoldMessenger.of(context).showAppSnackBar(
           SnackBar(content: Text(AppLocalizations.of(context)!.monoRequiresWav)),
         );
       }
@@ -446,7 +447,7 @@ class _MobilePlayerPageState extends ConsumerState<MobilePlayerPage> {
         if (!mounted) return;
         setState(() => _isGeneratingMono = false);
         if (!ok) {
-          ScaffoldMessenger.of(context).showSnackBar(
+          ScaffoldMessenger.of(context).showAppSnackBar(
             SnackBar(content: Text(AppLocalizations.of(context)!.monoUnsupportedFormat)),
           );
           return;

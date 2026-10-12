@@ -10,6 +10,7 @@ import '../../models/scan_root.dart';
 import '../../providers/providers.dart';
 import '../../services/project_archive_service.dart';
 import '../../utils/project_folder_utils.dart';
+import '../app_snack_bar.dart';
 
 /// The user-facing message for a refused archive.
 ///
@@ -51,7 +52,7 @@ Future<bool> showArchiveProjectDialog(
   // A stack owns no files — its versions do. Archiving one would have to
   // archive every member and re-point the stack, which is not what this does.
   if (project.isVirtual) {
-    ScaffoldMessenger.of(context).showSnackBar(
+    ScaffoldMessenger.of(context).showAppSnackBar(
       SnackBar(
         content: Text(
           AppLocalizations.of(context)!.archiveProjectStackUnsupported,
@@ -100,7 +101,7 @@ Future<bool> showArchiveProjectDialog(
     if (result.warnings.isNotEmpty) {
       message.write(' — ${l10n.archiveWarningsSkipped(result.warnings.length)}');
     }
-    ScaffoldMessenger.of(context).showSnackBar(
+    ScaffoldMessenger.of(context).showAppSnackBar(
       SnackBar(
         content: Text(message.toString()),
         // Archiving is the kind of thing people do to the wrong row. Undo puts
@@ -132,13 +133,13 @@ Future<void> _undoArchive(
     final repo = await ref.read(repositoryProvider.future);
     await repo.updateProject(reverted);
     ref.invalidate(allProjectsStreamProvider);
-    messenger.showSnackBar(SnackBar(content: Text(l10n.archiveUndone)));
+    messenger.showAppSnackBar(SnackBar(content: Text(l10n.archiveUndone)));
   } on ProjectArchiveException catch (e) {
-    messenger.showSnackBar(
+    messenger.showAppSnackBar(
       SnackBar(content: Text(archiveErrorMessage(l10n, e))),
     );
   } catch (e) {
-    messenger.showSnackBar(
+    messenger.showAppSnackBar(
       SnackBar(content: Text(l10n.archiveUndoFailed(e.toString()))),
     );
   }
@@ -187,10 +188,10 @@ Future<bool> showDiscardArchiveDialog(
     final repo = await ref.read(repositoryProvider.future);
     await repo.updateProject(reverted);
     ref.invalidate(allProjectsStreamProvider);
-    messenger.showSnackBar(SnackBar(content: Text(l10n.discardArchiveDone)));
+    messenger.showAppSnackBar(SnackBar(content: Text(l10n.discardArchiveDone)));
     return true;
   } catch (e) {
-    messenger.showSnackBar(
+    messenger.showAppSnackBar(
       SnackBar(content: Text(l10n.archiveUndoFailed(e.toString()))),
     );
     return false;
@@ -205,7 +206,7 @@ Future<bool> showRestoreProjectDialog(
 ) async {
   final l10n = AppLocalizations.of(context)!;
   if (!project.isArchived) {
-    ScaffoldMessenger.of(context).showSnackBar(
+    ScaffoldMessenger.of(context).showAppSnackBar(
       SnackBar(content: Text(l10n.archiveErrorNotArchived)),
     );
     return false;
@@ -275,7 +276,7 @@ Future<bool> showRestoreProjectDialog(
   }
 
   if (context.mounted) {
-    ScaffoldMessenger.of(context).showSnackBar(
+    ScaffoldMessenger.of(context).showAppSnackBar(
       SnackBar(
         content: Text(
           error ?? l10n.restoreProjectSuccess(restored!.displayName),
@@ -398,7 +399,7 @@ Future<int> showArchiveProjectsBulkDialog(
     if (failed > 0) {
       message.write(' — ${l10n.archiveBulkFailures(failed)}');
     }
-    ScaffoldMessenger.of(context).showSnackBar(
+    ScaffoldMessenger.of(context).showAppSnackBar(
       SnackBar(content: Text(message.toString())),
     );
   }

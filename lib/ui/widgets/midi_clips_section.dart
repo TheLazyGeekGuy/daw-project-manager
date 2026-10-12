@@ -26,6 +26,7 @@ import '../midi_preview_player.dart';
 import 'midi_tempo_control.dart';
 import 'midi_loop_toggle.dart';
 import 'midi_volume_control.dart';
+import '../app_snack_bar.dart';
 
 /// A project's MIDI clips: the ones stored by the last extraction (see
 /// `MidiClipStore`), previewed through the built-in synth, saved, shared or
@@ -325,7 +326,7 @@ class _MidiClipsSectionState extends ConsumerState<MidiClipsSection> {
 
   void _snack(String message) {
     if (!mounted) return;
-    ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(message)));
+    ScaffoldMessenger.of(context).showAppSnackBar(SnackBar(content: Text(message)));
   }
 
   @override

@@ -57,6 +57,7 @@ import 'widgets/license_dialog.dart';
 import 'widgets/shortcuts_help_dialog.dart';
 import 'widgets/update_available_dialog.dart';
 import 'widgets/changelog_browser.dart';
+import 'app_snack_bar.dart';
 
 /// A Flatpak document-portal path, e.g.
 /// `/run/user/1000/doc/98127/projects` — the portal never exposes the real
@@ -167,7 +168,7 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
       final currentProfileId = profileRepo.getCurrentProfileId();
       if (currentProfileId == null) {
         if (mounted) {
-          ScaffoldMessenger.of(context).showSnackBar(
+          ScaffoldMessenger.of(context).showAppSnackBar(
             SnackBar(content: Text(AppLocalizations.of(context)!.noProfileSelected)),
           );
         }
@@ -185,13 +186,13 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
       );
 
       if (file != null && mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
+        ScaffoldMessenger.of(context).showAppSnackBar(
           SnackBar(content: Text(AppLocalizations.of(context)!.backupExportedSuccessfully)),
         );
       }
     } catch (e) {
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
+        ScaffoldMessenger.of(context).showAppSnackBar(
           SnackBar(content: Text(AppLocalizations.of(context)!.failedToExportBackup(e.toString()))),
         );
       }
@@ -281,7 +282,7 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
                 if (selectedMode == ImportMode.createNewProfile) {
                   final name = profileNameController.text.trim();
                   if (name.isEmpty) {
-                    ScaffoldMessenger.of(ctx).showSnackBar(
+                    ScaffoldMessenger.of(ctx).showAppSnackBar(
                       SnackBar(content: Text(AppLocalizations.of(ctx)!.pleaseEnterProfileName)),
                     );
                     return;
@@ -327,7 +328,7 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
       if (importMode != ImportMode.createNewProfile) {
         if (currentProfileId == null) {
           if (mounted) {
-            ScaffoldMessenger.of(context).showSnackBar(
+            ScaffoldMessenger.of(context).showAppSnackBar(
               SnackBar(content: Text(AppLocalizations.of(context)!.noProfileSelected)),
             );
           }
@@ -369,13 +370,13 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
             importResult.releasesCount,
           );
         }
-        ScaffoldMessenger.of(context).showSnackBar(
+        ScaffoldMessenger.of(context).showAppSnackBar(
           SnackBar(content: Text(message)),
         );
       }
     } catch (e) {
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
+        ScaffoldMessenger.of(context).showAppSnackBar(
           SnackBar(content: Text(AppLocalizations.of(context)!.failedToImportBackup(e.toString()))),
         );
       }
@@ -450,7 +451,7 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
 
     if (partCount == 0) {
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
+        ScaffoldMessenger.of(context).showAppSnackBar(
           SnackBar(content: Text(l10n.noPartsToExport)),
         );
       }
@@ -480,13 +481,13 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
       }
 
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
+        ScaffoldMessenger.of(context).showAppSnackBar(
           SnackBar(content: Text(l10n.partsCsvExported(partCount))),
         );
       }
     } catch (e) {
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
+        ScaffoldMessenger.of(context).showAppSnackBar(
           SnackBar(content: Text(l10n.failedToExportProjectInfo(e.toString()))),
         );
       }
@@ -500,7 +501,7 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
 
     if (projects.isEmpty) {
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
+        ScaffoldMessenger.of(context).showAppSnackBar(
           SnackBar(content: Text(l10n.noProjectsToExport)),
         );
       }
@@ -520,13 +521,13 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
       await File(destPath).writeAsString(text);
 
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
+        ScaffoldMessenger.of(context).showAppSnackBar(
           SnackBar(content: Text(l10n.allProjectsInfoExported(projects.length))),
         );
       }
     } catch (e) {
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
+        ScaffoldMessenger.of(context).showAppSnackBar(
           SnackBar(content: Text(l10n.failedToExportProjectInfo(e.toString()))),
         );
       }
@@ -541,7 +542,7 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
     final msg = found == 0
         ? l10n.noProjectsFoundInRoots
         : l10n.scanComplete(l10n.rescan, found, found == 1 ? '' : 's');
-    ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(msg)));
+    ScaffoldMessenger.of(context).showAppSnackBar(SnackBar(content: Text(msg)));
   }
 
   Future<void> _addProjectFolder() async {
@@ -556,7 +557,7 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
     final pickedNorm = p.normalize(picked);
     if (existingRoots.any((r) => p.normalize(r.path) == pickedNorm)) {
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
+        ScaffoldMessenger.of(context).showAppSnackBar(
           SnackBar(content: Text(l10n.folderAlreadyAdded)),
         );
       }
@@ -577,7 +578,7 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
       ref.invalidate(allProjectsStreamProvider);
     } catch (e) {
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
+        ScaffoldMessenger.of(context).showAppSnackBar(
           SnackBar(content: Text(l10n.errorAddingFolder(e.toString()))),
         );
       }
@@ -604,13 +605,13 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
       ref.invalidate(scanRootsProvider);
       ref.invalidate(allProjectsStreamProvider);
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
+        ScaffoldMessenger.of(context).showAppSnackBar(
           SnackBar(content: Text(l10n.relocateFolderSuccess(count))),
         );
       }
     } catch (e) {
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
+        ScaffoldMessenger.of(context).showAppSnackBar(
           SnackBar(content: Text(l10n.errorAddingFolder(e.toString()))),
         );
       }
@@ -673,7 +674,7 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
       ref.invalidate(allProjectsStreamProvider);
       if (mounted) {
         final l10n = AppLocalizations.of(context)!;
-        ScaffoldMessenger.of(context).showSnackBar(
+        ScaffoldMessenger.of(context).showAppSnackBar(
           SnackBar(
             content: Text(
               enabled
@@ -828,7 +829,7 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
     final conflict = conflictingScanRoot(picked, ref.read(scanRootsProvider));
     if (conflict != null) {
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
+        ScaffoldMessenger.of(context).showAppSnackBar(
           SnackBar(
             content: Text(
               l10n.archiveErrorDestinationInScanRoot(
@@ -1023,7 +1024,7 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
     final projects = ref.read(projectsProvider);
     final count = projects.where((p) => p.status == phase).length;
     if (count > 0 && mounted) {
-      ScaffoldMessenger.of(context).showSnackBar(
+      ScaffoldMessenger.of(context).showAppSnackBar(
         SnackBar(content: Text(l10n.deletePhaseWarning(count))),
       );
     }
@@ -1500,7 +1501,7 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
                   if (!ok && mounted) {
                     // The switch has already snapped back to the OS's
                     // actual state — say why, so it doesn't look inert.
-                    messenger.showSnackBar(
+                    messenger.showAppSnackBar(
                       SnackBar(content: Text(l10n.autoStartFailed)),
                     );
                   }
@@ -1525,7 +1526,7 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
                               .read(startMinimizedProvider.notifier)
                               .set(v);
                           if (!ok && mounted) {
-                            messenger.showSnackBar(
+                            messenger.showAppSnackBar(
                               SnackBar(content: Text(l10n.autoStartFailed)),
                             );
                           }
@@ -2568,7 +2569,7 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
                             ref.invalidate(allProjectsStreamProvider);
                             await ref.read(repositoryProvider.future);
                             if (mounted) {
-                              ScaffoldMessenger.of(context).showSnackBar(
+                              ScaffoldMessenger.of(context).showAppSnackBar(
                                 SnackBar(content: Text(l10n.libraryCleared)),
                               );
                             }
@@ -2675,7 +2676,7 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
                             await ref.read(profileRepositoryProvider.future);
                             await ref.read(repositoryProvider.future);
                             if (mounted) {
-                              ScaffoldMessenger.of(context).showSnackBar(
+                              ScaffoldMessenger.of(context).showAppSnackBar(
                                 SnackBar(content: Text(l10n.allDataDeleted)),
                               );
                             }
@@ -2702,7 +2703,7 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
     final files = await CrashLogger.existingLogFiles();
     if (files.isEmpty) {
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
+        ScaffoldMessenger.of(context).showAppSnackBar(
           SnackBar(content: Text(AppLocalizations.of(context)!.shareDiagnosticLogEmpty)),
         );
       }
@@ -2710,7 +2711,7 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
     }
     final shared = await CrashLogger.shareOrRevealLogFiles(files);
     if (!shared && mounted) {
-      ScaffoldMessenger.of(context).showSnackBar(
+      ScaffoldMessenger.of(context).showAppSnackBar(
         SnackBar(content: Text(AppLocalizations.of(context)!.shareDiagnosticLogFolderOpened)),
       );
     }
@@ -2741,7 +2742,7 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
 
     await CrashLogger.clearLogs();
     if (mounted) {
-      ScaffoldMessenger.of(context).showSnackBar(
+      ScaffoldMessenger.of(context).showAppSnackBar(
         SnackBar(content: Text(l10n.diagnosticLogCleared)),
       );
     }
@@ -2907,7 +2908,7 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
                                 ref.read(availableUpdateProvider.notifier).set(result);
                                 UpdateAvailableDialog.show(context, result);
                               } else {
-                                ScaffoldMessenger.of(context).showSnackBar(
+                                ScaffoldMessenger.of(context).showAppSnackBar(
                                   SnackBar(content: Text(l10n.upToDate)),
                                 );
                               }
@@ -3174,12 +3175,12 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
         fallbackName: l10n.untitledTheme,
       );
       if (file == null || !mounted) return;
-      ScaffoldMessenger.of(context).showSnackBar(
+      ScaffoldMessenger.of(context).showAppSnackBar(
         SnackBar(content: Text(l10n.themeExported(file.path))),
       );
     } catch (_) {
       if (!mounted) return;
-      ScaffoldMessenger.of(context).showSnackBar(
+      ScaffoldMessenger.of(context).showAppSnackBar(
         SnackBar(content: Text(l10n.themeImportFailed)),
       );
     }
@@ -3191,7 +3192,7 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
     if (!mounted) return;
 
     if (result.isInvalid) {
-      ScaffoldMessenger.of(context).showSnackBar(
+      ScaffoldMessenger.of(context).showAppSnackBar(
         SnackBar(content: Text(l10n.themeImportFailed)),
       );
       return;
@@ -3200,7 +3201,7 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
     final theme = result.theme!;
     await ref.read(customThemesProvider.notifier).upsert(theme);
     if (!mounted) return;
-    ScaffoldMessenger.of(context).showSnackBar(
+    ScaffoldMessenger.of(context).showAppSnackBar(
       SnackBar(content: Text(l10n.themeImported(themeDisplayName(theme, l10n)))),
     );
   }

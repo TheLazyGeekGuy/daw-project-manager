@@ -10,6 +10,7 @@ import '../../services/scan_import_service.dart';
 import '../../utils/mobile_utils.dart';
 import '../google_drive_sync_page.dart';
 import '../settings_page.dart';
+import '../app_snack_bar.dart';
 
 const _kHideStartupDialogKey = 'hideStartupDialog';
 
@@ -71,7 +72,7 @@ class _StartupDialogState extends ConsumerState<_StartupDialog> {
       );
     } catch (e) {
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
+        ScaffoldMessenger.of(context).showAppSnackBar(
           SnackBar(content: Text(AppLocalizations.of(context)!.errorAddingFolder(e.toString()))),
         );
       }

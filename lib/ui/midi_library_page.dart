@@ -39,6 +39,7 @@ import 'widgets/midi_clips_section.dart'
 import 'widgets/midi_loop_toggle.dart';
 import 'widgets/midi_volume_control.dart';
 import 'widgets/midi_tempo_control.dart';
+import 'app_snack_bar.dart';
 
 /// One row the page shows, whichever view it comes from: a library clip or a
 /// collection item, flattened to what the list and the actions need.
@@ -246,7 +247,7 @@ class _MidiLibraryPageState extends ConsumerState<MidiLibraryPage> {
     if (!mounted) return;
     ScaffoldMessenger.of(
       context,
-    ).showSnackBar(SnackBar(content: Text(message)));
+    ).showAppSnackBar(SnackBar(content: Text(message)));
   }
 
   /// A blank clip to draft an idea in, for collection [c]: the piano roll
@@ -646,7 +647,7 @@ class _MidiLibraryPageState extends ConsumerState<MidiLibraryPage> {
     final repo = await ref.read(repositoryProvider.future);
     final before = await repo.midiCollections.renameItems(c.id, renames);
     if (!mounted || before.isEmpty) return;
-    ScaffoldMessenger.of(context).showSnackBar(
+    ScaffoldMessenger.of(context).showAppSnackBar(
       SnackBar(
         content: Text(l10n.midiBulkRenameDone(before.length)),
         action: SnackBarAction(
@@ -867,7 +868,7 @@ class _MidiLibraryPageState extends ConsumerState<MidiLibraryPage> {
     if (_player.playingKey == item.id) await _player.stop();
     await repo.midiCollections.removeItem(c.id, item.id);
     if (!mounted) return;
-    ScaffoldMessenger.of(context).showSnackBar(
+    ScaffoldMessenger.of(context).showAppSnackBar(
       SnackBar(
         content: Text(l10n.midiCollectionRemoved(item.displayName, c.name)),
         action: SnackBarAction(

@@ -10,6 +10,7 @@ import '../../utils/todo_due_utils.dart';
 import '../../generated/l10n/app_localizations.dart';
 import '../todo_templates_page.dart';
 import 'todo_due_chip.dart';
+import '../app_snack_bar.dart';
 
 class TodoListWidget extends ConsumerStatefulWidget {
   final List<TodoItem> todos;
@@ -98,7 +99,7 @@ class _TodoListWidgetState extends ConsumerState<TodoListWidget> {
     if (templates.isEmpty) {
       if (mounted) {
         ScaffoldMessenger.of(context).hideCurrentSnackBar();
-        ScaffoldMessenger.of(context).showSnackBar(
+        ScaffoldMessenger.of(context).showAppSnackBar(
           SnackBar(
             content: Text(AppLocalizations.of(context)!.noTemplatesAvailable),
             duration: const Duration(seconds: 4),
@@ -164,7 +165,7 @@ class _TodoListWidgetState extends ConsumerState<TodoListWidget> {
       widget.onTodosChanged([..._currentTodos, ...newTodos]);
 
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
+        ScaffoldMessenger.of(context).showAppSnackBar(
           SnackBar(
             content: Text(
               AppLocalizations.of(context)!.templateImported(selected.name, newTodos.length),
@@ -196,7 +197,7 @@ class _TodoListWidgetState extends ConsumerState<TodoListWidget> {
 
         if (lines.isEmpty) {
           if (mounted) {
-            ScaffoldMessenger.of(context).showSnackBar(
+            ScaffoldMessenger.of(context).showAppSnackBar(
               SnackBar(
                 content: Text(AppLocalizations.of(context)!.noTodosInFile),
               ),
@@ -217,7 +218,7 @@ class _TodoListWidgetState extends ConsumerState<TodoListWidget> {
         widget.onTodosChanged([..._currentTodos, ...newTodos]);
 
         if (mounted) {
-          ScaffoldMessenger.of(context).showSnackBar(
+          ScaffoldMessenger.of(context).showAppSnackBar(
             SnackBar(
               content: Text(
                 AppLocalizations.of(context)!.todosImported(newTodos.length),
@@ -228,7 +229,7 @@ class _TodoListWidgetState extends ConsumerState<TodoListWidget> {
       }
     } catch (e) {
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
+        ScaffoldMessenger.of(context).showAppSnackBar(
           SnackBar(
             content: Text(
               AppLocalizations.of(context)!.errorImportingTodos(e.toString()),

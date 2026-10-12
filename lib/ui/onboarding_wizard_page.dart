@@ -16,6 +16,7 @@ import 'dashboard_page.dart' show DashboardPage;
 import 'widgets/language_switcher.dart';
 import 'theme_labels.dart';
 import 'widgets/theme_preview_card.dart';
+import 'app_snack_bar.dart';
 
 class OnboardingWizardPage extends ConsumerStatefulWidget {
   const OnboardingWizardPage({super.key});
@@ -928,7 +929,7 @@ class _StartupPageState extends ConsumerState<_StartupPage> {
     if (!mounted) return;
     setState(() => _busy = false);
     if (!ok) {
-      ScaffoldMessenger.of(context).showSnackBar(
+      ScaffoldMessenger.of(context).showAppSnackBar(
         SnackBar(content: Text(widget.l10n.autoStartFailed)),
       );
     }
