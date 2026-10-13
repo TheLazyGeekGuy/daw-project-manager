@@ -30,6 +30,10 @@ class SamplePackProjectChoice {
   final String detail;
 }
 
+/// The window width from which [SamplePackExportDialog] shows its two halves
+/// side by side.
+const double kSamplePackDialogTwoColumns = 960;
+
 /// What the person chose in [SamplePackExportDialog].
 class SamplePackExportChoice {
   const SamplePackExportChoice({
@@ -152,6 +156,7 @@ class _SamplePackExportDialogState extends State<SamplePackExportDialog> {
       CheckboxListTile(
         contentPadding: EdgeInsets.zero,
         dense: true,
+        visualDensity: VisualDensity.compact,
         controlAffinity: ListTileControlAffinity.leading,
         value: _rename,
         onChanged: (v) => setState(() => _rename = v ?? false),
@@ -295,7 +300,7 @@ class _SamplePackExportDialogState extends State<SamplePackExportDialog> {
         ),
         const SizedBox(height: 4),
         SizedBox(
-          height: 260,
+          height: 240,
           child: listed.isEmpty
               ? Center(
                   child: Text(l10n.samplePackNoProjectsMatch,
@@ -339,130 +344,170 @@ class _SamplePackExportDialogState extends State<SamplePackExportDialog> {
     ];
   }
 
+  /// Which profiles: one chip each, with its project count.
+  List<Widget> _profilesSection(AppLocalizations l10n, ThemeData theme) {
+    final allSelected = _selected.length == widget.profiles.length;
+    return [
+      Row(
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          Expanded(
+            child:
+                Text(l10n.samplePackProfiles, style: theme.textTheme.titleSmall),
+          ),
+          TextButton(
+            onPressed: allSelected
+                ? null
+                : () => setState(() => _selected
+                  ..clear()
+                  ..addAll(widget.profiles.map((pr) => pr.id))),
+            child: Text(l10n.samplePackSelectAll),
+          ),
+          TextButton(
+            onPressed:
+                _selected.isEmpty ? null : () => setState(_selected.clear),
+            child: Text(l10n.samplePackSelectNone),
+          ),
+        ],
+      ),
+      Wrap(
+        spacing: 8,
+        runSpacing: 4,
+        children: [
+          for (final profile in widget.profiles)
+            FilterChip(
+              key: ValueKey('samplePackProfile-${profile.id}'),
+              selected: _selected.contains(profile.id),
+              label: Text('${profile.name} (${_projectCount(profile.id)})'),
+              tooltip: l10n.samplePackProjectCount(_projectCount(profile.id)),
+              onSelected: (v) => setState(() {
+                if (v) {
+                  _selected.add(profile.id);
+                } else {
+                  _selected.remove(profile.id);
+                }
+              }),
+            ),
+        ],
+      ),
+    ];
+  }
+
+  /// Where else to look for samples a project lost track of.
+  List<Widget> _foldersSection(AppLocalizations l10n, ThemeData theme) => [
+        Row(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            Expanded(
+              child: Tooltip(
+                message: l10n.samplePackLibraryFoldersHelp,
+                child: Text(l10n.samplePackLibraryFolders,
+                    style: theme.textTheme.titleSmall),
+              ),
+            ),
+            TextButton.icon(
+              onPressed: _addFolder,
+              icon: const Icon(Icons.create_new_folder_outlined),
+              label: Text(l10n.addFolder),
+            ),
+          ],
+        ),
+        if (_folders.isEmpty)
+          Text(l10n.samplePackNoLibraryFolders, style: theme.textTheme.bodySmall)
+        else
+          for (final folder in _folders)
+            ListTile(
+              contentPadding: EdgeInsets.zero,
+              dense: true,
+              visualDensity: VisualDensity.compact,
+              leading: const Icon(Icons.folder_open, size: 20),
+              title: Text(folder, maxLines: 1, overflow: TextOverflow.ellipsis),
+              trailing: IconButton(
+                tooltip: l10n.remove,
+                icon: const Icon(Icons.delete_outline),
+                onPressed: () => setState(() => _folders.remove(folder)),
+              ),
+            ),
+      ];
+
+  /// What else goes in, or stays out.
+  List<Widget> _optionsSection(AppLocalizations l10n) {
+    Widget option(
+      bool value,
+      ValueChanged<bool> onChanged,
+      String title, [
+      String? help,
+    ]) =>
+        CheckboxListTile(
+          contentPadding: EdgeInsets.zero,
+          dense: true,
+          visualDensity: VisualDensity.compact,
+          controlAffinity: ListTileControlAffinity.leading,
+          value: value,
+          onChanged: (v) => onChanged(v ?? false),
+          title: Text(title),
+          subtitle: help == null ? null : Text(help),
+        );
+    return [
+      option(
+        _excludeMasters,
+        (v) => setState(() => _excludeMasters = v),
+        l10n.samplePackExcludeMasters,
+        l10n.samplePackExcludeMastersHelp,
+      ),
+      option(
+        _includeOwnAudio,
+        (v) => setState(() => _includeOwnAudio = v),
+        l10n.samplePackIncludeOwnAudio,
+        l10n.samplePackIncludeOwnAudioHelp(kOwnAudioFolder),
+      ),
+      option(
+        _includeMidi,
+        (v) => setState(() => _includeMidi = v),
+        l10n.samplePackIncludeMidi,
+      ),
+    ];
+  }
+
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
     final theme = Theme.of(context);
-    final allSelected = _selected.length == widget.profiles.length;
+    // Side by side when there's room — what to read on the left, how to
+    // build the pack on the right — so the whole dialog fits without
+    // scrolling; one column on a narrow window.
+    final wide = MediaQuery.sizeOf(context).width >= kSamplePackDialogTwoColumns;
+    final source = [
+      ..._profilesSection(l10n, theme),
+      const SizedBox(height: 16),
+      ..._projectPicker(l10n, theme),
+    ];
+    final pack = [
+      ..._foldersSection(l10n, theme),
+      const Divider(height: 24),
+      ..._optionsSection(l10n),
+      ..._renameSection(l10n, theme),
+    ];
+    Widget column(List<Widget> children) => Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: children,
+        );
     return AlertDialog(
       title: Text(l10n.samplePackDialogTitle),
       content: SizedBox(
-        width: 520,
+        width: wide ? 900 : 520,
         child: SingleChildScrollView(
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Row(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  Expanded(
-                    child: Text(l10n.samplePackProfiles,
-                        style: theme.textTheme.titleSmall),
-                  ),
-                  TextButton(
-                    onPressed: allSelected
-                        ? null
-                        : () => setState(() => _selected
-                          ..clear()
-                          ..addAll(widget.profiles.map((pr) => pr.id))),
-                    child: Text(l10n.samplePackSelectAll),
-                  ),
-                  TextButton(
-                    onPressed: _selected.isEmpty
-                        ? null
-                        : () => setState(_selected.clear),
-                    child: Text(l10n.samplePackSelectNone),
-                  ),
-                ],
-              ),
-              for (final profile in widget.profiles)
-                CheckboxListTile(
-                  key: ValueKey('samplePackProfile-${profile.id}'),
-                  contentPadding: EdgeInsets.zero,
-                  dense: true,
-                  controlAffinity: ListTileControlAffinity.leading,
-                  value: _selected.contains(profile.id),
-                  onChanged: (v) => setState(() {
-                    if (v ?? false) {
-                      _selected.add(profile.id);
-                    } else {
-                      _selected.remove(profile.id);
-                    }
-                  }),
-                  title: Text(profile.name),
-                  subtitle: Text(
-                      l10n.samplePackProjectCount(_projectCount(profile.id))),
-                ),
-              const Divider(height: 24),
-              ..._projectPicker(l10n, theme),
-              const Divider(height: 24),
-              Text(l10n.samplePackLibraryFolders,
-                  style: theme.textTheme.titleSmall),
-              const SizedBox(height: 4),
-              Text(l10n.samplePackLibraryFoldersHelp,
-                  style: theme.textTheme.bodySmall),
-              const SizedBox(height: 4),
-              if (_folders.isEmpty)
-                Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 8),
-                  child: Text(l10n.samplePackNoLibraryFolders,
-                      style: theme.textTheme.bodySmall),
+          child: wide
+              ? Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Expanded(child: column(source)),
+                    const SizedBox(width: 32),
+                    Expanded(child: column(pack)),
+                  ],
                 )
-              else
-                for (final folder in _folders)
-                  ListTile(
-                    contentPadding: EdgeInsets.zero,
-                    dense: true,
-                    leading: const Icon(Icons.folder_open),
-                    title: Text(folder),
-                    trailing: IconButton(
-                      tooltip: l10n.remove,
-                      icon: const Icon(Icons.delete_outline),
-                      onPressed: () => setState(() => _folders.remove(folder)),
-                    ),
-                  ),
-              Align(
-                alignment: Alignment.centerLeft,
-                child: TextButton.icon(
-                  onPressed: _addFolder,
-                  icon: const Icon(Icons.create_new_folder_outlined),
-                  label: Text(l10n.addFolder),
-                ),
-              ),
-              const Divider(height: 24),
-              CheckboxListTile(
-                contentPadding: EdgeInsets.zero,
-                dense: true,
-                controlAffinity: ListTileControlAffinity.leading,
-                value: _excludeMasters,
-                onChanged: (v) => setState(() => _excludeMasters = v ?? false),
-                title: Text(l10n.samplePackExcludeMasters),
-                subtitle: Text(l10n.samplePackExcludeMastersHelp),
-              ),
-              CheckboxListTile(
-                contentPadding: EdgeInsets.zero,
-                dense: true,
-                controlAffinity: ListTileControlAffinity.leading,
-                value: _includeOwnAudio,
-                onChanged: (v) => setState(() => _includeOwnAudio = v ?? false),
-                title: Text(l10n.samplePackIncludeOwnAudio),
-                subtitle: Text(l10n.samplePackIncludeOwnAudioHelp(
-                  kOwnAudioFolder,
-                )),
-              ),
-              CheckboxListTile(
-                contentPadding: EdgeInsets.zero,
-                dense: true,
-                controlAffinity: ListTileControlAffinity.leading,
-                value: _includeMidi,
-                onChanged: (v) => setState(() => _includeMidi = v ?? false),
-                title: Text(l10n.samplePackIncludeMidi),
-              ),
-              const Divider(height: 24),
-              ..._renameSection(l10n, theme),
-            ],
-          ),
+              : column([...source, const Divider(height: 24), ...pack]),
         ),
       ),
       actions: [

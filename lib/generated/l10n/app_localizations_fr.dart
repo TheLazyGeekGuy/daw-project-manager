@@ -7315,7 +7315,7 @@ class AppLocalizationsFr extends AppLocalizations {
   String get samplePackAllProjects => 'Tous les projets';
 
   @override
-  String get samplePackPickedProjects => 'Seulement ceux que je choisis';
+  String get samplePackPickedProjects => 'Choisir des projets';
 
   @override
   String get samplePackSearchProjects => 'Rechercher des projets';

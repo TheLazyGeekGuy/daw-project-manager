@@ -7270,7 +7270,7 @@ class AppLocalizationsRu extends AppLocalizations {
   String get samplePackAllProjects => 'Все проекты';
 
   @override
-  String get samplePackPickedProjects => 'Только выбранные';
+  String get samplePackPickedProjects => 'Выбрать проекты';
 
   @override
   String get samplePackSearchProjects => 'Поиск проектов';

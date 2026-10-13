@@ -7300,7 +7300,7 @@ class AppLocalizationsEs extends AppLocalizations {
   String get samplePackAllProjects => 'Todos los proyectos';
 
   @override
-  String get samplePackPickedProjects => 'Solo los que elija';
+  String get samplePackPickedProjects => 'Elegir proyectos';
 
   @override
   String get samplePackSearchProjects => 'Buscar proyectos';

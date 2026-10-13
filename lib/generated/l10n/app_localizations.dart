@@ -12044,7 +12044,7 @@ abstract class AppLocalizations {
   /// Segment: export only from projects picked in a list
   ///
   /// In en, this message translates to:
-  /// **'Only the ones I pick'**
+  /// **'Choose projects'**
   String get samplePackPickedProjects;
 
   /// Hint of the search field above the project list

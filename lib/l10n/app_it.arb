@@ -4242,7 +4242,7 @@
   "samplePackMastersLeftOut": "{count, plural, =1{1 progetto di master escluso} other{{count} progetti di master esclusi}}",
   "samplePackProjects": "Progetti",
   "samplePackAllProjects": "Tutti i progetti",
-  "samplePackPickedProjects": "Solo quelli che scelgo",
+  "samplePackPickedProjects": "Scegli i progetti",
   "samplePackSearchProjects": "Cerca progetti",
   "samplePackPickedCount": "{count, plural, =0{Nessun progetto scelto} =1{1 progetto scelto} other{{count} progetti scelti}}",
   "samplePackNoProjectsMatch": "Nessun progetto corrisponde.",

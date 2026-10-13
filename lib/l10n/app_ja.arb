@@ -4242,7 +4242,7 @@
   "samplePackMastersLeftOut": "{count, plural, other{{count} 件のマスタープロジェクトを除外しました}}",
   "samplePackProjects": "プロジェクト",
   "samplePackAllProjects": "すべてのプロジェクト",
-  "samplePackPickedProjects": "選んだものだけ",
+  "samplePackPickedProjects": "プロジェクトを選ぶ",
   "samplePackSearchProjects": "プロジェクトを検索",
   "samplePackPickedCount": "{count, plural, =0{プロジェクトが選ばれていません} other{{count} 件のプロジェクトを選択中}}",
   "samplePackNoProjectsMatch": "一致するプロジェクトはありません。",

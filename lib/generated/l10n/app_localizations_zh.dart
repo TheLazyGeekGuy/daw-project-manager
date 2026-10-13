@@ -6972,7 +6972,7 @@ class AppLocalizationsZh extends AppLocalizations {
   String get samplePackAllProjects => '所有项目';
 
   @override
-  String get samplePackPickedProjects => '仅我选择的';
+  String get samplePackPickedProjects => '选择项目';
 
   @override
   String get samplePackSearchProjects => '搜索项目';

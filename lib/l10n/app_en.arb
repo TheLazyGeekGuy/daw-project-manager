@@ -7298,7 +7298,7 @@
   "@samplePackAllProjects": {
     "description": "Segment: export from every project of the selected profiles"
   },
-  "samplePackPickedProjects": "Only the ones I pick",
+  "samplePackPickedProjects": "Choose projects",
   "@samplePackPickedProjects": {
     "description": "Segment: export only from projects picked in a list"
   },

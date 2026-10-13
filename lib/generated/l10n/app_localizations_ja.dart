@@ -7049,7 +7049,7 @@ class AppLocalizationsJa extends AppLocalizations {
   String get samplePackAllProjects => 'すべてのプロジェクト';
 
   @override
-  String get samplePackPickedProjects => '選んだものだけ';
+  String get samplePackPickedProjects => 'プロジェクトを選ぶ';
 
   @override
   String get samplePackSearchProjects => 'プロジェクトを検索';

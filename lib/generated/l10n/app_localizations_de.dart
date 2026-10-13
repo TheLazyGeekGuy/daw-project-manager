@@ -7283,7 +7283,7 @@ class AppLocalizationsDe extends AppLocalizations {
   String get samplePackAllProjects => 'Alle Projekte';
 
   @override
-  String get samplePackPickedProjects => 'Nur ausgewählte';
+  String get samplePackPickedProjects => 'Projekte auswählen';
 
   @override
   String get samplePackSearchProjects => 'Projekte suchen';

@@ -4242,7 +4242,7 @@
   "samplePackMastersLeftOut": "{count, plural, =1{Пропущен 1 мастеринг-проект} other{Пропущено мастеринг-проектов: {count}}}",
   "samplePackProjects": "Проекты",
   "samplePackAllProjects": "Все проекты",
-  "samplePackPickedProjects": "Только выбранные",
+  "samplePackPickedProjects": "Выбрать проекты",
   "samplePackSearchProjects": "Поиск проектов",
   "samplePackPickedCount": "{count, plural, =0{Проекты не выбраны} =1{Выбран 1 проект} few{Выбрано {count} проекта} many{Выбрано {count} проектов} other{Выбрано {count} проекта}}",
   "samplePackNoProjectsMatch": "Подходящих проектов нет.",

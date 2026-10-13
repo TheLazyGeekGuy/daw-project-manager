@@ -54,8 +54,9 @@ void main() {
       List<String> folders = const [],
       bool onlyPicked = false,
       Set<String> picked = const {},
+      Size window = const Size(1000, 2000),
     }) async {
-      tester.view.physicalSize = const Size(1000, 2000);
+      tester.view.physicalSize = window;
       tester.view.devicePixelRatio = 1;
       addTearDown(tester.view.reset);
       result = null;
@@ -94,23 +95,18 @@ void main() {
 
     setUp(() => picks = []);
 
-    Finder profileBox(String id) => find.descendant(
-          of: find.byKey(ValueKey('samplePackProfile-$id')),
-          matching: find.byType(Checkbox),
-        );
-
-    bool ticked(WidgetTester tester, String id) =>
-        tester.widget<Checkbox>(profileBox(id)).value ?? false;
+    bool ticked(WidgetTester tester, String id) => tester
+        .widget<FilterChip>(find.byKey(ValueKey('samplePackProfile-$id')))
+        .selected;
 
     Finder exportButton() =>
         find.widgetWithText(FilledButton, 'Choose folder and export');
 
     testWidgets('lists every profile with its project count', (tester) async {
       await pump(tester);
-      expect(find.text('Audio Crawler'), findsOneWidget);
-      expect(find.text('3 projects'), findsOneWidget);
-      expect(find.text('1 project'), findsOneWidget);
-      expect(find.text('0 projects'), findsOneWidget);
+      expect(find.text('Audio Crawler (3)'), findsOneWidget);
+      expect(find.text('Side project (1)'), findsOneWidget);
+      expect(find.text('Label (0)'), findsOneWidget);
     });
 
     testWidgets('select none, then pick some; export returns them in order',
@@ -122,8 +118,8 @@ void main() {
       expect(tester.widget<FilledButton>(exportButton()).onPressed, isNull,
           reason: 'nothing to export without a profile');
 
-      await tester.tap(find.text('Label'));
-      await tester.tap(find.text('Audio Crawler'));
+      await tester.tap(find.text('Label (0)'));
+      await tester.tap(find.text('Audio Crawler (3)'));
       await tester.pump();
       await tester.tap(exportButton());
       await tester.pumpAndSettle();
@@ -160,7 +156,7 @@ void main() {
       testWidgets('lists the selected profiles\' projects by name; exports '
           'only the ticked ones', (tester) async {
         await pump(tester, initial: {'p1'});
-        await tester.tap(find.text('Only the ones I pick'));
+        await tester.tap(find.text('Choose projects'));
         await tester.pumpAndSettle();
         expect(find.text('Jam'), findsNothing, reason: 'p2 is not selected');
         final names = tester
@@ -187,7 +183,7 @@ void main() {
       testWidgets('search narrows the list, and select all picks only what '
           'it shows', (tester) async {
         await pump(tester, initial: {'p1', 'p2'});
-        await tester.tap(find.text('Only the ones I pick'));
+        await tester.tap(find.text('Choose projects'));
         await tester.pumpAndSettle();
         await tester.enterText(
             find.byKey(const ValueKey('samplePackProjectSearch')), 'n');
@@ -213,7 +209,7 @@ void main() {
         await pump(tester,
             onlyPicked: true, picked: {'nebula', 'jam'}, initial: {'p1', 'p2'});
         expect(find.text('2 projects picked'), findsOneWidget);
-        await tester.tap(find.text('Side project'));
+        await tester.tap(find.text('Side project (1)'));
         await tester.pump();
         expect(find.text('1 project picked'), findsOneWidget);
         await tester.tap(exportButton());
@@ -262,6 +258,34 @@ void main() {
       expect(result!.naming!.includeKey, isFalse);
       expect(result!.naming!.includeName, isTrue);
       expect(result!.naming!.prefix, 'AC');
+    });
+
+    testWidgets('on a wide window the two halves sit side by side and the '
+        'whole dialog fits', (tester) async {
+      await pump(tester,
+          window: const Size(1920, 1080), onlyPicked: true, picked: {'nebula'});
+      await tester.tap(find.text('Rename samples'));
+      await tester.pump();
+      final profiles = tester.getTopLeft(find.text('Profiles'));
+      final folders = tester.getTopLeft(find.text('Sample library folders'));
+      expect(folders.dx, greaterThan(profiles.dx + 300),
+          reason: 'library folders start the right-hand half');
+      expect((folders.dy - profiles.dy).abs(), lessThan(24));
+      expect(tester.getBottomLeft(find.text('Choose folder and export')).dy,
+          lessThan(1080),
+          reason: 'everything on screen without scrolling');
+      expect(
+        tester.getBottomLeft(find.textContaining('Example: ')).dy,
+        lessThan(tester.getTopLeft(find.text('Choose folder and export')).dy),
+      );
+    });
+
+    testWidgets('on a narrow window it is one column', (tester) async {
+      await pump(tester, window: const Size(800, 2400));
+      final profiles = tester.getTopLeft(find.text('Profiles'));
+      final folders = tester.getTopLeft(find.text('Sample library folders'));
+      expect((folders.dx - profiles.dx).abs(), lessThan(24));
+      expect(folders.dy, greaterThan(profiles.dy));
     });
 
     testWidgets('master projects can be let back in', (tester) async {
