@@ -571,7 +571,7 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
       );
       if (page.projects == 0) {
         if (mounted) {
-          ScaffoldMessenger.of(context).showSnackBar(
+          ScaffoldMessenger.of(context).showAppSnackBar(
             SnackBar(content: Text(l10n.referenceNothing)),
           );
         }
@@ -581,13 +581,13 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
       await out.writeAsString(page.html);
       await launchUrl(Uri.file(out.path));
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
+        ScaffoldMessenger.of(context).showAppSnackBar(
           SnackBar(content: Text(l10n.referenceDone(page.projects))),
         );
       }
     } catch (e) {
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
+        ScaffoldMessenger.of(context).showAppSnackBar(
           SnackBar(content: Text(l10n.failedToExportProjectInfo(e.toString()))),
         );
       }
@@ -648,7 +648,7 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
         }),
       );
       if (!mounted) return;
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+      ScaffoldMessenger.of(context).showAppSnackBar(SnackBar(
         content: Text(result.clips == 0
             ? l10n.melodicExportNothing
             : result.projectsWithoutMidi == 0
@@ -658,7 +658,7 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
       ));
     } catch (e) {
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
+        ScaffoldMessenger.of(context).showAppSnackBar(
           SnackBar(content: Text(l10n.failedToExportProjectInfo(e.toString()))),
         );
       }
@@ -686,7 +686,7 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
         anonymize: _anonymizeTemplateExport,
       );
       if (!mounted) return;
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+      ScaffoldMessenger.of(context).showAppSnackBar(SnackBar(
         content: Text(result.projectsAnalysed == 0
             ? l10n.templateExportNothing
             : l10n.templateExportDone(
@@ -694,7 +694,7 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
       ));
     } catch (e) {
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
+        ScaffoldMessenger.of(context).showAppSnackBar(
           SnackBar(content: Text(l10n.failedToExportProjectInfo(e.toString()))),
         );
       }
