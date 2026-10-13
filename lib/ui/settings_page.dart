@@ -702,14 +702,22 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
         builder: (_) => SamplePackExportDialog(
           profiles: [
             for (final profile in profiles)
-              SamplePackProfileChoice(
-                id: profile.id,
-                name: profile.name,
-                projectCount: projectsByProfile[profile.id]!.length,
-              ),
+              SamplePackProfileChoice(id: profile.id, name: profile.name),
+          ],
+          projects: [
+            for (final profile in profiles)
+              for (final project in projectsByProfile[profile.id]!)
+                SamplePackProjectChoice(
+                  id: project.id,
+                  profileId: profile.id,
+                  name: project.name,
+                  detail: p.basename(project.filePath),
+                ),
           ],
           initialProfileIds: prefs.profileIds?.toSet() ??
               {for (final profile in profiles) profile.id},
+          initialOnlyPicked: prefs.onlyPickedProjects,
+          initialPickedProjectIds: prefs.pickedProjectIds.toSet(),
           initialLibraryFolders: prefs.libraryFolders,
           initialIncludeOwnAudio: prefs.includeOwnAudio,
           initialIncludeMidi: prefs.includeMidi,
@@ -726,6 +734,8 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
         includeMidi: choice.includeMidi,
         excludeMasterProjects: choice.excludeMasterProjects,
         profileIds: choice.profileIds,
+        onlyPickedProjects: choice.projectIds != null,
+        pickedProjectIds: choice.projectIds ?? prefs.pickedProjectIds,
       ));
 
       final dir = await FilePicker.getDirectoryPath(
@@ -733,8 +743,11 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
       );
       if (dir == null || !mounted) return;
 
+      final picked = choice.projectIds?.toSet();
       final projects = [
-        for (final id in choice.profileIds) ...projectsByProfile[id]!,
+        for (final id in choice.profileIds)
+          for (final project in projectsByProfile[id]!)
+            if (picked == null || picked.contains(project.id)) project,
       ];
       final midi = <SamplePackMidiFolder>[];
       if (choice.includeMidi) {

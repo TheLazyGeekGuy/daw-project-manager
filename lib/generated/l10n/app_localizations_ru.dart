@@ -7262,4 +7262,33 @@ class AppLocalizationsRu extends AppLocalizations {
     );
     return '$_temp0';
   }
+
+  @override
+  String get samplePackProjects => 'Проекты';
+
+  @override
+  String get samplePackAllProjects => 'Все проекты';
+
+  @override
+  String get samplePackPickedProjects => 'Только выбранные';
+
+  @override
+  String get samplePackSearchProjects => 'Поиск проектов';
+
+  @override
+  String samplePackPickedCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'Выбрано $count проекта',
+      many: 'Выбрано $count проектов',
+      few: 'Выбрано $count проекта',
+      one: 'Выбран 1 проект',
+      zero: 'Проекты не выбраны',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get samplePackNoProjectsMatch => 'Подходящих проектов нет.';
 }

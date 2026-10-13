@@ -17,12 +17,15 @@ import 'sample_locator.dart';
 /// One project to collect samples from.
 class SamplePackProject {
   const SamplePackProject({
+    this.id = '',
     required this.filePath,
     required this.name,
     required this.profileName,
     required this.songKey,
   });
 
+  /// The project's id in its profile, for picking it.
+  final String id;
   final String filePath;
 
   /// What the report calls the song this project is.
@@ -41,22 +44,43 @@ class SamplePackMidiFolder {
   final List<MidiExport> exports;
 }
 
-/// What the export is doing, for its progress line.
+/// What the export is doing within a project, for its progress line.
 enum SamplePackPhase { reading, locating, measuring, copying, midi, finishing }
 
-typedef SamplePackProgress = void Function(
-  SamplePackPhase phase,
-  int done,
-  int total,
-  String current,
-);
+/// Where the export has got to: project [project] (from 0) of [projects],
+/// and within it [phase], at [done] of [total], on [current].
+class SamplePackProgressUpdate {
+  const SamplePackProgressUpdate({
+    required this.project,
+    required this.projects,
+    required this.projectName,
+    required this.phase,
+    this.done = 0,
+    this.total = 0,
+    this.current = '',
+  });
+
+  final int project;
+  final int projects;
+  final String projectName;
+  final SamplePackPhase phase;
+  final int done;
+  final int total;
+  final String current;
+
+  /// How far the whole export is, 0 to 1.
+  double get fraction {
+    if (projects == 0) return 1;
+    final within = total == 0 ? 0 : done / total;
+    return ((project + within) / projects).clamp(0, 1).toDouble();
+  }
+}
+
+typedef SamplePackProgress = void Function(SamplePackProgressUpdate update);
 
 /// One distinct sound, however many projects and folders hold a copy.
 class PackSample {
-  PackSample(this.identity);
-
-  /// Content identity: files with the same one are the same sound.
-  final String identity;
+  PackSample();
 
   /// Every located copy, the one copied into the pack first.
   final List<String> paths = [];
@@ -64,6 +88,7 @@ class PackSample {
   Duration? duration;
   SampleCategory category = SampleCategory.other;
   SampleOrigin origin = SampleOrigin.project;
+  final List<SampleOrigin> _origins = [];
 
   /// Songs using it, by [SamplePackProject.songKey], with their names.
   final Map<String, String> songs = {};
@@ -75,6 +100,16 @@ class PackSample {
   /// Whether this export copied it in (false: it was there already, or it
   /// was left out).
   bool added = false;
+
+  /// Whether it has been compared with the pack and the other samples. A
+  /// sample that is left out never is: comparing means reading it.
+  bool _indexed = false;
+  bool _copyFailed = false;
+
+  void _addOrigin(SampleOrigin o) {
+    _origins.add(o);
+    origin = combinedOrigin(_origins);
+  }
 }
 
 /// A reference that couldn't be followed, or a project that couldn't be
@@ -153,11 +188,21 @@ const kMidiFolder = 'MIDI';
 /// Collects the samples a set of projects use into one folder, sorted into
 /// category folders, with a report of how often each is used.
 ///
+/// Works one project at a time and copies as it goes, so the folder fills
+/// while it runs and stopping keeps everything done so far (the report and
+/// manifest are written then too).
+///
+/// It only opens a file it is going to copy. Own audio that is left out is
+/// recognised from what the project says, the folders and the file's size
+/// (`sampleOriginOf`), none of which means reading the file — which, on a
+/// cloud drive, means downloading it.
+///
 /// Running it again on the same folder only adds what isn't there yet: every
 /// sample is compared by content with what the folder holds — wherever the
-/// user has moved or renamed it since — so nothing is copied twice.
+/// user has moved or renamed it since — so nothing is copied twice. Files
+/// are told apart by size and only hashed when sizes match;
 /// `sample_pack_manifest.json` remembers each pack file's size, date and
-/// hash so the comparison doesn't re-read the whole pack every time.
+/// hash so the pack isn't re-read every time.
 class SamplePackExporter {
   SamplePackExporter({
     required this.destination,
@@ -190,261 +235,319 @@ class SamplePackExporter {
     List<SamplePackMidiFolder> midi = const [],
     SamplePackProgress? onProgress,
     bool Function()? shouldStop,
-  }) async {
-    void progress(SamplePackPhase phase, int done, int total, String current) =>
-        onProgress?.call(phase, done, total, current);
-    bool stop() => shouldStop?.call() ?? false;
+  }) =>
+      _Run(this, onProgress, shouldStop).go(projects, midi);
+}
 
-    final problems = <SamplePackProblem>[];
-    var stopped = false;
+/// One export's state.
+class _Run {
+  _Run(this.x, this.onProgress, this.shouldStop);
 
+  final SamplePackExporter x;
+  final SamplePackProgress? onProgress;
+  final bool Function()? shouldStop;
+
+  final problems = <SamplePackProblem>[];
+  final samples = <PackSample>[];
+  final _byPath = <String, PackSample>{};
+  final _bySize = <int, List<_Entry>>{};
+  final _hashes = <String, String>{};
+  final _taken = <String>{};
+  final _written = <_PackFile>[];
+
+  /// Each file copied in, by the source it was copied from — a source
+  /// hashed after its copy was made (when a same-sized file turned up
+  /// later) still gives the copy its hash.
+  final _copiedFrom = <String, String>{};
+  var projectsRead = 0;
+  var mastersLeftOut = 0;
+  var stopped = false;
+
+  int _project = 0;
+  int _projects = 0;
+  String _projectName = '';
+
+  bool get _stop {
+    if (!stopped && (shouldStop?.call() ?? false)) stopped = true;
+    return stopped;
+  }
+
+  void _progress(SamplePackPhase phase,
+          [int done = 0, int total = 0, String current = '']) =>
+      onProgress?.call(SamplePackProgressUpdate(
+        project: _project,
+        projects: _projects,
+        projectName: _projectName,
+        phase: phase,
+        done: done,
+        total: total,
+        current: current,
+      ));
+
+  Future<SamplePackResult> go(
+    List<SamplePackProject> projects,
+    List<SamplePackMidiFolder> midi,
+  ) async {
     // One project file in two profiles is read once and belongs to both.
     final byFile = <String, (SamplePackProject, Set<String>)>{};
     for (final project in projects) {
-      final key = _pathKey(project.filePath);
-      byFile.putIfAbsent(key, () => (project, <String>{}))
+      byFile
+          .putIfAbsent(_pathKey(project.filePath), () => (project, <String>{}))
           .$2
           .add(project.profileName);
     }
+    _projects = byFile.length;
 
-    // 1. Read every project's references.
-    final read = <(SamplePackProject, Set<String>, List<SampleReference>)>[];
-    var mastersLeftOut = 0;
-    var done = 0;
+    await _loadPack();
+
     for (final (project, profiles) in byFile.values) {
-      if (stop()) {
-        stopped = true;
-        break;
-      }
-      progress(SamplePackPhase.reading, done++, byFile.length, project.name);
-      SamplePackProblem problem(SamplePackProblemKind kind) =>
-          SamplePackProblem(
-            project: project.name,
-            profile: profiles.join(', '),
-            problem: kind,
-            where: project.filePath,
-          );
-      if (excludeMasterProjects && isMasterProject(project.filePath)) {
-        mastersLeftOut++;
-        continue;
-      }
-      if (!canRead(project.filePath)) {
-        problems.add(problem(SamplePackProblemKind.formatNotSupported));
-        continue;
-      }
-      if (!await File(project.filePath).exists()) {
-        problems.add(problem(SamplePackProblemKind.projectNotFound));
-        continue;
-      }
-      try {
-        read.add((project, profiles, await readReferences(project.filePath)));
-      } catch (_) {
-        problems.add(problem(SamplePackProblemKind.projectUnreadable));
-      }
+      if (_stop) break;
+      _projectName = project.name;
+      await _read(project, profiles);
+      _project++;
     }
 
-    // 2. Find each referenced file. Grouped by path: two projects using the
-    // same library file share one entry.
-    final located = <String, _Located>{};
-    final total = read.fold<int>(0, (n, r) => n + r.$3.length);
-    done = 0;
-    outer:
-    for (final (project, profiles, refs) in read) {
-      final projectDir = p.dirname(project.filePath);
-      final seen = <String>{};
-      for (final ref in refs) {
-        if (stop()) {
-          stopped = true;
-          break outer;
-        }
-        progress(SamplePackPhase.locating, done++, total, ref.fileName);
-        final path = await locator.locate(ref, projectDir: projectDir);
-        if (path == null) {
-          if (seen.add('missing:${ref.fileName.toLowerCase()}')) {
-            problems.add(SamplePackProblem(
-              project: project.name,
-              profile: profiles.join(', '),
-              problem: SamplePackProblemKind.sampleNotFound,
-              sample: ref.fileName,
-              where: ref.candidates.firstOrNull ?? '',
-            ));
-          }
-          continue;
-        }
-        final key = _pathKey(path);
-        final entry = located.putIfAbsent(key, () => _Located(path));
-        entry.uses.add((project, profiles, ref, projectDir));
-      }
-    }
-
-    // 3. Measure: size, length and where it came from.
-    done = 0;
-    for (final entry in located.values) {
-      if (stop()) {
-        stopped = true;
-        break;
-      }
-      progress(SamplePackPhase.measuring, done++, located.length,
-          p.basename(entry.path));
-      try {
-        entry.size = await File(entry.path).length();
-      } catch (_) {
-        continue; // Gone since it was found.
-      }
-      entry.duration = await readDuration(entry.path);
-      entry.measured = true;
-    }
-    if (stopped) {
-      // Stopped before anything was copied: leave the folder as it was.
-      return SamplePackResult(
-        samples: const [],
-        problems: problems,
-        projectsRead: read.length,
-        midiFiles: 0,
-        stopped: true,
-        masterProjectsLeftOut: mastersLeftOut,
-      );
-    }
-    located.removeWhere((_, e) => !e.measured);
-
-    // 4. What the pack folder already holds, and content identities for
-    // both sides: files are told apart by size, and only those sharing a
-    // size with another are hashed.
-    final manifest = await _Manifest.read(destination);
-    final packFiles = await _packAudioFiles(destination);
-    final sizes = <String, int>{
-      for (final e in located.values) e.path: e.size,
-      for (final f in packFiles) f.path: f.size,
-    };
-    final hashCache = <String, String>{
-      for (final f in packFiles) f.path: ?manifest.hashFor(f),
-    };
-    final identities = await contentIdentities(
-      sizes,
-      (path) async => hashCache[path] ??= await hashFile(path),
-    );
-
-    final inPack = <String, String>{}; // identity -> relative path
-    for (final f in packFiles) {
-      inPack.putIfAbsent(identities[f.path]!, () => f.relative);
-    }
-
-    // 5. One sample per identity.
-    final samples = <String, PackSample>{};
-    for (final entry in located.values) {
-      final id = identities[entry.path]!;
-      final sample = samples.putIfAbsent(id, () => PackSample(id));
-      sample.paths.add(entry.path);
-      sample.sizeBytes = entry.size;
-      sample.duration ??= entry.duration;
-      for (final (project, profiles, _, _) in entry.uses) {
-        sample.songs.putIfAbsent(project.songKey, () => project.name);
-        sample.profiles.addAll(profiles);
-      }
-    }
-    for (final sample in samples.values) {
-      final origins = [
-        for (final path in sample.paths)
-          for (final (_, _, ref, projectDir) in located[_pathKey(path)]!.uses)
-            sampleOriginOf(
-              path: path,
-              projectDir: projectDir,
-              kind: ref.kind,
-              duration: sample.duration,
-            ),
-      ];
-      sample.origin = combinedOrigin(origins);
-      final first = sample.paths.first;
-      final home = located[_pathKey(first)]!
-          .uses
-          .map((u) => u.$4)
-          .where((dir) => p.isWithin(dir, first))
-          .firstOrNull;
-      sample.category = sampleCategoryOf(
-        first,
-        duration: sample.duration,
-        projectDir: home,
-      );
-    }
-
-    // 6. Copy what isn't in the pack yet.
-    final taken = <String>{
-      for (final f in packFiles) f.relative.toLowerCase(),
-    };
-    final ordered = samples.values.toList()
-      ..sort((a, b) => b.songs.length.compareTo(a.songs.length));
-    final toCopy = <PackSample>[];
-    for (final sample in ordered) {
-      final existing = inPack[sample.identity];
-      if (existing != null) {
-        sample.packPath = existing;
-        continue;
-      }
-      if (sample.origin.isOwnAudio && !includeOwnAudio) continue;
-      final folder = [
-        if (sample.origin.isOwnAudio) kOwnAudioFolder,
-        sample.category.folder,
-      ].join('/');
-      final name = packFileName(p.basename(sample.paths.first), sample.category);
-      sample.packPath = _unique('$folder/$name', taken);
-      toCopy.add(sample);
-    }
-
-    final written = <_PackFile>[...packFiles];
-    done = 0;
-    for (final sample in toCopy) {
-      if (stop()) {
-        stopped = true;
-        sample.packPath = null;
-        continue;
-      }
-      progress(SamplePackPhase.copying, done++, toCopy.length, sample.packPath!);
-      final target = p.joinAll([destination, ...sample.packPath!.split('/')]);
-      try {
-        await Directory(p.dirname(target)).create(recursive: true);
-        final part = '$target.part';
-        await File(sample.paths.first).copy(part);
-        await File(part).rename(target);
-        sample.added = true;
-        final stat = await File(target).stat();
-        written.add(_PackFile(target, sample.packPath!, stat.size, stat.modified));
-        if (hashCache[sample.paths.first] case final h?) hashCache[target] = h;
-      } catch (_) {
-        sample.packPath = null;
-      }
-    }
-
-    // 7. MIDI collections, rewritten whole: they are the app's own data.
     var midiFiles = 0;
-    if (!stopped) {
-      done = 0;
-      for (final folder in midi) {
-        progress(SamplePackPhase.midi, done++, midi.length, folder.name);
+    if (!_stop) {
+      for (var i = 0; i < midi.length; i++) {
+        _progress(SamplePackPhase.midi, i, midi.length, midi[i].name);
         final files = await MidiClipService.exportAll(
-          folder.exports,
-          Directory(p.join(destination, kMidiFolder, _safeName(folder.name))),
+          midi[i].exports,
+          Directory(p.join(x.destination, kMidiFolder, _safeName(midi[i].name))),
         );
         midiFiles += files.length;
       }
     }
 
-    // 8. Manifest and report.
-    progress(SamplePackPhase.finishing, 0, 1, kSamplePackReport);
-    await _Manifest.write(destination, written, hashCache);
+    _progress(SamplePackPhase.finishing);
+    samples.sort((a, b) => b.songs.length.compareTo(a.songs.length));
     final result = SamplePackResult(
-      samples: ordered,
+      samples: samples,
       problems: problems,
-      projectsRead: read.length,
+      projectsRead: projectsRead,
       midiFiles: midiFiles,
       stopped: stopped,
       masterProjectsLeftOut: mastersLeftOut,
     );
-    await File(p.join(destination, kSamplePackReport))
-        .writeAsString(samplePackReportCsv(result.samples), flush: true);
-    await File(p.join(destination, kSamplePackProblems))
+    await Directory(x.destination).create(recursive: true);
+    await _Manifest.write(x.destination, _written, {
+      for (final f in _written)
+        f.path: ?(_hashes[f.path] ?? _hashes[_copiedFrom[f.path]]),
+    });
+    await File(p.join(x.destination, kSamplePackReport))
+        .writeAsString(samplePackReportCsv(samples), flush: true);
+    await File(p.join(x.destination, kSamplePackProblems))
         .writeAsString(samplePackProblemsCsv(problems), flush: true);
     return result;
   }
+
+  /// What the pack folder already holds, with the hashes the manifest kept.
+  Future<void> _loadPack() async {
+    final manifest = await _Manifest.read(x.destination);
+    for (final f in await _packAudioFiles(x.destination)) {
+      _written.add(f);
+      _taken.add(f.relative.toLowerCase());
+      if (manifest.hashFor(f) case final h?) _hashes[f.path] = h;
+      _bySize.putIfAbsent(f.size, () => []).add(_Entry(f.path, packPath: f.relative));
+    }
+  }
+
+  Future<void> _read(SamplePackProject project, Set<String> profiles) async {
+    _progress(SamplePackPhase.reading);
+    SamplePackProblem problem(SamplePackProblemKind kind,
+            {String sample = '', String? where}) =>
+        SamplePackProblem(
+          project: project.name,
+          profile: profiles.join(', '),
+          problem: kind,
+          sample: sample,
+          where: where ?? project.filePath,
+        );
+
+    if (x.excludeMasterProjects && isMasterProject(project.filePath)) {
+      mastersLeftOut++;
+      return;
+    }
+    if (!x.canRead(project.filePath)) {
+      problems.add(problem(SamplePackProblemKind.formatNotSupported));
+      return;
+    }
+    if (!await File(project.filePath).exists()) {
+      problems.add(problem(SamplePackProblemKind.projectNotFound));
+      return;
+    }
+    final List<SampleReference> refs;
+    try {
+      refs = await x.readReferences(project.filePath);
+    } catch (_) {
+      problems.add(problem(SamplePackProblemKind.projectUnreadable));
+      return;
+    }
+    projectsRead++;
+
+    final projectDir = p.dirname(project.filePath);
+    final reported = <String>{};
+    for (var i = 0; i < refs.length; i++) {
+      if (_stop) return;
+      final ref = refs[i];
+      _progress(SamplePackPhase.locating, i, refs.length, ref.fileName);
+      final path = await x.locator.locate(ref, projectDir: projectDir);
+      if (path == null) {
+        if (reported.add(ref.fileName.toLowerCase())) {
+          problems.add(problem(
+            SamplePackProblemKind.sampleNotFound,
+            sample: ref.fileName,
+            where: ref.candidates.firstOrNull ?? '',
+          ));
+        }
+        continue;
+      }
+      await _use(project, profiles, projectDir, ref, path, i, refs.length);
+    }
+  }
+
+  /// One reference, found at [path]: counted for its song, and copied in
+  /// if it is wanted and not in the pack yet.
+  Future<void> _use(
+    SamplePackProject project,
+    Set<String> profiles,
+    String projectDir,
+    SampleReference ref,
+    String path,
+    int index,
+    int total,
+  ) async {
+    final key = _pathKey(path);
+    var sample = _byPath[key];
+    if (sample == null) {
+      final int size;
+      try {
+        size = await File(path).length();
+      } catch (_) {
+        return; // Gone since it was found.
+      }
+      sample = PackSample()
+        ..sizeBytes = size
+        ..category = sampleCategoryOf(path, projectDir: _inside(projectDir, path));
+      sample.paths.add(path);
+      samples.add(sample);
+      _byPath[key] = sample;
+    }
+    sample.songs.putIfAbsent(project.songKey, () => project.name);
+    sample.profiles.addAll(profiles);
+
+    final origin = sampleOriginOf(
+      path: path,
+      projectDir: projectDir,
+      kind: ref.kind,
+      duration: sample.duration,
+      sizeBytes: sample.sizeBytes,
+    );
+    sample._addOrigin(origin);
+    if (sample.packPath != null || sample._copyFailed) return;
+    if (origin.isOwnAudio && !x.includeOwnAudio) return;
+
+    // Wanted: from here on the file is read.
+    _progress(SamplePackPhase.measuring, index, total, p.basename(path));
+    if (!sample._indexed) {
+      sample = await _index(sample, path);
+      if (sample.packPath != null) {
+        // Already in the pack: its length is read from the pack's copy.
+        sample.duration ??= await x.readDuration(
+          p.joinAll([x.destination, ...sample.packPath!.split('/')]),
+        );
+        return;
+      }
+      if (sample._copyFailed) return;
+    }
+    sample.duration ??= await x.readDuration(path);
+    final measured = sampleOriginOf(
+      path: path,
+      projectDir: projectDir,
+      kind: ref.kind,
+      duration: sample.duration,
+      sizeBytes: sample.sizeBytes,
+    );
+    if (measured != origin) sample._addOrigin(measured);
+    if (measured.isOwnAudio && !x.includeOwnAudio) return;
+
+    sample.category = sampleCategoryOf(
+      path,
+      duration: sample.duration,
+      projectDir: _inside(projectDir, path),
+    );
+    final folder = [
+      if (sample.origin.isOwnAudio) kOwnAudioFolder,
+      sample.category.folder,
+    ].join('/');
+    final relative = _unique(
+      '$folder/${packFileName(p.basename(path), sample.category)}',
+      _taken,
+    );
+    _progress(SamplePackPhase.copying, index, total, relative);
+    final target = p.joinAll([x.destination, ...relative.split('/')]);
+    try {
+      await Directory(p.dirname(target)).create(recursive: true);
+      final part = '$target.part';
+      await File(path).copy(part);
+      await File(part).rename(target);
+      final stat = await File(target).stat();
+      _written.add(_PackFile(target, relative, stat.size, stat.modified));
+      _copiedFrom[target] = path;
+      sample
+        ..packPath = relative
+        ..added = true;
+    } catch (_) {
+      sample._copyFailed = true;
+    }
+  }
+
+  /// Compares [sample] (whose first copy is [path]) with the pack and the
+  /// samples compared so far. Returns the sample it is: [sample] itself —
+  /// now linked to its copy in the pack, if the pack has one — or the
+  /// earlier sample with the same content, which [sample] is merged into.
+  Future<PackSample> _index(PackSample sample, String path) async {
+    sample._indexed = true;
+    final size = sample.sizeBytes;
+    final same = _bySize[size] ?? const <_Entry>[];
+    String? hash;
+    for (final other in same) {
+      hash ??= await _hash(path);
+      if (await _hash(other.path) != hash) continue;
+      final earlier = other.sample;
+      if (earlier != null && !identical(earlier, sample)) {
+        _merge(sample, into: earlier);
+        return earlier;
+      }
+      if (other.packPath != null) {
+        sample.packPath = other.packPath;
+        other.sample = sample;
+        return sample;
+      }
+    }
+    _bySize.putIfAbsent(size, () => []).add(_Entry(path, sample: sample));
+    return sample;
+  }
+
+  void _merge(PackSample from, {required PackSample into}) {
+    for (final path in from.paths) {
+      if (!into.paths.contains(path)) into.paths.add(path);
+      _byPath[_pathKey(path)] = into;
+    }
+    into.songs.addAll(from.songs);
+    into.profiles.addAll(from.profiles);
+    for (final o in from._origins) {
+      into._addOrigin(o);
+    }
+    into.duration ??= from.duration;
+    samples.remove(from);
+  }
+
+  Future<String> _hash(String path) async =>
+      _hashes[path] ??= await x.hashFile(path);
+
+  static String? _inside(String projectDir, String path) =>
+      p.isWithin(projectDir, path) ? projectDir : null;
 
   /// `Kick/x.wav`, or `Kick/x (2).wav` when that is taken (case-insensitive:
   /// Windows and macOS would see the same file).
@@ -494,13 +597,12 @@ String _pathKey(String path) {
   return Platform.isLinux ? n : n.toLowerCase();
 }
 
-class _Located {
-  _Located(this.path);
+/// A file compared by content: a sample's copy, or a file in the pack.
+class _Entry {
+  _Entry(this.path, {this.sample, this.packPath});
   final String path;
-  final uses = <(SamplePackProject, Set<String>, SampleReference, String)>[];
-  int size = 0;
-  Duration? duration;
-  bool measured = false;
+  PackSample? sample;
+  final String? packPath;
 }
 
 class _PackFile {
@@ -511,31 +613,10 @@ class _PackFile {
   final DateTime modified;
 }
 
-/// Content identities for the files in [sizes] (path → size). A file of a
-/// size no other file has is told apart by size alone; files sharing a size
-/// are hashed with [hashOf]. Equal identities mean equal content.
-Future<Map<String, String>> contentIdentities(
-  Map<String, int> sizes,
-  Future<String> Function(String path) hashOf,
-) async {
-  final bySize = <int, List<String>>{};
-  sizes.forEach((path, size) => bySize.putIfAbsent(size, () => []).add(path));
-  final out = <String, String>{};
-  for (final MapEntry(key: size, value: paths) in bySize.entries) {
-    if (paths.length == 1) {
-      out[paths.single] = 'size:$size';
-      continue;
-    }
-    for (final path in paths) {
-      out[path] = 'sha1:${await hashOf(path)}';
-    }
-  }
-  return out;
-}
-
-/// The SHA-1 of the file at [path], read in a background isolate.
+/// The SHA-1 of the file at [path], streamed in a background isolate so
+/// neither a large file nor the hashing sits in the UI's memory or time.
 Future<String> sha1OfFile(String path) => Isolate.run(
-      () => sha1.convert(File(path).readAsBytesSync()).toString(),
+      () async => (await sha1.bind(File(path).openRead()).first).toString(),
     );
 
 /// `sample_pack_manifest.json`: each pack file's size, modification time and
@@ -576,7 +657,6 @@ class _Manifest {
     List<_PackFile> files,
     Map<String, String> hashes,
   ) async {
-    await Directory(root).create(recursive: true);
     final json = {
       'version': 1,
       'files': {
@@ -627,7 +707,7 @@ String samplePackReportCsv(List<PackSample> samples) {
       s.packPath,
       s.category.folder,
       s.songs.length,
-      (s.songs.values.toList()..sort()).join('; '),
+      (s.songs.values.toSet().toList()..sort()).join('; '),
       (s.profiles.toList()..sort()).join('; '),
       s.origin.name,
       s.duration == null

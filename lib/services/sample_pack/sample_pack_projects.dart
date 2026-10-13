@@ -16,6 +16,7 @@ List<SamplePackProject> samplePackProjectsOf(
     for (final project in projects)
       if (!project.isVirtual && !project.isArchived)
         SamplePackProject(
+          id: project.id,
           filePath: project.filePath,
           name: byId[project.stackId]?.displayName ?? project.displayName,
           profileName: profileName,

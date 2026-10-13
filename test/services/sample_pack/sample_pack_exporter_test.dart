@@ -19,12 +19,16 @@ void main() {
   late Map<String, Duration> durations;
   late List<String> hashed;
 
+  /// Every file whose contents were read: measured or hashed.
+  late List<String> opened;
+
   setUp(() async {
     root = await Directory.systemTemp.createTemp('sample_pack_');
     pack = p.join(root.path, 'Pack');
     refsByProject = {};
     durations = {};
     hashed = [];
+    opened = [];
   });
 
   tearDown(() async {
@@ -75,9 +79,13 @@ void main() {
           if (refs == null) throw const FormatException('unreadable');
           return refs;
         },
-        readDuration: (path) async => durations[p.basename(path)],
+        readDuration: (path) async {
+          opened.add(path);
+          return durations[p.basename(path)];
+        },
         hashFile: (path) async {
           hashed.add(path);
+          opened.add(path);
           return sha1OfFile(path);
         },
       );
@@ -161,9 +169,11 @@ void main() {
       ];
     });
 
-    test('is left out unless asked for', () async {
+    test('is left out unless asked for, and never opened', () async {
       final result = await exporter().export(projects);
       expect(result.leftOut, 1);
+      expect(opened.where((x) => x.contains('Vocals_03')), isEmpty,
+          reason: 'reading a file can mean downloading it');
       expect(result.added, 1);
       expect(await packFiles(), contains('Kick/kick.wav'));
       expect((await packFiles()).where((f) => f.contains('Vocals_03')), isEmpty);
@@ -312,23 +322,53 @@ void main() {
     expect(lines[2], startsWith('Hi-Hat/hat.wav,Hi-Hat,1,Alpha,'));
   });
 
-  test('stopped before copying leaves the folder untouched', () async {
+  test('works project by project: stopping keeps what was copied', () async {
     final kick = await file(['Lib', 'kick.wav'], 'KICK');
+    final snare = await file(['Lib', 'snare.wav'], 'SNARE');
+    var stopNow = false;
     final result = await exporter().export(
-      [await project(['A', 'a.cpr'], [ref(kick)])],
-      shouldStop: () => true,
+      [
+        await project(['A', 'a.cpr'], [ref(kick)]),
+        await project(['B', 'b.cpr'], [ref(snare)]),
+      ],
+      onProgress: (u) {
+        if (u.project == 1) stopNow = true; // as the second one starts
+      },
+      shouldStop: () => stopNow,
     );
     expect(result.stopped, isTrue);
-    expect(result.added, 0);
-    expect(await Directory(pack).exists(), isFalse);
+    expect(result.added, 1);
+    final files = await packFiles();
+    expect(files, contains('Kick/kick.wav'));
+    expect(files.where((f) => f.contains('snare')), isEmpty);
+    expect(files, containsAll([kSamplePackReport, kSamplePackManifest]),
+        reason: 'the report covers what was done before the stop');
   });
 
-  test('reports progress through each phase', () async {
+  test('a file the size of a stem is left out without being opened',
+      () async {
+    final stem = p.join(root.path, 'Song', 'Audio', 'Drums.wav');
+    await Directory(p.dirname(stem)).create(recursive: true);
+    await File(stem).writeAsBytes(List.filled(kLongAudioBytes, 0));
+    final result = await exporter().export(
+      [await project(['Song', 'song.cpr'], [ref(stem)])],
+    );
+    expect(result.samples.single.origin, SampleOrigin.long);
+    expect(result.leftOut, 1);
+    expect(opened, isEmpty);
+  });
+
+  test('reports progress through each phase, always moving forward',
+      () async {
     final kick = await file(['Lib', 'kick.wav'], 'KICK');
     final phases = <SamplePackPhase>{};
+    final fractions = <double>[];
     await exporter().export(
       [await project(['A', 'a.cpr'], [ref(kick)])],
-      onProgress: (phase, done, total, current) => phases.add(phase),
+      onProgress: (u) {
+        phases.add(u.phase);
+        fractions.add(u.fraction);
+      },
     );
     expect(phases, containsAll([
       SamplePackPhase.reading,
@@ -337,6 +377,10 @@ void main() {
       SamplePackPhase.copying,
       SamplePackPhase.finishing,
     ]));
+    for (var i = 1; i < fractions.length; i++) {
+      expect(fractions[i], greaterThanOrEqualTo(fractions[i - 1]));
+    }
+    expect(fractions.last, 1);
   });
 
   test('writes MIDI collections under MIDI, one folder each', () async {
@@ -353,19 +397,5 @@ void main() {
     ]);
     expect(result.midiFiles, 1);
     expect(await packFiles(), contains('MIDI/Leads_ best/Lead 01.mid'));
-  });
-
-  test('contentIdentities hashes only files sharing a size', () async {
-    final seen = <String>[];
-    final ids = await contentIdentities(
-      {'a': 1, 'b': 2, 'c': 2},
-      (path) async {
-        seen.add(path);
-        return path == 'b' ? 'same' : 'same';
-      },
-    );
-    expect(seen, ['b', 'c']);
-    expect(ids['a'], 'size:1');
-    expect(ids['b'], ids['c']);
   });
 }

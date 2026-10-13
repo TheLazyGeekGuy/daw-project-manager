@@ -4239,5 +4239,11 @@
   "samplePackReportHint": "Wie viele Songs jedes Sample verwenden und woher es stammt, steht in {file}.",
   "samplePackExcludeMasters": "Master-Projekte auslassen",
   "samplePackExcludeMastersHelp": "Projekte mit „(Master)“ oder „(M)“ im Namen oder in einem Ordner „Master Project“: Sie enthalten die Stems und Mixdowns eines Songs, keine Samples.",
-  "samplePackMastersLeftOut": "{count, plural, =1{1 Master-Projekt ausgelassen} other{{count} Master-Projekte ausgelassen}}"
+  "samplePackMastersLeftOut": "{count, plural, =1{1 Master-Projekt ausgelassen} other{{count} Master-Projekte ausgelassen}}",
+  "samplePackProjects": "Projekte",
+  "samplePackAllProjects": "Alle Projekte",
+  "samplePackPickedProjects": "Nur ausgewählte",
+  "samplePackSearchProjects": "Projekte suchen",
+  "samplePackPickedCount": "{count, plural, =0{Kein Projekt ausgewählt} =1{1 Projekt ausgewählt} other{{count} Projekte ausgewählt}}",
+  "samplePackNoProjectsMatch": "Keine passenden Projekte."
 }

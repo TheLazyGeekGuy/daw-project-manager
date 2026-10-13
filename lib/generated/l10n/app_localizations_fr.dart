@@ -7307,4 +7307,31 @@ class AppLocalizationsFr extends AppLocalizations {
     );
     return '$_temp0';
   }
+
+  @override
+  String get samplePackProjects => 'Projets';
+
+  @override
+  String get samplePackAllProjects => 'Tous les projets';
+
+  @override
+  String get samplePackPickedProjects => 'Seulement ceux que je choisis';
+
+  @override
+  String get samplePackSearchProjects => 'Rechercher des projets';
+
+  @override
+  String samplePackPickedCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count projets choisis',
+      one: '1 projet choisi',
+      zero: 'Aucun projet choisi',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get samplePackNoProjectsMatch => 'Aucun projet ne correspond.';
 }

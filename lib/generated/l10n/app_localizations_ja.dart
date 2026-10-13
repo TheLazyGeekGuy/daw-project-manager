@@ -7041,4 +7041,30 @@ class AppLocalizationsJa extends AppLocalizations {
     );
     return '$_temp0';
   }
+
+  @override
+  String get samplePackProjects => 'プロジェクト';
+
+  @override
+  String get samplePackAllProjects => 'すべてのプロジェクト';
+
+  @override
+  String get samplePackPickedProjects => '選んだものだけ';
+
+  @override
+  String get samplePackSearchProjects => 'プロジェクトを検索';
+
+  @override
+  String samplePackPickedCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count 件のプロジェクトを選択中',
+      zero: 'プロジェクトが選ばれていません',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get samplePackNoProjectsMatch => '一致するプロジェクトはありません。';
 }

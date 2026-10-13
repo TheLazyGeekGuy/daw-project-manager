@@ -12028,6 +12028,42 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'{count, plural, =1{1 master project left out} other{{count} master projects left out}}'**
   String samplePackMastersLeftOut(int count);
+
+  /// Heading above the choice of which projects to export from
+  ///
+  /// In en, this message translates to:
+  /// **'Projects'**
+  String get samplePackProjects;
+
+  /// Segment: export from every project of the selected profiles
+  ///
+  /// In en, this message translates to:
+  /// **'All projects'**
+  String get samplePackAllProjects;
+
+  /// Segment: export only from projects picked in a list
+  ///
+  /// In en, this message translates to:
+  /// **'Only the ones I pick'**
+  String get samplePackPickedProjects;
+
+  /// Hint of the search field above the project list
+  ///
+  /// In en, this message translates to:
+  /// **'Search projects'**
+  String get samplePackSearchProjects;
+
+  /// Under the project list: how many are picked
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =0{No projects picked} =1{1 project picked} other{{count} projects picked}}'**
+  String samplePackPickedCount(int count);
+
+  /// Shown in the project list when nothing matches the search
+  ///
+  /// In en, this message translates to:
+  /// **'No projects match.'**
+  String get samplePackNoProjectsMatch;
 }
 
 class _AppLocalizationsDelegate

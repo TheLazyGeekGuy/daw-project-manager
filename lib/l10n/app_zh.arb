@@ -4237,7 +4237,13 @@
   "samplePackMissing": "{count, plural, other{{count} 个采样未找到 — 见 {file}}}",
   "samplePackNotRead": "{count, plural, other{{count} 个项目无法读取 — 见 {file}}}",
   "samplePackReportHint": "每个采样被多少首歌使用及其来源，见 {file}。",
-  "samplePackExcludeMasters": "排除母带工程",
-  "samplePackExcludeMastersHelp": "名称带有“(Master)”或“(M)”，或位于“Master Project”文件夹中的工程：它们保存的是歌曲的分轨和缩混，而不是采样。",
-  "samplePackMastersLeftOut": "{count, plural, other{已排除 {count} 个母带工程}}"
+  "samplePackExcludeMasters": "排除母带项目",
+  "samplePackExcludeMastersHelp": "名称带有“(Master)”或“(M)”，或位于“Master Project”文件夹中的项目：它们保存的是歌曲的分轨和缩混，而不是采样。",
+  "samplePackMastersLeftOut": "{count, plural, other{已排除 {count} 个母带项目}}",
+  "samplePackProjects": "项目",
+  "samplePackAllProjects": "所有项目",
+  "samplePackPickedProjects": "仅我选择的",
+  "samplePackSearchProjects": "搜索项目",
+  "samplePackPickedCount": "{count, plural, =0{未选择项目} other{已选择 {count} 个项目}}",
+  "samplePackNoProjectsMatch": "没有匹配的项目。"
 }

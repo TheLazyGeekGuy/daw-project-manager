@@ -17,6 +17,8 @@ class SamplePackPrefs {
     this.includeMidi = true,
     this.excludeMasterProjects = true,
     this.profileIds,
+    this.onlyPickedProjects = false,
+    this.pickedProjectIds = const [],
   });
 
   final List<String> libraryFolders;
@@ -27,12 +29,18 @@ class SamplePackPrefs {
   /// The profiles last exported; null (never run) means all of them.
   final List<String>? profileIds;
 
+  /// Whether the export was limited to picked projects, and which.
+  final bool onlyPickedProjects;
+  final List<String> pickedProjectIds;
+
   Map<String, dynamic> toJson() => {
     'libraryFolders': libraryFolders,
     'includeOwnAudio': includeOwnAudio,
     'includeMidi': includeMidi,
     'excludeMasterProjects': excludeMasterProjects,
     'profileIds': ?profileIds,
+    'onlyPickedProjects': onlyPickedProjects,
+    'pickedProjectIds': pickedProjectIds,
   };
 
   static SamplePackPrefs fromJson(Object? json) {
@@ -45,6 +53,8 @@ class SamplePackPrefs {
       includeMidi: json['includeMidi'] != false,
       excludeMasterProjects: json['excludeMasterProjects'] != false,
       profileIds: strings(json['profileIds']),
+      onlyPickedProjects: json['onlyPickedProjects'] == true,
+      pickedProjectIds: strings(json['pickedProjectIds']) ?? const [],
     );
   }
 }

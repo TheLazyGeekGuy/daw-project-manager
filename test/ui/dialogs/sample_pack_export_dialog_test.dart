@@ -26,9 +26,22 @@ Widget _app(Widget Function(BuildContext) open) => MaterialApp(
 
 void main() {
   const profiles = [
-    SamplePackProfileChoice(id: 'p1', name: 'Audio Crawler', projectCount: 40),
-    SamplePackProfileChoice(id: 'p2', name: 'Side project', projectCount: 1),
-    SamplePackProfileChoice(id: 'p3', name: 'Label', projectCount: 12),
+    SamplePackProfileChoice(id: 'p1', name: 'Audio Crawler'),
+    SamplePackProfileChoice(id: 'p2', name: 'Side project'),
+    SamplePackProfileChoice(id: 'p3', name: 'Label'),
+  ];
+  const projects = [
+    SamplePackProjectChoice(
+        id: 'nebula', profileId: 'p1', name: 'Nebula', detail: 'Nebula.cpr'),
+    SamplePackProjectChoice(
+        id: 'teardrop',
+        profileId: 'p1',
+        name: 'Teardrop Remix',
+        detail: 'Teardrop.cpr'),
+    SamplePackProjectChoice(
+        id: 'honor', profileId: 'p1', name: 'Honor', detail: 'Honor.cpr'),
+    SamplePackProjectChoice(
+        id: 'jam', profileId: 'p2', name: 'Jam', detail: 'jam.flp'),
   ];
 
   group('SamplePackExportDialog', () {
@@ -39,8 +52,10 @@ void main() {
       WidgetTester tester, {
       Set<String> initial = const {'p1', 'p2', 'p3'},
       List<String> folders = const [],
+      bool onlyPicked = false,
+      Set<String> picked = const {},
     }) async {
-      tester.view.physicalSize = const Size(1000, 1600);
+      tester.view.physicalSize = const Size(1000, 2000);
       tester.view.devicePixelRatio = 1;
       addTearDown(tester.view.reset);
       result = null;
@@ -55,7 +70,10 @@ void main() {
                   context: context,
                   builder: (_) => SamplePackExportDialog(
                     profiles: profiles,
+                    projects: projects,
                     initialProfileIds: initial,
+                    initialOnlyPicked: onlyPicked,
+                    initialPickedProjectIds: picked,
                     initialLibraryFolders: folders,
                     initialIncludeOwnAudio: false,
                     initialIncludeMidi: true,
@@ -76,19 +94,23 @@ void main() {
 
     setUp(() => picks = []);
 
-    Finder box(String id) => find.descendant(
+    Finder profileBox(String id) => find.descendant(
           of: find.byKey(ValueKey('samplePackProfile-$id')),
           matching: find.byType(Checkbox),
         );
 
     bool ticked(WidgetTester tester, String id) =>
-        tester.widget<Checkbox>(box(id)).value ?? false;
+        tester.widget<Checkbox>(profileBox(id)).value ?? false;
+
+    Finder exportButton() =>
+        find.widgetWithText(FilledButton, 'Choose folder and export');
 
     testWidgets('lists every profile with its project count', (tester) async {
       await pump(tester);
       expect(find.text('Audio Crawler'), findsOneWidget);
-      expect(find.text('40 projects'), findsOneWidget);
+      expect(find.text('3 projects'), findsOneWidget);
       expect(find.text('1 project'), findsOneWidget);
+      expect(find.text('0 projects'), findsOneWidget);
     });
 
     testWidgets('select none, then pick some; export returns them in order',
@@ -97,61 +119,136 @@ void main() {
       await tester.tap(find.text('Select none'));
       await tester.pump();
       expect(ticked(tester, 'p1') || ticked(tester, 'p2'), isFalse);
-      final export = find.widgetWithText(FilledButton, 'Choose folder and export');
-      expect(tester.widget<FilledButton>(export).onPressed, isNull,
+      expect(tester.widget<FilledButton>(exportButton()).onPressed, isNull,
           reason: 'nothing to export without a profile');
 
       await tester.tap(find.text('Label'));
       await tester.tap(find.text('Audio Crawler'));
       await tester.pump();
-      await tester.tap(export);
+      await tester.tap(exportButton());
       await tester.pumpAndSettle();
       expect(result!.profileIds, ['p1', 'p3']);
+      expect(result!.projectIds, isNull, reason: 'every project in them');
       expect(result!.includeMidi, isTrue);
       expect(result!.includeOwnAudio, isFalse);
       expect(result!.excludeMasterProjects, isTrue);
-    });
-
-    testWidgets('master projects can be let back in', (tester) async {
-      await pump(tester);
-      await tester.tap(find.text('Leave out master projects'));
-      await tester.pump();
-      await tester.tap(find.text('Choose folder and export'));
-      await tester.pumpAndSettle();
-      expect(result!.excludeMasterProjects, isFalse);
     });
 
     testWidgets('select all ticks every profile and then disables itself',
         (tester) async {
       await pump(tester, initial: {'p2'});
       expect(ticked(tester, 'p1'), isFalse);
-      await tester.tap(find.text('Select all'));
+      await tester.tap(find.text('Select all').first);
       await tester.pump();
       expect(['p1', 'p2', 'p3'].every((id) => ticked(tester, id)), isTrue);
       expect(
-        tester.widget<TextButton>(
-            find.widgetWithText(TextButton, 'Select all')).onPressed,
+        tester
+            .widget<TextButton>(find.widgetWithText(TextButton, 'Select all'))
+            .onPressed,
         isNull,
       );
     });
 
     testWidgets('a remembered profile that is gone is ignored', (tester) async {
       await pump(tester, initial: {'deleted', 'p2'});
-      await tester.tap(find.text('Choose folder and export'));
+      await tester.tap(exportButton());
       await tester.pumpAndSettle();
       expect(result!.profileIds, ['p2']);
+    });
+
+    group('picking projects', () {
+      testWidgets('lists the selected profiles\' projects by name; exports '
+          'only the ticked ones', (tester) async {
+        await pump(tester, initial: {'p1'});
+        await tester.tap(find.text('Only the ones I pick'));
+        await tester.pumpAndSettle();
+        expect(find.text('Jam'), findsNothing, reason: 'p2 is not selected');
+        final names = tester
+            .widgetList<CheckboxListTile>(find.byWidgetPredicate((w) =>
+                w is CheckboxListTile &&
+                (w.key as ValueKey?)?.value.toString().startsWith(
+                        'samplePackProject-') ==
+                    true))
+            .map((w) => (w.title as Text).data)
+            .toList();
+        expect(names, ['Honor', 'Nebula', 'Teardrop Remix']);
+        expect(find.text('No projects picked'), findsOneWidget);
+        expect(tester.widget<FilledButton>(exportButton()).onPressed, isNull,
+            reason: 'picking, but nothing picked');
+
+        await tester.tap(find.text('Teardrop Remix'));
+        await tester.pump();
+        expect(find.text('1 project picked'), findsOneWidget);
+        await tester.tap(exportButton());
+        await tester.pumpAndSettle();
+        expect(result!.projectIds, ['teardrop']);
+      });
+
+      testWidgets('search narrows the list, and select all picks only what '
+          'it shows', (tester) async {
+        await pump(tester, initial: {'p1', 'p2'});
+        await tester.tap(find.text('Only the ones I pick'));
+        await tester.pumpAndSettle();
+        await tester.enterText(
+            find.byKey(const ValueKey('samplePackProjectSearch')), 'n');
+        await tester.pump();
+        // By name or file name: "Nebula" and "Honor" have an n; "Teardrop
+        // Remix" (Teardrop.cpr) and "Jam" (jam.flp) don't.
+        expect(find.text('Jam'), findsNothing);
+        expect(find.text('Teardrop Remix'), findsNothing);
+        expect(find.text('Nebula'), findsOneWidget);
+        await tester.tap(find.byKey(const ValueKey('samplePackPickAll')));
+        await tester.pump();
+        await tester.enterText(
+            find.byKey(const ValueKey('samplePackProjectSearch')), 'zzz');
+        await tester.pump();
+        expect(find.text('No projects match.'), findsOneWidget);
+        await tester.tap(exportButton());
+        await tester.pumpAndSettle();
+        expect(result!.projectIds, ['nebula', 'honor']);
+      });
+
+      testWidgets('picks in a profile that gets unticked are not exported',
+          (tester) async {
+        await pump(tester,
+            onlyPicked: true, picked: {'nebula', 'jam'}, initial: {'p1', 'p2'});
+        expect(find.text('2 projects picked'), findsOneWidget);
+        await tester.tap(find.text('Side project'));
+        await tester.pump();
+        expect(find.text('1 project picked'), findsOneWidget);
+        await tester.tap(exportButton());
+        await tester.pumpAndSettle();
+        expect(result!.projectIds, ['nebula']);
+      });
+
+      testWidgets('going back to all projects exports every project',
+          (tester) async {
+        await pump(tester, onlyPicked: true, picked: {'nebula'});
+        await tester.tap(find.text('All projects'));
+        await tester.pumpAndSettle();
+        await tester.tap(exportButton());
+        await tester.pumpAndSettle();
+        expect(result!.projectIds, isNull);
+      });
+    });
+
+    testWidgets('master projects can be let back in', (tester) async {
+      await pump(tester);
+      await tester.tap(find.text('Leave out master projects'));
+      await tester.pump();
+      await tester.tap(exportButton());
+      await tester.pumpAndSettle();
+      expect(result!.excludeMasterProjects, isFalse);
     });
 
     testWidgets('library folders are added once and can be removed',
         (tester) async {
       await pump(tester, folders: ['/old/lib']);
       picks = ['/new/lib', '/new/lib', null];
-      await tester.tap(find.text('Add Folder'));
-      await tester.pumpAndSettle();
-      await tester.tap(find.text('Add Folder'));
-      await tester.pumpAndSettle();
-      await tester.tap(find.text('Add Folder')); // cancelled
-      await tester.pumpAndSettle();
+      for (var i = 0; i < 3; i++) {
+        await tester.tap(find.text('Add Folder'));
+        await tester.pumpAndSettle();
+      }
       expect(find.text('/new/lib'), findsOneWidget);
 
       await tester.tap(find.descendant(
@@ -162,7 +259,7 @@ void main() {
       await tester.tap(find.text('Include my recordings, bounces and stems'));
       await tester.tap(find.text('Add my MIDI collections'));
       await tester.pump();
-      await tester.tap(find.text('Choose folder and export'));
+      await tester.tap(exportButton());
       await tester.pumpAndSettle();
       expect(result!.libraryFolders, ['/new/lib']);
       expect(result!.includeOwnAudio, isTrue);
@@ -177,8 +274,8 @@ void main() {
     });
   });
 
-  testWidgets('the progress dialog shows each step and Stop asks to stop',
-      (tester) async {
+  testWidgets('the progress dialog shows the project and the step, and Stop '
+      'asks to stop', (tester) async {
     final finish = Completer<SamplePackResult>();
     late SamplePackProgress report;
     late bool Function() stop;
@@ -192,9 +289,24 @@ void main() {
     await tester.tap(find.text('open'));
     await tester.pump();
 
-    report(SamplePackPhase.copying, 4, 10, 'Kick/kick.wav');
+    report(const SamplePackProgressUpdate(
+      project: 1,
+      projects: 4,
+      projectName: 'Nebula',
+      phase: SamplePackPhase.copying,
+      done: 4,
+      total: 10,
+      current: 'Kick/kick.wav',
+    ));
     await tester.pump();
+    expect(find.text('Reading project 2 of 4: Nebula'), findsOneWidget);
     expect(find.text('Copying 5 of 10: Kick/kick.wav'), findsOneWidget);
+    expect(
+      tester
+          .widget<LinearProgressIndicator>(find.byType(LinearProgressIndicator))
+          .value,
+      closeTo((1 + 0.4) / 4, 1e-9),
+    );
     expect(stop(), isFalse);
 
     await tester.tap(find.text('Stop'));
@@ -215,11 +327,11 @@ void main() {
   testWidgets('the result dialog says what happened and opens the folder',
       (tester) async {
     var opened = 0;
-    final added = PackSample('a')
+    final added = PackSample()
       ..packPath = 'Kick/a.wav'
       ..added = true;
-    final already = PackSample('b')..packPath = 'Kick/b.wav';
-    final leftOut = PackSample('c');
+    final already = PackSample()..packPath = 'Kick/b.wav';
+    final leftOut = PackSample();
     await tester.pumpWidget(_app((_) => SamplePackResultDialog(
           result: SamplePackResult(
             samples: [added, already, leftOut],

@@ -6949,19 +6949,45 @@ class AppLocalizationsZh extends AppLocalizations {
   }
 
   @override
-  String get samplePackExcludeMasters => '排除母带工程';
+  String get samplePackExcludeMasters => '排除母带项目';
 
   @override
   String get samplePackExcludeMastersHelp =>
-      '名称带有“(Master)”或“(M)”，或位于“Master Project”文件夹中的工程：它们保存的是歌曲的分轨和缩混，而不是采样。';
+      '名称带有“(Master)”或“(M)”，或位于“Master Project”文件夹中的项目：它们保存的是歌曲的分轨和缩混，而不是采样。';
 
   @override
   String samplePackMastersLeftOut(int count) {
     String _temp0 = intl.Intl.pluralLogic(
       count,
       locale: localeName,
-      other: '已排除 $count 个母带工程',
+      other: '已排除 $count 个母带项目',
     );
     return '$_temp0';
   }
+
+  @override
+  String get samplePackProjects => '项目';
+
+  @override
+  String get samplePackAllProjects => '所有项目';
+
+  @override
+  String get samplePackPickedProjects => '仅我选择的';
+
+  @override
+  String get samplePackSearchProjects => '搜索项目';
+
+  @override
+  String samplePackPickedCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '已选择 $count 个项目',
+      zero: '未选择项目',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get samplePackNoProjectsMatch => '没有匹配的项目。';
 }

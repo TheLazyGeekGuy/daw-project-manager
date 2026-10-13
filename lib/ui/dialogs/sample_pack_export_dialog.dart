@@ -5,15 +5,27 @@ import '../../services/sample_pack/sample_pack_exporter.dart';
 
 /// A profile as the export dialog lists it.
 class SamplePackProfileChoice {
-  const SamplePackProfileChoice({
-    required this.id,
-    required this.name,
-    required this.projectCount,
-  });
+  const SamplePackProfileChoice({required this.id, required this.name});
 
   final String id;
   final String name;
-  final int projectCount;
+}
+
+/// A project as the export dialog's picker lists it.
+class SamplePackProjectChoice {
+  const SamplePackProjectChoice({
+    required this.id,
+    required this.profileId,
+    required this.name,
+    this.detail = '',
+  });
+
+  final String id;
+  final String profileId;
+  final String name;
+
+  /// Shown under the name and searched with it: the project's file name.
+  final String detail;
 }
 
 /// What the person chose in [SamplePackExportDialog].
@@ -24,9 +36,14 @@ class SamplePackExportChoice {
     required this.includeOwnAudio,
     required this.includeMidi,
     required this.excludeMasterProjects,
+    this.projectIds,
   });
 
   final List<String> profileIds;
+
+  /// The projects picked, all in [profileIds]; null for every project in
+  /// those profiles.
+  final List<String>? projectIds;
   final List<String> libraryFolders;
   final bool includeOwnAudio;
   final bool includeMidi;
@@ -43,7 +60,10 @@ class SamplePackExportDialog extends StatefulWidget {
   const SamplePackExportDialog({
     super.key,
     required this.profiles,
+    required this.projects,
     required this.initialProfileIds,
+    this.initialOnlyPicked = false,
+    this.initialPickedProjectIds = const {},
     required this.initialLibraryFolders,
     required this.initialIncludeOwnAudio,
     required this.initialIncludeMidi,
@@ -53,9 +73,16 @@ class SamplePackExportDialog extends StatefulWidget {
 
   final List<SamplePackProfileChoice> profiles;
 
+  /// Every project of every profile, for the picker and the counts.
+  final List<SamplePackProjectChoice> projects;
+
   /// Ticked when the dialog opens; ids no longer among [profiles] are
   /// ignored.
   final Set<String> initialProfileIds;
+
+  /// Whether the picker is open, and what is ticked in it.
+  final bool initialOnlyPicked;
+  final Set<String> initialPickedProjectIds;
   final List<String> initialLibraryFolders;
   final bool initialIncludeOwnAudio;
   final bool initialIncludeMidi;
@@ -77,6 +104,37 @@ class _SamplePackExportDialogState extends State<SamplePackExportDialog> {
   late bool _includeOwnAudio = widget.initialIncludeOwnAudio;
   late bool _includeMidi = widget.initialIncludeMidi;
   late bool _excludeMasters = widget.initialExcludeMasterProjects;
+  late bool _onlyPicked = widget.initialOnlyPicked;
+  late final Set<String> _picked = {
+    for (final pr in widget.projects)
+      if (widget.initialPickedProjectIds.contains(pr.id)) pr.id,
+  };
+  String _search = '';
+
+  int _projectCount(String profileId) =>
+      widget.projects.where((pr) => pr.profileId == profileId).length;
+
+  /// The selected profiles' projects, matching the search, by name.
+  List<SamplePackProjectChoice> get _listed {
+    final query = _search.trim().toLowerCase();
+    return [
+      for (final pr in widget.projects)
+        if (_selected.contains(pr.profileId) &&
+            (query.isEmpty ||
+                pr.name.toLowerCase().contains(query) ||
+                pr.detail.toLowerCase().contains(query)))
+          pr,
+    ]..sort((a, b) => a.name.toLowerCase().compareTo(b.name.toLowerCase()));
+  }
+
+  /// Picked projects in profiles that are still selected.
+  List<String> get _pickedIds => [
+        for (final pr in widget.projects)
+          if (_selected.contains(pr.profileId) && _picked.contains(pr.id)) pr.id,
+      ];
+
+  bool get _canExport =>
+      _selected.isNotEmpty && (!_onlyPicked || _pickedIds.isNotEmpty);
 
   Future<void> _addFolder() async {
     final folder = await widget.pickFolder();
@@ -84,6 +142,104 @@ class _SamplePackExportDialogState extends State<SamplePackExportDialog> {
     setState(() {
       if (!_folders.contains(folder)) _folders.add(folder);
     });
+  }
+
+  /// All projects, or only the ones picked from a searchable list.
+  List<Widget> _projectPicker(AppLocalizations l10n, ThemeData theme) {
+    final listed = _onlyPicked ? _listed : const <SamplePackProjectChoice>[];
+    final profileNames = {for (final pr in widget.profiles) pr.id: pr.name};
+    final showProfile = _selected.length > 1;
+    return [
+      Text(l10n.samplePackProjects, style: theme.textTheme.titleSmall),
+      const SizedBox(height: 8),
+      SegmentedButton<bool>(
+        segments: [
+          ButtonSegment(value: false, label: Text(l10n.samplePackAllProjects)),
+          ButtonSegment(value: true, label: Text(l10n.samplePackPickedProjects)),
+        ],
+        selected: {_onlyPicked},
+        onSelectionChanged: (v) => setState(() => _onlyPicked = v.first),
+      ),
+      if (_onlyPicked) ...[
+        const SizedBox(height: 8),
+        Row(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            Expanded(
+              child: TextField(
+                key: const ValueKey('samplePackProjectSearch'),
+                decoration: InputDecoration(
+                  isDense: true,
+                  prefixIcon: const Icon(Icons.search),
+                  hintText: l10n.samplePackSearchProjects,
+                ),
+                onChanged: (v) => setState(() => _search = v),
+              ),
+            ),
+            TextButton(
+              key: const ValueKey('samplePackPickAll'),
+              onPressed: listed.every((pr) => _picked.contains(pr.id))
+                  ? null
+                  : () => setState(
+                        () => _picked.addAll(listed.map((pr) => pr.id)),
+                      ),
+              child: Text(l10n.samplePackSelectAll),
+            ),
+            TextButton(
+              key: const ValueKey('samplePackPickNone'),
+              onPressed: listed.any((pr) => _picked.contains(pr.id))
+                  ? () => setState(
+                        () => _picked.removeAll(listed.map((pr) => pr.id)),
+                      )
+                  : null,
+              child: Text(l10n.samplePackSelectNone),
+            ),
+          ],
+        ),
+        const SizedBox(height: 4),
+        SizedBox(
+          height: 260,
+          child: listed.isEmpty
+              ? Center(
+                  child: Text(l10n.samplePackNoProjectsMatch,
+                      style: theme.textTheme.bodySmall),
+                )
+              : ListView.builder(
+                  itemCount: listed.length,
+                  itemBuilder: (context, i) {
+                    final pr = listed[i];
+                    final subtitle = [
+                      if (showProfile) profileNames[pr.profileId] ?? '',
+                      pr.detail,
+                    ].where((t) => t.isNotEmpty).join(' · ');
+                    return CheckboxListTile(
+                      key: ValueKey('samplePackProject-${pr.id}'),
+                      contentPadding: EdgeInsets.zero,
+                      dense: true,
+                      controlAffinity: ListTileControlAffinity.leading,
+                      value: _picked.contains(pr.id),
+                      onChanged: (v) => setState(() {
+                        if (v ?? false) {
+                          _picked.add(pr.id);
+                        } else {
+                          _picked.remove(pr.id);
+                        }
+                      }),
+                      title: Text(pr.name,
+                          maxLines: 1, overflow: TextOverflow.ellipsis),
+                      subtitle: subtitle.isEmpty
+                          ? null
+                          : Text(subtitle,
+                              maxLines: 1, overflow: TextOverflow.ellipsis),
+                    );
+                  },
+                ),
+        ),
+        const SizedBox(height: 4),
+        Text(l10n.samplePackPickedCount(_pickedIds.length),
+            style: theme.textTheme.bodySmall),
+      ],
+    ];
   }
 
   @override
@@ -138,9 +294,11 @@ class _SamplePackExportDialogState extends State<SamplePackExportDialog> {
                     }
                   }),
                   title: Text(profile.name),
-                  subtitle:
-                      Text(l10n.samplePackProjectCount(profile.projectCount)),
+                  subtitle: Text(
+                      l10n.samplePackProjectCount(_projectCount(profile.id))),
                 ),
+              const Divider(height: 24),
+              ..._projectPicker(l10n, theme),
               const Divider(height: 24),
               Text(l10n.samplePackLibraryFolders,
                   style: theme.textTheme.titleSmall),
@@ -214,7 +372,7 @@ class _SamplePackExportDialogState extends State<SamplePackExportDialog> {
           child: Text(l10n.cancel),
         ),
         FilledButton(
-          onPressed: _selected.isEmpty
+          onPressed: !_canExport
               ? null
               : () => Navigator.pop(
                     context,
@@ -227,6 +385,7 @@ class _SamplePackExportDialogState extends State<SamplePackExportDialog> {
                       includeOwnAudio: _includeOwnAudio,
                       includeMidi: _includeMidi,
                       excludeMasterProjects: _excludeMasters,
+                      projectIds: _onlyPicked ? _pickedIds : null,
                     ),
                   ),
           child: Text(l10n.samplePackChooseDestination),
@@ -252,10 +411,7 @@ class SamplePackProgressDialog extends StatefulWidget {
 }
 
 class _SamplePackProgressDialogState extends State<SamplePackProgressDialog> {
-  SamplePackPhase _phase = SamplePackPhase.reading;
-  int _done = 0;
-  int _total = 0;
-  String _current = '';
+  SamplePackProgressUpdate? _update;
   bool _stop = false;
 
   @override
@@ -269,14 +425,8 @@ class _SamplePackProgressDialogState extends State<SamplePackProgressDialog> {
     SamplePackResult? result;
     try {
       result = await widget.run(
-        (phase, done, total, current) {
-          if (!mounted) return;
-          setState(() {
-            _phase = phase;
-            _done = done;
-            _total = total;
-            _current = current;
-          });
+        (update) {
+          if (mounted) setState(() => _update = update);
         },
         () => _stop,
       );
@@ -286,21 +436,35 @@ class _SamplePackProgressDialogState extends State<SamplePackProgressDialog> {
     if (mounted) Navigator.pop(context, result ?? error);
   }
 
-  String _line(AppLocalizations l10n) {
-    final n = _done + 1 > _total ? _total : _done + 1;
-    return switch (_phase) {
-      SamplePackPhase.reading => l10n.samplePackReading(n, _total, _current),
-      SamplePackPhase.locating => l10n.samplePackLocating(n, _total, _current),
-      SamplePackPhase.measuring => l10n.samplePackMeasuring(n, _total, _current),
-      SamplePackPhase.copying => l10n.samplePackCopying(n, _total, _current),
-      SamplePackPhase.midi => l10n.samplePackWritingMidi(n, _total, _current),
-      SamplePackPhase.finishing => l10n.samplePackFinishing,
+  /// The project being read, or what is being written at the end.
+  String _projectLine(AppLocalizations l10n, SamplePackProgressUpdate u) {
+    switch (u.phase) {
+      case SamplePackPhase.midi:
+        return l10n.samplePackWritingMidi(u.done + 1, u.total, u.current);
+      case SamplePackPhase.finishing:
+        return l10n.samplePackFinishing;
+      default:
+        final n = u.project + 1 > u.projects ? u.projects : u.project + 1;
+        return l10n.samplePackReading(n, u.projects, u.projectName);
+    }
+  }
+
+  /// What is happening inside that project, if anything.
+  String? _stepLine(AppLocalizations l10n, SamplePackProgressUpdate u) {
+    final n = u.done + 1 > u.total ? u.total : u.done + 1;
+    return switch (u.phase) {
+      SamplePackPhase.locating => l10n.samplePackLocating(n, u.total, u.current),
+      SamplePackPhase.measuring => l10n.samplePackMeasuring(n, u.total, u.current),
+      SamplePackPhase.copying => l10n.samplePackCopying(n, u.total, u.current),
+      _ => null,
     };
   }
 
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
+    final u = _update;
+    final step = u == null ? null : _stepLine(l10n, u);
     return PopScope(
       canPop: false,
       child: AlertDialog(
@@ -311,11 +475,20 @@ class _SamplePackProgressDialogState extends State<SamplePackProgressDialog> {
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              LinearProgressIndicator(
-                value: _total == 0 ? null : _done / _total,
-              ),
+              LinearProgressIndicator(value: u?.fraction),
               const SizedBox(height: 12),
-              Text(_line(l10n), maxLines: 2, overflow: TextOverflow.ellipsis),
+              if (u != null)
+                Text(_projectLine(l10n, u),
+                    maxLines: 2, overflow: TextOverflow.ellipsis),
+              if (step != null) ...[
+                const SizedBox(height: 4),
+                Text(
+                  step,
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  style: Theme.of(context).textTheme.bodySmall,
+                ),
+              ],
             ],
           ),
         ),

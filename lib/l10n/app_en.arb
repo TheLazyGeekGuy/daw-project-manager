@@ -7289,5 +7289,34 @@
         "type": "int"
       }
     }
+  },
+  "samplePackProjects": "Projects",
+  "@samplePackProjects": {
+    "description": "Heading above the choice of which projects to export from"
+  },
+  "samplePackAllProjects": "All projects",
+  "@samplePackAllProjects": {
+    "description": "Segment: export from every project of the selected profiles"
+  },
+  "samplePackPickedProjects": "Only the ones I pick",
+  "@samplePackPickedProjects": {
+    "description": "Segment: export only from projects picked in a list"
+  },
+  "samplePackSearchProjects": "Search projects",
+  "@samplePackSearchProjects": {
+    "description": "Hint of the search field above the project list"
+  },
+  "samplePackPickedCount": "{count, plural, =0{No projects picked} =1{1 project picked} other{{count} projects picked}}",
+  "@samplePackPickedCount": {
+    "description": "Under the project list: how many are picked",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "samplePackNoProjectsMatch": "No projects match.",
+  "@samplePackNoProjectsMatch": {
+    "description": "Shown in the project list when nothing matches the search"
   }
 }

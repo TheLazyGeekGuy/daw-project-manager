@@ -21,6 +21,7 @@ void main() {
       expect([for (final x in projects) x.filePath], ['/m/a.als']);
       expect(projects.single.profileName, 'Main');
       expect(projects.single.songKey, 'a');
+      expect(projects.single.id, 'a');
     });
 
     test("a stack's versions are one song, under the stack's name", () {
@@ -55,6 +56,8 @@ void main() {
         includeMidi: false,
         excludeMasterProjects: false,
         profileIds: ['p1', 'p2'],
+        onlyPickedProjects: true,
+        pickedProjectIds: ['x', 'y'],
       );
       final back = SamplePackPrefs.fromJson(prefs.toJson());
       expect(back.libraryFolders, prefs.libraryFolders);
@@ -62,6 +65,8 @@ void main() {
       expect(back.includeMidi, isFalse);
       expect(back.excludeMasterProjects, isFalse);
       expect(back.profileIds, ['p1', 'p2']);
+      expect(back.onlyPickedProjects, isTrue);
+      expect(back.pickedProjectIds, ['x', 'y']);
     });
 
     test('defaults: no folders, no own audio, MIDI in, masters out, every '

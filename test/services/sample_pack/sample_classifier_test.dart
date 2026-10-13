@@ -63,6 +63,30 @@ void main() {
       );
     });
 
+    test('without a length, a stem-sized file is long; a known length wins',
+        () {
+      String path() => p.join(library, 'Kicks', 'k.wav');
+      expect(
+        sampleOriginOf(
+            path: path(), projectDir: project, sizeBytes: kLongAudioBytes),
+        SampleOrigin.long,
+      );
+      expect(
+        sampleOriginOf(
+            path: path(), projectDir: project, sizeBytes: kLongAudioBytes - 1),
+        SampleOrigin.library,
+      );
+      expect(
+        sampleOriginOf(
+          path: path(),
+          projectDir: project,
+          sizeBytes: kLongAudioBytes * 2,
+          duration: const Duration(seconds: 20), // 24-bit 7.1, say
+        ),
+        SampleOrigin.library,
+      );
+    });
+
     test('combinedOrigin: own audio anywhere wins, then a library', () {
       expect(
         combinedOrigin([SampleOrigin.project, SampleOrigin.recorded]),

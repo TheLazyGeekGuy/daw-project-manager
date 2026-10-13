@@ -66,6 +66,12 @@ enum SampleOrigin {
 /// From this length on, a file is a stem or a full take, not a sample.
 const kLongAudio = Duration(seconds: 90);
 
+/// From this size on, a file is taken to be long audio without reading it:
+/// about two minutes of CD-quality stereo, a little over one at 24-bit/48k.
+/// A file's size costs nothing to learn, while its length means reading it —
+/// and on a cloud drive, downloading the whole file first.
+const kLongAudioBytes = 20 * 1024 * 1024;
+
 /// Folders DAWs record into.
 const _recordedFolders = {'recorded', 'recordings', 'recording'};
 
@@ -102,17 +108,26 @@ final _processedName = RegExp(
 /// Where the sample at [path] came from, as one of a project's references.
 ///
 /// What the DAW said ([kind]) wins; then a [duration] of [kLongAudio] or
-/// more; then the folders between [projectDir] and the file; then whether
-/// the file is inside the project's folder at all.
+/// more, or, when the length isn't known, a [sizeBytes] of
+/// [kLongAudioBytes] or more; then the folders between [projectDir] and the
+/// file; then whether the file is inside the project's folder at all.
+///
+/// Everything but [duration] is known without opening the file, so an
+/// export can tell own audio apart before downloading anything.
 SampleOrigin sampleOriginOf({
   required String path,
   required String projectDir,
   SampleKind? kind,
   Duration? duration,
+  int? sizeBytes,
 }) {
   if (kind == SampleKind.recorded) return SampleOrigin.recorded;
   if (kind == SampleKind.processed) return SampleOrigin.processed;
-  if (duration != null && duration >= kLongAudio) return SampleOrigin.long;
+  if (duration != null
+      ? duration >= kLongAudio
+      : sizeBytes != null && sizeBytes >= kLongAudioBytes) {
+    return SampleOrigin.long;
+  }
   final within = p.isWithin(p.normalize(projectDir), p.normalize(path));
   if (!within) return SampleOrigin.library;
   if (kind == SampleKind.imported) return SampleOrigin.project;
