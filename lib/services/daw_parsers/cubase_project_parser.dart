@@ -3,6 +3,8 @@ import 'dart:typed_data';
 
 import '../../models/midi_clip.dart';
 import '../../models/project_stats.dart';
+import '../../models/sample_reference.dart';
+import 'embedded_audio_paths.dart';
 
 /// Reads tracks, plug-ins and MIDI parts out of a Cubase/Nuendo `.cpr`/`.npr`.
 ///
@@ -279,6 +281,76 @@ class CubaseProjectParser {
       }
     }
     return dedupeMidiClips(clips);
+  }
+
+  /// Every audio file the project references.
+  ///
+  /// * The pool: each file is an `FNPath` object whose body starts with the
+  ///   file name as a string, then the type ("WAVE", the extension twice, a
+  ///   description) and the folder it is in, absolute and ending in a
+  ///   separator. The Sampler Track's samples are pool files too.
+  /// * Plug-in state, inline in the archive, searched for absolute paths.
+  ///
+  /// A pool file named after a track and a take number ("Vocals_03.wav") is
+  /// a recording; "kick-01.wav" beside "kick.wav" is what Cubase writes when
+  /// it processes or bounces a file.
+  List<SampleReference> readSampleReferences() {
+    final pool = <({String name, String dir})>[];
+    for (final index in _indices) {
+      for (final fn in index.instancesOf('FNPath')) {
+        final name = _readString(fn.body);
+        if (name == null || name.end > fn.end) continue;
+        if (!isSampleAudioFile(name.text)) continue;
+        String? dir;
+        for (var o = name.end; o + 4 < fn.end; o++) {
+          final s = _readString(o);
+          if (s == null || s.end > fn.end || s.text.length < 2) continue;
+          if (s.text.endsWith(r'\') || s.text.endsWith('/')) {
+            dir = s.text;
+            break;
+          }
+        }
+        if (dir == null) continue;
+        pool.add((name: name.text, dir: dir));
+      }
+    }
+
+    final names = {for (final f in pool) _stem(f.name).toLowerCase()};
+    final trackNames = [for (final t in readTracks()) t.name];
+    final refs = <SampleReference>[];
+    final seen = <String>{};
+    for (final f in pool) {
+      final path = '${f.dir}${f.name}';
+      if (!seen.add(path.toLowerCase())) continue;
+      final copyOf = _processedCopy.firstMatch(_stem(f.name));
+      final SampleKind? kind =
+          looksLikeRecording(f.name, trackNames, r'_\d{2,3}(-\d{2})?')
+              ? SampleKind.recorded
+              : copyOf != null && names.contains(copyOf[1]!.toLowerCase())
+                  ? SampleKind.processed
+                  : null;
+      refs.add(SampleReference(
+        fileName: f.name,
+        candidates: [path, 'Audio/${f.name}'],
+        kind: kind,
+      ));
+    }
+    for (final path in findEmbeddedAudioPaths(bytes)) {
+      if (!seen.add(path.toLowerCase())) continue;
+      refs.add(SampleReference(
+        fileName: sampleFileNameOf(path),
+        candidates: [path],
+        use: SampleUse.plugin,
+      ));
+    }
+    return refs;
+  }
+
+  static final _processedCopy = RegExp(r'^(.+)-\d{2}$');
+
+  static String _stem(String name) {
+    final dot = name.lastIndexOf('.');
+    return dot < 0 ? name : name.substring(0, dot);
   }
 
   // --- notes ---------------------------------------------------------------

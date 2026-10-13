@@ -1,9 +1,12 @@
 import 'dart:math' as math;
+import 'dart:typed_data';
 
 import 'package:xml/xml.dart';
 
 import '../../models/midi_clip.dart';
 import '../../models/project_stats.dart';
+import '../../models/sample_reference.dart';
+import 'embedded_audio_paths.dart';
 
 /// Reads tracks, plug-ins and MIDI clips out of an already-parsed Ableton
 /// Live set (`.als` is gzipped XML; `MetadataExtractor` does the unzipping).
@@ -257,6 +260,126 @@ class AbletonProjectParser {
       for (var t = time + step; t < nextTime; t += step) {
         out.add(event(t, value + (nextValue - value) * (t - time) / span));
       }
+    }
+    return out;
+  }
+
+  /// Every audio file the set references: audio clips, and the samples in
+  /// Simpler, Sampler, Impulse and Drum Rack pads — all of which hold a
+  /// `SampleRef/FileRef` — plus paths a third-party plug-in keeps in its
+  /// saved state (`Buffer`, hex).
+  ///
+  /// A `FileRef` names the file several ways, all kept as candidates:
+  /// * Live 11+: `Path` (absolute) and `RelativePath Value` (from the set's
+  ///   folder, file name included).
+  /// * Live 9/10: `RelativePath` as `RelativePathElement Dir`s (an empty
+  ///   `Dir` is `..`) plus `Name`, and `Data`, hex of the absolute path as
+  ///   UTF-16LE on Windows (a macOS alias record elsewhere, which isn't a
+  ///   path and is skipped).
+  ///
+  /// Live files what it makes under the project's `Samples` folder, which is
+  /// what [SampleReference.kind] says: `Recorded`, `Processed` (consolidate,
+  /// freeze, crop, reverse) and `Imported`.
+  List<SampleReference> readSampleReferences() {
+    final refs = <SampleReference>[];
+    for (final sampleRef in document.findAllElements('SampleRef')) {
+      final fileRef = sampleRef.getElement('FileRef');
+      if (fileRef == null) continue;
+      final inClip = sampleRef.ancestorElements
+          .any((a) => a.name.local == 'AudioClip');
+      final ref = _sampleReference(
+        fileRef,
+        inClip ? SampleUse.audio : SampleUse.sampler,
+      );
+      if (ref != null) refs.add(ref);
+    }
+    for (final buffer in document.findAllElements('Buffer')) {
+      final bytes = _hexBytes(buffer.innerText);
+      if (bytes == null) continue;
+      for (final path in findEmbeddedAudioPaths(bytes)) {
+        refs.add(SampleReference(
+          fileName: sampleFileNameOf(path),
+          candidates: [path],
+          use: SampleUse.plugin,
+        ));
+      }
+    }
+    return refs;
+  }
+
+  SampleReference? _sampleReference(XmlElement fileRef, SampleUse use) {
+    final absolute = _value(fileRef.getElement('Path'));
+    final relativeElement = fileRef.getElement('RelativePath');
+    final relativeValue = _value(relativeElement);
+    final dirs = [
+      for (final e in relativeElement?.findElements('RelativePathElement') ??
+          const <XmlElement>[])
+        e.getAttribute('Dir') ?? '',
+    ];
+    var name = _value(fileRef.getElement('Name'));
+    if (name == null || name.isEmpty) {
+      final from = absolute ?? relativeValue;
+      if (from == null || from.isEmpty) return null;
+      name = sampleFileNameOf(from);
+    }
+    if (!isSampleAudioFile(name)) return null;
+
+    String? relative;
+    if (relativeValue != null && relativeValue.isNotEmpty) {
+      relative = relativeValue;
+    } else if (dirs.isNotEmpty) {
+      relative = [for (final d in dirs) d.isEmpty ? '..' : d, name].join('/');
+    }
+
+    String? fromData;
+    final data = _hexBytes(fileRef.getElement('Data')?.innerText ?? '');
+    if (data != null && data.length >= 8 && data.length.isEven) {
+      final text = String.fromCharCodes([
+        for (var i = 0; i + 1 < data.length; i += 2) data[i] | (data[i + 1] << 8),
+      ]).replaceAll('\u0000', '');
+      if (RegExp(r'^([A-Za-z]:[\\/]|\\\\)').hasMatch(text) &&
+          text.toLowerCase().endsWith(name.toLowerCase())) {
+        fromData = text;
+      }
+    }
+
+    final within = (relative ?? '').replaceAll('\\', '/').toLowerCase();
+    final SampleKind? kind = within.startsWith('samples/recorded/')
+        ? SampleKind.recorded
+        : within.startsWith('samples/processed/')
+            ? SampleKind.processed
+            : within.startsWith('samples/imported/')
+                ? SampleKind.imported
+                : null;
+
+    final size = int.tryParse(
+      _value(fileRef.getElement('OriginalFileSize')) ??
+          _value(fileRef.getElement('SearchHint')?.getElement('FileSize')) ??
+          '',
+    );
+
+    return SampleReference(
+      fileName: name,
+      candidates: [
+        if (absolute != null && absolute.isNotEmpty) absolute,
+        ?fromData,
+        ?relative,
+      ],
+      use: use,
+      kind: kind,
+      sizeBytes: size != null && size > 0 ? size : null,
+    );
+  }
+
+  /// [text] as hex digits (whitespace ignored), or null when it isn't.
+  static Uint8List? _hexBytes(String text) {
+    final hex = text.replaceAll(RegExp(r'\s+'), '');
+    if (hex.isEmpty || hex.length.isOdd) return null;
+    final out = Uint8List(hex.length ~/ 2);
+    for (var i = 0; i < out.length; i++) {
+      final v = int.tryParse(hex.substring(i * 2, i * 2 + 2), radix: 16);
+      if (v == null) return null;
+      out[i] = v;
     }
     return out;
   }

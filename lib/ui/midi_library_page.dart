@@ -16,6 +16,7 @@ import '../models/midi_library.dart';
 import '../providers/providers.dart';
 import '../repository/midi_collection_store.dart';
 import '../services/midi/midi_clip_service.dart';
+import '../services/midi/midi_collection_export.dart';
 import '../services/midi/midi_file_writer.dart';
 import '../services/midi/synth_voice.dart';
 import '../services/midi_tree_state_store.dart';
@@ -212,36 +213,20 @@ class _MidiLibraryPageState extends ConsumerState<MidiLibraryPage> {
 
   /// Where each of [c]'s clips goes in an export and what it is called,
   /// by the collection's folders and naming template.
-  List<PlannedMidiFile> _plan(MidiCollection c) {
-    final labels = midiNamingLabelsOf(AppLocalizations.of(context)!);
-    return planCollectionExport(
-      c,
-      fileNameOf: (item, number, width) => midiItemFileName(
-        c,
-        item,
-        labels: labels,
-        voice: _voiceOfItem(item),
-        number: number,
-        width: width,
-        bpm: _tempo ?? item.bpm,
-      ),
-    );
-  }
+  List<PlannedMidiFile> _plan(MidiCollection c) => planMidiCollectionFiles(
+    c,
+    labels: midiNamingLabelsOf(AppLocalizations.of(context)!),
+    bpm: _tempo,
+  );
 
   /// A collection's clips each at their own project's tempo and key, unless
   /// the user set one tempo for all of them — in its folders, named by its
   /// template.
-  List<MidiExport> _collectionExports(MidiCollection c) => [
-    for (final f in _plan(c))
-      MidiExport(
-        f.item.clip,
-        bpm: _tempo ?? f.item.bpm,
-        musicalKey: f.item.musicalKey,
-        timeSignature: _timeSignatureOf(f.item),
-        name: f.fileName,
-        folders: f.folders,
-      ),
-  ];
+  List<MidiExport> _collectionExports(MidiCollection c) => midiCollectionExports(
+    c,
+    labels: midiNamingLabelsOf(AppLocalizations.of(context)!),
+    bpm: _tempo,
+  );
 
   void _snack(String message) {
     if (!mounted) return;
@@ -933,8 +918,7 @@ class _MidiLibraryPageState extends ConsumerState<MidiLibraryPage> {
   }
 
   static SynthVoice _voiceOfItem(MidiCollectionItem item) =>
-      SynthVoice.values.where((v) => v.name == item.voice).firstOrNull ??
-      inferSynthVoice(item.clip);
+      midiCollectionItemVoice(item);
 
   @override
   Widget build(BuildContext context) {

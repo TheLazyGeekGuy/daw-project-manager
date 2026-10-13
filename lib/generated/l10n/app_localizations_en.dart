@@ -7037,4 +7037,171 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get experimentalSectionIntro =>
       'New tools that work but are still being tried out. They may change or be removed in a later version.';
+
+  @override
+  String get samplePackTitle => 'Sample pack from your projects';
+
+  @override
+  String get samplePackSubtitle =>
+      'Copies the samples your projects use into one folder, sorted by kind (Kick, Snare, Bass, FX…), with a report of how many songs use each one. Exporting into the same folder again only adds what\'s new.';
+
+  @override
+  String get samplePackDialogTitle => 'Export sample pack';
+
+  @override
+  String get samplePackProfiles => 'Profiles';
+
+  @override
+  String get samplePackSelectAll => 'Select all';
+
+  @override
+  String get samplePackSelectNone => 'Select none';
+
+  @override
+  String samplePackProjectCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count projects',
+      one: '1 project',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get samplePackLibraryFolders => 'Sample library folders';
+
+  @override
+  String get samplePackLibraryFoldersHelp =>
+      'Where to look for a sample a project can no longer find where it saved it — after a library was moved or a drive letter changed. The project\'s own folder is always searched.';
+
+  @override
+  String get samplePackNoLibraryFolders => 'No folders added.';
+
+  @override
+  String get samplePackIncludeOwnAudio =>
+      'Include my recordings, bounces and stems';
+
+  @override
+  String samplePackIncludeOwnAudioHelp(String folder) {
+    return 'In a folder of their own, \"$folder\".';
+  }
+
+  @override
+  String get samplePackIncludeMidi => 'Add my MIDI collections';
+
+  @override
+  String get samplePackChooseDestination => 'Choose folder and export';
+
+  @override
+  String get samplePackDestinationTitle => 'Where to write the sample pack';
+
+  @override
+  String get samplePackProgressTitle => 'Building sample pack';
+
+  @override
+  String samplePackReading(int current, int total, String name) {
+    return 'Reading project $current of $total: $name';
+  }
+
+  @override
+  String samplePackLocating(int current, int total, String name) {
+    return 'Finding sample $current of $total: $name';
+  }
+
+  @override
+  String samplePackMeasuring(int current, int total, String name) {
+    return 'Checking sample $current of $total: $name';
+  }
+
+  @override
+  String samplePackCopying(int current, int total, String name) {
+    return 'Copying $current of $total: $name';
+  }
+
+  @override
+  String samplePackWritingMidi(int current, int total, String name) {
+    return 'Writing MIDI collection $current of $total: $name';
+  }
+
+  @override
+  String get samplePackFinishing => 'Writing the report…';
+
+  @override
+  String get samplePackDoneTitle => 'Sample pack ready';
+
+  @override
+  String get samplePackStoppedTitle => 'Sample pack stopped';
+
+  @override
+  String samplePackAdded(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count new samples added',
+      one: '1 new sample added',
+      zero: 'No new samples added',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String samplePackAlreadyThere(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count were already in the folder',
+      one: '1 was already in the folder',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String samplePackLeftOut(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count recordings, bounces or stems left out',
+      one: '1 recording, bounce or stem left out',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String samplePackMidiWritten(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count MIDI files written',
+      one: '1 MIDI file written',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String samplePackMissing(int count, String file) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count samples couldn\'t be found — see $file',
+      one: '1 sample couldn\'t be found — see $file',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String samplePackNotRead(int count, String file) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count projects couldn\'t be read — see $file',
+      one: '1 project couldn\'t be read — see $file',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String samplePackReportHint(String file) {
+    return 'How many songs use each sample, and where it came from, is in $file.';
+  }
 }

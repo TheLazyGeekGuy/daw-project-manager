@@ -1,10 +1,13 @@
+import 'dart:convert';
 import 'dart:typed_data';
 
 import 'package:path/path.dart' as p;
 
 import '../../models/midi_clip.dart';
 import '../../models/project_stats.dart';
+import '../../models/sample_reference.dart';
 import '../midi/midi_file_reader.dart';
+import 'embedded_audio_paths.dart';
 
 /// Reads tracks, plug-ins and MIDI items out of a REAPER `.rpp`.
 ///
@@ -134,6 +137,61 @@ class ReaperProjectParser {
     }
     return (clips: dedupeMidiClips(clips), missingFiles: missing);
   }
+
+  /// Every audio file the project references: the `FILE` of each audio
+  /// `<SOURCE` (WAVE, MP3, FLAC, VORBIS… — a `SECTION` source nests the real
+  /// one, found the same way), relative to the project folder unless
+  /// absolute, and paths in plug-in state — ReaSamplOmatic5000's sample
+  /// among them. A plug-in's state is base64 lines inside its chunk.
+  ///
+  /// A file named after its track plus REAPER's take suffix ("Vox-001.wav",
+  /// "Vox-240802_1532.wav") is a recording.
+  List<SampleReference> readSampleReferences() {
+    final refs = <SampleReference>[];
+    final trackNames = [
+      for (final t in _root.descendants((c) => c.name == 'TRACK'))
+        ?t.value('NAME'),
+    ];
+    for (final source in _root.descendants((c) => c.name == 'SOURCE')) {
+      if (_isMidiSource(source)) continue;
+      final file = source.value('FILE')?.trim() ?? '';
+      if (file.isEmpty || !isSampleAudioFile(file)) continue;
+      final name = sampleFileNameOf(file);
+      refs.add(SampleReference(
+        fileName: name,
+        candidates: [file],
+        kind: looksLikeRecording(name, trackNames, _takeSuffix)
+            ? SampleKind.recorded
+            : null,
+      ));
+    }
+    for (final fx in _root.descendants(_isPluginChunk)) {
+      final bytes = BytesBuilder(copy: false);
+      for (final line in fx.lines) {
+        if (line.args.isNotEmpty || !_base64Line.hasMatch(line.key)) continue;
+        try {
+          bytes.add(base64.decode(line.key));
+        } on FormatException {
+          // Not base64 after all (a JS slider line, say).
+        }
+      }
+      final isSampler =
+          (fx.header.arg(0) ?? '').contains('ReaSamplOmatic5000');
+      for (final path in findEmbeddedAudioPaths(bytes.takeBytes())) {
+        refs.add(SampleReference(
+          fileName: sampleFileNameOf(path),
+          candidates: [path],
+          use: isSampler ? SampleUse.sampler : SampleUse.plugin,
+        ));
+      }
+    }
+    return refs;
+  }
+
+  static final _base64Line = RegExp(r'^[A-Za-z0-9+/]+={0,2}$');
+
+  /// What REAPER appends to a track's name for a recorded take.
+  static const _takeSuffix = r'-(\d{2,4}|\d{6}_\d{4,6}(_\d+)?)';
 
   /// `<SOURCE MIDI` holds MIDI in the project or names a `.mid` file;
   /// `<SOURCE MIDIPOOL` is pooled MIDI, stored the same way.

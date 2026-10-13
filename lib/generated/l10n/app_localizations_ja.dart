@@ -6865,4 +6865,163 @@ class AppLocalizationsJa extends AppLocalizations {
   @override
   String get experimentalSectionIntro =>
       '動作はしますが、まだ試用段階の新しいツールです。今後のバージョンで変更または削除される場合があります。';
+
+  @override
+  String get samplePackTitle => 'プロジェクトからサンプルパックを作成';
+
+  @override
+  String get samplePackSubtitle =>
+      'プロジェクトで使われているサンプルを種類別（Kick、Snare、Bass、FX…）に1つのフォルダへコピーし、各サンプルを使っている曲数のレポートを作成します。同じフォルダへもう一度書き出すと、新しいものだけが追加されます。';
+
+  @override
+  String get samplePackDialogTitle => 'サンプルパックを書き出す';
+
+  @override
+  String get samplePackProfiles => 'プロファイル';
+
+  @override
+  String get samplePackSelectAll => 'すべて選択';
+
+  @override
+  String get samplePackSelectNone => 'すべて解除';
+
+  @override
+  String samplePackProjectCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count 件のプロジェクト',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get samplePackLibraryFolders => 'サンプルライブラリのフォルダ';
+
+  @override
+  String get samplePackLibraryFoldersHelp =>
+      'プロジェクトが保存時の場所で見つけられなくなったサンプルを探す場所です（ライブラリを移動したり、ドライブ文字が変わったりした場合）。プロジェクト自身のフォルダは常に検索されます。';
+
+  @override
+  String get samplePackNoLibraryFolders => 'フォルダは追加されていません。';
+
+  @override
+  String get samplePackIncludeOwnAudio => '自分の録音、バウンス、ステムも含める';
+
+  @override
+  String samplePackIncludeOwnAudioHelp(String folder) {
+    return '専用のフォルダ「$folder」に入れます。';
+  }
+
+  @override
+  String get samplePackIncludeMidi => 'MIDIコレクションも追加する';
+
+  @override
+  String get samplePackChooseDestination => 'フォルダを選んで書き出す';
+
+  @override
+  String get samplePackDestinationTitle => 'サンプルパックの書き出し先';
+
+  @override
+  String get samplePackProgressTitle => 'サンプルパックを作成中';
+
+  @override
+  String samplePackReading(int current, int total, String name) {
+    return 'プロジェクトを読み込み中 $current/$total：$name';
+  }
+
+  @override
+  String samplePackLocating(int current, int total, String name) {
+    return 'サンプルを検索中 $current/$total：$name';
+  }
+
+  @override
+  String samplePackMeasuring(int current, int total, String name) {
+    return 'サンプルを確認中 $current/$total：$name';
+  }
+
+  @override
+  String samplePackCopying(int current, int total, String name) {
+    return 'コピー中 $current/$total：$name';
+  }
+
+  @override
+  String samplePackWritingMidi(int current, int total, String name) {
+    return 'MIDIコレクションを書き出し中 $current/$total：$name';
+  }
+
+  @override
+  String get samplePackFinishing => 'レポートを書き出し中…';
+
+  @override
+  String get samplePackDoneTitle => 'サンプルパックが完成しました';
+
+  @override
+  String get samplePackStoppedTitle => 'サンプルパックの作成を中止しました';
+
+  @override
+  String samplePackAdded(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count 件の新しいサンプルを追加しました',
+      zero: '新しいサンプルは追加されませんでした',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String samplePackAlreadyThere(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count 件はすでにフォルダにありました',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String samplePackLeftOut(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count 件の録音・バウンス・ステムを除外しました',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String samplePackMidiWritten(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count 件のMIDIファイルを書き出しました',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String samplePackMissing(int count, String file) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count 件のサンプルが見つかりませんでした — $file を参照',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String samplePackNotRead(int count, String file) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count 件のプロジェクトを読み込めませんでした — $file を参照',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String samplePackReportHint(String file) {
+    return '各サンプルを使っている曲数と入手元は $file にあります。';
+  }
 }

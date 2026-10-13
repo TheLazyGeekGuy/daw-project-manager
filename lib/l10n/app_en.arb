@@ -7042,5 +7042,235 @@
   "experimentalSectionIntro": "New tools that work but are still being tried out. They may change or be removed in a later version.",
   "@experimentalSectionIntro": {
     "description": "Intro line of the experimental settings section"
+  },
+  "samplePackTitle": "Sample pack from your projects",
+  "@samplePackTitle": {
+    "description": "Settings card title: builds a sample pack from the projects"
+  },
+  "samplePackSubtitle": "Copies the samples your projects use into one folder, sorted by kind (Kick, Snare, Bass, FX…), with a report of how many songs use each one. Exporting into the same folder again only adds what's new.",
+  "@samplePackSubtitle": {
+    "description": "Settings card description of the sample pack export"
+  },
+  "samplePackDialogTitle": "Export sample pack",
+  "@samplePackDialogTitle": {
+    "description": "Title of the sample pack export options dialog"
+  },
+  "samplePackProfiles": "Profiles",
+  "@samplePackProfiles": {
+    "description": "Heading above the profile checkboxes in the sample pack dialog"
+  },
+  "samplePackSelectAll": "Select all",
+  "@samplePackSelectAll": {
+    "description": "Button: tick every profile"
+  },
+  "samplePackSelectNone": "Select none",
+  "@samplePackSelectNone": {
+    "description": "Button: untick every profile"
+  },
+  "samplePackProjectCount": "{count, plural, =1{1 project} other{{count} projects}}",
+  "@samplePackProjectCount": {
+    "description": "Under a profile name: how many projects it has",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "samplePackLibraryFolders": "Sample library folders",
+  "@samplePackLibraryFolders": {
+    "description": "Heading: folders searched for samples a project lost track of; also the folder picker title"
+  },
+  "samplePackLibraryFoldersHelp": "Where to look for a sample a project can no longer find where it saved it — after a library was moved or a drive letter changed. The project's own folder is always searched.",
+  "@samplePackLibraryFoldersHelp": {
+    "description": "Explains what the sample library folders are for"
+  },
+  "samplePackNoLibraryFolders": "No folders added.",
+  "@samplePackNoLibraryFolders": {
+    "description": "Shown when no sample library folder was added"
+  },
+  "samplePackIncludeOwnAudio": "Include my recordings, bounces and stems",
+  "@samplePackIncludeOwnAudio": {
+    "description": "Checkbox: also export the user's own recordings, bounces and stems"
+  },
+  "samplePackIncludeOwnAudioHelp": "In a folder of their own, \"{folder}\".",
+  "@samplePackIncludeOwnAudioHelp": {
+    "description": "Under the own-audio checkbox: the folder they go in",
+    "placeholders": {
+      "folder": {
+        "type": "String"
+      }
+    }
+  },
+  "samplePackIncludeMidi": "Add my MIDI collections",
+  "@samplePackIncludeMidi": {
+    "description": "Checkbox: also export the MIDI collections into the pack"
+  },
+  "samplePackChooseDestination": "Choose folder and export",
+  "@samplePackChooseDestination": {
+    "description": "Dialog button: pick the destination folder, then export"
+  },
+  "samplePackDestinationTitle": "Where to write the sample pack",
+  "@samplePackDestinationTitle": {
+    "description": "Folder picker title for the sample pack destination"
+  },
+  "samplePackProgressTitle": "Building sample pack",
+  "@samplePackProgressTitle": {
+    "description": "Title of the sample pack progress dialog"
+  },
+  "samplePackReading": "Reading project {current} of {total}: {name}",
+  "@samplePackReading": {
+    "description": "Progress line while reading project files",
+    "placeholders": {
+      "current": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      },
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "samplePackLocating": "Finding sample {current} of {total}: {name}",
+  "@samplePackLocating": {
+    "description": "Progress line while finding referenced sample files",
+    "placeholders": {
+      "current": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      },
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "samplePackMeasuring": "Checking sample {current} of {total}: {name}",
+  "@samplePackMeasuring": {
+    "description": "Progress line while measuring sample files",
+    "placeholders": {
+      "current": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      },
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "samplePackCopying": "Copying {current} of {total}: {name}",
+  "@samplePackCopying": {
+    "description": "Progress line while copying samples into the pack",
+    "placeholders": {
+      "current": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      },
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "samplePackWritingMidi": "Writing MIDI collection {current} of {total}: {name}",
+  "@samplePackWritingMidi": {
+    "description": "Progress line while writing MIDI collections",
+    "placeholders": {
+      "current": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      },
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "samplePackFinishing": "Writing the report…",
+  "@samplePackFinishing": {
+    "description": "Progress line while writing the report files"
+  },
+  "samplePackDoneTitle": "Sample pack ready",
+  "@samplePackDoneTitle": {
+    "description": "Result dialog title when the export finished"
+  },
+  "samplePackStoppedTitle": "Sample pack stopped",
+  "@samplePackStoppedTitle": {
+    "description": "Result dialog title when the export was stopped"
+  },
+  "samplePackAdded": "{count, plural, =0{No new samples added} =1{1 new sample added} other{{count} new samples added}}",
+  "@samplePackAdded": {
+    "description": "Result line: samples copied into the pack",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "samplePackAlreadyThere": "{count, plural, =1{1 was already in the folder} other{{count} were already in the folder}}",
+  "@samplePackAlreadyThere": {
+    "description": "Result line: samples the folder already had",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "samplePackLeftOut": "{count, plural, =1{1 recording, bounce or stem left out} other{{count} recordings, bounces or stems left out}}",
+  "@samplePackLeftOut": {
+    "description": "Result line: own audio not exported",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "samplePackMidiWritten": "{count, plural, =1{1 MIDI file written} other{{count} MIDI files written}}",
+  "@samplePackMidiWritten": {
+    "description": "Result line: MIDI files written",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "samplePackMissing": "{count, plural, =1{1 sample couldn't be found — see {file}} other{{count} samples couldn't be found — see {file}}}",
+  "@samplePackMissing": {
+    "description": "Result line: references whose file was not found, and the report listing them",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      },
+      "file": {
+        "type": "String"
+      }
+    }
+  },
+  "samplePackNotRead": "{count, plural, =1{1 project couldn't be read — see {file}} other{{count} projects couldn't be read — see {file}}}",
+  "@samplePackNotRead": {
+    "description": "Result line: project files that could not be read",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      },
+      "file": {
+        "type": "String"
+      }
+    }
+  },
+  "samplePackReportHint": "How many songs use each sample, and where it came from, is in {file}.",
+  "@samplePackReportHint": {
+    "description": "Under the result lines: the report file with usage counts",
+    "placeholders": {
+      "file": {
+        "type": "String"
+      }
+    }
   }
 }

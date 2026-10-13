@@ -11824,6 +11824,192 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'New tools that work but are still being tried out. They may change or be removed in a later version.'**
   String get experimentalSectionIntro;
+
+  /// Settings card title: builds a sample pack from the projects
+  ///
+  /// In en, this message translates to:
+  /// **'Sample pack from your projects'**
+  String get samplePackTitle;
+
+  /// Settings card description of the sample pack export
+  ///
+  /// In en, this message translates to:
+  /// **'Copies the samples your projects use into one folder, sorted by kind (Kick, Snare, Bass, FX…), with a report of how many songs use each one. Exporting into the same folder again only adds what\'s new.'**
+  String get samplePackSubtitle;
+
+  /// Title of the sample pack export options dialog
+  ///
+  /// In en, this message translates to:
+  /// **'Export sample pack'**
+  String get samplePackDialogTitle;
+
+  /// Heading above the profile checkboxes in the sample pack dialog
+  ///
+  /// In en, this message translates to:
+  /// **'Profiles'**
+  String get samplePackProfiles;
+
+  /// Button: tick every profile
+  ///
+  /// In en, this message translates to:
+  /// **'Select all'**
+  String get samplePackSelectAll;
+
+  /// Button: untick every profile
+  ///
+  /// In en, this message translates to:
+  /// **'Select none'**
+  String get samplePackSelectNone;
+
+  /// Under a profile name: how many projects it has
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =1{1 project} other{{count} projects}}'**
+  String samplePackProjectCount(int count);
+
+  /// Heading: folders searched for samples a project lost track of; also the folder picker title
+  ///
+  /// In en, this message translates to:
+  /// **'Sample library folders'**
+  String get samplePackLibraryFolders;
+
+  /// Explains what the sample library folders are for
+  ///
+  /// In en, this message translates to:
+  /// **'Where to look for a sample a project can no longer find where it saved it — after a library was moved or a drive letter changed. The project\'s own folder is always searched.'**
+  String get samplePackLibraryFoldersHelp;
+
+  /// Shown when no sample library folder was added
+  ///
+  /// In en, this message translates to:
+  /// **'No folders added.'**
+  String get samplePackNoLibraryFolders;
+
+  /// Checkbox: also export the user's own recordings, bounces and stems
+  ///
+  /// In en, this message translates to:
+  /// **'Include my recordings, bounces and stems'**
+  String get samplePackIncludeOwnAudio;
+
+  /// Under the own-audio checkbox: the folder they go in
+  ///
+  /// In en, this message translates to:
+  /// **'In a folder of their own, \"{folder}\".'**
+  String samplePackIncludeOwnAudioHelp(String folder);
+
+  /// Checkbox: also export the MIDI collections into the pack
+  ///
+  /// In en, this message translates to:
+  /// **'Add my MIDI collections'**
+  String get samplePackIncludeMidi;
+
+  /// Dialog button: pick the destination folder, then export
+  ///
+  /// In en, this message translates to:
+  /// **'Choose folder and export'**
+  String get samplePackChooseDestination;
+
+  /// Folder picker title for the sample pack destination
+  ///
+  /// In en, this message translates to:
+  /// **'Where to write the sample pack'**
+  String get samplePackDestinationTitle;
+
+  /// Title of the sample pack progress dialog
+  ///
+  /// In en, this message translates to:
+  /// **'Building sample pack'**
+  String get samplePackProgressTitle;
+
+  /// Progress line while reading project files
+  ///
+  /// In en, this message translates to:
+  /// **'Reading project {current} of {total}: {name}'**
+  String samplePackReading(int current, int total, String name);
+
+  /// Progress line while finding referenced sample files
+  ///
+  /// In en, this message translates to:
+  /// **'Finding sample {current} of {total}: {name}'**
+  String samplePackLocating(int current, int total, String name);
+
+  /// Progress line while measuring sample files
+  ///
+  /// In en, this message translates to:
+  /// **'Checking sample {current} of {total}: {name}'**
+  String samplePackMeasuring(int current, int total, String name);
+
+  /// Progress line while copying samples into the pack
+  ///
+  /// In en, this message translates to:
+  /// **'Copying {current} of {total}: {name}'**
+  String samplePackCopying(int current, int total, String name);
+
+  /// Progress line while writing MIDI collections
+  ///
+  /// In en, this message translates to:
+  /// **'Writing MIDI collection {current} of {total}: {name}'**
+  String samplePackWritingMidi(int current, int total, String name);
+
+  /// Progress line while writing the report files
+  ///
+  /// In en, this message translates to:
+  /// **'Writing the report…'**
+  String get samplePackFinishing;
+
+  /// Result dialog title when the export finished
+  ///
+  /// In en, this message translates to:
+  /// **'Sample pack ready'**
+  String get samplePackDoneTitle;
+
+  /// Result dialog title when the export was stopped
+  ///
+  /// In en, this message translates to:
+  /// **'Sample pack stopped'**
+  String get samplePackStoppedTitle;
+
+  /// Result line: samples copied into the pack
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =0{No new samples added} =1{1 new sample added} other{{count} new samples added}}'**
+  String samplePackAdded(int count);
+
+  /// Result line: samples the folder already had
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =1{1 was already in the folder} other{{count} were already in the folder}}'**
+  String samplePackAlreadyThere(int count);
+
+  /// Result line: own audio not exported
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =1{1 recording, bounce or stem left out} other{{count} recordings, bounces or stems left out}}'**
+  String samplePackLeftOut(int count);
+
+  /// Result line: MIDI files written
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =1{1 MIDI file written} other{{count} MIDI files written}}'**
+  String samplePackMidiWritten(int count);
+
+  /// Result line: references whose file was not found, and the report listing them
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =1{1 sample couldn\'t be found — see {file}} other{{count} samples couldn\'t be found — see {file}}}'**
+  String samplePackMissing(int count, String file);
+
+  /// Result line: project files that could not be read
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =1{1 project couldn\'t be read — see {file}} other{{count} projects couldn\'t be read — see {file}}}'**
+  String samplePackNotRead(int count, String file);
+
+  /// Under the result lines: the report file with usage counts
+  ///
+  /// In en, this message translates to:
+  /// **'How many songs use each sample, and where it came from, is in {file}.'**
+  String samplePackReportHint(String file);
 }
 
 class _AppLocalizationsDelegate
