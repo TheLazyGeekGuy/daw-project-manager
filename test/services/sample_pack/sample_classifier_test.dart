@@ -49,6 +49,30 @@ void main() {
       expect(origin(['Audio'], 'Bass_bounce.wav'), SampleOrigin.processed);
     });
 
+    test('a file loaded into a sampler is a sample, whatever it is named',
+        () {
+      SampleOrigin inSampler(List<String> under, String name,
+              {SampleKind? kind, Duration? duration}) =>
+          sampleOriginOf(
+            path: p.joinAll([project, ...under, name]),
+            projectDir: project,
+            kind: kind,
+            use: SampleUse.sampler,
+            duration: duration,
+          );
+      expect(inSampler(['Audio'], 'kick-01.wav', kind: SampleKind.processed),
+          SampleOrigin.project);
+      expect(inSampler(['Recorded'], 'Vox 0001.wav',
+              kind: SampleKind.recorded),
+          SampleOrigin.project);
+      expect(inSampler(['Edits'], 'kick.wav'), SampleOrigin.project);
+      expect(
+        inSampler(['Audio'], 'Pad.wav', duration: const Duration(minutes: 3)),
+        SampleOrigin.long,
+        reason: 'a stem loaded into a sampler is still a stem',
+      );
+    });
+
     test('a library folder named like a render folder is still a library',
         () {
       expect(origin(['Stems'], 'Bass.wav', root: library),

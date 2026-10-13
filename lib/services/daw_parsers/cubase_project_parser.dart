@@ -288,15 +288,18 @@ class CubaseProjectParser {
   /// * The pool: each file is an `FNPath` object whose body starts with the
   ///   file name as a string, then the type ("WAVE", the extension twice, a
   ///   description) and the folder it is in, absolute and ending in a
-  ///   separator. The Sampler Track's samples are pool files too.
+  ///   separator.
+  /// * The Sampler Track's sample: a `PSamplerTrackAudioClip` holding an
+  ///   `FNPath` of its own, read the same way and marked [SampleUse.sampler].
   /// * Plug-in state, inline in the archive, searched for absolute paths.
   ///
   /// A pool file named after a track and a take number ("Vocals_03.wav") is
   /// a recording; "kick-01.wav" beside "kick.wav" is what Cubase writes when
   /// it processes or bounces a file.
   List<SampleReference> readSampleReferences() {
-    final pool = <({String name, String dir})>[];
+    final pool = <({String name, String dir, bool sampler})>[];
     for (final index in _indices) {
+      final samplerClips = index.instancesOf('PSamplerTrackAudioClip');
       for (final fn in index.instancesOf('FNPath')) {
         final name = _readString(fn.body);
         if (name == null || name.end > fn.end) continue;
@@ -311,17 +314,38 @@ class CubaseProjectParser {
           }
         }
         if (dir == null) continue;
-        pool.add((name: name.text, dir: dir));
+        pool.add((
+          name: name.text,
+          dir: dir,
+          sampler: samplerClips.any((c) => c.contains(fn.start)),
+        ));
       }
     }
 
     final names = {for (final f in pool) _stem(f.name).toLowerCase()};
     final trackNames = [for (final t in readTracks()) t.name];
+    // A file the Sampler Track plays is listed once, as a sampler sample,
+    // even when the pool lists it too.
+    final inSampler = {
+      for (final f in pool)
+        if (f.sampler) '${f.dir}${f.name}'.toLowerCase(),
+    };
     final refs = <SampleReference>[];
     final seen = <String>{};
     for (final f in pool) {
       final path = '${f.dir}${f.name}';
       if (!seen.add(path.toLowerCase())) continue;
+      if (inSampler.contains(path.toLowerCase())) {
+        // Loaded into a sampler to be played: a sample, whatever its name
+        // says ("kick-01.wav" beside "kick.wav" is a trimmed or tuned copy
+        // of a sample, not a bounce of the song).
+        refs.add(SampleReference(
+          fileName: f.name,
+          candidates: [path, 'Audio/${f.name}'],
+          use: SampleUse.sampler,
+        ));
+        continue;
+      }
       final copyOf = _processedCopy.firstMatch(_stem(f.name));
       final SampleKind? kind =
           looksLikeRecording(f.name, trackNames, r'_\d{2,3}(-\d{2})?')

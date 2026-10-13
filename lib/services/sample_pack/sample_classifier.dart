@@ -112,17 +112,23 @@ final _processedName = RegExp(
 /// [kLongAudioBytes] or more; then the folders between [projectDir] and the
 /// file; then whether the file is inside the project's folder at all.
 ///
+/// A file loaded into a sampler ([use]) is a sample whatever its name or
+/// folder says — it was put there to be played as an instrument — so only
+/// its length can make it own audio.
+///
 /// Everything but [duration] is known without opening the file, so an
 /// export can tell own audio apart before downloading anything.
 SampleOrigin sampleOriginOf({
   required String path,
   required String projectDir,
   SampleKind? kind,
+  SampleUse use = SampleUse.audio,
   Duration? duration,
   int? sizeBytes,
 }) {
-  if (kind == SampleKind.recorded) return SampleOrigin.recorded;
-  if (kind == SampleKind.processed) return SampleOrigin.processed;
+  final inSampler = use == SampleUse.sampler;
+  if (!inSampler && kind == SampleKind.recorded) return SampleOrigin.recorded;
+  if (!inSampler && kind == SampleKind.processed) return SampleOrigin.processed;
   if (duration != null
       ? duration >= kLongAudio
       : sizeBytes != null && sizeBytes >= kLongAudioBytes) {
@@ -130,7 +136,7 @@ SampleOrigin sampleOriginOf({
   }
   final within = p.isWithin(p.normalize(projectDir), p.normalize(path));
   if (!within) return SampleOrigin.library;
-  if (kind == SampleKind.imported) return SampleOrigin.project;
+  if (inSampler || kind == SampleKind.imported) return SampleOrigin.project;
   final folders = p
       .split(p.relative(p.dirname(p.normalize(path)), from: p.normalize(projectDir)))
       .map((s) => s.toLowerCase());

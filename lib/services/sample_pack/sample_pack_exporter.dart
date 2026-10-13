@@ -440,6 +440,7 @@ class _Run {
       path: path,
       projectDir: projectDir,
       kind: ref.kind,
+      use: ref.use,
       duration: sample.duration,
       sizeBytes: sample.sizeBytes,
     );
@@ -465,6 +466,7 @@ class _Run {
       path: path,
       projectDir: projectDir,
       kind: ref.kind,
+      use: ref.use,
       duration: sample.duration,
       sizeBytes: sample.sizeBytes,
     );

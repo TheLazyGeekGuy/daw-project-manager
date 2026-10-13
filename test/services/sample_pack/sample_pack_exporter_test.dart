@@ -60,10 +60,13 @@ void main() {
     );
   }
 
-  SampleReference ref(String path, {SampleKind? kind}) => SampleReference(
+  SampleReference ref(String path,
+          {SampleKind? kind, SampleUse use = SampleUse.audio}) =>
+      SampleReference(
         fileName: p.basename(path),
         candidates: [path],
         kind: kind,
+        use: use,
       );
 
   SamplePackExporter exporter({
@@ -185,6 +188,18 @@ void main() {
       expect(await packFiles(),
           contains('$kOwnAudioFolder/Vocal/Vocals_03.wav'));
     });
+  });
+
+  test("a sampler's sample goes in even when it looks like a bounce",
+      () async {
+    final kick = await file(['Song', 'Audio', 'kick-01.wav'], 'TRIMMED');
+    final result = await exporter().export([
+      await project(['Song', 'song.cpr'], [
+        ref(kick, use: SampleUse.sampler),
+      ]),
+    ]);
+    expect(result.added, 1);
+    expect(await packFiles(), contains('Kick/kick-01.wav'));
   });
 
   test('master projects are left unread when asked', () async {

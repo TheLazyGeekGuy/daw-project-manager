@@ -407,6 +407,30 @@ void main() {
       expect(plugin.single.candidates, [r'E:\Kits\Snare 7.wav']);
     });
 
+    test("the Sampler Track's sample is a sampler sample, never a "
+        'processed copy, and listed once', () {
+      final a = _Archive();
+      a.track('MSamplerTrackEvent', 'kick');
+      a.begin('PSamplerTrackAudioClip');
+      a.poolFile('bizzare_kick-01.wav', projectAudio);
+      a.end();
+      a.begin('PPool');
+      a.poolFile('bizzare_kick.wav', projectAudio);
+      a.poolFile('bizzare_kick-01.wav', projectAudio); // the pool lists it too
+      a.end();
+      final refs = CubaseProjectParser(a.toCpr()).readSampleReferences();
+      final played =
+          refs.where((r) => r.fileName == 'bizzare_kick-01.wav').toList();
+      expect(played, hasLength(1));
+      expect(played.single.use, SampleUse.sampler);
+      expect(played.single.kind, isNull,
+          reason: 'its original being in the pool does not make it a bounce');
+      expect(
+        refs.firstWhere((r) => r.fileName == 'bizzare_kick.wav').use,
+        SampleUse.audio,
+      );
+    });
+
     test('a pool path that is not audio (a preset) is skipped', () {
       final a = _Archive();
       a.poolFile('Bright Ballad Vocal.vstpreset', r'C:\Presets\');
