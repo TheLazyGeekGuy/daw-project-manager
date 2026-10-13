@@ -4245,5 +4245,13 @@
   "samplePackPickedProjects": "Nur ausgewählte",
   "samplePackSearchProjects": "Projekte suchen",
   "samplePackPickedCount": "{count, plural, =0{Kein Projekt ausgewählt} =1{1 Projekt ausgewählt} other{{count} Projekte ausgewählt}}",
-  "samplePackNoProjectsMatch": "Keine passenden Projekte."
+  "samplePackNoProjectsMatch": "Keine passenden Projekte.",
+  "samplePackRename": "Samples umbenennen",
+  "samplePackRenameHelp": "Kategorie und Nummer, dann was du auswählst. Nur Samples, die dieser Export hinzufügt, werden umbenannt; der Bericht behält jeweils den ursprünglichen Namen.",
+  "samplePackRenameName": "Ursprünglicher Name",
+  "samplePackRenameBpm": "Tempo (BPM)",
+  "samplePackRenameKey": "Tonart",
+  "samplePackRenamePrefix": "Präfix",
+  "samplePackRenamePrefixHint": "z. B. AC",
+  "samplePackRenameExample": "Beispiel: {name}"
 }

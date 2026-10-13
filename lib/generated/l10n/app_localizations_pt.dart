@@ -7283,4 +7283,31 @@ class AppLocalizationsPt extends AppLocalizations {
 
   @override
   String get samplePackNoProjectsMatch => 'Nenhum projeto encontrado.';
+
+  @override
+  String get samplePackRename => 'Renomear samples';
+
+  @override
+  String get samplePackRenameHelp =>
+      'Categoria e número, e depois o que você escolher. Só os samples adicionados nesta exportação são renomeados; o relatório guarda o nome original de cada um.';
+
+  @override
+  String get samplePackRenameName => 'Nome original';
+
+  @override
+  String get samplePackRenameBpm => 'Andamento (BPM)';
+
+  @override
+  String get samplePackRenameKey => 'Tom';
+
+  @override
+  String get samplePackRenamePrefix => 'Prefixo';
+
+  @override
+  String get samplePackRenamePrefixHint => 'ex.: AC';
+
+  @override
+  String samplePackRenameExample(String name) {
+    return 'Exemplo: $name';
+  }
 }

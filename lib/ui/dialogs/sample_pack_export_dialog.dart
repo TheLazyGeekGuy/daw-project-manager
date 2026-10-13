@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 
 import '../../generated/l10n/app_localizations.dart';
+import '../../services/sample_pack/sample_classifier.dart';
+import '../../services/sample_pack/sample_naming.dart';
 import '../../services/sample_pack/sample_pack_exporter.dart';
 
 /// A profile as the export dialog lists it.
@@ -37,6 +39,7 @@ class SamplePackExportChoice {
     required this.includeMidi,
     required this.excludeMasterProjects,
     this.projectIds,
+    this.naming,
   });
 
   final List<String> profileIds;
@@ -44,6 +47,9 @@ class SamplePackExportChoice {
   /// The projects picked, all in [profileIds]; null for every project in
   /// those profiles.
   final List<String>? projectIds;
+
+  /// How added samples are renamed; null keeps their names.
+  final SampleNaming? naming;
   final List<String> libraryFolders;
   final bool includeOwnAudio;
   final bool includeMidi;
@@ -64,6 +70,8 @@ class SamplePackExportDialog extends StatefulWidget {
     required this.initialProfileIds,
     this.initialOnlyPicked = false,
     this.initialPickedProjectIds = const {},
+    this.initialRename = false,
+    this.initialNaming = const SampleNaming(),
     required this.initialLibraryFolders,
     required this.initialIncludeOwnAudio,
     required this.initialIncludeMidi,
@@ -83,6 +91,10 @@ class SamplePackExportDialog extends StatefulWidget {
   /// Whether the picker is open, and what is ticked in it.
   final bool initialOnlyPicked;
   final Set<String> initialPickedProjectIds;
+
+  /// Whether added samples are renamed, and how.
+  final bool initialRename;
+  final SampleNaming initialNaming;
   final List<String> initialLibraryFolders;
   final bool initialIncludeOwnAudio;
   final bool initialIncludeMidi;
@@ -110,6 +122,91 @@ class _SamplePackExportDialogState extends State<SamplePackExportDialog> {
       if (widget.initialPickedProjectIds.contains(pr.id)) pr.id,
   };
   String _search = '';
+  late bool _rename = widget.initialRename;
+  late SampleNaming _naming = widget.initialNaming;
+  late final _prefix = TextEditingController(text: widget.initialNaming.prefix);
+
+  @override
+  void dispose() {
+    _prefix.dispose();
+    super.dispose();
+  }
+
+  void _setNaming({bool? name, bool? bpm, bool? key, String? prefix}) =>
+      setState(() => _naming = SampleNaming(
+            includeName: name ?? _naming.includeName,
+            includeBpm: bpm ?? _naming.includeBpm,
+            includeKey: key ?? _naming.includeKey,
+            prefix: prefix ?? _naming.prefix,
+          ));
+
+  /// Renaming: whether, which parts, a prefix, and what a name comes out as.
+  List<Widget> _renameSection(AppLocalizations l10n, ThemeData theme) {
+    Widget part(String label, bool value, ValueChanged<bool> onChanged) =>
+        FilterChip(
+          label: Text(label),
+          selected: value,
+          onSelected: onChanged,
+        );
+    return [
+      CheckboxListTile(
+        contentPadding: EdgeInsets.zero,
+        dense: true,
+        controlAffinity: ListTileControlAffinity.leading,
+        value: _rename,
+        onChanged: (v) => setState(() => _rename = v ?? false),
+        title: Text(l10n.samplePackRename),
+        subtitle: Text(l10n.samplePackRenameHelp),
+      ),
+      if (_rename) ...[
+        Padding(
+          padding: const EdgeInsets.only(left: 8),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Wrap(
+                spacing: 8,
+                runSpacing: 4,
+                children: [
+                  part(l10n.samplePackRenameName, _naming.includeName,
+                      (v) => _setNaming(name: v)),
+                  part(l10n.samplePackRenameBpm, _naming.includeBpm,
+                      (v) => _setNaming(bpm: v)),
+                  part(l10n.samplePackRenameKey, _naming.includeKey,
+                      (v) => _setNaming(key: v)),
+                ],
+              ),
+              const SizedBox(height: 8),
+              SizedBox(
+                width: 200,
+                child: TextField(
+                  key: const ValueKey('samplePackRenamePrefix'),
+                  controller: _prefix,
+                  decoration: InputDecoration(
+                    isDense: true,
+                    labelText: l10n.samplePackRenamePrefix,
+                    hintText: l10n.samplePackRenamePrefixHint,
+                  ),
+                  onChanged: (v) => _setNaming(prefix: v),
+                ),
+              ),
+              const SizedBox(height: 8),
+              Text(
+                l10n.samplePackRenameExample(_naming.fileName(
+                  category: SampleCategory.bass,
+                  number: 1,
+                  original: 'rolling_bassline.wav',
+                  bpm: 145,
+                  key: 'F#m',
+                )),
+                style: theme.textTheme.bodySmall,
+              ),
+            ],
+          ),
+        ),
+      ],
+    ];
+  }
 
   int _projectCount(String profileId) =>
       widget.projects.where((pr) => pr.profileId == profileId).length;
@@ -362,6 +459,8 @@ class _SamplePackExportDialogState extends State<SamplePackExportDialog> {
                 onChanged: (v) => setState(() => _includeMidi = v ?? false),
                 title: Text(l10n.samplePackIncludeMidi),
               ),
+              const Divider(height: 24),
+              ..._renameSection(l10n, theme),
             ],
           ),
         ),
@@ -386,6 +485,7 @@ class _SamplePackExportDialogState extends State<SamplePackExportDialog> {
                       includeMidi: _includeMidi,
                       excludeMasterProjects: _excludeMasters,
                       projectIds: _onlyPicked ? _pickedIds : null,
+                      naming: _rename ? _naming : null,
                     ),
                   ),
           child: Text(l10n.samplePackChooseDestination),

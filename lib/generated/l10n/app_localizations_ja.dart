@@ -7067,4 +7067,31 @@ class AppLocalizationsJa extends AppLocalizations {
 
   @override
   String get samplePackNoProjectsMatch => '一致するプロジェクトはありません。';
+
+  @override
+  String get samplePackRename => 'サンプルの名前を変更する';
+
+  @override
+  String get samplePackRenameHelp =>
+      'カテゴリと番号の後に、選んだ項目が続きます。名前が変わるのはこの書き出しで追加されたサンプルだけで、元の名前はレポートに残ります。';
+
+  @override
+  String get samplePackRenameName => '元の名前';
+
+  @override
+  String get samplePackRenameBpm => 'テンポ (BPM)';
+
+  @override
+  String get samplePackRenameKey => 'キー';
+
+  @override
+  String get samplePackRenamePrefix => '接頭辞';
+
+  @override
+  String get samplePackRenamePrefixHint => '例: AC';
+
+  @override
+  String samplePackRenameExample(String name) {
+    return '例: $name';
+  }
 }

@@ -12064,6 +12064,54 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'No projects match.'**
   String get samplePackNoProjectsMatch;
+
+  /// Checkbox: give added samples generic names from a template
+  ///
+  /// In en, this message translates to:
+  /// **'Rename samples'**
+  String get samplePackRename;
+
+  /// Under the rename checkbox: what it touches and where old names stay
+  ///
+  /// In en, this message translates to:
+  /// **'Category and number, then what you pick. Only samples this export adds are renamed; the report keeps each one\'s original name.'**
+  String get samplePackRenameHelp;
+
+  /// Chip: put the original name in the new file name
+  ///
+  /// In en, this message translates to:
+  /// **'Original name'**
+  String get samplePackRenameName;
+
+  /// Chip: put the tempo in the new file name
+  ///
+  /// In en, this message translates to:
+  /// **'Tempo (BPM)'**
+  String get samplePackRenameBpm;
+
+  /// Chip: put the musical key in the new file name
+  ///
+  /// In en, this message translates to:
+  /// **'Key'**
+  String get samplePackRenameKey;
+
+  /// Label of the optional text put before every new file name
+  ///
+  /// In en, this message translates to:
+  /// **'Prefix'**
+  String get samplePackRenamePrefix;
+
+  /// Hint inside the prefix field
+  ///
+  /// In en, this message translates to:
+  /// **'e.g. AC'**
+  String get samplePackRenamePrefixHint;
+
+  /// Shows what a file comes out named as
+  ///
+  /// In en, this message translates to:
+  /// **'Example: {name}'**
+  String samplePackRenameExample(String name);
 }
 
 class _AppLocalizationsDelegate

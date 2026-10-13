@@ -4,6 +4,7 @@ import 'package:flutter/foundation.dart';
 import 'package:hive_ce/hive.dart';
 
 import '../player_volume_store.dart';
+import 'sample_naming.dart';
 
 /// What the sample pack export was last run with, offered again next time.
 ///
@@ -19,6 +20,8 @@ class SamplePackPrefs {
     this.profileIds,
     this.onlyPickedProjects = false,
     this.pickedProjectIds = const [],
+    this.rename = false,
+    this.naming = const SampleNaming(),
   });
 
   final List<String> libraryFolders;
@@ -33,6 +36,11 @@ class SamplePackPrefs {
   final bool onlyPickedProjects;
   final List<String> pickedProjectIds;
 
+  /// Whether added samples are renamed, and how — kept even while renaming
+  /// is off, so turning it back on brings the same choices back.
+  final bool rename;
+  final SampleNaming naming;
+
   Map<String, dynamic> toJson() => {
     'libraryFolders': libraryFolders,
     'includeOwnAudio': includeOwnAudio,
@@ -41,6 +49,8 @@ class SamplePackPrefs {
     'profileIds': ?profileIds,
     'onlyPickedProjects': onlyPickedProjects,
     'pickedProjectIds': pickedProjectIds,
+    'rename': rename,
+    'naming': naming.toJson(),
   };
 
   static SamplePackPrefs fromJson(Object? json) {
@@ -55,6 +65,8 @@ class SamplePackPrefs {
       profileIds: strings(json['profileIds']),
       onlyPickedProjects: json['onlyPickedProjects'] == true,
       pickedProjectIds: strings(json['pickedProjectIds']) ?? const [],
+      rename: json['rename'] == true,
+      naming: SampleNaming.fromJson(json['naming']),
     );
   }
 }

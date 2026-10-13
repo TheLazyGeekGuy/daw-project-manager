@@ -1,5 +1,6 @@
 import 'package:flutter_test/flutter_test.dart';
 
+import 'package:daw_project_manager/services/sample_pack/sample_naming.dart';
 import 'package:daw_project_manager/services/sample_pack/sample_pack_prefs_store.dart';
 import 'package:daw_project_manager/services/sample_pack/sample_pack_projects.dart';
 
@@ -58,6 +59,8 @@ void main() {
         profileIds: ['p1', 'p2'],
         onlyPickedProjects: true,
         pickedProjectIds: ['x', 'y'],
+        rename: true,
+        naming: SampleNaming(includeKey: false, prefix: 'AC'),
       );
       final back = SamplePackPrefs.fromJson(prefs.toJson());
       expect(back.libraryFolders, prefs.libraryFolders);
@@ -67,6 +70,9 @@ void main() {
       expect(back.profileIds, ['p1', 'p2']);
       expect(back.onlyPickedProjects, isTrue);
       expect(back.pickedProjectIds, ['x', 'y']);
+      expect(back.rename, isTrue);
+      expect(back.naming.includeKey, isFalse);
+      expect(back.naming.prefix, 'AC');
     });
 
     test('defaults: no folders, no own audio, MIDI in, masters out, every '
@@ -77,6 +83,7 @@ void main() {
       expect(prefs.includeOwnAudio, isFalse);
       expect(prefs.includeMidi, isTrue);
       expect(prefs.profileIds, isNull);
+      expect(prefs.rename, isFalse, reason: 'names are kept unless asked');
       expect(SamplePackPrefs.fromJson({'libraryFolders': 'nonsense'})
           .libraryFolders, isEmpty);
     });

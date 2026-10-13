@@ -7318,5 +7318,42 @@
   "samplePackNoProjectsMatch": "No projects match.",
   "@samplePackNoProjectsMatch": {
     "description": "Shown in the project list when nothing matches the search"
+  },
+  "samplePackRename": "Rename samples",
+  "@samplePackRename": {
+    "description": "Checkbox: give added samples generic names from a template"
+  },
+  "samplePackRenameHelp": "Category and number, then what you pick. Only samples this export adds are renamed; the report keeps each one's original name.",
+  "@samplePackRenameHelp": {
+    "description": "Under the rename checkbox: what it touches and where old names stay"
+  },
+  "samplePackRenameName": "Original name",
+  "@samplePackRenameName": {
+    "description": "Chip: put the original name in the new file name"
+  },
+  "samplePackRenameBpm": "Tempo (BPM)",
+  "@samplePackRenameBpm": {
+    "description": "Chip: put the tempo in the new file name"
+  },
+  "samplePackRenameKey": "Key",
+  "@samplePackRenameKey": {
+    "description": "Chip: put the musical key in the new file name"
+  },
+  "samplePackRenamePrefix": "Prefix",
+  "@samplePackRenamePrefix": {
+    "description": "Label of the optional text put before every new file name"
+  },
+  "samplePackRenamePrefixHint": "e.g. AC",
+  "@samplePackRenamePrefixHint": {
+    "description": "Hint inside the prefix field"
+  },
+  "samplePackRenameExample": "Example: {name}",
+  "@samplePackRenameExample": {
+    "description": "Shows what a file comes out named as",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
   }
 }

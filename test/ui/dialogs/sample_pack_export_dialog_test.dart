@@ -232,6 +232,38 @@ void main() {
       });
     });
 
+    testWidgets('renaming is off unless ticked; its parts and prefix come '
+        'back in the choice, with a live example', (tester) async {
+      await pump(tester);
+      expect(find.text('Original name'), findsNothing);
+      await tester.tap(exportButton());
+      await tester.pumpAndSettle();
+      expect(result!.naming, isNull, reason: 'names are kept by default');
+
+      await pump(tester);
+      await tester.tap(find.text('Rename samples'));
+      await tester.pump();
+      expect(
+        find.text(
+            'Example: Bass 001 - rolling bassline - 145 BPM - F#m.wav'),
+        findsOneWidget,
+      );
+      await tester.tap(find.widgetWithText(FilterChip, 'Key'));
+      await tester.enterText(
+          find.byKey(const ValueKey('samplePackRenamePrefix')), 'AC');
+      await tester.pump();
+      expect(
+        find.text('Example: AC Bass 001 - rolling bassline - 145 BPM.wav'),
+        findsOneWidget,
+      );
+      await tester.tap(exportButton());
+      await tester.pumpAndSettle();
+      expect(result!.naming, isNotNull);
+      expect(result!.naming!.includeKey, isFalse);
+      expect(result!.naming!.includeName, isTrue);
+      expect(result!.naming!.prefix, 'AC');
+    });
+
     testWidgets('master projects can be let back in', (tester) async {
       await pump(tester);
       await tester.tap(find.text('Leave out master projects'));

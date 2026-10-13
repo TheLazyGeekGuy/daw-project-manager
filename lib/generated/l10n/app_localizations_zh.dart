@@ -6990,4 +6990,31 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get samplePackNoProjectsMatch => '没有匹配的项目。';
+
+  @override
+  String get samplePackRename => '重命名采样';
+
+  @override
+  String get samplePackRenameHelp =>
+      '类别和编号，然后是你选择的内容。只会重命名本次导出新增的采样；报告中保留每个采样的原始名称。';
+
+  @override
+  String get samplePackRenameName => '原始名称';
+
+  @override
+  String get samplePackRenameBpm => '速度 (BPM)';
+
+  @override
+  String get samplePackRenameKey => '调性';
+
+  @override
+  String get samplePackRenamePrefix => '前缀';
+
+  @override
+  String get samplePackRenamePrefixHint => '例如 AC';
+
+  @override
+  String samplePackRenameExample(String name) {
+    return '示例：$name';
+  }
 }

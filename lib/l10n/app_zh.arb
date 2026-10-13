@@ -4245,5 +4245,13 @@
   "samplePackPickedProjects": "仅我选择的",
   "samplePackSearchProjects": "搜索项目",
   "samplePackPickedCount": "{count, plural, =0{未选择项目} other{已选择 {count} 个项目}}",
-  "samplePackNoProjectsMatch": "没有匹配的项目。"
+  "samplePackNoProjectsMatch": "没有匹配的项目。",
+  "samplePackRename": "重命名采样",
+  "samplePackRenameHelp": "类别和编号，然后是你选择的内容。只会重命名本次导出新增的采样；报告中保留每个采样的原始名称。",
+  "samplePackRenameName": "原始名称",
+  "samplePackRenameBpm": "速度 (BPM)",
+  "samplePackRenameKey": "调性",
+  "samplePackRenamePrefix": "前缀",
+  "samplePackRenamePrefixHint": "例如 AC",
+  "samplePackRenameExample": "示例：{name}"
 }

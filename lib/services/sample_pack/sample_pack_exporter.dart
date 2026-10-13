@@ -14,6 +14,7 @@ import 'master_project.dart';
 import 'project_sample_reader.dart';
 import 'sample_classifier.dart';
 import 'sample_locator.dart';
+import 'sample_naming.dart';
 
 /// One project to collect samples from.
 class SamplePackProject {
@@ -23,7 +24,11 @@ class SamplePackProject {
     required this.name,
     required this.profileName,
     required this.songKey,
+    this.bpm,
   });
+
+  /// The project's tempo, which a loop cut to whole bars at it was made at.
+  final double? bpm;
 
   /// The project's id in its profile, for picking it.
   final String id;
@@ -87,6 +92,11 @@ class PackSample {
   final List<String> paths = [];
   int sizeBytes = 0;
   Duration? duration;
+
+  /// The tempo and key its name, its folders or its project gave away
+  /// (see `sampleTraitsOf`); null when nothing did.
+  double? bpm;
+  String? key;
   SampleCategory category = SampleCategory.other;
   SampleOrigin origin = SampleOrigin.project;
   final List<SampleOrigin> _origins = [];
@@ -212,6 +222,7 @@ class SamplePackExporter {
     required this.destination,
     this.includeOwnAudio = false,
     this.excludeMasterProjects = false,
+    this.naming,
     SampleLocator? locator,
     this.readReferences = readProjectSampleReferences,
     this.canRead = canReadSampleReferences,
@@ -227,6 +238,12 @@ class SamplePackExporter {
   /// Whether master projects are left unread: they hold a song's stems and
   /// mixdowns, not samples.
   final bool excludeMasterProjects;
+
+  /// How copied samples are renamed; null keeps their names (with the
+  /// category in front when the name doesn't say it, see `packFileName`).
+  /// Only samples copied in by this run are named: what is in the folder
+  /// already — renamed by the user, perhaps — is left alone.
+  final SampleNaming? naming;
   final SampleLocator locator;
 
   final Future<List<SampleReference>> Function(String filePath) readReferences;
@@ -257,6 +274,9 @@ class _Run {
   final _bySize = <int, List<_Entry>>{};
   final _hashes = <String, String>{};
   final _taken = <String>{};
+
+  /// The next file number per pack folder (lower case), once looked up.
+  final _nextNumber = <String, int>{};
   final _written = <_PackFile>[];
 
   /// Each file copied in, by the source it was copied from — a source
@@ -504,14 +524,34 @@ class _Run {
       duration: sample.duration,
       projectDir: _inside(projectDir, path),
     );
+    _readTraits(sample, path, projectDir, project.bpm);
     final folder = [
       if (sample.origin.isOwnAudio) kOwnAudioFolder,
       sample.category.folder,
     ].join('/');
-    final relative = _unique(
-      '$folder/${packFileName(p.basename(path), sample.category)}',
-      _taken,
-    );
+    final naming = x.naming;
+    final String name;
+    if (naming == null) {
+      name = packFileName(p.basename(path), sample.category);
+    } else {
+      final folderKey = folder.toLowerCase();
+      final number = _nextNumber[folderKey] ??= naming.nextNumber(
+        sample.category,
+        [
+          for (final t in _taken)
+            if (p.posix.dirname(t) == folderKey) p.posix.basename(t),
+        ],
+      );
+      _nextNumber[folderKey] = number + 1;
+      name = naming.fileName(
+        category: sample.category,
+        number: number,
+        original: p.basename(path),
+        bpm: sample.bpm,
+        key: sample.key,
+      );
+    }
+    final relative = _unique('$folder/$name', _taken);
     _progress(SamplePackPhase.copying, index, total, relative);
     final target = p.joinAll([x.destination, ...relative.split('/')]);
     try {
@@ -528,6 +568,38 @@ class _Run {
     } catch (_) {
       sample._copyFailed = true;
     }
+  }
+
+  /// What [sample]'s name, then its folders, say about its tempo and key —
+  /// inside a project only its own subfolders, never the song's folder —
+  /// and, for a loop that fits whole bars at it, its project's tempo. A
+  /// one-shot has no tempo, whatever the kit it came from was made at.
+  void _readTraits(
+    PackSample sample,
+    String path,
+    String projectDir,
+    double? projectBpm,
+  ) {
+    final name = sampleTraitsOf(p.basenameWithoutExtension(path));
+    var bpm = name.bpm;
+    var key = name.key;
+    final folders = p.isWithin(projectDir, path)
+        ? p.split(p.relative(p.dirname(path), from: projectDir))
+            .where((f) => f != '.')
+        : p.split(p.dirname(path)).skip(1);
+    for (final folder in folders.toList().reversed.take(3)) {
+      final t = sampleTraitsOf(folder);
+      bpm ??= t.bpm;
+      key ??= t.key;
+    }
+    final length = sample.duration;
+    if (bpm == null && length != null && projectBpm != null) {
+      bpm = bpmFromLoopLength(length, projectBpm);
+    }
+    if (length != null && length.inMilliseconds <= 1500) bpm = null;
+    sample
+      ..bpm = bpm
+      ..key = key;
   }
 
   /// Compares [sample] (whose first copy is [path]) with the pack and the
@@ -727,6 +799,8 @@ String samplePackReportCsv(List<PackSample> samples) {
       'profiles',
       'origin',
       'seconds',
+      'bpm',
+      'key',
       'source_file',
       'other_copies',
     ].join(','));
@@ -741,6 +815,8 @@ String samplePackReportCsv(List<PackSample> samples) {
       s.duration == null
           ? null
           : (s.duration!.inMilliseconds / 1000).toStringAsFixed(2),
+      s.bpm == null ? null : formatBpm(s.bpm!),
+      s.key,
       s.paths.first,
       s.paths.skip(1).join('; '),
     ].map(_csvCell).join(','));

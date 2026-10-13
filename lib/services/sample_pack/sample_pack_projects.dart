@@ -21,6 +21,7 @@ List<SamplePackProject> samplePackProjectsOf(
           name: byId[project.stackId]?.displayName ?? project.displayName,
           profileName: profileName,
           songKey: project.stackId ?? project.id,
+          bpm: project.bpm,
         ),
   ];
 }

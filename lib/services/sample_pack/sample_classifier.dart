@@ -329,9 +329,16 @@ SampleCategory sampleCategoryOf(
       ? p.split(p.relative(p.dirname(path), from: projectDir))
           .where((f) => f != '.')
       : p.split(p.dirname(path)).skip(1);
+  // Two-letter shorthand ("bd", "sd", "hh") only counts in a file's own
+  // name: in a folder's it is as likely a code, a random suffix or initials
+  // — but an "FX" folder is common and means what it says.
   final folderWords = [
     for (final folder in folders.toList().reversed.take(4))
-      if (!_genericFolders.contains(folder.toLowerCase())) _words(folder),
+      if (!_genericFolders.contains(folder.toLowerCase()))
+        [
+          for (final w in _words(folder))
+            if (w.length > 2 || w == 'fx') w,
+        ],
   ];
 
   var category = _categoryOfWords(nameWords);

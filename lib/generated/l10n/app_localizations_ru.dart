@@ -7291,4 +7291,31 @@ class AppLocalizationsRu extends AppLocalizations {
 
   @override
   String get samplePackNoProjectsMatch => 'Подходящих проектов нет.';
+
+  @override
+  String get samplePackRename => 'Переименовать сэмплы';
+
+  @override
+  String get samplePackRenameHelp =>
+      'Категория и номер, затем выбранные части. Переименовываются только сэмплы, добавленные этим экспортом; исходное имя каждого сохраняется в отчёте.';
+
+  @override
+  String get samplePackRenameName => 'Исходное имя';
+
+  @override
+  String get samplePackRenameBpm => 'Темп (BPM)';
+
+  @override
+  String get samplePackRenameKey => 'Тональность';
+
+  @override
+  String get samplePackRenamePrefix => 'Префикс';
+
+  @override
+  String get samplePackRenamePrefixHint => 'напр. AC';
+
+  @override
+  String samplePackRenameExample(String name) {
+    return 'Пример: $name';
+  }
 }

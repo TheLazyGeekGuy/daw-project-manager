@@ -4269,5 +4269,13 @@
   "samplePackPickedProjects": "Só os que eu escolher",
   "samplePackSearchProjects": "Buscar projetos",
   "samplePackPickedCount": "{count, plural, =0{Nenhum projeto escolhido} =1{1 projeto escolhido} other{{count} projetos escolhidos}}",
-  "samplePackNoProjectsMatch": "Nenhum projeto encontrado."
+  "samplePackNoProjectsMatch": "Nenhum projeto encontrado.",
+  "samplePackRename": "Renomear samples",
+  "samplePackRenameHelp": "Categoria e número, e depois o que você escolher. Só os samples adicionados nesta exportação são renomeados; o relatório guarda o nome original de cada um.",
+  "samplePackRenameName": "Nome original",
+  "samplePackRenameBpm": "Andamento (BPM)",
+  "samplePackRenameKey": "Tom",
+  "samplePackRenamePrefix": "Prefixo",
+  "samplePackRenamePrefixHint": "ex.: AC",
+  "samplePackRenameExample": "Exemplo: {name}"
 }

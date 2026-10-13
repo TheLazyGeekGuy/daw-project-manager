@@ -165,6 +165,11 @@ void main() {
       expect(cat('Sound 04.wav', folders: ['Samples', 'Imported']),
           SampleCategory.other,
           reason: 'generic folders say nothing');
+      expect(cat('Sound 04.wav', folders: ['sample_pack_bd12f3']),
+          SampleCategory.other,
+          reason: 'shorthand counts in a file name only, not a folder name');
+      expect(cat('BD 04.wav'), SampleCategory.kick);
+      expect(cat('Sound 04.wav', folders: ['FX']), SampleCategory.fx);
     });
 
     test("inside a project only its subfolders count, never the song's name",

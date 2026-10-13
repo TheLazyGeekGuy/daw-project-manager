@@ -4245,5 +4245,13 @@
   "samplePackPickedProjects": "Solo los que elija",
   "samplePackSearchProjects": "Buscar proyectos",
   "samplePackPickedCount": "{count, plural, =0{Ningún proyecto elegido} =1{1 proyecto elegido} other{{count} proyectos elegidos}}",
-  "samplePackNoProjectsMatch": "Ningún proyecto coincide."
+  "samplePackNoProjectsMatch": "Ningún proyecto coincide.",
+  "samplePackRename": "Renombrar samples",
+  "samplePackRenameHelp": "Categoría y número, y después lo que elijas. Solo se renombran los samples que añade esta exportación; el informe guarda el nombre original de cada uno.",
+  "samplePackRenameName": "Nombre original",
+  "samplePackRenameBpm": "Tempo (BPM)",
+  "samplePackRenameKey": "Tonalidad",
+  "samplePackRenamePrefix": "Prefijo",
+  "samplePackRenamePrefixHint": "p. ej. AC",
+  "samplePackRenameExample": "Ejemplo: {name}"
 }

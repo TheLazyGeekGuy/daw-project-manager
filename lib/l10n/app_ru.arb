@@ -4245,5 +4245,13 @@
   "samplePackPickedProjects": "Только выбранные",
   "samplePackSearchProjects": "Поиск проектов",
   "samplePackPickedCount": "{count, plural, =0{Проекты не выбраны} =1{Выбран 1 проект} few{Выбрано {count} проекта} many{Выбрано {count} проектов} other{Выбрано {count} проекта}}",
-  "samplePackNoProjectsMatch": "Подходящих проектов нет."
+  "samplePackNoProjectsMatch": "Подходящих проектов нет.",
+  "samplePackRename": "Переименовать сэмплы",
+  "samplePackRenameHelp": "Категория и номер, затем выбранные части. Переименовываются только сэмплы, добавленные этим экспортом; исходное имя каждого сохраняется в отчёте.",
+  "samplePackRenameName": "Исходное имя",
+  "samplePackRenameBpm": "Темп (BPM)",
+  "samplePackRenameKey": "Тональность",
+  "samplePackRenamePrefix": "Префикс",
+  "samplePackRenamePrefixHint": "напр. AC",
+  "samplePackRenameExample": "Пример: {name}"
 }

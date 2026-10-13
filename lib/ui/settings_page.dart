@@ -718,6 +718,8 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
               {for (final profile in profiles) profile.id},
           initialOnlyPicked: prefs.onlyPickedProjects,
           initialPickedProjectIds: prefs.pickedProjectIds.toSet(),
+          initialRename: prefs.rename,
+          initialNaming: prefs.naming,
           initialLibraryFolders: prefs.libraryFolders,
           initialIncludeOwnAudio: prefs.includeOwnAudio,
           initialIncludeMidi: prefs.includeMidi,
@@ -736,6 +738,8 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
         profileIds: choice.profileIds,
         onlyPickedProjects: choice.projectIds != null,
         pickedProjectIds: choice.projectIds ?? prefs.pickedProjectIds,
+        rename: choice.naming != null,
+        naming: choice.naming ?? prefs.naming,
       ));
 
       final dir = await FilePicker.getDirectoryPath(
@@ -773,6 +777,7 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
         destination: dir,
         includeOwnAudio: choice.includeOwnAudio,
         excludeMasterProjects: choice.excludeMasterProjects,
+        naming: choice.naming,
         locator: SampleLocator(libraryFolders: choice.libraryFolders),
       );
       final outcome = await showDialog<Object?>(

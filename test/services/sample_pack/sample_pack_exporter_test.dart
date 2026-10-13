@@ -8,9 +8,11 @@ import 'package:daw_project_manager/models/midi_clip.dart';
 import 'package:daw_project_manager/models/sample_reference.dart';
 import 'package:daw_project_manager/services/midi/midi_file_writer.dart';
 import 'package:daw_project_manager/services/sample_pack/sample_classifier.dart';
+import 'package:daw_project_manager/services/sample_pack/sample_naming.dart';
 import 'package:daw_project_manager/services/sample_pack/sample_pack_exporter.dart';
 
 void main() {
+  late Directory temp;
   late Directory root;
   late String pack;
 
@@ -23,7 +25,11 @@ void main() {
   late List<String> opened;
 
   setUp(() async {
-    root = await Directory.systemTemp.createTemp('sample_pack_');
+    // Three fixed folders below the random one: the category guess reads a
+    // file's nearest folders, and must never see the random name.
+    temp = await Directory.systemTemp.createTemp('sample_pack_');
+    root = await Directory(p.join(temp.path, 'work', 'music', 'files'))
+        .create(recursive: true);
     pack = p.join(root.path, 'Pack');
     refsByProject = {};
     durations = {};
@@ -32,7 +38,7 @@ void main() {
   });
 
   tearDown(() async {
-    await root.delete(recursive: true);
+    await temp.delete(recursive: true);
   });
 
   Future<String> file(List<String> parts, String content) async {
@@ -49,6 +55,7 @@ void main() {
     String? name,
     String profile = 'Main',
     String? songKey,
+    double? bpm,
   }) async {
     final path = await file(parts, 'project');
     refsByProject[path] = refs;
@@ -57,6 +64,7 @@ void main() {
       name: name ?? p.basenameWithoutExtension(path),
       profileName: profile,
       songKey: songKey ?? path,
+      bpm: bpm,
     );
   }
 
@@ -72,11 +80,13 @@ void main() {
   SamplePackExporter exporter({
     bool includeOwnAudio = false,
     bool excludeMasterProjects = false,
+    SampleNaming? naming,
   }) =>
       SamplePackExporter(
         destination: pack,
         includeOwnAudio: includeOwnAudio,
         excludeMasterProjects: excludeMasterProjects,
+        naming: naming,
         readReferences: (path) async {
           final refs = refsByProject[path];
           if (refs == null) throw const FormatException('unreadable');
@@ -205,6 +215,83 @@ void main() {
     ]);
     expect(result.added, 1);
     expect(await packFiles(), contains('Kick/kick-01.wav'));
+  });
+
+  group('renaming', () {
+    test('numbers each folder, with what the name and folders say',
+        () async {
+      final kick1 = await file(['Lib', 'Kicks', 'gataka_kick.wav'], 'K1');
+      final kick2 = await file(['Lib', 'Kicks', 'big kick F#.wav'], 'K22');
+      final loop =
+          await file(['Lib', 'Bass Loops 145 BPM', 'roller Am.wav'], 'LOOP');
+      final hit =
+          await file(['Lib', 'VDE2 128BPM Kit', 'VDE2 Kick 128BPM.wav'], 'HIT!');
+      durations.addAll({
+        'gataka_kick.wav': const Duration(milliseconds: 300),
+        'big kick F#.wav': const Duration(milliseconds: 300),
+        'roller Am.wav': const Duration(seconds: 7),
+        'VDE2 Kick 128BPM.wav': const Duration(milliseconds: 400),
+      });
+      final result = await exporter(naming: const SampleNaming()).export([
+        await project(['A', 'a.cpr'], [ref(kick1), ref(kick2), ref(loop), ref(hit)]),
+      ]);
+      expect(result.added, 4);
+      expect(await packFiles(), containsAll([
+        'Kick/Kick 001 - gataka kick.wav',
+        'Kick/Kick 002 - big kick - F#.wav',
+        'Bass/Bass 001 - roller - 145 BPM - Am.wav',
+        'Kick/Kick 003 - VDE2 Kick.wav',
+      ]), reason: 'a one-shot keeps no tempo, even from its kit\'s name');
+    });
+
+    test("a loop that fits whole bars takes its project's tempo", () async {
+      final loop = await file(['Song', 'Audio', 'Top Loop.wav'], 'TOP');
+      // 4 bars at 140 BPM.
+      durations['Top Loop.wav'] =
+          Duration(microseconds: (4 * 240 / 140 * 1e6).round());
+      await exporter(naming: const SampleNaming()).export([
+        await project(['Song', 'song.cpr'], [ref(loop)], bpm: 140),
+      ]);
+      expect(await packFiles(), contains('Loop/Loop 001 - Top Loop - 140 BPM.wav'));
+    });
+
+    test('a later export carries on the numbers and renames nothing there',
+        () async {
+      final a = await file(['Lib', 'kick a.wav'], 'A');
+      await exporter(naming: const SampleNaming()).export([
+        await project(['A', 'a.cpr'], [ref(a)]),
+      ]);
+      // The user renames the first one by hand.
+      await File(p.join(pack, 'Kick', 'Kick 001 - kick a.wav'))
+          .rename(p.join(pack, 'Kick', 'Kick 001 - my favourite.wav'));
+
+      final b = await file(['Lib', 'kick b.wav'], 'BB');
+      final again = await exporter(naming: const SampleNaming()).export([
+        await project(['A', 'a.cpr'], [ref(a)]),
+        await project(['B', 'b.cpr'], [ref(b)]),
+      ]);
+      expect(again.added, 1);
+      final kicks = (await packFiles()).where((f) => f.startsWith('Kick/'));
+      expect(kicks, [
+        'Kick/Kick 001 - my favourite.wav',
+        'Kick/Kick 002 - kick b.wav',
+      ]);
+    });
+
+    test('the report has the tempo and key, renamed or not', () async {
+      final loop =
+          await file(['Lib', 'Loops', 'Rolling 145bpm F#m.wav'], 'LOOP');
+      durations['Rolling 145bpm F#m.wav'] = const Duration(seconds: 7);
+      await exporter().export([
+        await project(['A', 'a.cpr'], [ref(loop)]),
+      ]);
+      final report =
+          await File(p.join(pack, kSamplePackReport)).readAsString();
+      expect(report, contains(',seconds,bpm,key,'));
+      expect(report, contains(',7.00,145,F#m,'));
+      expect(await packFiles(), contains('Loop/Rolling 145bpm F#m.wav'),
+          reason: 'without renaming, names are kept');
+    });
   });
 
   test('master projects are left unread when asked', () async {
