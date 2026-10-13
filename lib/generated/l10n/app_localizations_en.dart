@@ -7204,4 +7204,22 @@ class AppLocalizationsEn extends AppLocalizations {
   String samplePackReportHint(String file) {
     return 'How many songs use each sample, and where it came from, is in $file.';
   }
+
+  @override
+  String get samplePackExcludeMasters => 'Leave out master projects';
+
+  @override
+  String get samplePackExcludeMastersHelp =>
+      'Projects named \"(Master)\" or \"(M)\", or kept in a \"Master Project\" folder: they hold a song\'s stems and mixdowns, not samples.';
+
+  @override
+  String samplePackMastersLeftOut(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count master projects left out',
+      one: '1 master project left out',
+    );
+    return '$_temp0';
+  }
 }

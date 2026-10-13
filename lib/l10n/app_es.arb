@@ -4236,5 +4236,8 @@
   "samplePackMidiWritten": "{count, plural, =1{1 archivo MIDI escrito} other{{count} archivos MIDI escritos}}",
   "samplePackMissing": "{count, plural, =1{No se encontró 1 sample — ver {file}} other{No se encontraron {count} samples — ver {file}}}",
   "samplePackNotRead": "{count, plural, =1{No se pudo leer 1 proyecto — ver {file}} other{No se pudieron leer {count} proyectos — ver {file}}}",
-  "samplePackReportHint": "Cuántas canciones usan cada sample, y de dónde vino, está en {file}."
+  "samplePackReportHint": "Cuántas canciones usan cada sample, y de dónde vino, está en {file}.",
+  "samplePackExcludeMasters": "Omitir los proyectos de máster",
+  "samplePackExcludeMastersHelp": "Proyectos con \"(Master)\" o \"(M)\" en el nombre, o dentro de una carpeta \"Master Project\": contienen los stems y mezclas de la canción, no samples.",
+  "samplePackMastersLeftOut": "{count, plural, =1{1 proyecto de máster omitido} other{{count} proyectos de máster omitidos}}"
 }

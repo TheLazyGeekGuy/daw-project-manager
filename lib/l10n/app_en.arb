@@ -7272,5 +7272,22 @@
         "type": "String"
       }
     }
+  },
+  "samplePackExcludeMasters": "Leave out master projects",
+  "@samplePackExcludeMasters": {
+    "description": "Checkbox: skip master projects when building the sample pack"
+  },
+  "samplePackExcludeMastersHelp": "Projects named \"(Master)\" or \"(M)\", or kept in a \"Master Project\" folder: they hold a song's stems and mixdowns, not samples.",
+  "@samplePackExcludeMastersHelp": {
+    "description": "Under the master-projects checkbox: how they are recognised and why they are skipped"
+  },
+  "samplePackMastersLeftOut": "{count, plural, =1{1 master project left out} other{{count} master projects left out}}",
+  "@samplePackMastersLeftOut": {
+    "description": "Result line: master projects that were not read",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
   }
 }

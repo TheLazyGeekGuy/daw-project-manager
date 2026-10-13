@@ -4236,5 +4236,8 @@
   "samplePackMidiWritten": "{count, plural, =1{Записан 1 MIDI-файл} other{Записано MIDI-файлов: {count}}}",
   "samplePackMissing": "{count, plural, =1{1 сэмпл не найден — см. {file}} other{Не найдено сэмплов: {count} — см. {file}}}",
   "samplePackNotRead": "{count, plural, =1{1 проект не удалось прочитать — см. {file}} other{Не удалось прочитать проектов: {count} — см. {file}}}",
-  "samplePackReportHint": "Сколько треков использует каждый сэмпл и откуда он взят — в {file}."
+  "samplePackReportHint": "Сколько треков использует каждый сэмпл и откуда он взят — в {file}.",
+  "samplePackExcludeMasters": "Пропускать мастеринг-проекты",
+  "samplePackExcludeMastersHelp": "Проекты с «(Master)» или «(M)» в названии или в папке «Master Project»: в них стемы и миксдауны трека, а не сэмплы.",
+  "samplePackMastersLeftOut": "{count, plural, =1{Пропущен 1 мастеринг-проект} other{Пропущено мастеринг-проектов: {count}}}"
 }

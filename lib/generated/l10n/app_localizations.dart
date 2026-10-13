@@ -12010,6 +12010,24 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'How many songs use each sample, and where it came from, is in {file}.'**
   String samplePackReportHint(String file);
+
+  /// Checkbox: skip master projects when building the sample pack
+  ///
+  /// In en, this message translates to:
+  /// **'Leave out master projects'**
+  String get samplePackExcludeMasters;
+
+  /// Under the master-projects checkbox: how they are recognised and why they are skipped
+  ///
+  /// In en, this message translates to:
+  /// **'Projects named \"(Master)\" or \"(M)\", or kept in a \"Master Project\" folder: they hold a song\'s stems and mixdowns, not samples.'**
+  String get samplePackExcludeMastersHelp;
+
+  /// Result line: master projects that were not read
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =1{1 master project left out} other{{count} master projects left out}}'**
+  String samplePackMastersLeftOut(int count);
 }
 
 class _AppLocalizationsDelegate

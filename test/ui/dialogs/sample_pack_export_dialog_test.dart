@@ -59,6 +59,7 @@ void main() {
                     initialLibraryFolders: folders,
                     initialIncludeOwnAudio: false,
                     initialIncludeMidi: true,
+                    initialExcludeMasterProjects: true,
                     pickFolder: () async =>
                         picks.isEmpty ? null : picks.removeAt(0),
                   ),
@@ -108,6 +109,16 @@ void main() {
       expect(result!.profileIds, ['p1', 'p3']);
       expect(result!.includeMidi, isTrue);
       expect(result!.includeOwnAudio, isFalse);
+      expect(result!.excludeMasterProjects, isTrue);
+    });
+
+    testWidgets('master projects can be let back in', (tester) async {
+      await pump(tester);
+      await tester.tap(find.text('Leave out master projects'));
+      await tester.pump();
+      await tester.tap(find.text('Choose folder and export'));
+      await tester.pumpAndSettle();
+      expect(result!.excludeMasterProjects, isFalse);
     });
 
     testWidgets('select all ticks every profile and then disables itself',
@@ -222,6 +233,7 @@ void main() {
             projectsRead: 1,
             midiFiles: 3,
             stopped: false,
+            masterProjectsLeftOut: 2,
           ),
           onOpenFolder: () => opened++,
         )));
@@ -233,6 +245,7 @@ void main() {
     expect(find.text('• 1 was already in the folder'), findsOneWidget);
     expect(find.text('• 1 recording, bounce or stem left out'), findsOneWidget);
     expect(find.text('• 3 MIDI files written'), findsOneWidget);
+    expect(find.text('• 2 master projects left out'), findsOneWidget);
     expect(find.textContaining(kSamplePackProblems), findsOneWidget);
     await tester.tap(find.text('Open Folder'));
     expect(opened, 1);

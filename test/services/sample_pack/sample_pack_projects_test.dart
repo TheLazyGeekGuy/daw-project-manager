@@ -53,17 +53,21 @@ void main() {
         libraryFolders: [r'D:\Samples', '/Volumes/Lib'],
         includeOwnAudio: true,
         includeMidi: false,
+        excludeMasterProjects: false,
         profileIds: ['p1', 'p2'],
       );
       final back = SamplePackPrefs.fromJson(prefs.toJson());
       expect(back.libraryFolders, prefs.libraryFolders);
       expect(back.includeOwnAudio, isTrue);
       expect(back.includeMidi, isFalse);
+      expect(back.excludeMasterProjects, isFalse);
       expect(back.profileIds, ['p1', 'p2']);
     });
 
-    test('defaults: no folders, no own audio, MIDI in, every profile', () {
+    test('defaults: no folders, no own audio, MIDI in, masters out, every '
+        'profile', () {
       final prefs = SamplePackPrefs.fromJson(null);
+      expect(prefs.excludeMasterProjects, isTrue);
       expect(prefs.libraryFolders, isEmpty);
       expect(prefs.includeOwnAudio, isFalse);
       expect(prefs.includeMidi, isTrue);

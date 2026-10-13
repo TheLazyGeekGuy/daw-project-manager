@@ -23,12 +23,14 @@ class SamplePackExportChoice {
     required this.libraryFolders,
     required this.includeOwnAudio,
     required this.includeMidi,
+    required this.excludeMasterProjects,
   });
 
   final List<String> profileIds;
   final List<String> libraryFolders;
   final bool includeOwnAudio;
   final bool includeMidi;
+  final bool excludeMasterProjects;
 }
 
 /// Asks which profiles' projects to collect samples from, where else to look
@@ -45,6 +47,7 @@ class SamplePackExportDialog extends StatefulWidget {
     required this.initialLibraryFolders,
     required this.initialIncludeOwnAudio,
     required this.initialIncludeMidi,
+    required this.initialExcludeMasterProjects,
     required this.pickFolder,
   });
 
@@ -56,6 +59,7 @@ class SamplePackExportDialog extends StatefulWidget {
   final List<String> initialLibraryFolders;
   final bool initialIncludeOwnAudio;
   final bool initialIncludeMidi;
+  final bool initialExcludeMasterProjects;
 
   /// Asks for a library folder to add; null when cancelled.
   final Future<String?> Function() pickFolder;
@@ -72,6 +76,7 @@ class _SamplePackExportDialogState extends State<SamplePackExportDialog> {
   late final List<String> _folders = [...widget.initialLibraryFolders];
   late bool _includeOwnAudio = widget.initialIncludeOwnAudio;
   late bool _includeMidi = widget.initialIncludeMidi;
+  late bool _excludeMasters = widget.initialExcludeMasterProjects;
 
   Future<void> _addFolder() async {
     final folder = await widget.pickFolder();
@@ -175,6 +180,15 @@ class _SamplePackExportDialogState extends State<SamplePackExportDialog> {
                 contentPadding: EdgeInsets.zero,
                 dense: true,
                 controlAffinity: ListTileControlAffinity.leading,
+                value: _excludeMasters,
+                onChanged: (v) => setState(() => _excludeMasters = v ?? false),
+                title: Text(l10n.samplePackExcludeMasters),
+                subtitle: Text(l10n.samplePackExcludeMastersHelp),
+              ),
+              CheckboxListTile(
+                contentPadding: EdgeInsets.zero,
+                dense: true,
+                controlAffinity: ListTileControlAffinity.leading,
                 value: _includeOwnAudio,
                 onChanged: (v) => setState(() => _includeOwnAudio = v ?? false),
                 title: Text(l10n.samplePackIncludeOwnAudio),
@@ -212,6 +226,7 @@ class _SamplePackExportDialogState extends State<SamplePackExportDialog> {
                       libraryFolders: List.unmodifiable(_folders),
                       includeOwnAudio: _includeOwnAudio,
                       includeMidi: _includeMidi,
+                      excludeMasterProjects: _excludeMasters,
                     ),
                   ),
           child: Text(l10n.samplePackChooseDestination),
@@ -333,6 +348,8 @@ class SamplePackResultDialog extends StatelessWidget {
       l10n.samplePackAdded(result.added),
       if (result.alreadyInPack > 0) l10n.samplePackAlreadyThere(result.alreadyInPack),
       if (result.leftOut > 0) l10n.samplePackLeftOut(result.leftOut),
+      if (result.masterProjectsLeftOut > 0)
+        l10n.samplePackMastersLeftOut(result.masterProjectsLeftOut),
       if (result.midiFiles > 0) l10n.samplePackMidiWritten(result.midiFiles),
       if (result.missing > 0)
         l10n.samplePackMissing(result.missing, kSamplePackProblems),

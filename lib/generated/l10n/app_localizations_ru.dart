@@ -7244,4 +7244,22 @@ class AppLocalizationsRu extends AppLocalizations {
   String samplePackReportHint(String file) {
     return 'Сколько треков использует каждый сэмпл и откуда он взят — в $file.';
   }
+
+  @override
+  String get samplePackExcludeMasters => 'Пропускать мастеринг-проекты';
+
+  @override
+  String get samplePackExcludeMastersHelp =>
+      'Проекты с «(Master)» или «(M)» в названии или в папке «Master Project»: в них стемы и миксдауны трека, а не сэмплы.';
+
+  @override
+  String samplePackMastersLeftOut(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'Пропущено мастеринг-проектов: $count',
+      one: 'Пропущен 1 мастеринг-проект',
+    );
+    return '$_temp0';
+  }
 }

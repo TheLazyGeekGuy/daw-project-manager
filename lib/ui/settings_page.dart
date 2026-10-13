@@ -713,6 +713,7 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
           initialLibraryFolders: prefs.libraryFolders,
           initialIncludeOwnAudio: prefs.includeOwnAudio,
           initialIncludeMidi: prefs.includeMidi,
+          initialExcludeMasterProjects: prefs.excludeMasterProjects,
           pickFolder: () => FilePicker.getDirectoryPath(
             dialogTitle: l10n.samplePackLibraryFolders,
           ),
@@ -723,6 +724,7 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
         libraryFolders: choice.libraryFolders,
         includeOwnAudio: choice.includeOwnAudio,
         includeMidi: choice.includeMidi,
+        excludeMasterProjects: choice.excludeMasterProjects,
         profileIds: choice.profileIds,
       ));
 
@@ -757,6 +759,7 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
       final exporter = SamplePackExporter(
         destination: dir,
         includeOwnAudio: choice.includeOwnAudio,
+        excludeMasterProjects: choice.excludeMasterProjects,
         locator: SampleLocator(libraryFolders: choice.libraryFolders),
       );
       final outcome = await showDialog<Object?>(

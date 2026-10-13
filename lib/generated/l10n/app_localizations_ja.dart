@@ -7024,4 +7024,21 @@ class AppLocalizationsJa extends AppLocalizations {
   String samplePackReportHint(String file) {
     return '各サンプルを使っている曲数と入手元は $file にあります。';
   }
+
+  @override
+  String get samplePackExcludeMasters => 'マスタープロジェクトを除外する';
+
+  @override
+  String get samplePackExcludeMastersHelp =>
+      '名前に「(Master)」や「(M)」が付いたプロジェクト、または「Master Project」フォルダ内のプロジェクトです。曲のステムやミックスダウンが入っていて、サンプルではありません。';
+
+  @override
+  String samplePackMastersLeftOut(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count 件のマスタープロジェクトを除外しました',
+    );
+    return '$_temp0';
+  }
 }

@@ -7274,4 +7274,22 @@ class AppLocalizationsEs extends AppLocalizations {
   String samplePackReportHint(String file) {
     return 'Cuántas canciones usan cada sample, y de dónde vino, está en $file.';
   }
+
+  @override
+  String get samplePackExcludeMasters => 'Omitir los proyectos de máster';
+
+  @override
+  String get samplePackExcludeMastersHelp =>
+      'Proyectos con \"(Master)\" o \"(M)\" en el nombre, o dentro de una carpeta \"Master Project\": contienen los stems y mezclas de la canción, no samples.';
+
+  @override
+  String samplePackMastersLeftOut(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count proyectos de máster omitidos',
+      one: '1 proyecto de máster omitido',
+    );
+    return '$_temp0';
+  }
 }

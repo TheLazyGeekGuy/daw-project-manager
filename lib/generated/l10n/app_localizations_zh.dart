@@ -6947,4 +6947,21 @@ class AppLocalizationsZh extends AppLocalizations {
   String samplePackReportHint(String file) {
     return '每个采样被多少首歌使用及其来源，见 $file。';
   }
+
+  @override
+  String get samplePackExcludeMasters => '排除母带工程';
+
+  @override
+  String get samplePackExcludeMastersHelp =>
+      '名称带有“(Master)”或“(M)”，或位于“Master Project”文件夹中的工程：它们保存的是歌曲的分轨和缩混，而不是采样。';
+
+  @override
+  String samplePackMastersLeftOut(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '已排除 $count 个母带工程',
+    );
+    return '$_temp0';
+  }
 }

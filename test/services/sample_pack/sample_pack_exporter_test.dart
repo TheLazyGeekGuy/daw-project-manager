@@ -62,10 +62,14 @@ void main() {
         kind: kind,
       );
 
-  SamplePackExporter exporter({bool includeOwnAudio = false}) =>
+  SamplePackExporter exporter({
+    bool includeOwnAudio = false,
+    bool excludeMasterProjects = false,
+  }) =>
       SamplePackExporter(
         destination: pack,
         includeOwnAudio: includeOwnAudio,
+        excludeMasterProjects: excludeMasterProjects,
         readReferences: (path) async {
           final refs = refsByProject[path];
           if (refs == null) throw const FormatException('unreadable');
@@ -171,6 +175,27 @@ void main() {
       expect(await packFiles(),
           contains('$kOwnAudioFolder/Vocal/Vocals_03.wav'));
     });
+  });
+
+  test('master projects are left unread when asked', () async {
+    final stem = await file(['Song', 'Master Project', 'Audio', 'Drums.wav'],
+        'STEM');
+    final kick = await file(['Song', 'Audio', 'kick.wav'], 'KICK');
+    final projects = [
+      await project(['Song', 'Song.cpr'], [ref(kick)]),
+      await project(['Song', 'Master Project', 'Song (Master).cpr'],
+          [ref(stem)]),
+    ];
+    final skipped =
+        await exporter(excludeMasterProjects: true).export(projects);
+    expect(skipped.masterProjectsLeftOut, 1);
+    expect(skipped.projectsRead, 1);
+    expect([for (final s in skipped.samples) p.basename(s.paths.single)],
+        ['kick.wav']);
+
+    final read = await exporter().export(projects);
+    expect(read.masterProjectsLeftOut, 0);
+    expect(read.projectsRead, 2);
   });
 
   test('two different sounds with one name are both kept', () async {

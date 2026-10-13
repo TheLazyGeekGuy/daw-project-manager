@@ -9,6 +9,7 @@ import '../../models/sample_reference.dart';
 import '../../utils/audio_file_info.dart';
 import '../midi/midi_clip_service.dart';
 import '../midi/midi_file_writer.dart';
+import 'master_project.dart';
 import 'project_sample_reader.dart';
 import 'sample_classifier.dart';
 import 'sample_locator.dart';
@@ -113,11 +114,15 @@ class SamplePackResult {
     required this.projectsRead,
     required this.midiFiles,
     required this.stopped,
+    this.masterProjectsLeftOut = 0,
   });
 
   final List<PackSample> samples;
   final List<SamplePackProblem> problems;
   final int projectsRead;
+
+  /// Master projects not read (see [isMasterProject]).
+  final int masterProjectsLeftOut;
   final int midiFiles;
   final bool stopped;
 
@@ -157,6 +162,7 @@ class SamplePackExporter {
   SamplePackExporter({
     required this.destination,
     this.includeOwnAudio = false,
+    this.excludeMasterProjects = false,
     SampleLocator? locator,
     this.readReferences = readProjectSampleReferences,
     this.canRead = canReadSampleReferences,
@@ -168,6 +174,10 @@ class SamplePackExporter {
 
   /// Whether recordings, bounces and stems go into the pack too.
   final bool includeOwnAudio;
+
+  /// Whether master projects are left unread: they hold a song's stems and
+  /// mixdowns, not samples.
+  final bool excludeMasterProjects;
   final SampleLocator locator;
 
   final Future<List<SampleReference>> Function(String filePath) readReferences;
@@ -199,6 +209,7 @@ class SamplePackExporter {
 
     // 1. Read every project's references.
     final read = <(SamplePackProject, Set<String>, List<SampleReference>)>[];
+    var mastersLeftOut = 0;
     var done = 0;
     for (final (project, profiles) in byFile.values) {
       if (stop()) {
@@ -213,6 +224,10 @@ class SamplePackExporter {
             problem: kind,
             where: project.filePath,
           );
+      if (excludeMasterProjects && isMasterProject(project.filePath)) {
+        mastersLeftOut++;
+        continue;
+      }
       if (!canRead(project.filePath)) {
         problems.add(problem(SamplePackProblemKind.formatNotSupported));
         continue;
@@ -287,6 +302,7 @@ class SamplePackExporter {
         projectsRead: read.length,
         midiFiles: 0,
         stopped: true,
+        masterProjectsLeftOut: mastersLeftOut,
       );
     }
     located.removeWhere((_, e) => !e.measured);
@@ -421,6 +437,7 @@ class SamplePackExporter {
       projectsRead: read.length,
       midiFiles: midiFiles,
       stopped: stopped,
+      masterProjectsLeftOut: mastersLeftOut,
     );
     await File(p.join(destination, kSamplePackReport))
         .writeAsString(samplePackReportCsv(result.samples), flush: true);

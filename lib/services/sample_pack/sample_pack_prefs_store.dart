@@ -15,12 +15,14 @@ class SamplePackPrefs {
     this.libraryFolders = const [],
     this.includeOwnAudio = false,
     this.includeMidi = true,
+    this.excludeMasterProjects = true,
     this.profileIds,
   });
 
   final List<String> libraryFolders;
   final bool includeOwnAudio;
   final bool includeMidi;
+  final bool excludeMasterProjects;
 
   /// The profiles last exported; null (never run) means all of them.
   final List<String>? profileIds;
@@ -29,6 +31,7 @@ class SamplePackPrefs {
     'libraryFolders': libraryFolders,
     'includeOwnAudio': includeOwnAudio,
     'includeMidi': includeMidi,
+    'excludeMasterProjects': excludeMasterProjects,
     'profileIds': ?profileIds,
   };
 
@@ -40,6 +43,7 @@ class SamplePackPrefs {
       libraryFolders: strings(json['libraryFolders']) ?? const [],
       includeOwnAudio: json['includeOwnAudio'] == true,
       includeMidi: json['includeMidi'] != false,
+      excludeMasterProjects: json['excludeMasterProjects'] != false,
       profileIds: strings(json['profileIds']),
     );
   }
