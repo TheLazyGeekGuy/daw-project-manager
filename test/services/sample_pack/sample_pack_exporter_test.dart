@@ -128,7 +128,12 @@ void main() {
       kSamplePackManifest,
       kSamplePackProblems,
       kSamplePackReport,
+      kSamplePackTree,
     ]);
+    final tree = await File(p.join(pack, kSamplePackTree)).readAsString();
+    expect(tree, contains('Pack/ (5)'),
+        reason: 'every file in the folder but the tree itself');
+    expect(tree, contains('├── Kick/ (1)\n│   └── gataka_kick.wav'));
     expect(hashed, isNot(contains(hat)),
         reason: 'a file of a size nothing else has is not hashed');
   });

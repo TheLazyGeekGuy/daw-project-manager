@@ -7,6 +7,7 @@ import 'package:path/path.dart' as p;
 
 import '../../models/sample_reference.dart';
 import '../../utils/audio_file_info.dart';
+import '../../utils/folder_tree.dart';
 import '../midi/midi_clip_service.dart';
 import '../midi/midi_file_writer.dart';
 import 'master_project.dart';
@@ -180,6 +181,9 @@ const kSamplePackManifest = 'sample_pack_manifest.json';
 const kSamplePackReport = 'sample_pack_report.csv';
 const kSamplePackProblems = 'sample_pack_missing.csv';
 
+/// Every file in the pack, drawn as a tree (see [folderTreeText]).
+const kSamplePackTree = 'sample_pack_tree.txt';
+
 /// The folder own audio goes in when it is included, so it stays apart from
 /// the samples.
 const kOwnAudioFolder = 'Recordings, Bounces & Stems';
@@ -338,7 +342,29 @@ class _Run {
         .writeAsString(samplePackReportCsv(samples), flush: true);
     await File(p.join(x.destination, kSamplePackProblems))
         .writeAsString(samplePackProblemsCsv(problems), flush: true);
+    await _writeTree();
     return result;
+  }
+
+  /// [kSamplePackTree]: everything in the pack folder, samples, MIDI and the
+  /// export's own files alike — not just what this run added.
+  Future<void> _writeTree() async {
+    final root = x.destination;
+    final paths = <String>[];
+    await for (final entity in Directory(root)
+        .list(recursive: true, followLinks: false)
+        .handleError((_) {})) {
+      if (entity is! File) continue;
+      final relative =
+          p.relative(entity.path, from: root).replaceAll(r'\', '/');
+      if (relative == kSamplePackTree || relative.endsWith('.part')) continue;
+      paths.add(relative);
+    }
+    // UTF-8 with a BOM, so Notepad shows the tree's lines and accents.
+    await File(p.join(root, kSamplePackTree)).writeAsString(
+      '$_bom${folderTreeText(p.basename(p.normalize(root)), paths)}',
+      flush: true,
+    );
   }
 
   /// What the pack folder already holds, with the hashes the manifest kept.
@@ -685,7 +711,7 @@ String _csvCell(Object? value) {
 }
 
 /// UTF-8's byte order mark, so Excel reads accented names correctly.
-const _bom = '﻿';
+const _bom = '\uFEFF';
 
 /// `sample_pack_report.csv`: one row per distinct sample, most used first —
 /// where it is in the pack (empty when left out), its category, how many
