@@ -1731,11 +1731,14 @@ class _DashboardPageState extends ConsumerState<DashboardPage>
           releases,
           // Settings > Changelog rather than a page of its own: one place
           // for the history, with its search, whichever way the user got
-          // there.
-          onViewFullChangelog: () => Navigator.of(context).push(
-            MaterialPageRoute(
-              builder: (_) => const SettingsPage(
-                initialSection: SettingsSection.changelog,
+          // there. Not offered on mobile, which has no Settings page.
+          onViewFullChangelog: fullChangelogAction(
+            isMobile: MobileUtils.isMobile(),
+            openSettingsChangelog: () => Navigator.of(context).push(
+              MaterialPageRoute(
+                builder: (_) => const SettingsPage(
+                  initialSection: SettingsSection.changelog,
+                ),
               ),
             ),
           ),

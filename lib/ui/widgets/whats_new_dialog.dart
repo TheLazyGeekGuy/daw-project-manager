@@ -33,6 +33,15 @@ Future<void> showWhatsNewDialog(
   );
 }
 
+/// The dialog's "full changelog" action: [openSettingsChangelog] on desktop,
+/// none on mobile. The full history lives in Settings > Changelog, and
+/// Settings is desktop-only, so a phone has nowhere to send the user.
+VoidCallback? fullChangelogAction({
+  required bool isMobile,
+  required VoidCallback openSettingsChangelog,
+}) =>
+    isMobile ? null : openSettingsChangelog;
+
 /// The dialog's contents, with no Hive, asset or provider dependency of its
 /// own so it can be widget-tested directly.
 class WhatsNewView extends StatelessWidget {

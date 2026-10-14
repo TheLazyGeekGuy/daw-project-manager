@@ -144,6 +144,20 @@ void main() {
     expect(find.byType(TextButton), findsNothing);
   });
 
+  test('mobile gets no full-changelog action, since it has no Settings page',
+      () {
+    void open() {}
+
+    expect(
+      fullChangelogAction(isMobile: true, openSettingsChangelog: open),
+      isNull,
+    );
+    expect(
+      fullChangelogAction(isMobile: false, openSettingsChangelog: open),
+      same(open),
+    );
+  });
+
   testWidgets('renders in a non-English UI locale without overflowing',
       (tester) async {
     // The chrome is localized even though the highlight text is data; this
