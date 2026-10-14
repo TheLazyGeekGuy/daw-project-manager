@@ -7107,4 +7107,243 @@ class AppLocalizationsEs extends AppLocalizations {
   @override
   String get experimentalSectionIntro =>
       'Herramientas nuevas que funcionan, pero aún están en pruebas. Pueden cambiar o eliminarse en una versión futura.';
+
+  @override
+  String get samplePackTitle => 'Pack de samples de tus proyectos';
+
+  @override
+  String get samplePackSubtitle =>
+      'Copia los samples que usan tus proyectos a una carpeta, ordenados por tipo (Kick, Snare, Bass, FX…), con un informe de cuántas canciones usan cada uno. Exportar de nuevo a la misma carpeta solo añade lo nuevo.';
+
+  @override
+  String get samplePackDialogTitle => 'Exportar pack de samples';
+
+  @override
+  String get samplePackProfiles => 'Perfiles';
+
+  @override
+  String get samplePackSelectAll => 'Seleccionar todos';
+
+  @override
+  String get samplePackSelectNone => 'Deseleccionar todos';
+
+  @override
+  String samplePackProjectCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count proyectos',
+      one: '1 proyecto',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get samplePackLibraryFolders => 'Carpetas de bibliotecas de samples';
+
+  @override
+  String get samplePackLibraryFoldersHelp =>
+      'Dónde buscar un sample que un proyecto ya no encuentra donde lo guardó — tras mover una biblioteca o cambiar la letra de una unidad. La carpeta del propio proyecto siempre se revisa.';
+
+  @override
+  String get samplePackNoLibraryFolders => 'No se añadió ninguna carpeta.';
+
+  @override
+  String get samplePackIncludeOwnAudio =>
+      'Incluir mis grabaciones, bounces y stems';
+
+  @override
+  String samplePackIncludeOwnAudioHelp(String folder) {
+    return 'En una carpeta propia, \"$folder\".';
+  }
+
+  @override
+  String get samplePackIncludeMidi => 'Añadir mis colecciones MIDI';
+
+  @override
+  String get samplePackChooseDestination => 'Elegir carpeta y exportar';
+
+  @override
+  String get samplePackDestinationTitle => 'Dónde guardar el pack de samples';
+
+  @override
+  String get samplePackProgressTitle => 'Creando el pack de samples';
+
+  @override
+  String samplePackReading(int current, int total, String name) {
+    return 'Leyendo proyecto $current de $total: $name';
+  }
+
+  @override
+  String samplePackLocating(int current, int total, String name) {
+    return 'Buscando sample $current de $total: $name';
+  }
+
+  @override
+  String samplePackMeasuring(int current, int total, String name) {
+    return 'Comprobando sample $current de $total: $name';
+  }
+
+  @override
+  String samplePackCopying(int current, int total, String name) {
+    return 'Copiando $current de $total: $name';
+  }
+
+  @override
+  String samplePackWritingMidi(int current, int total, String name) {
+    return 'Escribiendo colección MIDI $current de $total: $name';
+  }
+
+  @override
+  String get samplePackFinishing => 'Escribiendo el informe…';
+
+  @override
+  String get samplePackDoneTitle => 'Pack de samples listo';
+
+  @override
+  String get samplePackStoppedTitle => 'Pack de samples detenido';
+
+  @override
+  String samplePackAdded(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count samples nuevos añadidos',
+      one: '1 sample nuevo añadido',
+      zero: 'No se añadió ningún sample nuevo',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String samplePackAlreadyThere(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count ya estaban en la carpeta',
+      one: '1 ya estaba en la carpeta',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String samplePackLeftOut(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count grabaciones, bounces o stems omitidos',
+      one: '1 grabación, bounce o stem omitido',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String samplePackMidiWritten(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count archivos MIDI escritos',
+      one: '1 archivo MIDI escrito',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String samplePackMissing(int count, String file) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'No se encontraron $count samples — ver $file',
+      one: 'No se encontró 1 sample — ver $file',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String samplePackNotRead(int count, String file) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'No se pudieron leer $count proyectos — ver $file',
+      one: 'No se pudo leer 1 proyecto — ver $file',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String samplePackReportHint(String file) {
+    return 'Cuántas canciones usan cada sample, y de dónde vino, está en $file.';
+  }
+
+  @override
+  String get samplePackExcludeMasters => 'Omitir los proyectos de máster';
+
+  @override
+  String get samplePackExcludeMastersHelp =>
+      'Proyectos con \"(Master)\" o \"(M)\" en el nombre, o dentro de una carpeta \"Master Project\": contienen los stems y mezclas de la canción, no samples.';
+
+  @override
+  String samplePackMastersLeftOut(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count proyectos de máster omitidos',
+      one: '1 proyecto de máster omitido',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get samplePackProjects => 'Proyectos';
+
+  @override
+  String get samplePackAllProjects => 'Todos los proyectos';
+
+  @override
+  String get samplePackPickedProjects => 'Elegir proyectos';
+
+  @override
+  String get samplePackSearchProjects => 'Buscar proyectos';
+
+  @override
+  String samplePackPickedCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count proyectos elegidos',
+      one: '1 proyecto elegido',
+      zero: 'Ningún proyecto elegido',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get samplePackNoProjectsMatch => 'Ningún proyecto coincide.';
+
+  @override
+  String get samplePackRename => 'Renombrar samples';
+
+  @override
+  String get samplePackRenameHelp =>
+      'Categoría y número, y después lo que elijas. Solo se renombran los samples que añade esta exportación; el informe guarda el nombre original de cada uno.';
+
+  @override
+  String get samplePackRenameName => 'Nombre original';
+
+  @override
+  String get samplePackRenameBpm => 'Tempo (BPM)';
+
+  @override
+  String get samplePackRenameKey => 'Tonalidad';
+
+  @override
+  String get samplePackRenamePrefix => 'Prefijo';
+
+  @override
+  String get samplePackRenamePrefixHint => 'p. ej. AC';
+
+  @override
+  String samplePackRenameExample(String name) {
+    return 'Ejemplo: $name';
+  }
 }

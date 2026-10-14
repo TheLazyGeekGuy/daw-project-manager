@@ -3,6 +3,8 @@ import 'dart:typed_data';
 
 import '../../models/midi_clip.dart';
 import '../../models/project_stats.dart';
+import '../../models/sample_reference.dart';
+import 'embedded_audio_paths.dart';
 
 /// Reads channel counts, plug-ins and patterns out of an FL Studio `.flp`.
 ///
@@ -143,6 +145,48 @@ class FlpProjectParser {
       }
     }
     return dedupeMidiClips(clips);
+  }
+
+  /// Every audio file the project references.
+  ///
+  /// * 196 (text) is a channel's sample: a Sampler channel's (type 0) or an
+  ///   audio clip's (type 4). FL writes it absolute since FL 12 (or with a
+  ///   `%FLStudioFactoryData%`-style placeholder for its own content) and
+  ///   relative to its install's `Data` folder before (`\Patches\…`).
+  /// * Plug-in state (data events 212/213 and the rest above 207) is
+  ///   searched for absolute paths, which finds Fruity Slicer, Slicex,
+  ///   DirectWave and any third-party sampler that keeps its path as text.
+  List<SampleReference> readSampleReferences() {
+    final refs = <SampleReference>[];
+    var channelType = -1;
+    for (final e in _events()) {
+      switch (e.id) {
+        case 64:
+          channelType = -1;
+        case 21:
+          channelType = e.value;
+        case 196:
+          final path = _text(e);
+          if (path.isEmpty || !isSampleAudioFile(path)) continue;
+          refs.add(SampleReference(
+            fileName: sampleFileNameOf(path),
+            candidates: [path],
+            use: channelType == 4 ? SampleUse.audio : SampleUse.sampler,
+          ));
+        default:
+          if (e.id < 208) continue;
+          final payload =
+              Uint8List.sublistView(bytes, e.offset, e.offset + e.length);
+          for (final path in findEmbeddedAudioPaths(payload)) {
+            refs.add(SampleReference(
+              fileName: sampleFileNameOf(path),
+              candidates: [path],
+              use: SampleUse.plugin,
+            ));
+          }
+      }
+    }
+    return refs;
   }
 
   int get _ppq {

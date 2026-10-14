@@ -4,6 +4,7 @@ import 'dart:typed_data';
 import 'package:flutter_test/flutter_test.dart';
 
 import 'package:daw_project_manager/models/midi_clip.dart';
+import 'package:daw_project_manager/models/sample_reference.dart';
 import 'package:daw_project_manager/services/daw_parsers/cubase_project_parser.dart';
 
 /// Writes a Steinberg object archive the way Cubase does: the first object
@@ -149,6 +150,20 @@ class _Archive {
       f64(0);
     }
     end();
+    end();
+  }
+
+  /// A pool file as Cubase writes it: an `FNPath` holding the name, the
+  /// type ("WAVE", the extension twice, a description) and the folder.
+  void poolFile(String name, String folder) {
+    begin('FNPath');
+    string(name);
+    raw(ascii.encode('WAVE'));
+    string('wav');
+    string('wav');
+    string('Wave File');
+    raw([0, 0, 0, 1, 0, 0]);
+    string(folder);
     end();
   }
 
@@ -328,6 +343,98 @@ void main() {
         MidiNote(startTick: 480, lengthTicks: 240, pitch: 38, velocity: 1),
         MidiNote(startTick: 1800, lengthTicks: 120, pitch: 40, velocity: 80),
       ]);
+    });
+  });
+
+  group('readSampleReferences', () {
+    const projectAudio = r'C:\Music\Song\Audio\';
+    const library = r'D:\Samples\Re-Twin\RTW_PERCS\';
+
+    CubaseProjectParser parserWithPool() {
+      final a = _Archive();
+      a.begin('MTrackList');
+      a.track('MAudioTrackEvent', 'Vocals', () {
+        a.channel(ownBus: 10, outBus: 1);
+      });
+      a.end();
+      a.begin('PPool');
+      a.poolFile('RTW_Crash_3.wav', library);
+      a.poolFile('gataka_kick.wav', projectAudio);
+      a.poolFile('gataka_kick-01.wav', projectAudio);
+      a.poolFile('lonely-01.wav', projectAudio);
+      a.poolFile('Vocals_03.wav', projectAudio);
+      a.poolFile('RTW_Crash_3.wav', library); // listed twice: kept once
+      a.end();
+      // A sampler plug-in's state, inline in the archive.
+      a.raw([0, 0, 0, 0x30, ...ascii.encode(r'E:\Kits\Snare 7.wav'), 0]);
+      return CubaseProjectParser(a.toCpr());
+    }
+
+    test('reads each pool file with its folder, once', () {
+      final refs = parserWithPool().readSampleReferences();
+      final pooled = refs.where((r) => r.use == SampleUse.audio).toList();
+      expect([for (final r in pooled) r.fileName], [
+        'RTW_Crash_3.wav',
+        'gataka_kick.wav',
+        'gataka_kick-01.wav',
+        'lonely-01.wav',
+        'Vocals_03.wav',
+      ]);
+      expect(pooled.first.candidates,
+          ['${library}RTW_Crash_3.wav', 'Audio/RTW_Crash_3.wav']);
+    });
+
+    test('a take on a track is a recording; "-01" beside its original is '
+        'processed', () {
+      final refs = {
+        for (final r in parserWithPool().readSampleReferences())
+          r.fileName: r.kind,
+      };
+      expect(refs['Vocals_03.wav'], SampleKind.recorded);
+      expect(refs['gataka_kick-01.wav'], SampleKind.processed);
+      expect(refs['gataka_kick.wav'], isNull);
+      expect(refs['lonely-01.wav'], isNull,
+          reason: 'no original in the pool: nothing says it was processed');
+      expect(refs['RTW_Crash_3.wav'], isNull);
+    });
+
+    test('finds sample paths kept in plug-in state', () {
+      final plugin = parserWithPool()
+          .readSampleReferences()
+          .where((r) => r.use == SampleUse.plugin)
+          .toList();
+      expect(plugin, hasLength(1));
+      expect(plugin.single.candidates, [r'E:\Kits\Snare 7.wav']);
+    });
+
+    test("the Sampler Track's sample is a sampler sample, never a "
+        'processed copy, and listed once', () {
+      final a = _Archive();
+      a.track('MSamplerTrackEvent', 'kick');
+      a.begin('PSamplerTrackAudioClip');
+      a.poolFile('bizzare_kick-01.wav', projectAudio);
+      a.end();
+      a.begin('PPool');
+      a.poolFile('bizzare_kick.wav', projectAudio);
+      a.poolFile('bizzare_kick-01.wav', projectAudio); // the pool lists it too
+      a.end();
+      final refs = CubaseProjectParser(a.toCpr()).readSampleReferences();
+      final played =
+          refs.where((r) => r.fileName == 'bizzare_kick-01.wav').toList();
+      expect(played, hasLength(1));
+      expect(played.single.use, SampleUse.sampler);
+      expect(played.single.kind, isNull,
+          reason: 'its original being in the pool does not make it a bounce');
+      expect(
+        refs.firstWhere((r) => r.fileName == 'bizzare_kick.wav').use,
+        SampleUse.audio,
+      );
+    });
+
+    test('a pool path that is not audio (a preset) is skipped', () {
+      final a = _Archive();
+      a.poolFile('Bright Ballad Vocal.vstpreset', r'C:\Presets\');
+      expect(CubaseProjectParser(a.toCpr()).readSampleReferences(), isEmpty);
     });
   });
 

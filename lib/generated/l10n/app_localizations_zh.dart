@@ -6788,4 +6788,233 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get experimentalSectionIntro => '这些新工具可以使用，但仍在试用阶段，可能会在后续版本中更改或移除。';
+
+  @override
+  String get samplePackTitle => '从你的项目生成采样包';
+
+  @override
+  String get samplePackSubtitle =>
+      '把项目用到的采样按类型（Kick、Snare、Bass、FX…）复制到一个文件夹，并生成报告，列出每个采样被多少首歌使用。再次导出到同一文件夹只会添加新的内容。';
+
+  @override
+  String get samplePackDialogTitle => '导出采样包';
+
+  @override
+  String get samplePackProfiles => '配置文件';
+
+  @override
+  String get samplePackSelectAll => '全选';
+
+  @override
+  String get samplePackSelectNone => '全不选';
+
+  @override
+  String samplePackProjectCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count 个项目',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get samplePackLibraryFolders => '采样库文件夹';
+
+  @override
+  String get samplePackLibraryFoldersHelp =>
+      '当项目在保存时的位置找不到某个采样时（例如移动了采样库或更换了盘符），到这些文件夹中查找。项目自身的文件夹总会被搜索。';
+
+  @override
+  String get samplePackNoLibraryFolders => '尚未添加文件夹。';
+
+  @override
+  String get samplePackIncludeOwnAudio => '包含我的录音、并轨和分轨';
+
+  @override
+  String samplePackIncludeOwnAudioHelp(String folder) {
+    return '放在单独的文件夹“$folder”中。';
+  }
+
+  @override
+  String get samplePackIncludeMidi => '添加我的 MIDI 合集';
+
+  @override
+  String get samplePackChooseDestination => '选择文件夹并导出';
+
+  @override
+  String get samplePackDestinationTitle => '采样包的保存位置';
+
+  @override
+  String get samplePackProgressTitle => '正在生成采样包';
+
+  @override
+  String samplePackReading(int current, int total, String name) {
+    return '正在读取项目 $current/$total：$name';
+  }
+
+  @override
+  String samplePackLocating(int current, int total, String name) {
+    return '正在查找采样 $current/$total：$name';
+  }
+
+  @override
+  String samplePackMeasuring(int current, int total, String name) {
+    return '正在检查采样 $current/$total：$name';
+  }
+
+  @override
+  String samplePackCopying(int current, int total, String name) {
+    return '正在复制 $current/$total：$name';
+  }
+
+  @override
+  String samplePackWritingMidi(int current, int total, String name) {
+    return '正在写入 MIDI 合集 $current/$total：$name';
+  }
+
+  @override
+  String get samplePackFinishing => '正在写入报告…';
+
+  @override
+  String get samplePackDoneTitle => '采样包已完成';
+
+  @override
+  String get samplePackStoppedTitle => '采样包已停止';
+
+  @override
+  String samplePackAdded(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '已添加 $count 个新采样',
+      zero: '没有添加新采样',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String samplePackAlreadyThere(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count 个已在文件夹中',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String samplePackLeftOut(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '已跳过 $count 个录音、并轨或分轨',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String samplePackMidiWritten(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '已写入 $count 个 MIDI 文件',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String samplePackMissing(int count, String file) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count 个采样未找到 — 见 $file',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String samplePackNotRead(int count, String file) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count 个项目无法读取 — 见 $file',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String samplePackReportHint(String file) {
+    return '每个采样被多少首歌使用及其来源，见 $file。';
+  }
+
+  @override
+  String get samplePackExcludeMasters => '排除母带项目';
+
+  @override
+  String get samplePackExcludeMastersHelp =>
+      '名称带有“(Master)”或“(M)”，或位于“Master Project”文件夹中的项目：它们保存的是歌曲的分轨和缩混，而不是采样。';
+
+  @override
+  String samplePackMastersLeftOut(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '已排除 $count 个母带项目',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get samplePackProjects => '项目';
+
+  @override
+  String get samplePackAllProjects => '所有项目';
+
+  @override
+  String get samplePackPickedProjects => '选择项目';
+
+  @override
+  String get samplePackSearchProjects => '搜索项目';
+
+  @override
+  String samplePackPickedCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '已选择 $count 个项目',
+      zero: '未选择项目',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get samplePackNoProjectsMatch => '没有匹配的项目。';
+
+  @override
+  String get samplePackRename => '重命名采样';
+
+  @override
+  String get samplePackRenameHelp =>
+      '类别和编号，然后是你选择的内容。只会重命名本次导出新增的采样；报告中保留每个采样的原始名称。';
+
+  @override
+  String get samplePackRenameName => '原始名称';
+
+  @override
+  String get samplePackRenameBpm => '速度 (BPM)';
+
+  @override
+  String get samplePackRenameKey => '调性';
+
+  @override
+  String get samplePackRenamePrefix => '前缀';
+
+  @override
+  String get samplePackRenamePrefixHint => '例如 AC';
+
+  @override
+  String samplePackRenameExample(String name) {
+    return '示例：$name';
+  }
 }

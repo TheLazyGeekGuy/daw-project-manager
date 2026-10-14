@@ -68,6 +68,15 @@ import 'widgets/shortcuts_help_dialog.dart';
 import 'widgets/update_available_dialog.dart';
 import 'widgets/changelog_browser.dart';
 import 'app_snack_bar.dart';
+import '../repository/midi_collection_store.dart';
+import '../services/midi/midi_collection_export.dart';
+import '../services/sample_pack/sample_locator.dart';
+import '../services/sample_pack/sample_pack_exporter.dart';
+import '../services/sample_pack/sample_pack_prefs_store.dart';
+import '../services/sample_pack/sample_pack_projects.dart';
+import 'dialogs/sample_pack_export_dialog.dart';
+import 'midi_collection_naming.dart' show midiNamingLabelsOf;
+import 'widgets/sample_pack_card.dart';
 
 /// A Flatpak document-portal path, e.g.
 /// `/run/user/1000/doc/98127/projects` — the portal never exposes the real
@@ -656,6 +665,147 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
                 : l10n.melodicExportDoneUnread(
                     result.clips, result.projects, result.projectsWithoutMidi)),
       ));
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showAppSnackBar(
+          SnackBar(content: Text(l10n.failedToExportProjectInfo(e.toString()))),
+        );
+      }
+    } finally {
+      if (mounted) setState(() => _busy = false);
+    }
+  }
+
+  /// Collects the samples the chosen profiles' projects use into a folder,
+  /// sorted by kind, with a report of how many songs use each one. Every
+  /// project file is read afresh: nothing about samples is stored in the app.
+  Future<void> _exportSamplePack() async {
+    if (_busy) return;
+    final l10n = AppLocalizations.of(context)!;
+    setState(() => _busy = true);
+    try {
+      final profileRepo = await ref.read(profileRepositoryProvider.future);
+      final profiles = profileRepo.getAllProfiles();
+      final projectsByProfile = <String, List<SamplePackProject>>{
+        for (final profile in profiles)
+          profile.id: samplePackProjectsOf(
+            (await ProjectRepository.initWithProfile(profileRepo, profile.id))
+                .getAllProjects(),
+            profileName: profile.name,
+          ),
+      };
+      final prefs = await SamplePackPrefsStore.load();
+      if (!mounted) return;
+
+      final choice = await showDialog<SamplePackExportChoice>(
+        context: context,
+        builder: (_) => SamplePackExportDialog(
+          profiles: [
+            for (final profile in profiles)
+              SamplePackProfileChoice(id: profile.id, name: profile.name),
+          ],
+          projects: [
+            for (final profile in profiles)
+              for (final project in projectsByProfile[profile.id]!)
+                SamplePackProjectChoice(
+                  id: project.id,
+                  profileId: profile.id,
+                  name: project.name,
+                  detail: p.basename(project.filePath),
+                ),
+          ],
+          initialProfileIds: prefs.profileIds?.toSet() ??
+              {for (final profile in profiles) profile.id},
+          initialOnlyPicked: prefs.onlyPickedProjects,
+          initialPickedProjectIds: prefs.pickedProjectIds.toSet(),
+          initialRename: prefs.rename,
+          initialNaming: prefs.naming,
+          initialLibraryFolders: prefs.libraryFolders,
+          initialIncludeOwnAudio: prefs.includeOwnAudio,
+          initialIncludeMidi: prefs.includeMidi,
+          initialExcludeMasterProjects: prefs.excludeMasterProjects,
+          pickFolder: () => FilePicker.getDirectoryPath(
+            dialogTitle: l10n.samplePackLibraryFolders,
+          ),
+        ),
+      );
+      if (choice == null || !mounted) return;
+      await SamplePackPrefsStore.save(SamplePackPrefs(
+        libraryFolders: choice.libraryFolders,
+        includeOwnAudio: choice.includeOwnAudio,
+        includeMidi: choice.includeMidi,
+        excludeMasterProjects: choice.excludeMasterProjects,
+        profileIds: choice.profileIds,
+        onlyPickedProjects: choice.projectIds != null,
+        pickedProjectIds: choice.projectIds ?? prefs.pickedProjectIds,
+        rename: choice.naming != null,
+        naming: choice.naming ?? prefs.naming,
+      ));
+
+      final dir = await FilePicker.getDirectoryPath(
+        dialogTitle: l10n.samplePackDestinationTitle,
+      );
+      if (dir == null || !mounted) return;
+
+      final picked = choice.projectIds?.toSet();
+      final projects = [
+        for (final id in choice.profileIds)
+          for (final project in projectsByProfile[id]!)
+            if (picked == null || picked.contains(project.id)) project,
+      ];
+      final midi = <SamplePackMidiFolder>[];
+      if (choice.includeMidi) {
+        final labels = midiNamingLabelsOf(l10n);
+        final names = {for (final pr in profiles) pr.id: pr.name};
+        final collections = [
+          for (final id in choice.profileIds)
+            for (final c in await MidiCollectionStore(id).all())
+              if (c.items.isNotEmpty)
+                (choice.profileIds.length > 1 ? '${c.name} (${names[id]})' : c.name, c),
+        ];
+        final folders = uniqueFolderNames([for (final c in collections) c.$1]);
+        for (var i = 0; i < collections.length; i++) {
+          midi.add(SamplePackMidiFolder(
+            folders[i],
+            midiCollectionExports(collections[i].$2, labels: labels),
+          ));
+        }
+      }
+      if (!mounted) return;
+
+      final exporter = SamplePackExporter(
+        destination: dir,
+        includeOwnAudio: choice.includeOwnAudio,
+        excludeMasterProjects: choice.excludeMasterProjects,
+        naming: choice.naming,
+        locator: SampleLocator(libraryFolders: choice.libraryFolders),
+      );
+      final outcome = await showDialog<Object?>(
+        context: context,
+        barrierDismissible: false,
+        builder: (_) => SamplePackProgressDialog(
+          run: (onProgress, shouldStop) => exporter.export(
+            projects,
+            midi: midi,
+            onProgress: onProgress,
+            shouldStop: shouldStop,
+          ),
+        ),
+      );
+      if (!mounted) return;
+      if (outcome is SamplePackResult) {
+        await showDialog<void>(
+          context: context,
+          builder: (_) => SamplePackResultDialog(
+            result: outcome,
+            onOpenFolder: () => FileLauncher.openFolder(dir),
+          ),
+        );
+      } else {
+        ScaffoldMessenger.of(context).showAppSnackBar(SnackBar(
+          content: Text(l10n.failedToExportProjectInfo(outcome.toString())),
+        ));
+      }
     } catch (e) {
       if (mounted) {
         ScaffoldMessenger.of(context).showAppSnackBar(
@@ -1408,6 +1558,7 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
         _SearchEntry(SettingsSection.experimental, Icons.account_tree_outlined, l10n.templateExportTitle, l10n.templateExportSubtitle),
         _SearchEntry(SettingsSection.experimental, Icons.piano_outlined, l10n.melodicExportTitle, l10n.melodicExportSubtitle),
         _SearchEntry(SettingsSection.experimental, Icons.insights_outlined, l10n.referenceTitle, l10n.referenceSubtitle),
+        _SearchEntry(SettingsSection.experimental, Icons.graphic_eq, l10n.samplePackTitle, l10n.samplePackSubtitle),
         if (MobileUtils.isDesktop()) ...[
           _SearchEntry(SettingsSection.dawLaunchCommands, Icons.terminal_outlined, l10n.dawLaunchCommandsTabLabel, l10n.dawLaunchCommandsSectionDescription),
         ],
@@ -2348,6 +2499,10 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
         const SizedBox(height: 12),
 
         ReferencePageCard(busy: _busy, onGenerate: _generateReferencePage),
+
+        const SizedBox(height: 12),
+
+        SamplePackCard(busy: _busy, onExport: _exportSamplePack),
       ],
     );
   }
