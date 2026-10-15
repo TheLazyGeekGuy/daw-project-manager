@@ -128,11 +128,17 @@ class _MoveToProfileDialogState extends State<MoveToProfileDialog> {
                   for (final t in widget.targets)
                     DropdownMenuItem(value: t.id, child: Text(t.name)),
                 ],
-                onChanged: (id) => setState(() {
-                  _target = widget.targets.firstWhere((t) => t.id == id);
-                  _chosenScanFolder = null;
-                  _otherFolder = null;
-                }),
+                // Picking the profile already picked changes nothing. Another
+                // one only resets the choice among its scan folders — they
+                // are the old profile's — while "keep / move the files" and
+                // a folder picked by hand stand.
+                onChanged: (id) {
+                  if (id == null || id == _target.id) return;
+                  setState(() {
+                    _target = widget.targets.firstWhere((t) => t.id == id);
+                    _chosenScanFolder = null;
+                  });
+                },
               ),
               const SizedBox(height: 8),
               _option(

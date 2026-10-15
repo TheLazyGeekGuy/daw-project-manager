@@ -10,7 +10,7 @@ void main() {
   const atlas = MoveTargetProfile(
     id: 'atlas',
     name: 'ATLAS',
-    scanFolders: ['/drive/Collabs/ATLAS'],
+    scanFolders: ['/drive/Collabs/ATLAS', '/drive/Collabs/ATLAS 2026'],
   );
   const reisser = MoveTargetProfile(
     id: 'reisser',
@@ -86,6 +86,44 @@ void main() {
       expect(find.text('About 12 files (1.2 GB) …'), findsOneWidget);
     });
     expect(choice!.destinationFolder, '/drive/Collabs/ATLAS');
+  });
+
+  Future<void> pickProfile(WidgetTester tester, String name) async {
+    await tester.tap(find.byType(DropdownButtonFormField<String>));
+    await tester.pumpAndSettle();
+    await tester.tap(find.text(name).last);
+    await tester.pumpAndSettle();
+  }
+
+  testWidgets('picking the same profile again keeps the folder chosen',
+      (tester) async {
+    // The bug: any pick in the profile list, the same one included, reset
+    // the choice among its folders.
+    final choice = await run(tester, interact: () async {
+      await tester.tap(find.byKey(const ValueKey('move-files')));
+      await tester.pumpAndSettle();
+      await tester.tap(find.text('/drive/Collabs/ATLAS 2026'));
+      await tester.pumpAndSettle();
+      await pickProfile(tester, 'ATLAS');
+    });
+    expect(choice!.destinationFolder, '/drive/Collabs/ATLAS 2026');
+  });
+
+  testWidgets('another profile keeps "move the files" and a folder picked by hand',
+      (tester) async {
+    final choice = await run(
+      tester,
+      pickFolder: () async => '/picked/here',
+      interact: () async {
+        await tester.tap(find.byKey(const ValueKey('move-files')));
+        await tester.pumpAndSettle();
+        await tester.tap(find.text('Other folder…'));
+        await tester.pumpAndSettle();
+        await pickProfile(tester, 'Audio Crawler vs Reisser');
+      },
+    );
+    expect(choice!.profileId, 'reisser');
+    expect(choice.destinationFolder, '/picked/here');
   });
 
   testWidgets('a target with no folders needs one picked', (tester) async {
