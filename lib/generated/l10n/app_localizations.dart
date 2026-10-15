@@ -12628,6 +12628,36 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Brings in what your other devices changed each time you open the app.'**
   String get driveSyncOnStartupHint;
+
+  /// No description provided for @driveAlreadyInSync.
+  ///
+  /// In en, this message translates to:
+  /// **'This device and Google Drive already match. There is nothing to sync.'**
+  String get driveAlreadyInSync;
+
+  /// No description provided for @driveFromDrive.
+  ///
+  /// In en, this message translates to:
+  /// **'From Google Drive'**
+  String get driveFromDrive;
+
+  /// No description provided for @driveFromThisDevice.
+  ///
+  /// In en, this message translates to:
+  /// **'From this device'**
+  String get driveFromThisDevice;
+
+  /// No description provided for @driveUploadProjects.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =1{1 project added or changed here} other{{count} projects added or changed here}}'**
+  String driveUploadProjects(int count);
+
+  /// No description provided for @driveUploadReleases.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =1{1 release added here} other{{count} releases added here}}'**
+  String driveUploadReleases(int count);
 }
 
 class _AppLocalizationsDelegate

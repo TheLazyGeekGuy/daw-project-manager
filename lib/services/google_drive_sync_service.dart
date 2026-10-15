@@ -3888,10 +3888,11 @@ class GoogleDriveSyncService {
     await ensureAppDataFolder();
   }
 
-  /// Counts what merging [remoteData] would change here, without writing
-  /// anything — the same rules as [mergeData]: new rows are added, a row
-  /// whose remote copy is newer and different is updated, and only a
-  /// deletion made on some device removes anything.
+  /// Counts what syncing with [remoteData] would do, without writing
+  /// anything: what the merge brings here — the same rules as [mergeData]:
+  /// new rows are added, a row whose remote copy is newer and different is
+  /// updated, and only a deletion made on some device removes anything — and
+  /// what the upload after it would add to Drive.
   Future<MergePreview> previewMerge(
     Map<String, dynamic> remoteData,
     ProfileRepository profileRepo,
@@ -3914,6 +3915,7 @@ class GoogleDriveSyncService {
     }
 
     var added = 0, updated = 0;
+    final remoteProjects = <String, MusicProject>{};
     for (final raw in (remoteData['projects'] as List?) ?? const []) {
       final MusicProject remote;
       try {
@@ -3921,6 +3923,7 @@ class GoogleDriveSyncService {
       } catch (_) {
         continue;
       }
+      remoteProjects[remote.id] = remote;
       if (tombstones[remote.id]?.beats(remote.updatedAt) ?? false) continue;
       final local = localProjects[remote.id];
       if (local == null) {
@@ -3930,24 +3933,39 @@ class GoogleDriveSyncService {
         updated++;
       }
     }
-    var deleted = 0;
+    var deleted = 0, toUpload = 0;
     for (final local in localProjects.values) {
       final t = tombstones[local.id];
       if (t != null && t.kind == TombstoneKind.project && t.beats(local.updatedAt)) {
         deleted++;
+        continue;
+      }
+      final remote = remoteProjects[local.id];
+      if (remote == null ||
+          (local.updatedAt.isAfter(remote.updatedAt) &&
+              _hasMetadataChanged(remote, local))) {
+        toUpload++;
       }
     }
 
     var releasesAdded = 0;
+    final remoteReleaseIds = <String>{};
     for (final raw in (remoteData['releases'] as List?) ?? const []) {
       final id = raw is Map ? raw['id'] : null;
-      if (id is! String || localReleaseIds.contains(id)) continue;
+      if (id is! String) continue;
+      remoteReleaseIds.add(id);
+      if (localReleaseIds.contains(id)) continue;
       if (tombstones[id]?.kind == TombstoneKind.release) continue;
       releasesAdded++;
     }
-    final releasesDeleted = localReleaseIds
-        .where((id) => tombstones[id]?.kind == TombstoneKind.release)
-        .length;
+    var releasesDeleted = 0, releasesToUpload = 0;
+    for (final id in localReleaseIds) {
+      if (tombstones[id]?.kind == TombstoneKind.release) {
+        releasesDeleted++;
+      } else if (!remoteReleaseIds.contains(id)) {
+        releasesToUpload++;
+      }
+    }
 
     return MergePreview(
       projectsAdded: added,
@@ -3955,6 +3973,8 @@ class GoogleDriveSyncService {
       projectsDeleted: deleted,
       releasesAdded: releasesAdded,
       releasesDeleted: releasesDeleted,
+      projectsToUpload: toUpload,
+      releasesToUpload: releasesToUpload,
     );
   }
 
@@ -5776,13 +5796,26 @@ class GoogleDriveSyncService {
     };
   }
 
+  /// A date from a backup, at the precision Hive keeps: milliseconds.
+  ///
+  /// The JSON carries microseconds — an edit made in this session still holds
+  /// them in memory when it is uploaded — but the same project read back from
+  /// disk after a restart has lost them. Compared as they were, every Drive
+  /// copy looked a fraction of a millisecond newer than the row it came from,
+  /// and changed: a synced library previewed as "N projects updated" and the
+  /// next sync rewrote them all.
+  static DateTime _storedDate(String raw) => _toHivePrecision(DateTime.parse(raw));
+
+  static DateTime _toHivePrecision(DateTime d) =>
+      DateTime.fromMillisecondsSinceEpoch(d.millisecondsSinceEpoch, isUtc: d.isUtc);
+
   Profile _deserializeProfile(Map<String, dynamic> data) {
     return Profile(
       id: data['id'] as String,
       name: data['name'] as String,
-      createdAt: DateTime.parse(data['createdAt'] as String),
+      createdAt: _storedDate(data['createdAt'] as String),
       lastUsedAt: data['lastUsedAt'] != null 
-          ? DateTime.parse(data['lastUsedAt'] as String)
+          ? _storedDate(data['lastUsedAt'] as String)
           : null,
       photoPath: data['photoPath'] as String?,
       bio: data['bio'] as String?,
@@ -5887,13 +5920,13 @@ class GoogleDriveSyncService {
       filePath: data['filePath'] as String,
       fileName: data['fileName'] as String,
       fileSizeBytes: data['fileSizeBytes'] as int,
-      lastModifiedAt: DateTime.parse(data['lastModifiedAt'] as String),
+      lastModifiedAt: _storedDate(data['lastModifiedAt'] as String),
       customDisplayName: data['customDisplayName'] as String?,
       thumbnailPath: data['thumbnailPath'] as String?,
       status: data['status'] as String,
       fileExtension: data['fileExtension'] as String,
-      createdAt: DateTime.parse(data['createdAt'] as String),
-      updatedAt: DateTime.parse(data['updatedAt'] as String),
+      createdAt: _storedDate(data['createdAt'] as String),
+      updatedAt: _storedDate(data['updatedAt'] as String),
       bpm: (data['bpm'] as num?)?.toDouble(),
       musicalKey: data['musicalKey'] as String?,
       notes: data['notes'] as String?,
@@ -5903,8 +5936,8 @@ class GoogleDriveSyncService {
         id: t['id'] as String,
         text: t['text'] as String,
         completed: t['completed'] as bool? ?? false,
-        createdAt: DateTime.parse(t['createdAt'] as String),
-        dueAt: t['dueAt'] != null ? DateTime.parse(t['dueAt'] as String) : null,
+        createdAt: _storedDate(t['createdAt'] as String),
+        dueAt: t['dueAt'] != null ? _storedDate(t['dueAt'] as String) : null,
       )).toList() ?? const [],
       parts: (data['parts'] as List?)
               ?.map((p) => ProjectPart.fromJson(p as Map<dynamic, dynamic>))
@@ -5915,13 +5948,13 @@ class GoogleDriveSyncService {
       previewSongFileName: data['previewSongFileName'] as String?,
       uploadedPreviewSongHash: data['previewSongHash'] as String?, // Keep 'previewSongHash' key in JSON for backward compatibility
       fileCreatedAt: data['fileCreatedAt'] != null
-          ? DateTime.parse(data['fileCreatedAt'] as String)
+          ? _storedDate(data['fileCreatedAt'] as String)
           : null,
       statusChangedAt: data['statusChangedAt'] != null
-          ? DateTime.parse(data['statusChangedAt'] as String)
+          ? _storedDate(data['statusChangedAt'] as String)
           : null,
       deadline: data['deadline'] != null
-          ? DateTime.parse(data['deadline'] as String)
+          ? _storedDate(data['deadline'] as String)
           : null,
       totalWorkSeconds: data['totalWorkSeconds'] as int? ?? 0,
       sessions: (data['sessions'] as List?)
@@ -5946,7 +5979,10 @@ class GoogleDriveSyncService {
           const [],
       stats: ProjectStats.tryFromMap(data['stats']),
       attachments: (data['attachments'] as List?)
-              ?.map((e) => ProjectAttachment.fromMap(e as Map))
+              ?.map((e) {
+                final a = ProjectAttachment.fromMap(e as Map);
+                return a.copyWith(addedAt: _toHivePrecision(a.addedAt));
+              })
               .toList() ??
           const [],
       accentColor: (data['accentColor'] as num?)?.toInt(),
@@ -5954,7 +5990,7 @@ class GoogleDriveSyncService {
       cardInitials: data['cardInitials'] as String?,
       archivePath: data['archivePath'] as String?,
       archivedAt: data['archivedAt'] != null
-          ? DateTime.parse(data['archivedAt'] as String)
+          ? _storedDate(data['archivedAt'] as String)
           : null,
       archiveEntryPath: data['archiveEntryPath'] as String?,
       durationMs: (data['durationMs'] as num?)?.toInt(),
@@ -6073,7 +6109,7 @@ class GoogleDriveSyncService {
       id: data['id'] as String,
       title: data['title'] as String,
       releaseDate: data['releaseDate'] != null
-          ? DateTime.parse(data['releaseDate'] as String)
+          ? _storedDate(data['releaseDate'] as String)
           : null,
       artworkImagePath: data['artworkImagePath'] as String?,
       description: data['description'] as String?,
@@ -6084,15 +6120,15 @@ class GoogleDriveSyncService {
         filePath: f['filePath'] as String,
         fileType: f['fileType'] as String,
         fileSizeBytes: f['fileSizeBytes'] as int,
-        addedAt: DateTime.parse(f['addedAt'] as String),
+        addedAt: _storedDate(f['addedAt'] as String),
         description: f['description'] as String?,
       )).toList() ?? const [],
       todos: (data['todos'] as List?)?.map((t) => TodoItem(
         id: t['id'] as String,
         text: t['text'] as String,
         completed: t['completed'] as bool,
-        createdAt: DateTime.parse(t['createdAt'] as String),
-        dueAt: t['dueAt'] != null ? DateTime.parse(t['dueAt'] as String) : null,
+        createdAt: _storedDate(t['createdAt'] as String),
+        dueAt: t['dueAt'] != null ? _storedDate(t['dueAt'] as String) : null,
       )).toList() ?? const [],
     );
   }
@@ -6126,9 +6162,9 @@ class GoogleDriveSyncService {
     return ScanRoot(
       id: data['id'] as String,
       path: data['path'] as String,
-      addedAt: DateTime.parse(data['addedAt'] as String),
+      addedAt: _storedDate(data['addedAt'] as String),
       lastScanAt: data['lastScanAt'] != null
-          ? DateTime.parse(data['lastScanAt'] as String)
+          ? _storedDate(data['lastScanAt'] as String)
           : null,
       // Null in an older snapshot, which ScanRoot already reads as "fall back
       // to the folder's own name" (see effectiveDisplayName).
@@ -6156,8 +6192,8 @@ class GoogleDriveSyncService {
       id: data['id'] as String,
       name: data['name'] as String,
       items: (data['items'] as List<dynamic>).cast<String>(),
-      createdAt: DateTime.parse(data['createdAt'] as String),
-      updatedAt: DateTime.parse(data['updatedAt'] as String),
+      createdAt: _storedDate(data['createdAt'] as String),
+      updatedAt: _storedDate(data['updatedAt'] as String),
     );
   }
 
@@ -6183,8 +6219,8 @@ class GoogleDriveSyncService {
       name: data['name'] as String,
       sourceFolderPath: data['sourceFolderPath'] as String,
       mainFileRelativePath: data['mainFileRelativePath'] as String,
-      createdAt: DateTime.parse(data['createdAt'] as String),
-      updatedAt: DateTime.parse(data['updatedAt'] as String),
+      createdAt: _storedDate(data['createdAt'] as String),
+      updatedAt: _storedDate(data['updatedAt'] as String),
       bpm: (data['bpm'] as num?)?.toDouble(),
       musicalKey: data['musicalKey'] as String?,
       dawVersion: data['dawVersion'] as String?,
@@ -6206,9 +6242,9 @@ class GoogleDriveSyncService {
     return TemplateRoot(
       id: data['id'] as String,
       path: data['path'] as String,
-      addedAt: DateTime.parse(data['addedAt'] as String),
+      addedAt: _storedDate(data['addedAt'] as String),
       lastRefreshedAt: data['lastRefreshedAt'] != null
-          ? DateTime.parse(data['lastRefreshedAt'] as String)
+          ? _storedDate(data['lastRefreshedAt'] as String)
           : null,
     );
   }
@@ -6530,20 +6566,33 @@ class MergePreview {
     this.projectsDeleted = 0,
     this.releasesAdded = 0,
     this.releasesDeleted = 0,
+    this.projectsToUpload = 0,
+    this.releasesToUpload = 0,
   });
 
+  // What the merge brings onto this device.
   final int projectsAdded;
   final int projectsUpdated;
   final int projectsDeleted;
   final int releasesAdded;
   final int releasesDeleted;
 
+  // What the upload after it would add to Drive: projects only here, or
+  // changed here since Drive's copy; releases only here. (A release has no
+  // `updatedAt`, so one edited here is not counted.)
+  final int projectsToUpload;
+  final int releasesToUpload;
+
+  /// Merging changes nothing on this device.
   bool get changesNothing =>
       projectsAdded == 0 &&
       projectsUpdated == 0 &&
       projectsDeleted == 0 &&
       releasesAdded == 0 &&
       releasesDeleted == 0;
+
+  /// Nothing to bring in and nothing to send: this device and Drive match.
+  bool get inSync => changesNothing && projectsToUpload == 0 && releasesToUpload == 0;
 }
 
 /// Roughly what a first upload sends: the media files that go up with the

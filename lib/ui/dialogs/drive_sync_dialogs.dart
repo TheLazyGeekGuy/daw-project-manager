@@ -118,11 +118,16 @@ class FirstSyncChoice {
 /// "found a backup — bring it here?" (with what that would change) or
 /// "nothing on Drive yet — upload?" (with roughly how much goes up), and,
 /// when automatic sync is off, an offer to turn it on.
+///
+/// With a backup, [previewLines] is what Drive would bring here and
+/// [uploadLines] what this device would send; both empty means they already
+/// match, and the dialog says so instead of asking to sync.
 Future<FirstSyncChoice?> showFirstSyncDialog(
   BuildContext context, {
   required bool hasBackup,
   String? backupLine,
   List<String> previewLines = const [],
+  List<String> uploadLines = const [],
   String? estimateLine,
   required bool offerKeepInSync,
 }) {
@@ -132,6 +137,7 @@ Future<FirstSyncChoice?> showFirstSyncDialog(
       hasBackup: hasBackup,
       backupLine: backupLine,
       previewLines: previewLines,
+      uploadLines: uploadLines,
       estimateLine: estimateLine,
       offerKeepInSync: offerKeepInSync,
     ),
@@ -143,6 +149,7 @@ class _FirstSyncDialog extends StatefulWidget {
     required this.hasBackup,
     required this.backupLine,
     required this.previewLines,
+    required this.uploadLines,
     required this.estimateLine,
     required this.offerKeepInSync,
   });
@@ -150,6 +157,7 @@ class _FirstSyncDialog extends StatefulWidget {
   final bool hasBackup;
   final String? backupLine;
   final List<String> previewLines;
+  final List<String> uploadLines;
   final String? estimateLine;
   final bool offerKeepInSync;
 
@@ -160,13 +168,32 @@ class _FirstSyncDialog extends StatefulWidget {
 class _FirstSyncDialogState extends State<_FirstSyncDialog> {
   bool _keepInSync = true;
 
+  bool get _inSync =>
+      widget.hasBackup &&
+      widget.previewLines.isEmpty &&
+      widget.uploadLines.isEmpty;
+
+  Widget _section(BuildContext context, String heading, List<String> lines) =>
+      Padding(
+        padding: const EdgeInsets.only(top: 8),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(heading, style: const TextStyle(fontWeight: FontWeight.w600)),
+            for (final line in lines) Text('•  $line'),
+          ],
+        ),
+      );
+
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
     return AlertDialog(
       backgroundColor: Theme.of(context).cardColor,
       title: Text(
-        widget.hasBackup ? l10n.driveFoundBackupTitle : l10n.driveFirstUploadTitle,
+        widget.hasBackup
+            ? l10n.driveFoundBackupTitle
+            : l10n.driveFirstUploadTitle,
       ),
       content: SizedBox(
         width: 440,
@@ -177,10 +204,21 @@ class _FirstSyncDialogState extends State<_FirstSyncDialog> {
             if (widget.hasBackup) ...[
               if (widget.backupLine != null) Text(widget.backupLine!),
               const SizedBox(height: 8),
-              Text(l10n.driveFoundBackupBody),
-              if (widget.previewLines.isNotEmpty) ...[
-                const SizedBox(height: 8),
-                for (final line in widget.previewLines) Text('•  $line'),
+              if (_inSync)
+                Text(
+                  l10n.driveAlreadyInSync,
+                  key: const ValueKey('drive-in-sync'),
+                )
+              else ...[
+                Text(l10n.driveFoundBackupBody),
+                if (widget.previewLines.isNotEmpty)
+                  _section(context, l10n.driveFromDrive, widget.previewLines),
+                if (widget.uploadLines.isNotEmpty)
+                  _section(
+                    context,
+                    l10n.driveFromThisDevice,
+                    widget.uploadLines,
+                  ),
               ],
             ] else ...[
               Text(l10n.driveFirstUploadBody),
@@ -206,26 +244,39 @@ class _FirstSyncDialogState extends State<_FirstSyncDialog> {
         ),
       ),
       actions: [
-        TextButton(
-          onPressed: () => Navigator.pop(
-            context,
-            FirstSyncChoice(
-              syncNow: false,
-              keepInSync: widget.offerKeepInSync && _keepInSync,
+        if (_inSync)
+          FilledButton(
+            onPressed: () => Navigator.pop(
+              context,
+              FirstSyncChoice(
+                syncNow: false,
+                keepInSync: widget.offerKeepInSync && _keepInSync,
+              ),
             ),
-          ),
-          child: Text(l10n.driveLater),
-        ),
-        FilledButton(
-          onPressed: () => Navigator.pop(
-            context,
-            FirstSyncChoice(
-              syncNow: true,
-              keepInSync: widget.offerKeepInSync && _keepInSync,
+            child: Text(l10n.done),
+          )
+        else ...[
+          TextButton(
+            onPressed: () => Navigator.pop(
+              context,
+              FirstSyncChoice(
+                syncNow: false,
+                keepInSync: widget.offerKeepInSync && _keepInSync,
+              ),
             ),
+            child: Text(l10n.driveLater),
           ),
-          child: Text(l10n.driveSyncNow),
-        ),
+          FilledButton(
+            onPressed: () => Navigator.pop(
+              context,
+              FirstSyncChoice(
+                syncNow: true,
+                keepInSync: widget.offerKeepInSync && _keepInSync,
+              ),
+            ),
+            child: Text(l10n.driveSyncNow),
+          ),
+        ],
       ],
     );
   }
@@ -337,7 +388,8 @@ class DriveSyncProgressDialog extends StatefulWidget {
   final VoidCallback onCancel;
 
   @override
-  State<DriveSyncProgressDialog> createState() => _DriveSyncProgressDialogState();
+  State<DriveSyncProgressDialog> createState() =>
+      _DriveSyncProgressDialogState();
 }
 
 class _DriveSyncProgressDialogState extends State<DriveSyncProgressDialog> {

@@ -4339,5 +4339,10 @@
   "driveStatusUpToDate": "Google 云端硬盘：已是最新",
   "trayLastSyncFailed": "上次同步失败：{when}",
   "driveSyncOnStartup": "启动应用时同步",
-  "driveSyncOnStartupHint": "每次打开应用时，获取你在其他设备上所做的更改。"
+  "driveSyncOnStartupHint": "每次打开应用时，获取你在其他设备上所做的更改。",
+  "driveAlreadyInSync": "此设备与 Google 云端硬盘已经一致，没有需要同步的内容。",
+  "driveFromDrive": "来自 Google 云端硬盘",
+  "driveFromThisDevice": "来自此设备",
+  "driveUploadProjects": "{count, plural, other{在此添加或更改的项目 {count} 个}}",
+  "driveUploadReleases": "{count, plural, other{在此添加的发行 {count} 个}}"
 }

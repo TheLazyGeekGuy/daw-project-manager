@@ -75,8 +75,8 @@ LoopbackPageTexts loopbackPageTexts(AppLocalizations l10n) => LoopbackPageTexts(
       errorMessage: l10n.driveBrowserErrorBody,
     );
 
-/// The lines a merge preview reads as ("3 new projects", "1 project
-/// updated"…); empty when it changes nothing.
+/// What a sync would bring onto this device, as lines ("3 new projects",
+/// "1 project updated"…); empty when it brings nothing.
 List<String> mergePreviewLines(AppLocalizations l10n, MergePreview p) => [
       if (p.projectsAdded > 0) l10n.driveMergeAdds(p.projectsAdded),
       if (p.projectsUpdated > 0) l10n.driveMergeUpdates(p.projectsUpdated),
@@ -84,4 +84,11 @@ List<String> mergePreviewLines(AppLocalizations l10n, MergePreview p) => [
       if (p.releasesAdded > 0) l10n.driveMergeReleases(p.releasesAdded),
       if (p.releasesDeleted > 0)
         l10n.driveMergeReleasesRemoved(p.releasesDeleted),
+    ];
+
+/// What a sync would send to Drive from this device, as lines; empty when
+/// it sends nothing.
+List<String> uploadPreviewLines(AppLocalizations l10n, MergePreview p) => [
+      if (p.projectsToUpload > 0) l10n.driveUploadProjects(p.projectsToUpload),
+      if (p.releasesToUpload > 0) l10n.driveUploadReleases(p.releasesToUpload),
     ];

@@ -7714,4 +7714,36 @@ class AppLocalizationsIt extends AppLocalizations {
   @override
   String get driveSyncOnStartupHint =>
       'Riceve ciò che hanno modificato gli altri tuoi dispositivi ogni volta che apri l’app.';
+
+  @override
+  String get driveAlreadyInSync =>
+      'Questo dispositivo e Google Drive sono già allineati. Non c’è niente da sincronizzare.';
+
+  @override
+  String get driveFromDrive => 'Da Google Drive';
+
+  @override
+  String get driveFromThisDevice => 'Da questo dispositivo';
+
+  @override
+  String driveUploadProjects(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count progetti aggiunti o modificati qui',
+      one: '1 progetto aggiunto o modificato qui',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String driveUploadReleases(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count uscite aggiunte qui',
+      one: '1 uscita aggiunta qui',
+    );
+    return '$_temp0';
+  }
 }

@@ -4339,5 +4339,10 @@
   "driveStatusUpToDate": "Google Drive: aggiornato",
   "trayLastSyncFailed": "Ultima sincronizzazione non riuscita: {when}",
   "driveSyncOnStartup": "Sincronizza all’avvio dell’app",
-  "driveSyncOnStartupHint": "Riceve ciò che hanno modificato gli altri tuoi dispositivi ogni volta che apri l’app."
+  "driveSyncOnStartupHint": "Riceve ciò che hanno modificato gli altri tuoi dispositivi ogni volta che apri l’app.",
+  "driveAlreadyInSync": "Questo dispositivo e Google Drive sono già allineati. Non c’è niente da sincronizzare.",
+  "driveFromDrive": "Da Google Drive",
+  "driveFromThisDevice": "Da questo dispositivo",
+  "driveUploadProjects": "{count, plural, =1{1 progetto aggiunto o modificato qui} other{{count} progetti aggiunti o modificati qui}}",
+  "driveUploadReleases": "{count, plural, =1{1 uscita aggiunta qui} other{{count} uscite aggiunte qui}}"
 }

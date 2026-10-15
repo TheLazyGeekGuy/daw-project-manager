@@ -7596,5 +7596,24 @@
     }
   },
   "driveSyncOnStartup": "Sync when the app starts",
-  "driveSyncOnStartupHint": "Brings in what your other devices changed each time you open the app."
+  "driveSyncOnStartupHint": "Brings in what your other devices changed each time you open the app.",
+  "driveAlreadyInSync": "This device and Google Drive already match. There is nothing to sync.",
+  "driveFromDrive": "From Google Drive",
+  "driveFromThisDevice": "From this device",
+  "driveUploadProjects": "{count, plural, =1{1 project added or changed here} other{{count} projects added or changed here}}",
+  "@driveUploadProjects": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "driveUploadReleases": "{count, plural, =1{1 release added here} other{{count} releases added here}}",
+  "@driveUploadReleases": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  }
 }

@@ -7716,4 +7716,40 @@ class AppLocalizationsRu extends AppLocalizations {
   @override
   String get driveSyncOnStartupHint =>
       'При каждом запуске получает изменения с других ваших устройств.';
+
+  @override
+  String get driveAlreadyInSync =>
+      'Это устройство и Google Drive уже совпадают. Синхронизировать нечего.';
+
+  @override
+  String get driveFromDrive => 'С Google Drive';
+
+  @override
+  String get driveFromThisDevice => 'С этого устройства';
+
+  @override
+  String driveUploadProjects(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count проекта добавлено или изменено здесь',
+      many: '$count проектов добавлено или изменено здесь',
+      few: '$count проекта добавлено или изменено здесь',
+      one: '$count проект добавлен или изменён здесь',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String driveUploadReleases(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count релиза добавлено здесь',
+      many: '$count релизов добавлено здесь',
+      few: '$count релиза добавлено здесь',
+      one: '$count релиз добавлен здесь',
+    );
+    return '$_temp0';
+  }
 }

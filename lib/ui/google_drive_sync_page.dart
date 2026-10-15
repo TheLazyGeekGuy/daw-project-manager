@@ -244,6 +244,7 @@ class _GoogleDriveSyncSectionState extends ConsumerState<GoogleDriveSyncSection>
           hasBackup: true,
           backupLine: _remoteLine(info.modifiedTime, info.device),
           previewLines: mergePreviewLines(_l10n, preview),
+          uploadLines: uploadPreviewLines(_l10n, preview),
           offerKeepInSync: offerKeepInSync,
         );
       } else {

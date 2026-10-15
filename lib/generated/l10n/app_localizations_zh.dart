@@ -7365,4 +7365,33 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get driveSyncOnStartupHint => '每次打开应用时，获取你在其他设备上所做的更改。';
+
+  @override
+  String get driveAlreadyInSync => '此设备与 Google 云端硬盘已经一致，没有需要同步的内容。';
+
+  @override
+  String get driveFromDrive => '来自 Google 云端硬盘';
+
+  @override
+  String get driveFromThisDevice => '来自此设备';
+
+  @override
+  String driveUploadProjects(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '在此添加或更改的项目 $count 个',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String driveUploadReleases(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '在此添加的发行 $count 个',
+    );
+    return '$_temp0';
+  }
 }

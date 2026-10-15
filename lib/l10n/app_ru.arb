@@ -4339,5 +4339,10 @@
   "driveStatusUpToDate": "Google Drive: актуально",
   "trayLastSyncFailed": "Последняя синхронизация не удалась: {when}",
   "driveSyncOnStartup": "Синхронизировать при запуске",
-  "driveSyncOnStartupHint": "При каждом запуске получает изменения с других ваших устройств."
+  "driveSyncOnStartupHint": "При каждом запуске получает изменения с других ваших устройств.",
+  "driveAlreadyInSync": "Это устройство и Google Drive уже совпадают. Синхронизировать нечего.",
+  "driveFromDrive": "С Google Drive",
+  "driveFromThisDevice": "С этого устройства",
+  "driveUploadProjects": "{count, plural, one{{count} проект добавлен или изменён здесь} few{{count} проекта добавлено или изменено здесь} many{{count} проектов добавлено или изменено здесь} other{{count} проекта добавлено или изменено здесь}}",
+  "driveUploadReleases": "{count, plural, one{{count} релиз добавлен здесь} few{{count} релиза добавлено здесь} many{{count} релизов добавлено здесь} other{{count} релиза добавлено здесь}}"
 }

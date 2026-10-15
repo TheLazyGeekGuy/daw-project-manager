@@ -97,6 +97,40 @@ void main() {
       expect(choice!.keepInSync, isTrue);
     });
 
+    testWidgets('says so when this device and Drive already match',
+        (tester) async {
+      FirstSyncChoice? choice;
+      await pumpOpener(tester, (context) async {
+        choice = await showFirstSyncDialog(
+          context,
+          hasBackup: true,
+          backupLine: 'Drive updated 2 minutes ago from this device',
+          offerKeepInSync: false,
+        );
+      });
+      expect(find.byKey(const ValueKey('drive-in-sync')), findsOneWidget);
+      expect(find.text('Sync now'), findsNothing);
+      await tester.tap(find.text('Done'));
+      await tester.pumpAndSettle();
+      expect(choice!.syncNow, isFalse);
+    });
+
+    testWidgets('shows both directions separately', (tester) async {
+      await pumpOpener(tester, (context) async {
+        await showFirstSyncDialog(
+          context,
+          hasBackup: true,
+          previewLines: const ['1 new project'],
+          uploadLines: const ['2 projects added or changed here'],
+          offerKeepInSync: false,
+        );
+      });
+      expect(find.text('From Google Drive'), findsOneWidget);
+      expect(find.text('From this device'), findsOneWidget);
+      expect(find.textContaining('2 projects added or changed here'), findsOneWidget);
+      expect(find.text('Sync now'), findsOneWidget);
+    });
+
     testWidgets('without one: says how much would go up', (tester) async {
       FirstSyncChoice? choice;
       await pumpOpener(tester, (context) async {

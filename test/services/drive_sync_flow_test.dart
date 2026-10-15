@@ -3,6 +3,7 @@ import 'dart:io';
 
 import 'package:flutter_test/flutter_test.dart';
 import 'package:hive_ce/hive.dart';
+import 'package:daw_project_manager/models/music_project.dart';
 import 'package:daw_project_manager/models/profile.dart';
 import 'package:daw_project_manager/models/release.dart';
 import 'package:daw_project_manager/repository/profile_repository.dart';
@@ -448,6 +449,59 @@ void main() {
     });
   });
 
+  group('after a restart', () {
+    // Hive stores dates to the millisecond; the backup's JSON keeps
+    // microseconds. A project saved in this session still holds its
+    // microseconds in memory, so the upload writes them; after a restart the
+    // same project reads back without them, and every Drive copy looked a
+    // fraction of a millisecond newer — and "changed".
+    Future<void> restart() async {
+      await Hive.close();
+      final profilesBox = await Hive.openBox<Profile>('profiles');
+      final settingsBox = await Hive.openBox<String>('settings');
+      profileRepo =
+          ProfileRepository(profilesBox: profilesBox, settingsBox: settingsBox);
+      projectRepo = await HiveTestHelper.createRepository(profileId: profile.id);
+      await Hive.openBox<String>('app_settings');
+    }
+
+    MusicProject withMicroseconds(String id) => TestFactories.makeProject(
+          id: id,
+          notes: 'notes',
+          updatedAt: DateTime(2026, 5, 1, 10, 0, 0, 123, 456),
+          lastModifiedAt: DateTime(2026, 4, 1, 9, 0, 0, 7, 891),
+          deadline: DateTime(2026, 7, 1, 0, 0, 0, 0, 1),
+        );
+
+    test('a synced library previews as unchanged', () async {
+      final service = await signedIn();
+      await projectRepo.projectsBox.put('p', withMicroseconds('p'));
+      await service.syncDatabase(projectRepo: projectRepo, profileRepo: profileRepo);
+
+      await restart();
+      final preview =
+          await service.previewMerge(await service.downloadDatabase(), profileRepo);
+
+      expect(preview.projectsUpdated, 0);
+      expect(preview.projectsToUpload, 0);
+      expect(preview.inSync, isTrue);
+    });
+
+    test('syncing again reports nothing updated', () async {
+      final service = await signedIn();
+      await projectRepo.projectsBox.put('p', withMicroseconds('p'));
+      await service.syncDatabase(projectRepo: projectRepo, profileRepo: profileRepo);
+
+      await restart();
+      final result = await service.syncDatabase(
+        projectRepo: projectRepo,
+        profileRepo: profileRepo,
+      );
+
+      expect(result.projectsUpdated, 0);
+    });
+  });
+
   group('previewMerge', () {
     test('counts additions, updates and deletions without writing', () async {
       final service = await signedIn();
@@ -502,6 +556,38 @@ void main() {
           reason: 'a preview writes nothing');
     });
 
+    test('counts what this device would send, too', () async {
+      // After signing in, the dialog only ever counted what Drive would bring
+      // here, yet told you to sync to "add what's here" whatever the case.
+      final service = await signedIn();
+      await projectRepo.projectsBox.put(
+        'only-here',
+        TestFactories.makeProject(id: 'only-here'),
+      );
+      final shared = TestFactories.makeProject(
+        id: 'edited-here',
+        notes: 'old',
+        updatedAt: DateTime(2026, 1, 1),
+      );
+      await projectRepo.projectsBox.put(
+        'edited-here',
+        shared.copyWith(notes: 'new', updatedAt: DateTime(2026, 2, 1)),
+      );
+      await projectRepo.releasesBox.put(
+        'rel-here',
+        Release(id: 'rel-here', title: 'EP', trackIds: const []),
+      );
+
+      final preview = await service.previewMerge({
+        'projects': [service.serializeProjectForTest(shared)],
+      }, profileRepo);
+
+      expect(preview.changesNothing, isTrue, reason: 'nothing comes this way');
+      expect(preview.projectsToUpload, 2);
+      expect(preview.releasesToUpload, 1);
+      expect(preview.inSync, isFalse);
+    });
+
     test('an identical backup changes nothing', () async {
       final service = await signedIn();
       await projectRepo.projectsBox
@@ -512,6 +598,7 @@ void main() {
         ],
       }, profileRepo);
       expect(preview.changesNothing, isTrue);
+      expect(preview.inSync, isTrue);
     });
   });
 

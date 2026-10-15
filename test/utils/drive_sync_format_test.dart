@@ -67,6 +67,17 @@ void main() {
     );
   });
 
+  test('uploadPreviewLines lists what this device would send', () {
+    expect(uploadPreviewLines(en, const MergePreview()), isEmpty);
+    expect(
+      uploadPreviewLines(
+        en,
+        const MergePreview(projectsToUpload: 1, releasesToUpload: 3),
+      ),
+      ['1 project added or changed here', '3 releases added here'],
+    );
+  });
+
   test('the sign-in port is named without a thousands separator', () {
     expect(
       signInFailureSentence(en, DesktopSignInFailure.portInUse),
