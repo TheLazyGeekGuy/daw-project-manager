@@ -7777,4 +7777,14 @@ class AppLocalizationsFr extends AppLocalizations {
     );
     return '$_temp0';
   }
+
+  @override
+  String drivePreviewLineWithNames(String line, String names) {
+    return '$line : $names';
+  }
+
+  @override
+  String driveNamesAndMore(String names, int count) {
+    return '$names et $count autres';
+  }
 }

@@ -4368,5 +4368,7 @@
   "driveFromDrive": "Do Google Drive",
   "driveFromThisDevice": "Deste dispositivo",
   "driveUploadProjects": "{count, plural, =1{1 projeto adicionado ou alterado aqui} other{{count} projetos adicionados ou alterados aqui}}",
-  "driveUploadReleases": "{count, plural, =1{1 lançamento adicionado aqui} other{{count} lançamentos adicionados aqui}}"
+  "driveUploadReleases": "{count, plural, =1{1 lançamento adicionado aqui} other{{count} lançamentos adicionados aqui}}",
+  "drivePreviewLineWithNames": "{line}: {names}",
+  "driveNamesAndMore": "{names} e mais {count}"
 }

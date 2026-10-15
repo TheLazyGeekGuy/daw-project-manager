@@ -487,6 +487,22 @@ void main() {
       expect(preview.inSync, isTrue);
     });
 
+    test('without a restart, a row touched this session is not "changed here"',
+        () async {
+      // The mirror of the restart case: Drive's dates are read at Hive's
+      // precision, but a row saved this session (the startup scan saves
+      // many) still holds microseconds in memory, and read as newer.
+      final service = await signedIn();
+      await projectRepo.projectsBox.put('p', withMicroseconds('p'));
+      await service.syncDatabase(projectRepo: projectRepo, profileRepo: profileRepo);
+
+      final preview =
+          await service.previewMerge(await service.downloadDatabase(), profileRepo);
+
+      expect(preview.projectsToUpload, 0);
+      expect(preview.inSync, isTrue);
+    });
+
     test('syncing again reports nothing updated', () async {
       final service = await signedIn();
       await projectRepo.projectsBox.put('p', withMicroseconds('p'));

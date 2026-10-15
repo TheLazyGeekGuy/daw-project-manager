@@ -3915,6 +3915,7 @@ class GoogleDriveSyncService {
     }
 
     var added = 0, updated = 0;
+    final updatedNames = <String>[], uploadNames = <String>[];
     final remoteProjects = <String, MusicProject>{};
     for (final raw in (remoteData['projects'] as List?) ?? const []) {
       final MusicProject remote;
@@ -3928,9 +3929,14 @@ class GoogleDriveSyncService {
       final local = localProjects[remote.id];
       if (local == null) {
         added++;
-      } else if (remote.updatedAt.isAfter(local.updatedAt) &&
+      } else if (_changedAfter(remote.updatedAt, local.updatedAt) &&
           _hasMetadataChanged(remote, local)) {
         updated++;
+        updatedNames.add(local.displayName);
+        if (kDebugMode) {
+          print('Drive has newer ${local.displayName}: '
+              '${_metadataDifferences(remote, local).join(', ')}');
+        }
       }
     }
     var deleted = 0, toUpload = 0;
@@ -3942,9 +3948,16 @@ class GoogleDriveSyncService {
       }
       final remote = remoteProjects[local.id];
       if (remote == null ||
-          (local.updatedAt.isAfter(remote.updatedAt) &&
+          (_changedAfter(local.updatedAt, remote.updatedAt) &&
               _hasMetadataChanged(remote, local))) {
         toUpload++;
+        uploadNames.add(local.displayName);
+        if (kDebugMode) {
+          print(remote == null
+              ? 'Only here, not on Drive: ${local.displayName}'
+              : 'Changed here since Drive: ${local.displayName}: '
+                  '${_metadataDifferences(remote, local).join(', ')}');
+        }
       }
     }
 
@@ -3975,6 +3988,8 @@ class GoogleDriveSyncService {
       releasesDeleted: releasesDeleted,
       projectsToUpload: toUpload,
       releasesToUpload: releasesToUpload,
+      updatedNames: updatedNames,
+      uploadNames: uploadNames,
     );
   }
 
@@ -4220,29 +4235,66 @@ class GoogleDriveSyncService {
   /// Check if metadata fields changed (user-editable fields, not file system fields)
   /// Android only modifies metadata (todos, notes, bpm, key, status, etc.)
   /// We don't use updatedAt because it can change when file is modified on disk
-  bool _hasMetadataChanged(MusicProject remote, MusicProject local) {
+  bool _hasMetadataChanged(MusicProject remote, MusicProject local) =>
+      _metadataDifferences(remote, local).isNotEmpty;
+
+  /// The fields [_hasMetadataChanged] finds different, by name — logged by
+  /// [previewMerge] so a "changed" project can be explained.
+  ///
+  /// Both sides are compared at Hive's precision (milliseconds): a row saved
+  /// this session — the startup scan re-saves every project with its file's
+  /// date, which Windows gives to the microsecond — still holds microseconds
+  /// in memory, while one read back from disk or from a backup does not.
+  List<String> _metadataDifferences(MusicProject remote, MusicProject local) {
+    remote = _atHivePrecision(remote);
+    local = _atHivePrecision(local);
     // Compare metadata fields (user-editable) AND date fields from the DAW file.
     // lastModifiedAt and fileCreatedAt come from the desktop filesystem via the backup
     // and must be propagated to mobile — they are NOT derived from the Android filesystem.
-    return remote.notes != local.notes ||
-        !_todosEqual(remote.todos, local.todos) ||
-        !_listEquals(remote.parts, local.parts) ||
-        !_listEquals(remote.attachments, local.attachments) ||
-        !_listEquals(remote.tags, local.tags) ||
-        // Read out of the file on a desktop; a phone only ever gets it here.
-        (remote.stats != null && remote.stats != local.stats) ||
-        !_mapEquals(remote.customFields, local.customFields) ||
-        remote.bpm != local.bpm ||
-        remote.musicalKey != local.musicalKey ||
-        remote.status != local.status ||
-        remote.customDisplayName != local.customDisplayName ||
-        remote.hidden != local.hidden ||
-        remote.deadline != local.deadline ||
-        remote.ignoredNewerSongPath != local.ignoredNewerSongPath ||
-        remote.lastModifiedAt != local.lastModifiedAt ||
-        remote.fileCreatedAt != local.fileCreatedAt ||
-        remote.accentColor != local.accentColor ||
-        remote.iconKey != local.iconKey;
+    return [
+      if (remote.notes != local.notes) 'notes',
+      if (!_todosEqual(remote.todos, local.todos)) 'todos',
+      if (!_listEquals(remote.parts, local.parts)) 'parts',
+      if (!_listEquals(remote.attachments, local.attachments)) 'attachments',
+      if (!_listEquals(remote.tags, local.tags)) 'tags',
+      // Read out of the file on a desktop; a phone only ever gets it here.
+      if (remote.stats != null && remote.stats != local.stats) 'stats',
+      if (!_mapEquals(remote.customFields, local.customFields)) 'customFields',
+      if (remote.bpm != local.bpm) 'bpm',
+      if (remote.musicalKey != local.musicalKey) 'musicalKey',
+      if (remote.status != local.status) 'status',
+      if (remote.customDisplayName != local.customDisplayName) 'customDisplayName',
+      if (remote.hidden != local.hidden) 'hidden',
+      if (remote.deadline != local.deadline) 'deadline',
+      if (remote.ignoredNewerSongPath != local.ignoredNewerSongPath) 'ignoredNewerSongPath',
+      if (remote.lastModifiedAt != local.lastModifiedAt) 'lastModifiedAt',
+      if (remote.fileCreatedAt != local.fileCreatedAt) 'fileCreatedAt',
+      if (remote.accentColor != local.accentColor) 'accentColor',
+      if (remote.iconKey != local.iconKey) 'iconKey',
+    ];
+  }
+
+  /// Whether [a] was changed after [b], at Hive's precision.
+  static bool _changedAfter(DateTime a, DateTime b) =>
+      a.millisecondsSinceEpoch > b.millisecondsSinceEpoch;
+
+  /// [p] with the dates sync compares cut to milliseconds, as Hive stores
+  /// them. For comparing only — never saved.
+  static MusicProject _atHivePrecision(MusicProject p) {
+    DateTime? cut(DateTime? d) => d == null ? null : _toHivePrecision(d);
+    return p.copyWith(
+      updatedAt: cut(p.updatedAt),
+      lastModifiedAt: cut(p.lastModifiedAt),
+      fileCreatedAt: cut(p.fileCreatedAt),
+      deadline: cut(p.deadline),
+      todos: [
+        for (final t in p.todos)
+          t.dueAt == null ? t : t.copyWith(dueAt: cut(t.dueAt)),
+      ],
+      attachments: [
+        for (final a in p.attachments) a.copyWith(addedAt: cut(a.addedAt)),
+      ],
+    );
   }
 
   /// Merge remote data with local data
@@ -4602,7 +4654,7 @@ class GoogleDriveSyncService {
                 // (but before this merge runs) would have those fresh local edits
                 // silently discarded in favor of a stale remote copy — the opposite
                 // of the "prefer newer data" conflict resolution this is meant to do.
-                final remoteIsNewer = remoteProject.updatedAt.isAfter(localProject.updatedAt);
+                final remoteIsNewer = _changedAfter(remoteProject.updatedAt, localProject.updatedAt);
 
                 if (metadataChanged && remoteIsNewer) {
                   // Metadata changed - merge intelligently
@@ -6568,6 +6620,8 @@ class MergePreview {
     this.releasesDeleted = 0,
     this.projectsToUpload = 0,
     this.releasesToUpload = 0,
+    this.updatedNames = const [],
+    this.uploadNames = const [],
   });
 
   // What the merge brings onto this device.
@@ -6582,6 +6636,11 @@ class MergePreview {
   // `updatedAt`, so one edited here is not counted.)
   final int projectsToUpload;
   final int releasesToUpload;
+
+  /// Which projects those are, so a surprising "1 project changed" can be
+  /// checked by name.
+  final List<String> updatedNames;
+  final List<String> uploadNames;
 
   /// Merging changes nothing on this device.
   bool get changesNothing =>

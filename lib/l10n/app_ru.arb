@@ -4344,5 +4344,7 @@
   "driveFromDrive": "С Google Drive",
   "driveFromThisDevice": "С этого устройства",
   "driveUploadProjects": "{count, plural, one{{count} проект добавлен или изменён здесь} few{{count} проекта добавлено или изменено здесь} many{{count} проектов добавлено или изменено здесь} other{{count} проекта добавлено или изменено здесь}}",
-  "driveUploadReleases": "{count, plural, one{{count} релиз добавлен здесь} few{{count} релиза добавлено здесь} many{{count} релизов добавлено здесь} other{{count} релиза добавлено здесь}}"
+  "driveUploadReleases": "{count, plural, one{{count} релиз добавлен здесь} few{{count} релиза добавлено здесь} many{{count} релизов добавлено здесь} other{{count} релиза добавлено здесь}}",
+  "drivePreviewLineWithNames": "{line}: {names}",
+  "driveNamesAndMore": "{names} и ещё {count}"
 }

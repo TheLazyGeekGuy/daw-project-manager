@@ -4344,5 +4344,7 @@
   "driveFromDrive": "Depuis Google Drive",
   "driveFromThisDevice": "Depuis cet appareil",
   "driveUploadProjects": "{count, plural, =1{1 projet ajouté ou modifié ici} other{{count} projets ajoutés ou modifiés ici}}",
-  "driveUploadReleases": "{count, plural, =1{1 sortie ajoutée ici} other{{count} sorties ajoutées ici}}"
+  "driveUploadReleases": "{count, plural, =1{1 sortie ajoutée ici} other{{count} sorties ajoutées ici}}",
+  "drivePreviewLineWithNames": "{line} : {names}",
+  "driveNamesAndMore": "{names} et {count} autres"
 }

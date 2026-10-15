@@ -968,6 +968,32 @@ class ProjectRepository {
     return failedPaths;
   }
 
+  static DateTime _toStoredPrecision(DateTime d) =>
+      DateTime.fromMillisecondsSinceEpoch(d.millisecondsSinceEpoch, isUtc: d.isUtc);
+
+  /// Whether a scan's [after] differs from [before] in anything a scan
+  /// writes. Dates compare at millisecond precision, as Hive keeps them.
+  @visibleForTesting
+  static bool scanChangedProject(MusicProject before, MusicProject after) {
+    bool sameTime(DateTime? a, DateTime? b) =>
+        a?.millisecondsSinceEpoch == b?.millisecondsSinceEpoch;
+    return before.filePath != after.filePath ||
+        before.fileName != after.fileName ||
+        before.fileSizeBytes != after.fileSizeBytes ||
+        !sameTime(before.lastModifiedAt, after.lastModifiedAt) ||
+        before.fileExtension != after.fileExtension ||
+        before.bpm != after.bpm ||
+        before.musicalKey != after.musicalKey ||
+        before.dawVersion != after.dawVersion ||
+        before.projectNotes != after.projectNotes ||
+        !listEquals(before.markers, after.markers) ||
+        before.stats != after.stats ||
+        before.dawType != after.dawType ||
+        !sameTime(before.fileCreatedAt, after.fileCreatedAt) ||
+        before.parentProjectId != after.parentProjectId ||
+        before.metadataScanned != after.metadataScanned;
+  }
+
   Future<({MusicProject project, ProjectEvent? event, StoredMidiClips? clips})>
       _buildProjectAndEvent(
     FileSystemEntity entity, {
@@ -982,7 +1008,11 @@ class ProjectRepository {
     // doesn't care whether the path is a file or a directory.
     final ext = p.extension(filePath).toLowerCase();
     final size = stat.size;
-    final lastModified = stat.modified;
+    // At the precision Hive stores (milliseconds). Windows gives file times
+    // to the microsecond; kept as they are, a row saved this session never
+    // equalled itself read back from disk, so every scan after a restart
+    // logged the file as changed and Drive sync saw a difference that wasn't.
+    final lastModified = _toStoredPrecision(stat.modified);
 
     final existing = getByPath(filePath);
 
@@ -1040,6 +1070,7 @@ class ProjectRepository {
             ? stat.changed
             : stat.modified;
       }
+      fileCreatedAt = _toStoredPrecision(fileCreatedAt);
     }
 
     // Preserve-by-default. An earlier version of this built a fresh
@@ -1052,14 +1083,19 @@ class ProjectRepository {
     // inverts that: a new field is kept unless it is deliberately updated.
     //
     // Only fields listed below are touched; everything else survives a scan.
-    final projectToSave = existing != null
-        ? existing.copyWith(
+    //
+    // `updatedAt` moves only when this actually changed something. It is what
+    // Drive sync's "newer copy wins" goes by, and every launch's scan used to
+    // bump it on every project: an untouched desktop copy then beat a note
+    // edited on a phone, and the next sync dropped the note. (Statistics'
+    // "finished per month" reads it too, and moved every finished project
+    // into the current month.)
+    final rescanned = existing?.copyWith(
             filePath: filePath,
             fileName: fileName,
             fileSizeBytes: size,
             lastModifiedAt: lastModified,
             fileExtension: ext,
-            updatedAt: DateTime.now(),
             // Null from extraction means "didn't find it", so the stored
             // value stands — copyWith already treats null as "leave alone".
             bpm: extractedMetadata?.bpm,
@@ -1078,7 +1114,11 @@ class ProjectRepository {
             fileCreatedAt: fileCreatedAt,
             parentProjectId: parentProjectId,
             metadataScanned: fullMetadata ? true : existing.metadataScanned,
-          )
+          );
+    final projectToSave = existing != null
+        ? (scanChangedProject(existing, rescanned!)
+            ? rescanned.copyWith(updatedAt: DateTime.now())
+            : rescanned)
         : MusicProject(
             id: _uuid.v4(),
             filePath: filePath,
@@ -1103,9 +1143,11 @@ class ProjectRepository {
 
     // Record a file_changed event if an existing project had its file mutated
     ProjectEvent? event;
+    final modifiedChanged = existing != null &&
+        existing.lastModifiedAt.millisecondsSinceEpoch !=
+            lastModified.millisecondsSinceEpoch;
     if (existing != null &&
-        (existing.fileSizeBytes != size ||
-            existing.lastModifiedAt != lastModified)) {
+        (existing.fileSizeBytes != size || modifiedChanged)) {
       event = ProjectEvent(
         id: _uuid.v4(),
         projectId: projectToSave.id,
@@ -1113,7 +1155,7 @@ class ProjectRepository {
         occurredAt: DateTime.now(),
         payload: jsonEncode({
           'sizeChanged': existing.fileSizeBytes != size,
-          'lastModifiedChanged': existing.lastModifiedAt != lastModified,
+          'lastModifiedChanged': modifiedChanged,
           'newSizeBytes': size,
         }),
       );

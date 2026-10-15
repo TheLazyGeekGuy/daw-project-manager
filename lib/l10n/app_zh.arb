@@ -4344,5 +4344,7 @@
   "driveFromDrive": "来自 Google 云端硬盘",
   "driveFromThisDevice": "来自此设备",
   "driveUploadProjects": "{count, plural, other{在此添加或更改的项目 {count} 个}}",
-  "driveUploadReleases": "{count, plural, other{在此添加的发行 {count} 个}}"
+  "driveUploadReleases": "{count, plural, other{在此添加的发行 {count} 个}}",
+  "drivePreviewLineWithNames": "{line}：{names}",
+  "driveNamesAndMore": "{names} 等另外 {count} 个"
 }

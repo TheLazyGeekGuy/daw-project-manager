@@ -7615,5 +7615,27 @@
         "type": "int"
       }
     }
+  },
+  "drivePreviewLineWithNames": "{line}: {names}",
+  "@drivePreviewLineWithNames": {
+    "placeholders": {
+      "line": {
+        "type": "String"
+      },
+      "names": {
+        "type": "String"
+      }
+    }
+  },
+  "driveNamesAndMore": "{names} and {count} more",
+  "@driveNamesAndMore": {
+    "placeholders": {
+      "names": {
+        "type": "String"
+      },
+      "count": {
+        "type": "int"
+      }
+    }
   }
 }

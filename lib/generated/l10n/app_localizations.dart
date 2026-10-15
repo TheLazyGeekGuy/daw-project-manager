@@ -12658,6 +12658,18 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'{count, plural, =1{1 release added here} other{{count} releases added here}}'**
   String driveUploadReleases(int count);
+
+  /// No description provided for @drivePreviewLineWithNames.
+  ///
+  /// In en, this message translates to:
+  /// **'{line}: {names}'**
+  String drivePreviewLineWithNames(String line, String names);
+
+  /// No description provided for @driveNamesAndMore.
+  ///
+  /// In en, this message translates to:
+  /// **'{names} and {count} more'**
+  String driveNamesAndMore(String names, int count);
 }
 
 class _AppLocalizationsDelegate

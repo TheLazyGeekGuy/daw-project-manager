@@ -4344,5 +4344,7 @@
   "driveFromDrive": "Googleドライブから",
   "driveFromThisDevice": "このデバイスから",
   "driveUploadProjects": "{count, plural, other{ここで追加・変更されたプロジェクト {count} 件}}",
-  "driveUploadReleases": "{count, plural, other{ここで追加されたリリース {count} 件}}"
+  "driveUploadReleases": "{count, plural, other{ここで追加されたリリース {count} 件}}",
+  "drivePreviewLineWithNames": "{line}：{names}",
+  "driveNamesAndMore": "{names} ほか {count} 件"
 }

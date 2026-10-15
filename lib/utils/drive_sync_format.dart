@@ -79,16 +79,31 @@ LoopbackPageTexts loopbackPageTexts(AppLocalizations l10n) => LoopbackPageTexts(
 /// "1 project updated"…); empty when it brings nothing.
 List<String> mergePreviewLines(AppLocalizations l10n, MergePreview p) => [
       if (p.projectsAdded > 0) l10n.driveMergeAdds(p.projectsAdded),
-      if (p.projectsUpdated > 0) l10n.driveMergeUpdates(p.projectsUpdated),
+      if (p.projectsUpdated > 0)
+        _named(l10n, l10n.driveMergeUpdates(p.projectsUpdated), p.updatedNames),
       if (p.projectsDeleted > 0) l10n.driveMergeRemoves(p.projectsDeleted),
       if (p.releasesAdded > 0) l10n.driveMergeReleases(p.releasesAdded),
       if (p.releasesDeleted > 0)
         l10n.driveMergeReleasesRemoved(p.releasesDeleted),
     ];
 
+/// [line] followed by the first few [names] — "2 projects updated: A, B" —
+/// and how many more there are.
+String _named(AppLocalizations l10n, String line, List<String> names) {
+  if (names.isEmpty) return line;
+  const shown = 3;
+  final listed = names.take(shown).join(', ');
+  final more = names.length - shown;
+  return l10n.drivePreviewLineWithNames(
+    line,
+    more > 0 ? l10n.driveNamesAndMore(listed, more) : listed,
+  );
+}
+
 /// What a sync would send to Drive from this device, as lines; empty when
 /// it sends nothing.
 List<String> uploadPreviewLines(AppLocalizations l10n, MergePreview p) => [
-      if (p.projectsToUpload > 0) l10n.driveUploadProjects(p.projectsToUpload),
+      if (p.projectsToUpload > 0)
+        _named(l10n, l10n.driveUploadProjects(p.projectsToUpload), p.uploadNames),
       if (p.releasesToUpload > 0) l10n.driveUploadReleases(p.releasesToUpload),
     ];
