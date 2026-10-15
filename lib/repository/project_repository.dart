@@ -31,6 +31,7 @@ import '../utils/version_stacks.dart';
 import 'midi_clip_store.dart';
 import 'midi_collection_store.dart';
 import 'profile_repository.dart';
+import 'sync_tombstones.dart';
 import '../models/profile.dart';
 
 /// Replaces every pending deadline notification with the set planned from
@@ -587,6 +588,7 @@ class ProjectRepository {
     if (projectsToDelete.isNotEmpty) {
       await projectsBox.deleteAll(projectsToDelete);
       await midiClips.deleteAll(projectsToDelete);
+      await SyncTombstoneStore.record(TombstoneKind.project, projectsToDelete);
     }
 
     // Remove the root after deleting projects
@@ -637,6 +639,8 @@ class ProjectRepository {
   Future<void> deleteProjectsPermanently(Iterable<String> projectIds) async {
     await projectsBox.deleteAll(projectIds);
     await midiClips.deleteAll(projectIds);
+    // So Drive sync carries the deletion instead of restoring the rows.
+    await SyncTombstoneStore.record(TombstoneKind.project, projectIds);
     await cleanUpDanglingStackLinks();
     await rescheduleDeadlines();
   }
@@ -779,6 +783,7 @@ class ProjectRepository {
     if (projectsToDelete.isNotEmpty) {
       await projectsBox.deleteAll(projectsToDelete);
       await midiClips.deleteAll(projectsToDelete);
+      await SyncTombstoneStore.record(TombstoneKind.project, projectsToDelete);
       await cleanUpDanglingStackLinks();
     }
   }
@@ -1326,6 +1331,7 @@ class ProjectRepository {
       await projectsBox.put(member.id, member.copyWith(clearStackId: true));
     }
     await projectsBox.delete(stackId);
+    await SyncTombstoneStore.record(TombstoneKind.project, [stackId]);
   }
 
   /// Attaches [projectId] to [stackId] — used when a scan finds a new version
@@ -1752,6 +1758,7 @@ class ProjectRepository {
 
   Future<void> deleteRelease(String releaseId) async {
     await releasesBox.delete(releaseId);
+    await SyncTombstoneStore.record(TombstoneKind.release, [releaseId]);
     await rescheduleDeadlines();
   }
 

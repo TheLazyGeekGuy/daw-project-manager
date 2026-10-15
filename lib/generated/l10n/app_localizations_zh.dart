@@ -2606,7 +2606,7 @@ class AppLocalizationsZh extends AppLocalizations {
   String get trayNeverBackedUp => '尚未备份';
 
   @override
-  String get trayBackupNow => '立即备份';
+  String get trayBackupNow => '立即同步';
 
   @override
   String get trayPauseSession => '暂停会话';
@@ -7016,5 +7016,348 @@ class AppLocalizationsZh extends AppLocalizations {
   @override
   String samplePackRenameExample(String name) {
     return '示例：$name';
+  }
+
+  @override
+  String get driveAgoJustNow => '刚刚';
+
+  @override
+  String driveAgoMinutes(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count 分钟前',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String driveAgoHours(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count 小时前',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get driveSyncIntro =>
+      '让你的项目、笔记和发行在所有设备上保持一致。所有内容都保存在你自己的 Google 云端硬盘中的一个文件夹里。';
+
+  @override
+  String get driveWaitingForBrowser => '请在浏览器中完成登录…';
+
+  @override
+  String get driveThisDevice => '此设备';
+
+  @override
+  String driveThisDeviceSynced(String when) {
+    return '此设备上次同步：$when';
+  }
+
+  @override
+  String get driveThisDeviceNeverSynced => '此设备尚未同步';
+
+  @override
+  String driveUpdatedFrom(String when, String device) {
+    return '云端硬盘上次更新：$when（$device）';
+  }
+
+  @override
+  String driveUpdatedAt(String when) {
+    return '云端硬盘上次更新：$when';
+  }
+
+  @override
+  String get driveNoBackupYet => 'Google 云端硬盘中还没有内容';
+
+  @override
+  String driveNewerBanner(String device) {
+    return '$device 在云端硬盘上有此设备尚未包含的更改。同步即可获取。';
+  }
+
+  @override
+  String get driveNewerBannerNoDevice => '云端硬盘上有此设备尚未包含的更改。同步即可获取。';
+
+  @override
+  String get driveSyncNow => '立即同步';
+
+  @override
+  String get driveSyncNowHint =>
+      '同步会先获取云端硬盘上的内容，再上传此设备的更改。除了在某台设备上有意删除的内容外，不会删除任何东西。';
+
+  @override
+  String get driveSyncing => '正在同步…';
+
+  @override
+  String get driveSyncingTitle => '正在与 Google 云端硬盘同步';
+
+  @override
+  String driveSyncedSummary(int added, int updated, int removed) {
+    return '已同步：新增 $added，更新 $updated，移除 $removed。';
+  }
+
+  @override
+  String get driveSyncedNothingNew => '已同步。所有内容都已是最新。';
+
+  @override
+  String get driveOperationCancelled => '已取消。';
+
+  @override
+  String driveFilesFailedToUpload(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count 个文件无法上传：',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String driveLastSyncFailed(String when) {
+    return '上次同步失败（$when）';
+  }
+
+  @override
+  String get driveErrorOffline => '无法连接 Google 云端硬盘。请检查网络连接后重试。';
+
+  @override
+  String get driveErrorSignInExpired => 'Google 云端硬盘需要你重新登录。';
+
+  @override
+  String get driveErrorDriveFull => '你的 Google 云端硬盘已满。请释放空间以继续同步。';
+
+  @override
+  String get driveErrorNoBackup => 'Google 云端硬盘中还没有备份。';
+
+  @override
+  String get driveErrorOther => '同步未完成。';
+
+  @override
+  String driveSignInPortInUse(String port) {
+    return '无法开始登录：另一个程序正在使用端口 $port。请关闭其他 DAW Project Manager 窗口后重试。';
+  }
+
+  @override
+  String get driveSignInTimedOut => '登录超时。请重试。';
+
+  @override
+  String get driveSignInNoBrowser => '无法打开浏览器进行登录。';
+
+  @override
+  String get driveBrowserSignedInTitle => '已登录';
+
+  @override
+  String get driveBrowserSignedInBody => '你可以关闭此标签页并返回 DAW Project Manager。';
+
+  @override
+  String get driveBrowserCancelledTitle => '登录已取消';
+
+  @override
+  String get driveBrowserCancelledBody =>
+      '你可以关闭此标签页，然后在 DAW Project Manager 中重试。';
+
+  @override
+  String get driveBrowserErrorTitle => '出了点问题';
+
+  @override
+  String get driveBrowserErrorBody => '请关闭此标签页，然后在 DAW Project Manager 中重新登录。';
+
+  @override
+  String get driveAutoSyncTitle => '自动同步';
+
+  @override
+  String get driveAutoSyncDescription =>
+      '应用打开期间按你选择的间隔与 Google 云端硬盘同步，每次启动时也会同步一次。';
+
+  @override
+  String get driveAutoSyncIntervalLabel => '自动同步';
+
+  @override
+  String driveNextSync(String when) {
+    return '下次同步：$when';
+  }
+
+  @override
+  String get driveMoreOptions => '恢复和其他选项';
+
+  @override
+  String get driveRestoreFromDrive => '仅获取云端硬盘的更改';
+
+  @override
+  String get driveRestoreFromDriveHint => '在不上传任何内容的情况下更新此设备。';
+
+  @override
+  String get driveRecoverEarlier => '从较早的备份恢复';
+
+  @override
+  String driveRecoverEarlierHint(int count) {
+    return '云端硬盘会保留最近 $count 个备份。恢复其中一个会补回缺少的内容，但不会撤销之后的编辑。';
+  }
+
+  @override
+  String get driveOverwrite => '用此设备替换云端硬盘上的副本';
+
+  @override
+  String get driveOverwriteHint => '云端硬盘将与此设备完全一致。被替换的副本会作为较早的备份保留。';
+
+  @override
+  String get driveDeleteData => '从 Google 云端硬盘删除我的数据';
+
+  @override
+  String get driveDeleteDataHint => '从云端硬盘中删除备份、预览歌曲、图片和较早的备份。此设备上的内容全部保留。';
+
+  @override
+  String get driveMergeTitle => '获取云端硬盘的更改？';
+
+  @override
+  String get driveMergeConfirm => '获取更改';
+
+  @override
+  String get driveMergeNothing => '云端硬盘上没有此设备没有的新内容。';
+
+  @override
+  String get driveMergeKeepsLocal => '此设备上的其他内容不会改变，比云端硬盘更新的编辑也会保留。';
+
+  @override
+  String driveMergeAdds(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count 个新项目',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String driveMergeUpdates(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count 个项目已更新',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String driveMergeRemoves(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '移除 $count 个项目（已在其他设备上删除）',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String driveMergeReleases(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count 个新发行',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String driveMergeReleasesRemoved(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '移除 $count 个发行（已在其他设备上删除）',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get driveRecoverTitle => '较早的备份';
+
+  @override
+  String get driveNoSnapshots => '还没有较早的备份。每次同步替换云端硬盘上的备份时都会保留一个。';
+
+  @override
+  String driveSnapshotItem(String when, String device) {
+    return '$when · $device';
+  }
+
+  @override
+  String get driveRecoverConfirmTitle => '恢复此备份？';
+
+  @override
+  String get driveRecoverConfirm => '恢复';
+
+  @override
+  String get driveOverwriteTitle => '替换云端硬盘上的副本？';
+
+  @override
+  String get driveOverwriteBody =>
+      '云端硬盘上有但此设备上没有的内容（例如在其他设备上添加的项目）将从云端硬盘中消失。当前副本会作为较早的备份保留，你仍可恢复。';
+
+  @override
+  String get driveOverwriteConfirm => '替换副本';
+
+  @override
+  String get driveDeleteTitle => '从 Google 云端硬盘删除你的数据？';
+
+  @override
+  String get driveDeleteBody =>
+      '这会从你的 Google 云端硬盘中永久删除 DAW Project Manager 文件夹，包括备份、预览歌曲、图片和较早的备份。此设备会保留自己的数据。自动同步将被关闭。';
+
+  @override
+  String get driveDeleteConfirm => '从云端硬盘删除';
+
+  @override
+  String get driveDeleted => '你的数据已从 Google 云端硬盘删除。自动同步现已关闭。';
+
+  @override
+  String get driveSignOutTitle => '退出 Google 云端硬盘？';
+
+  @override
+  String get driveSignOutBody => '你的数据会保留在 Google 云端硬盘和此设备上。在你重新登录之前，自动同步会停止。';
+
+  @override
+  String get driveFoundBackupTitle => '在 Google 云端硬盘上找到了备份';
+
+  @override
+  String get driveFoundBackupBody => '立即同步，将其导入此设备，并把此设备上的内容加入其中。';
+
+  @override
+  String get driveFirstUploadTitle => 'Google 云端硬盘中还没有内容';
+
+  @override
+  String get driveFirstUploadBody => '立即同步，上传此设备的资料库，让你的设备保持一致。';
+
+  @override
+  String driveUploadEstimate(int count, String size) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '大约会上传 $count 个文件（$size）。',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get driveKeepInSyncAutomatically => '自动保持此设备同步（每小时）';
+
+  @override
+  String get driveLater => '稍后';
+
+  @override
+  String get driveStatusSyncing => '正在与 Google 云端硬盘同步…';
+
+  @override
+  String get driveStatusFailed => '上次 Google 云端硬盘同步失败';
+
+  @override
+  String get driveStatusNewer => 'Google 云端硬盘上有新更改';
+
+  @override
+  String get driveStatusUpToDate => 'Google 云端硬盘：已是最新';
+
+  @override
+  String trayLastSyncFailed(String when) {
+    return '上次同步失败：$when';
   }
 }

@@ -60,6 +60,7 @@ import '../utils/project_search.dart';
 import '../utils/section_rail_width.dart';
 import '../repository/profile_repository.dart';
 import '../services/google_drive_sync_service.dart';
+import '../models/drive_sync_status.dart';
 import '../services/deadline_notification_service.dart';
 import '../models/auto_backup_interval.dart';
 import '../models/pending_folder.dart';
@@ -1302,8 +1303,93 @@ class ShowOnlyWithDeadlineNotifier extends Notifier<bool> {
 
 // Provider for GoogleDriveSyncService (singleton instance)
 final googleDriveSyncServiceProvider = Provider<GoogleDriveSyncService>((ref) {
-  return GoogleDriveSyncService();
+  return GoogleDriveSyncService.shared;
 });
+
+// ---------------------------------------------------------------------------
+// Drive sync status (dashboard button, tray, sync page, automatic sync)
+// ---------------------------------------------------------------------------
+
+class DriveSyncStatusNotifier extends Notifier<DriveSyncStatus> {
+  @override
+  DriveSyncStatus build() {
+    if (GoogleDriveSyncService.isSupported) {
+      SchedulerBinding.instance.addPostFrameCallback(
+        (_) => unawaited(refresh(checkDrive: false)),
+      );
+    }
+    return const DriveSyncStatus();
+  }
+
+  GoogleDriveSyncService get _service => ref.read(googleDriveSyncServiceProvider);
+
+  /// Re-reads what this device stored about its syncs and, with
+  /// [checkDrive] while signed in, what is on Drive now (one small listing,
+  /// nothing downloaded).
+  Future<void> refresh({bool checkDrive = true}) async {
+    final service = _service;
+    final lastSynced = await service.getLastSyncedAt();
+    final failure = await service.getLastFailure();
+    var next = state.copyWith(
+      signedIn: service.isSignedIn,
+      lastSyncedAt: lastSynced,
+      clearFailure: failure == null,
+      lastFailureAt: failure?.at,
+      lastFailureMessage: failure?.message,
+      lastFailureKind: failure?.kind,
+    );
+    if (!service.isSignedIn) {
+      next = next.copyWith(newerOnDrive: false, clearRemote: true);
+    } else if (checkDrive) {
+      final info = await service.getBackupInfo();
+      if (info.isNotEmpty) {
+        next = next.copyWith(
+          newerOnDrive: info['isNewer'] == true,
+          clearRemote: info['hasRemote'] != true,
+          remoteDevice: info['remoteDevice'] as String?,
+          remoteUpdatedAt: info['remoteTimestamp'] as DateTime?,
+        );
+      }
+    }
+    state = next;
+  }
+
+  /// Runs [operation] as the one sync in progress (see
+  /// [GoogleDriveSyncService.exclusive]), showing it as syncing, and reads
+  /// the outcome back afterwards — failed or not.
+  Future<T> track<T>(Future<T> Function(GoogleDriveSyncService service) operation) async {
+    final service = _service;
+    state = state.copyWith(syncing: true);
+    try {
+      return await service.exclusive(() => operation(service));
+    } finally {
+      state = state.copyWith(syncing: false);
+      await refresh();
+    }
+  }
+
+  /// Merge what Drive has, then upload — what Sync now, the tray and the
+  /// automatic timer all do.
+  Future<SyncResult> syncNow({bool downloadPreviewSongs = true}) async {
+    final profileRepo = await ref.read(profileRepositoryProvider.future);
+    final projectRepo = await ref.read(repositoryProvider.future);
+    return track((service) async {
+      final settings = await Hive.openBox<String>('app_settings');
+      return service.syncDatabase(
+        projectRepo: projectRepo,
+        profileRepo: profileRepo,
+        uploadAutoDetectedSongs:
+            settings.get(UploadAutoPreviewSongsNotifier.storageKey) == 'true',
+        downloadPreviewSongs: downloadPreviewSongs,
+      );
+    });
+  }
+}
+
+final driveSyncStatusProvider =
+    NotifierProvider<DriveSyncStatusNotifier, DriveSyncStatus>(
+      DriveSyncStatusNotifier.new,
+    );
 
 // ---------------------------------------------------------------------------
 // Auto Backup Interval
@@ -1346,7 +1432,8 @@ final autoBackupIntervalProvider =
 // ---------------------------------------------------------------------------
 
 class UploadAutoPreviewSongsNotifier extends Notifier<bool> {
-  static const _key = 'uploadAutoPreviewSongs';
+  static const storageKey = 'uploadAutoPreviewSongs';
+  static const _key = storageKey;
 
   @override
   bool build() {

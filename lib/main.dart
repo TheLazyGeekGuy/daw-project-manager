@@ -235,62 +235,72 @@ void _startAutoBackupTimer(
   ProviderContainer container,
   GoogleDriveSyncService syncService,
 ) {
-  _autoBackupTimer = Timer.periodic(const Duration(minutes: 5), (_) async {
-    if (_autoBackupRunning) return;
-    _autoBackupRunning = true;
-    try {
-      // Read saved settings from app_settings box
-      await ensureHiveInitialized();
-      final settingsBox = await Hive.openBox<String>('app_settings');
-      final interval = AutoBackupInterval.fromStorageKey(
-        settingsBox.get('autoBackupInterval'),
-      );
-      final duration = interval.duration;
-      if (duration == null) return; // "off"
-
-      // On desktop, try to silently restore session if not already signed in
-      if (!syncService.isSignedIn) {
-        if (!GoogleDriveSyncService.isSupported) return;
-        if (!kIsWeb && !MobileUtils.isMobile()) {
-          try {
-            final restored = await syncService.restoreSession();
-            if (!restored) return;
-          } catch (_) {
-            return;
-          }
-        } else {
-          return;
-        }
-      }
-
-      // Check if enough time has elapsed since the last upload
-      final lastUpload = await syncService.getLastBackupUploadTimestamp();
-      if (lastUpload != null &&
-          DateTime.now().difference(lastUpload) < duration) {
-        return; // Not due yet
-      }
-
-      // Run backup silently. Use syncDatabase (not a raw uploadDatabase) so a
-      // newer backup already on Drive — e.g. uploaded from another device —
-      // gets downloaded and merged first instead of being blindly overwritten.
-      final profileRepo = await container.read(
-        profileRepositoryProvider.future,
-      );
-      final projectRepo = await container.read(repositoryProvider.future);
-      final uploadAutoDetected =
-          settingsBox.get('uploadAutoPreviewSongs') == 'true';
-      await syncService.syncDatabase(
-        projectRepo: projectRepo,
-        profileRepo: profileRepo,
-        uploadAutoDetectedSongs: uploadAutoDetected,
-      );
-      if (kDebugMode) print('Auto-backup completed successfully');
-    } catch (e) {
-      if (kDebugMode) print('Auto-backup failed: $e');
-    } finally {
-      _autoBackupRunning = false;
-    }
+  // Once shortly after launch (the startup scan and window come first),
+  // then every five minutes.
+  Timer(const Duration(seconds: 20), () {
+    unawaited(_runAutoSync(container, syncService, atLaunch: true));
   });
+  _autoBackupTimer = Timer.periodic(const Duration(minutes: 5), (_) {
+    unawaited(_runAutoSync(container, syncService));
+  });
+}
+
+/// One tick of automatic sync: syncs when it is due, and otherwise just
+/// looks at Drive so the dashboard can say another device wrote to it.
+Future<void> _runAutoSync(
+  ProviderContainer container,
+  GoogleDriveSyncService syncService, {
+  bool atLaunch = false,
+}) async {
+  if (_autoBackupRunning || !GoogleDriveSyncService.isSupported) return;
+  _autoBackupRunning = true;
+  final status = container.read(driveSyncStatusProvider.notifier);
+  try {
+    await ensureHiveInitialized();
+    final settingsBox = await Hive.openBox<String>('app_settings');
+    final interval = AutoBackupInterval.fromStorageKey(
+      settingsBox.get('autoBackupInterval'),
+    );
+
+    if (!syncService.isSignedIn) {
+      // Phones too: this is the same instance the sync page signs in, and
+      // restoreSession also brings back a phone's Google sign-in.
+      final hadCredentials = await syncService.hasSavedCredentials();
+      var restored = false;
+      try {
+        restored = await syncService.restoreSession();
+      } catch (_) {}
+      if (!restored) {
+        // Saved credentials Google no longer takes: say so rather than let
+        // every later backup silently not happen.
+        if (hadCredentials && interval.duration != null) {
+          await syncService.recordFailure(
+            Exception('Not signed in to Google Drive'),
+          );
+        }
+        await status.refresh(checkDrive: false);
+        return;
+      }
+    }
+
+    final lastSync = await syncService.getLastBackupUploadTimestamp();
+    if (!interval.isDue(
+      lastSync: lastSync,
+      now: DateTime.now(),
+      atLaunch: atLaunch,
+    )) {
+      await status.refresh();
+      return;
+    }
+
+    await status.syncNow();
+    if (kDebugMode) print('Auto-sync completed successfully');
+  } catch (e) {
+    // Recorded by syncDatabase and shown on the dashboard's cloud button.
+    if (kDebugMode) print('Auto-sync failed: $e');
+  } finally {
+    _autoBackupRunning = false;
+  }
 }
 
 // Background folder watcher (desktop only) — auto-detects new project files
@@ -849,7 +859,7 @@ Future<void> _main(List<String> args) async {
     }
 
     // 4e. Start auto-backup timer (desktop: try to restore session silently)
-    final autoBackupService = GoogleDriveSyncService();
+    final autoBackupService = GoogleDriveSyncService.shared;
     // Drive sync isn't offered inside Flatpak (see GoogleDriveSyncService.
     // isSupported) — restoreSession() reads saved credentials via
     // FlutterSecureStorage on non-macOS desktop, which touches libsecret/the

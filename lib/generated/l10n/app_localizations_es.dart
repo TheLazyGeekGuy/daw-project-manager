@@ -2708,7 +2708,7 @@ class AppLocalizationsEs extends AppLocalizations {
   String get trayNeverBackedUp => 'Aún no hay copias de seguridad';
 
   @override
-  String get trayBackupNow => 'Hacer Copia de Seguridad Ahora';
+  String get trayBackupNow => 'Sincronizar ahora';
 
   @override
   String get trayPauseSession => 'Pausar Sesión';
@@ -7345,5 +7345,381 @@ class AppLocalizationsEs extends AppLocalizations {
   @override
   String samplePackRenameExample(String name) {
     return 'Ejemplo: $name';
+  }
+
+  @override
+  String get driveAgoJustNow => 'hace un momento';
+
+  @override
+  String driveAgoMinutes(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'hace $count minutos',
+      one: 'hace 1 minuto',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String driveAgoHours(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'hace $count horas',
+      one: 'hace 1 hora',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get driveSyncIntro =>
+      'Mantén tus proyectos, notas y lanzamientos iguales en todos tus dispositivos. Todo se guarda en una carpeta de tu propio Google Drive.';
+
+  @override
+  String get driveWaitingForBrowser =>
+      'Termina de iniciar sesión en el navegador…';
+
+  @override
+  String get driveThisDevice => 'este dispositivo';
+
+  @override
+  String driveThisDeviceSynced(String when) {
+    return 'Este dispositivo se sincronizó $when';
+  }
+
+  @override
+  String get driveThisDeviceNeverSynced =>
+      'Este dispositivo aún no se ha sincronizado';
+
+  @override
+  String driveUpdatedFrom(String when, String device) {
+    return 'Drive actualizado $when desde $device';
+  }
+
+  @override
+  String driveUpdatedAt(String when) {
+    return 'Drive actualizado $when';
+  }
+
+  @override
+  String get driveNoBackupYet => 'Todavía no hay nada en Google Drive';
+
+  @override
+  String driveNewerBanner(String device) {
+    return '$device tiene cambios en Drive que aún no están en este dispositivo. Sincroniza para traerlos.';
+  }
+
+  @override
+  String get driveNewerBannerNoDevice =>
+      'Drive tiene cambios que aún no están en este dispositivo. Sincroniza para traerlos.';
+
+  @override
+  String get driveSyncNow => 'Sincronizar ahora';
+
+  @override
+  String get driveSyncNowHint =>
+      'Sincronizar trae lo que hay en Drive y luego sube los cambios de este dispositivo. No se elimina nada salvo lo que se borró a propósito en alguno de tus dispositivos.';
+
+  @override
+  String get driveSyncing => 'Sincronizando…';
+
+  @override
+  String get driveSyncingTitle => 'Sincronizando con Google Drive';
+
+  @override
+  String driveSyncedSummary(int added, int updated, int removed) {
+    return 'Sincronizado: $added nuevos, $updated actualizados, $removed eliminados.';
+  }
+
+  @override
+  String get driveSyncedNothingNew => 'Sincronizado. Todo estaba al día.';
+
+  @override
+  String get driveOperationCancelled => 'Cancelado.';
+
+  @override
+  String driveFilesFailedToUpload(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'No se pudieron subir $count archivos:',
+      one: 'No se pudo subir 1 archivo:',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String driveLastSyncFailed(String when) {
+    return 'La última sincronización falló ($when)';
+  }
+
+  @override
+  String get driveErrorOffline =>
+      'No se pudo conectar con Google Drive. Revisa tu conexión a internet e inténtalo de nuevo.';
+
+  @override
+  String get driveErrorSignInExpired =>
+      'Google Drive necesita que vuelvas a iniciar sesión.';
+
+  @override
+  String get driveErrorDriveFull =>
+      'Tu Google Drive está lleno. Libera espacio para seguir sincronizando.';
+
+  @override
+  String get driveErrorNoBackup =>
+      'Todavía no hay ninguna copia de seguridad en Google Drive.';
+
+  @override
+  String get driveErrorOther => 'La sincronización no terminó.';
+
+  @override
+  String driveSignInPortInUse(String port) {
+    return 'No se pudo iniciar sesión: otro programa está usando el puerto $port. Cierra cualquier otra copia de DAW Project Manager e inténtalo de nuevo.';
+  }
+
+  @override
+  String get driveSignInTimedOut =>
+      'El inicio de sesión tardó demasiado. Inténtalo de nuevo.';
+
+  @override
+  String get driveSignInNoBrowser =>
+      'No se pudo abrir el navegador para iniciar sesión.';
+
+  @override
+  String get driveBrowserSignedInTitle => 'Sesión iniciada';
+
+  @override
+  String get driveBrowserSignedInBody =>
+      'Puedes cerrar esta pestaña y volver a DAW Project Manager.';
+
+  @override
+  String get driveBrowserCancelledTitle => 'Inicio de sesión cancelado';
+
+  @override
+  String get driveBrowserCancelledBody =>
+      'Puedes cerrar esta pestaña e intentarlo de nuevo desde DAW Project Manager.';
+
+  @override
+  String get driveBrowserErrorTitle => 'Algo salió mal';
+
+  @override
+  String get driveBrowserErrorBody =>
+      'Cierra esta pestaña y vuelve a iniciar sesión desde DAW Project Manager.';
+
+  @override
+  String get driveAutoSyncTitle => 'Sincronización automática';
+
+  @override
+  String get driveAutoSyncDescription =>
+      'Mientras la app está abierta, se sincroniza con Google Drive cada el intervalo que elijas, y una vez cada vez que se inicia.';
+
+  @override
+  String get driveAutoSyncIntervalLabel => 'Sincronizar automáticamente';
+
+  @override
+  String driveNextSync(String when) {
+    return 'Próxima sincronización $when';
+  }
+
+  @override
+  String get driveMoreOptions => 'Restaurar y otras opciones';
+
+  @override
+  String get driveRestoreFromDrive => 'Solo traer los cambios de Drive';
+
+  @override
+  String get driveRestoreFromDriveHint =>
+      'Pone este dispositivo al día sin subir nada.';
+
+  @override
+  String get driveRecoverEarlier => 'Recuperar de una copia anterior';
+
+  @override
+  String driveRecoverEarlierHint(int count) {
+    return 'Drive guarda las últimas $count copias. Recuperar una añade lo que falte; no deshace las ediciones posteriores.';
+  }
+
+  @override
+  String get driveOverwrite =>
+      'Reemplazar la copia de Drive con este dispositivo';
+
+  @override
+  String get driveOverwriteHint =>
+      'Drive queda exactamente con lo que tiene este dispositivo. La copia reemplazada se guarda como copia anterior.';
+
+  @override
+  String get driveDeleteData => 'Eliminar mis datos de Google Drive';
+
+  @override
+  String get driveDeleteDataHint =>
+      'Elimina de Drive la copia de seguridad, las canciones de vista previa, las imágenes y las copias anteriores. Este dispositivo lo conserva todo.';
+
+  @override
+  String get driveMergeTitle => '¿Traer los cambios de Drive?';
+
+  @override
+  String get driveMergeConfirm => 'Traer cambios';
+
+  @override
+  String get driveMergeNothing =>
+      'No hay nada nuevo en Drive para este dispositivo.';
+
+  @override
+  String get driveMergeKeepsLocal =>
+      'Nada más cambia en este dispositivo y se conservan las ediciones más recientes que las de Drive.';
+
+  @override
+  String driveMergeAdds(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count proyectos nuevos',
+      one: '1 proyecto nuevo',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String driveMergeUpdates(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count proyectos actualizados',
+      one: '1 proyecto actualizado',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String driveMergeRemoves(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count proyectos eliminados (borrados en otro dispositivo)',
+      one: '1 proyecto eliminado (borrado en otro dispositivo)',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String driveMergeReleases(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count lanzamientos nuevos',
+      one: '1 lanzamiento nuevo',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String driveMergeReleasesRemoved(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count lanzamientos eliminados (borrados en otro dispositivo)',
+      one: '1 lanzamiento eliminado (borrado en otro dispositivo)',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get driveRecoverTitle => 'Copias anteriores';
+
+  @override
+  String get driveNoSnapshots =>
+      'Todavía no hay copias anteriores. Se guarda una cada vez que una sincronización reemplaza la copia en Drive.';
+
+  @override
+  String driveSnapshotItem(String when, String device) {
+    return '$when · $device';
+  }
+
+  @override
+  String get driveRecoverConfirmTitle => '¿Recuperar esta copia?';
+
+  @override
+  String get driveRecoverConfirm => 'Recuperar';
+
+  @override
+  String get driveOverwriteTitle => '¿Reemplazar la copia de Drive?';
+
+  @override
+  String get driveOverwriteBody =>
+      'Todo lo que haya en Drive y no esté en este dispositivo, como proyectos añadidos en otro dispositivo, desaparecerá de Drive. La copia actual se guarda como copia anterior, así que aún podrás recuperarla.';
+
+  @override
+  String get driveOverwriteConfirm => 'Reemplazar copia de Drive';
+
+  @override
+  String get driveDeleteTitle => '¿Eliminar tus datos de Google Drive?';
+
+  @override
+  String get driveDeleteBody =>
+      'Esto elimina de forma permanente la carpeta de DAW Project Manager de tu Google Drive, incluida la copia de seguridad, las canciones de vista previa, las imágenes y las copias anteriores. Este dispositivo conserva sus propios datos. La sincronización automática se desactivará.';
+
+  @override
+  String get driveDeleteConfirm => 'Eliminar de Drive';
+
+  @override
+  String get driveDeleted =>
+      'Tus datos se eliminaron de Google Drive. La sincronización automática está desactivada.';
+
+  @override
+  String get driveSignOutTitle => '¿Cerrar sesión en Google Drive?';
+
+  @override
+  String get driveSignOutBody =>
+      'Tus datos se quedan en Google Drive y en este dispositivo. La sincronización automática se detiene hasta que vuelvas a iniciar sesión.';
+
+  @override
+  String get driveFoundBackupTitle => 'Se encontró una copia en Google Drive';
+
+  @override
+  String get driveFoundBackupBody =>
+      'Sincroniza ahora para traerla a este dispositivo y añadirle lo que hay aquí.';
+
+  @override
+  String get driveFirstUploadTitle => 'Todavía no hay nada en Google Drive';
+
+  @override
+  String get driveFirstUploadBody =>
+      'Sincroniza ahora para subir la biblioteca de este dispositivo y mantener tus dispositivos al día.';
+
+  @override
+  String driveUploadEstimate(int count, String size) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'Se subirán aproximadamente $count archivos ($size).',
+      one: 'Se subirá aproximadamente 1 archivo ($size).',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get driveKeepInSyncAutomatically =>
+      'Mantener este dispositivo sincronizado automáticamente (cada hora)';
+
+  @override
+  String get driveLater => 'Más tarde';
+
+  @override
+  String get driveStatusSyncing => 'Sincronizando con Google Drive…';
+
+  @override
+  String get driveStatusFailed =>
+      'La última sincronización con Google Drive falló';
+
+  @override
+  String get driveStatusNewer => 'Cambios nuevos en Google Drive';
+
+  @override
+  String get driveStatusUpToDate => 'Google Drive: al día';
+
+  @override
+  String trayLastSyncFailed(String when) {
+    return 'Última sincronización fallida: $when';
   }
 }

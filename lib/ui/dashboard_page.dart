@@ -1982,11 +1982,7 @@ class _DashboardPageState extends ConsumerState<DashboardPage>
                                     // GoogleDriveSyncService.isSupported.
                                     if (!isLeftRail &&
                                         GoogleDriveSyncService.isSupported)
-                                      IconButton(
-                                        icon: const Icon(Icons.cloud_outlined),
-                                        tooltip: AppLocalizations.of(
-                                          context,
-                                        )!.syncWithGoogleDrive,
+                                      DriveSyncStatusButton(
                                         onPressed: () =>
                                             Navigator.of(context).push(
                                               MaterialPageRoute(
@@ -3362,26 +3358,18 @@ class _DashboardPageState extends ConsumerState<DashboardPage>
                                         if (!MobileUtils.isMobile() &&
                                             !isLeftRail &&
                                             GoogleDriveSyncService.isSupported)
-                                          Tooltip(
-                                            message: AppLocalizations.of(
-                                              context,
-                                            )!.syncWithGoogleDrive,
-                                            child: IconButton(
-                                              icon: const Icon(
-                                                Icons.cloud_outlined,
-                                              ),
-                                              onPressed: () =>
-                                                  Navigator.of(context).push(
-                                                    MaterialPageRoute(
-                                                      builder: (_) =>
-                                                          const SettingsPage(
-                                                            initialSection:
-                                                                SettingsSection
-                                                                    .backup,
-                                                          ),
-                                                    ),
+                                          DriveSyncStatusButton(
+                                            onPressed: () =>
+                                                Navigator.of(context).push(
+                                                  MaterialPageRoute(
+                                                    builder: (_) =>
+                                                        const SettingsPage(
+                                                          initialSection:
+                                                              SettingsSection
+                                                                  .backup,
+                                                        ),
                                                   ),
-                                            ),
+                                                ),
                                           ),
                                         if (!MobileUtils.isMobile() &&
                                             !isLeftRail)
@@ -4206,9 +4194,8 @@ class _DashboardPageState extends ConsumerState<DashboardPage>
                                         // GoogleDriveSyncService.isSupported.
                                         if (GoogleDriveSyncService.isSupported)
                                           RailAction(
-                                            icon: const Icon(
-                                              Icons.cloud_outlined,
-                                            ),
+                                            icon:
+                                                const DriveSyncStatusRailIcon(),
                                             label: AppLocalizations.of(
                                               context,
                                             )!.googleDrive,

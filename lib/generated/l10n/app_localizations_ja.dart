@@ -2632,7 +2632,7 @@ class AppLocalizationsJa extends AppLocalizations {
   String get trayNeverBackedUp => 'バックアップはまだありません';
 
   @override
-  String get trayBackupNow => '今すぐバックアップ';
+  String get trayBackupNow => '今すぐ同期';
 
   @override
   String get trayPauseSession => 'セッションを一時停止';
@@ -7093,5 +7093,358 @@ class AppLocalizationsJa extends AppLocalizations {
   @override
   String samplePackRenameExample(String name) {
     return '例: $name';
+  }
+
+  @override
+  String get driveAgoJustNow => 'たった今';
+
+  @override
+  String driveAgoMinutes(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count分前',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String driveAgoHours(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count時間前',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get driveSyncIntro =>
+      'プロジェクト、メモ、リリースをすべてのデバイスで同じ状態に保ちます。データはあなた自身のGoogleドライブ内のフォルダに保存されます。';
+
+  @override
+  String get driveWaitingForBrowser => 'ブラウザでサインインを完了してください…';
+
+  @override
+  String get driveThisDevice => 'このデバイス';
+
+  @override
+  String driveThisDeviceSynced(String when) {
+    return 'このデバイスの同期: $when';
+  }
+
+  @override
+  String get driveThisDeviceNeverSynced => 'このデバイスはまだ同期されていません';
+
+  @override
+  String driveUpdatedFrom(String when, String device) {
+    return 'ドライブの更新: $when（$device）';
+  }
+
+  @override
+  String driveUpdatedAt(String when) {
+    return 'ドライブの更新: $when';
+  }
+
+  @override
+  String get driveNoBackupYet => 'Googleドライブにはまだ何もありません';
+
+  @override
+  String driveNewerBanner(String device) {
+    return '$device にはこのデバイスにまだない変更がドライブにあります。同期して取り込みましょう。';
+  }
+
+  @override
+  String get driveNewerBannerNoDevice =>
+      'ドライブにこのデバイスにまだない変更があります。同期して取り込みましょう。';
+
+  @override
+  String get driveSyncNow => '今すぐ同期';
+
+  @override
+  String get driveSyncNowHint =>
+      '同期すると、ドライブの内容を取り込んでから、このデバイスの変更をアップロードします。いずれかのデバイスで意図的に削除したもの以外は削除されません。';
+
+  @override
+  String get driveSyncing => '同期中…';
+
+  @override
+  String get driveSyncingTitle => 'Googleドライブと同期中';
+
+  @override
+  String driveSyncedSummary(int added, int updated, int removed) {
+    return '同期しました: 新規 $added、更新 $updated、削除 $removed。';
+  }
+
+  @override
+  String get driveSyncedNothingNew => '同期しました。すべて最新の状態でした。';
+
+  @override
+  String get driveOperationCancelled => 'キャンセルしました。';
+
+  @override
+  String driveFilesFailedToUpload(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count 件のファイルをアップロードできませんでした:',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String driveLastSyncFailed(String when) {
+    return '前回の同期に失敗しました（$when）';
+  }
+
+  @override
+  String get driveErrorOffline =>
+      'Googleドライブに接続できませんでした。インターネット接続を確認して、もう一度お試しください。';
+
+  @override
+  String get driveErrorSignInExpired => 'Googleドライブに再度サインインする必要があります。';
+
+  @override
+  String get driveErrorDriveFull =>
+      'Googleドライブの容量がいっぱいです。同期を続けるには空き容量を確保してください。';
+
+  @override
+  String get driveErrorNoBackup => 'Googleドライブにはまだバックアップがありません。';
+
+  @override
+  String get driveErrorOther => '同期が完了しませんでした。';
+
+  @override
+  String driveSignInPortInUse(String port) {
+    return 'サインインを開始できません: 別のプログラムがポート $port を使用しています。他の DAW Project Manager を閉じてから、もう一度お試しください。';
+  }
+
+  @override
+  String get driveSignInTimedOut => 'サインインに時間がかかりすぎました。もう一度お試しください。';
+
+  @override
+  String get driveSignInNoBrowser => 'サインイン用のブラウザを開けませんでした。';
+
+  @override
+  String get driveBrowserSignedInTitle => 'サインインしました';
+
+  @override
+  String get driveBrowserSignedInBody =>
+      'このタブを閉じて DAW Project Manager に戻ってください。';
+
+  @override
+  String get driveBrowserCancelledTitle => 'サインインがキャンセルされました';
+
+  @override
+  String get driveBrowserCancelledBody =>
+      'このタブを閉じて、DAW Project Manager からもう一度お試しください。';
+
+  @override
+  String get driveBrowserErrorTitle => '問題が発生しました';
+
+  @override
+  String get driveBrowserErrorBody =>
+      'このタブを閉じて、DAW Project Manager から再度サインインしてください。';
+
+  @override
+  String get driveAutoSyncTitle => '自動同期';
+
+  @override
+  String get driveAutoSyncDescription =>
+      'アプリを開いている間は選んだ間隔でGoogleドライブと同期し、起動するたびにも1回同期します。';
+
+  @override
+  String get driveAutoSyncIntervalLabel => '自動同期';
+
+  @override
+  String driveNextSync(String when) {
+    return '次回の同期: $when';
+  }
+
+  @override
+  String get driveMoreOptions => '復元とその他のオプション';
+
+  @override
+  String get driveRestoreFromDrive => 'ドライブの変更だけを取り込む';
+
+  @override
+  String get driveRestoreFromDriveHint => '何もアップロードせずに、このデバイスを最新の状態にします。';
+
+  @override
+  String get driveRecoverEarlier => '以前のバックアップから復元';
+
+  @override
+  String driveRecoverEarlierHint(int count) {
+    return 'ドライブには直近 $count 件のバックアップが保存されます。復元すると不足分が追加されますが、その後の編集は元に戻りません。';
+  }
+
+  @override
+  String get driveOverwrite => 'ドライブのコピーをこのデバイスの内容で置き換える';
+
+  @override
+  String get driveOverwriteHint =>
+      'ドライブはこのデバイスとまったく同じ内容になります。置き換えられたコピーは以前のバックアップとして保存されます。';
+
+  @override
+  String get driveDeleteData => 'Googleドライブからデータを削除';
+
+  @override
+  String get driveDeleteDataHint =>
+      'ドライブからバックアップ、プレビュー曲、画像、以前のバックアップを削除します。このデバイスのデータはすべて残ります。';
+
+  @override
+  String get driveMergeTitle => 'ドライブの変更を取り込みますか？';
+
+  @override
+  String get driveMergeConfirm => '取り込む';
+
+  @override
+  String get driveMergeNothing => 'このデバイスにとって新しい内容はドライブにありません。';
+
+  @override
+  String get driveMergeKeepsLocal => 'このデバイスのそれ以外の内容は変わらず、ドライブより新しい編集は保持されます。';
+
+  @override
+  String driveMergeAdds(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '新しいプロジェクト $count 件',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String driveMergeUpdates(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '更新されるプロジェクト $count 件',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String driveMergeRemoves(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '削除されるプロジェクト $count 件（別のデバイスで削除済み）',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String driveMergeReleases(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '新しいリリース $count 件',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String driveMergeReleasesRemoved(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '削除されるリリース $count 件（別のデバイスで削除済み）',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get driveRecoverTitle => '以前のバックアップ';
+
+  @override
+  String get driveNoSnapshots =>
+      '以前のバックアップはまだありません。同期でドライブのバックアップが置き換えられるたびに1つ保存されます。';
+
+  @override
+  String driveSnapshotItem(String when, String device) {
+    return '$when · $device';
+  }
+
+  @override
+  String get driveRecoverConfirmTitle => 'このバックアップを復元しますか？';
+
+  @override
+  String get driveRecoverConfirm => '復元';
+
+  @override
+  String get driveOverwriteTitle => 'ドライブのコピーを置き換えますか？';
+
+  @override
+  String get driveOverwriteBody =>
+      '別のデバイスで追加したプロジェクトなど、このデバイスにないドライブ上の内容はドライブから消えます。現在のコピーは以前のバックアップとして保存されるので、後から復元できます。';
+
+  @override
+  String get driveOverwriteConfirm => '置き換える';
+
+  @override
+  String get driveDeleteTitle => 'Googleドライブからデータを削除しますか？';
+
+  @override
+  String get driveDeleteBody =>
+      'GoogleドライブからDAW Project Managerのフォルダを完全に削除します（バックアップ、プレビュー曲、画像、以前のバックアップを含む）。このデバイスのデータは残ります。自動同期はオフになります。';
+
+  @override
+  String get driveDeleteConfirm => 'ドライブから削除';
+
+  @override
+  String get driveDeleted => 'Googleドライブからデータを削除しました。自動同期はオフになっています。';
+
+  @override
+  String get driveSignOutTitle => 'Googleドライブからサインアウトしますか？';
+
+  @override
+  String get driveSignOutBody =>
+      'データはGoogleドライブとこのデバイスに残ります。再度サインインするまで自動同期は停止します。';
+
+  @override
+  String get driveFoundBackupTitle => 'Googleドライブにバックアップが見つかりました';
+
+  @override
+  String get driveFoundBackupBody => '今すぐ同期すると、このデバイスに取り込み、ここにある内容も追加します。';
+
+  @override
+  String get driveFirstUploadTitle => 'Googleドライブにはまだ何もありません';
+
+  @override
+  String get driveFirstUploadBody =>
+      '今すぐ同期すると、このデバイスのライブラリをアップロードし、デバイス間で揃えられるようになります。';
+
+  @override
+  String driveUploadEstimate(int count, String size) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '約 $count 件のファイル（$size）がアップロードされます。',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get driveKeepInSyncAutomatically => 'このデバイスを自動的に同期する（1時間ごと）';
+
+  @override
+  String get driveLater => '後で';
+
+  @override
+  String get driveStatusSyncing => 'Googleドライブと同期中…';
+
+  @override
+  String get driveStatusFailed => '前回のGoogleドライブ同期に失敗しました';
+
+  @override
+  String get driveStatusNewer => 'Googleドライブに新しい変更があります';
+
+  @override
+  String get driveStatusUpToDate => 'Googleドライブ: 最新';
+
+  @override
+  String trayLastSyncFailed(String when) {
+    return '前回の同期に失敗: $when';
   }
 }
