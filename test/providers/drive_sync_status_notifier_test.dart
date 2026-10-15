@@ -75,6 +75,24 @@ void main() {
     expect(status().indicator, DriveSyncIndicator.upToDate);
   });
 
+  test('the automatic sync is quiet: the dashboard never spins for it',
+      () async {
+    // It runs at every launch and on a timer; a spinner each time was noise.
+    final syncing = <bool>[];
+    final background = <bool>[];
+    container.listen(driveSyncStatusProvider, (_, next) {
+      syncing.add(next.syncing);
+      background.add(next.backgroundSyncing);
+    });
+
+    await notifier().syncNow(quiet: true);
+
+    expect(syncing, everyElement(isFalse));
+    expect(background, contains(true));
+    expect(status().backgroundSyncing, isFalse);
+    expect(status().lastSyncedAt, isNotNull);
+  });
+
   test('a failed sync shows as failed, and the next success clears it',
       () async {
     // The bug: an automatic sync that failed only printed in debug builds,
@@ -87,6 +105,12 @@ void main() {
     fakeDrive.failWithStatus = null;
     await notifier().syncNow();
     expect(status().hasFailure, isFalse);
+  });
+
+  test('a quiet sync that fails still shows the failure', () async {
+    fakeDrive.failWithStatus = 503;
+    await expectLater(notifier().syncNow(quiet: true), throwsA(anything));
+    expect(status().indicator, DriveSyncIndicator.failed);
   });
 
   test('a failure survives a restart', () async {

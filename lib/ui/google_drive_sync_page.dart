@@ -74,8 +74,10 @@ class GoogleDriveSyncSection extends ConsumerStatefulWidget {
 }
 
 class _GoogleDriveSyncSectionState extends ConsumerState<GoogleDriveSyncSection> {
-  GoogleDriveSyncService get _service => ref.read(googleDriveSyncServiceProvider);
-  DriveSyncStatusNotifier get _status => ref.read(driveSyncStatusProvider.notifier);
+  // Read once in initState: `ref` is unusable in dispose(), and in the
+  // finally blocks of operations still running when the page is closed.
+  late final GoogleDriveSyncService _service;
+  late final DriveSyncStatusNotifier _status;
 
   bool _checkingSession = true;
   bool _signingIn = false;
@@ -90,6 +92,8 @@ class _GoogleDriveSyncSectionState extends ConsumerState<GoogleDriveSyncSection>
   @override
   void initState() {
     super.initState();
+    _service = ref.read(googleDriveSyncServiceProvider);
+    _status = ref.read(driveSyncStatusProvider.notifier);
     unawaited(_checkSession());
     _authStateSubscription = GoogleDriveSyncService.authStateStream.listen((signedIn) {
       if (!mounted) return;
@@ -570,7 +574,7 @@ class _GoogleDriveSyncSectionState extends ConsumerState<GoogleDriveSyncSection>
         checkingSession: _checkingSession,
         signedIn: _service.isSignedIn && !_checkingSession,
         waitingForBrowser: _waitingForBrowser,
-        busy: _busy || _signingIn || status.syncing,
+        busy: _busy || _signingIn || status.syncing || status.backgroundSyncing,
         email: _email,
         lastSyncedAt: status.lastSyncedAt,
         remoteUpdatedAt: status.remoteUpdatedAt,
@@ -613,19 +617,48 @@ class DriveSyncStatusButton extends ConsumerWidget {
     return IconButton(
       tooltip: driveSyncStatusTooltip(AppLocalizations.of(context)!, indicator),
       onPressed: onPressed,
-      icon: DriveSyncStatusGlyph(indicator: indicator),
+      icon: const DriveSyncStatusRailIcon(),
     );
   }
 }
 
 /// The same status as [DriveSyncStatusButton], as a bare icon for places
 /// that bring their own button (the side rail).
-class DriveSyncStatusRailIcon extends ConsumerWidget {
+class DriveSyncStatusRailIcon extends ConsumerStatefulWidget {
   const DriveSyncStatusRailIcon({super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) =>
-      DriveSyncStatusGlyph(indicator: ref.watch(driveSyncStatusProvider).indicator);
+  ConsumerState<DriveSyncStatusRailIcon> createState() => _DriveSyncStatusRailIconState();
+}
+
+class _DriveSyncStatusRailIconState extends ConsumerState<DriveSyncStatusRailIcon> {
+  bool _justSynced = false;
+  Timer? _flash;
+
+  @override
+  void dispose() {
+    _flash?.cancel();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    // A sync the user started that ends well flashes a check, as a rescan
+    // does.
+    ref.listen<DriveSyncStatus>(driveSyncStatusProvider, (previous, next) {
+      if (previous?.syncing == true && !next.syncing && !next.hasFailure) {
+        _flash?.cancel();
+        setState(() => _justSynced = true);
+        _flash = Timer(const Duration(seconds: 2), () {
+          if (mounted) setState(() => _justSynced = false);
+        });
+      }
+    });
+    return DriveSyncStatusGlyph(
+      indicator: ref.watch(driveSyncStatusProvider).indicator,
+      justSynced: _justSynced,
+    );
+  }
 }
 
 String driveSyncStatusTooltip(AppLocalizations l10n, DriveSyncIndicator indicator) =>
@@ -637,15 +670,33 @@ String driveSyncStatusTooltip(AppLocalizations l10n, DriveSyncIndicator indicato
       DriveSyncIndicator.upToDate => l10n.driveStatusUpToDate,
     };
 
-/// A cloud icon carrying the sync status: a spinner while syncing, a red
-/// dot after a failure, an accent dot when Drive has something new.
+/// A cloud icon carrying the sync status, drawn like the rescan button's:
+/// the icon gives way to a spinner of its size while syncing and to a green
+/// check for a moment after ([justSynced]); a red dot marks a failure and
+/// an accent dot news on Drive. (A small spinner tucked into the cloud's
+/// corner read as out of focus.)
 class DriveSyncStatusGlyph extends StatelessWidget {
-  const DriveSyncStatusGlyph({super.key, required this.indicator});
+  const DriveSyncStatusGlyph({
+    super.key,
+    required this.indicator,
+    this.justSynced = false,
+  });
 
   final DriveSyncIndicator indicator;
+  final bool justSynced;
 
   @override
   Widget build(BuildContext context) {
+    if (indicator == DriveSyncIndicator.syncing) {
+      return const SizedBox(
+        width: 18,
+        height: 18,
+        child: CircularProgressIndicator(strokeWidth: 2),
+      );
+    }
+    if (justSynced && indicator == DriveSyncIndicator.upToDate) {
+      return const Icon(Icons.check, color: Colors.green);
+    }
     final cs = Theme.of(context).colorScheme;
     final Color? dot = switch (indicator) {
       DriveSyncIndicator.failed => cs.error,
@@ -661,16 +712,6 @@ class DriveSyncStatusGlyph extends StatelessWidget {
       clipBehavior: Clip.none,
       children: [
         Icon(icon),
-        if (indicator == DriveSyncIndicator.syncing)
-          const Positioned(
-            right: -4,
-            bottom: -4,
-            child: SizedBox(
-              width: 12,
-              height: 12,
-              child: CircularProgressIndicator(strokeWidth: 2),
-            ),
-          ),
         if (dot != null)
           Positioned(
             right: -2,

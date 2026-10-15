@@ -293,7 +293,7 @@ Future<void> _runAutoSync(
       return;
     }
 
-    await status.syncNow();
+    await status.syncNow(quiet: true);
     if (kDebugMode) print('Auto-sync completed successfully');
   } catch (e) {
     // Recorded by syncDatabase and shown on the dashboard's cloud button.

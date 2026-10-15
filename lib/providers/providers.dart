@@ -1355,25 +1355,36 @@ class DriveSyncStatusNotifier extends Notifier<DriveSyncStatus> {
   }
 
   /// Runs [operation] as the one sync in progress (see
-  /// [GoogleDriveSyncService.exclusive]), showing it as syncing, and reads
-  /// the outcome back afterwards — failed or not.
-  Future<T> track<T>(Future<T> Function(GoogleDriveSyncService service) operation) async {
+  /// [GoogleDriveSyncService.exclusive]), showing it as syncing — or, when
+  /// [quiet] (the automatic sync), as [DriveSyncStatus.backgroundSyncing]
+  /// — and reads the outcome back afterwards, failed or not.
+  Future<T> track<T>(
+    Future<T> Function(GoogleDriveSyncService service) operation, {
+    bool quiet = false,
+  }) async {
     final service = _service;
-    state = state.copyWith(syncing: true);
+    state = quiet
+        ? state.copyWith(backgroundSyncing: true)
+        : state.copyWith(syncing: true);
     try {
       return await service.exclusive(() => operation(service));
     } finally {
-      state = state.copyWith(syncing: false);
+      state = quiet
+          ? state.copyWith(backgroundSyncing: false)
+          : state.copyWith(syncing: false);
       await refresh();
     }
   }
 
   /// Merge what Drive has, then upload — what Sync now, the tray and the
-  /// automatic timer all do.
-  Future<SyncResult> syncNow({bool downloadPreviewSongs = true}) async {
+  /// automatic timer ([quiet]) all do.
+  Future<SyncResult> syncNow({
+    bool downloadPreviewSongs = true,
+    bool quiet = false,
+  }) async {
     final profileRepo = await ref.read(profileRepositoryProvider.future);
     final projectRepo = await ref.read(repositoryProvider.future);
-    return track((service) async {
+    return track(quiet: quiet, (service) async {
       final settings = await Hive.openBox<String>('app_settings');
       return service.syncDatabase(
         projectRepo: projectRepo,

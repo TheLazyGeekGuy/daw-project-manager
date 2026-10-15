@@ -4196,9 +4196,20 @@ class _DashboardPageState extends ConsumerState<DashboardPage>
                                           RailAction(
                                             icon:
                                                 const DriveSyncStatusRailIcon(),
-                                            label: AppLocalizations.of(
-                                              context,
-                                            )!.googleDrive,
+                                            // "Syncing…" while it runs, as
+                                            // Rescan says "Scanning…".
+                                            label:
+                                                ref
+                                                    .watch(
+                                                      driveSyncStatusProvider,
+                                                    )
+                                                    .syncing
+                                                ? AppLocalizations.of(
+                                                    context,
+                                                  )!.driveSyncing
+                                                : AppLocalizations.of(
+                                                    context,
+                                                  )!.googleDrive,
                                             showLabel: !railCollapsed,
                                             onPressed: () =>
                                                 Navigator.of(context).push(

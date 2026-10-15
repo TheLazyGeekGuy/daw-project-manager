@@ -25,6 +25,7 @@ class DriveSyncStatus {
   const DriveSyncStatus({
     this.signedIn = false,
     this.syncing = false,
+    this.backgroundSyncing = false,
     this.lastSyncedAt,
     this.lastFailureAt,
     this.lastFailureMessage,
@@ -35,7 +36,15 @@ class DriveSyncStatus {
   });
 
   final bool signedIn;
+
+  /// A sync the user started (Sync now, the tray, a restore) is running —
+  /// what the dashboard's button spins for.
   final bool syncing;
+
+  /// The automatic sync is running. Kept quiet on the dashboard: it runs at
+  /// every launch and on a timer, and a spinner each time is noise. Only a
+  /// failure from it, or news on Drive, is worth showing there.
+  final bool backgroundSyncing;
 
   /// When this device last finished a sync, upload or restore.
   final DateTime? lastSyncedAt;
@@ -61,6 +70,7 @@ class DriveSyncStatus {
   DriveSyncStatus copyWith({
     bool? signedIn,
     bool? syncing,
+    bool? backgroundSyncing,
     DateTime? lastSyncedAt,
     DateTime? lastFailureAt,
     String? lastFailureMessage,
@@ -74,6 +84,7 @@ class DriveSyncStatus {
       DriveSyncStatus(
         signedIn: signedIn ?? this.signedIn,
         syncing: syncing ?? this.syncing,
+        backgroundSyncing: backgroundSyncing ?? this.backgroundSyncing,
         lastSyncedAt: lastSyncedAt ?? this.lastSyncedAt,
         lastFailureAt: clearFailure ? null : (lastFailureAt ?? this.lastFailureAt),
         lastFailureMessage:

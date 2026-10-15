@@ -208,9 +208,41 @@ void main() {
       );
     });
 
-    testWidgets('spins while syncing', (tester) async {
+    testWidgets('gives way to a full-size spinner while syncing, like Rescan',
+        (tester) async {
+      // A small spinner tucked into the cloud's corner read as out of focus.
       await pumpGlyph(tester, DriveSyncIndicator.syncing);
       expect(find.byType(CircularProgressIndicator), findsOneWidget);
+      expect(find.byIcon(Icons.cloud_outlined), findsNothing);
+      expect(
+        tester.getSize(find.byType(CircularProgressIndicator)),
+        const Size(18, 18),
+      );
+    });
+
+    testWidgets('flashes a check after a sync, like Rescan', (tester) async {
+      await tester.pumpWidget(const MaterialApp(
+        home: Scaffold(
+          body: DriveSyncStatusGlyph(
+            indicator: DriveSyncIndicator.upToDate,
+            justSynced: true,
+          ),
+        ),
+      ));
+      expect(find.byIcon(Icons.check), findsOneWidget);
+    });
+
+    testWidgets('no check over a failure', (tester) async {
+      await tester.pumpWidget(const MaterialApp(
+        home: Scaffold(
+          body: DriveSyncStatusGlyph(
+            indicator: DriveSyncIndicator.failed,
+            justSynced: true,
+          ),
+        ),
+      ));
+      expect(find.byIcon(Icons.check), findsNothing);
+      expect(find.byIcon(Icons.cloud_off_outlined), findsOneWidget);
     });
 
     testWidgets('draws a plain cloud with nothing to say', (tester) async {
