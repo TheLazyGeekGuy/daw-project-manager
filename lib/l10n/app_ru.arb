@@ -324,7 +324,7 @@
   },
   "deleteMissingProjects": "Удалить отсутствующие",
   "deleteMissingProjectsTitle": "Удалить отсутствующие проекты?",
-  "deleteMissingProjectsConfirm": "{count} проект{plural}, файл которых не найден на этом компьютере, будут безвозвратно удалены вместе со всеми заметками, сроками и историей сессий. Это действие нельзя отменить.",
+  "deleteMissingProjectsConfirm": "{count} проект{plural}, файл которых не найден на этом компьютере, попадут в «Недавно удалённые» (Настройки > Папки проектов), где их можно восстановить вместе с заметками, сроками и историей сессий в течение 30 дней.",
   "@deleteMissingProjectsConfirm": {
     "placeholders": {
       "count": {
@@ -335,7 +335,7 @@
       }
     }
   },
-  "deleteMissingProjectsConfirmButton": "Удалить навсегда",
+  "deleteMissingProjectsConfirmButton": "Удалить",
   "missingProjectsDeleted": "Удалено {count} отсутствующих проект{plural}.",
   "@missingProjectsDeleted": {
     "placeholders": {
@@ -4346,5 +4346,26 @@
   "driveUploadProjects": "{count, plural, one{{count} проект добавлен или изменён здесь} few{{count} проекта добавлено или изменено здесь} many{{count} проектов добавлено или изменено здесь} other{{count} проекта добавлено или изменено здесь}}",
   "driveUploadReleases": "{count, plural, one{{count} релиз добавлен здесь} few{{count} релиза добавлено здесь} many{{count} релизов добавлено здесь} other{{count} релиза добавлено здесь}}",
   "drivePreviewLineWithNames": "{line}: {names}",
-  "driveNamesAndMore": "{names} и ещё {count}"
+  "driveNamesAndMore": "{names} и ещё {count}",
+  "deleteProjectMenu": "Удалить…",
+  "deleteProjectTitle": "Удалить «{name}»?",
+  "deleteProjectBody": "Он попадёт в «Недавно удалённые» (Настройки > Папки проектов), где его можно восстановить вместе с заметками, задачами и временем работы в течение 30 дней. Файлы на диске не затрагиваются.",
+  "deleteProjectStillScanned": "Его файл находится в одной из папок проектов этого профиля, поэтому следующее сканирование снова добавит его как новый пустой проект.",
+  "deleteProjectStopScanningFolder": "Также не сканировать его папку",
+  "deleteProjectStopScanningFile": "Также не сканировать этот файл",
+  "projectMovedToRecentlyDeleted": "«{name}» перемещён в «Недавно удалённые».",
+  "recentlyDeletedTitle": "Недавно удалённые",
+  "recentlyDeletedSubtitle": "Проекты, удалённые из этого профиля, хранятся здесь 30 дней вместе с заметками, задачами и временем работы. Файлы на диске никогда не затрагиваются.",
+  "recentlyDeletedNothing": "Здесь пусто.",
+  "recentlyDeletedWhen": "Удалён {when}",
+  "recentlyDeletedExpires": "{count, plural, one{удалится навсегда через {count} день} few{удалится навсегда через {count} дня} many{удалится навсегда через {count} дней} other{удалится навсегда через {count} дня}}",
+  "recentlyDeletedRestore": "Восстановить",
+  "recentlyDeletedDeleteForever": "Удалить навсегда",
+  "recentlyDeletedEmptyAll": "Очистить",
+  "emptyRecentlyDeletedTitle": "Очистить «Недавно удалённые»?",
+  "emptyRecentlyDeletedBody": "{count, plural, one{{count} проект будет удалён навсегда вместе с заметками, задачами и временем работы. Файлы на диске не затрагиваются.} few{{count} проекта будут удалены навсегда вместе с заметками, задачами и временем работы. Файлы на диске не затрагиваются.} many{{count} проектов будут удалены навсегда вместе с заметками, задачами и временем работы. Файлы на диске не затрагиваются.} other{{count} проекта будут удалены навсегда вместе с заметками, задачами и временем работы. Файлы на диске не затрагиваются.}}",
+  "deleteForeverTitle": "Удалить «{name}» навсегда?",
+  "deleteForeverBody": "Заметки, задачи и время работы будут потеряны. Файлы на диске не затрагиваются.",
+  "projectRestored": "«{name}» восстановлен.",
+  "projectRestoredReplacingRescan": "«{name}» восстановлен вместо пустой копии, которую с тех пор добавило сканирование."
 }

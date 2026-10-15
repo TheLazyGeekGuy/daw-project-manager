@@ -54,6 +54,7 @@ import '../models/project_template.dart';
 import '../models/template_root.dart';
 import '../models/project_event.dart';
 import '../repository/project_repository.dart';
+import '../repository/project_trash.dart';
 import '../utils/search_utils.dart';
 import '../utils/project_midi.dart';
 import '../utils/project_search.dart';
@@ -159,6 +160,13 @@ final scanRootsProvider = Provider<List<ScanRoot>>((ref) {
 final ignoredPathsWatchProvider = StreamProvider<void>((ref) async* {
   final repo = await ref.watch(repositoryProvider.future);
   yield* repo.watchIgnoredPaths().map((_) {});
+});
+
+/// The current profile's "Recently deleted", most recent first. Invalidate
+/// after deleting, restoring or emptying.
+final recentlyDeletedProvider = FutureProvider<List<TrashedProject>>((ref) async {
+  final repo = await ref.watch(repositoryProvider.future);
+  return repo.trash.list();
 });
 
 final ignoredPathsProvider = Provider<List<IgnoredPath>>((ref) {

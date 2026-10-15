@@ -529,11 +529,11 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String deleteMissingProjectsConfirm(int count, String plural) {
-    return '在此设备上找不到文件的$count个项目$plural将被永久删除，包括所有备注、截止日期和会话历史。此操作无法撤销。';
+    return '在此设备上找不到文件的$count个项目$plural将移到“最近删除”（设置 > 项目文件夹），30 天内可连同备注、截止日期和会话历史一起恢复。';
   }
 
   @override
-  String get deleteMissingProjectsConfirmButton => '永久删除';
+  String get deleteMissingProjectsConfirmButton => '删除';
 
   @override
   String missingProjectsDeleted(int count, String plural) {
@@ -7403,5 +7403,97 @@ class AppLocalizationsZh extends AppLocalizations {
   @override
   String driveNamesAndMore(String names, int count) {
     return '$names 等另外 $count 个';
+  }
+
+  @override
+  String get deleteProjectMenu => '删除…';
+
+  @override
+  String deleteProjectTitle(String name) {
+    return '删除“$name”？';
+  }
+
+  @override
+  String get deleteProjectBody =>
+      '它会移到“最近删除”（设置 > 项目文件夹），30 天内可连同备注、待办和工作时间一起恢复。磁盘上的文件不会被改动。';
+
+  @override
+  String get deleteProjectStillScanned =>
+      '它的文件位于此配置文件的某个项目文件夹中，下次扫描会把它作为一个新的空项目重新添加。';
+
+  @override
+  String get deleteProjectStopScanningFolder => '同时停止扫描它的文件夹';
+
+  @override
+  String get deleteProjectStopScanningFile => '同时停止扫描此文件';
+
+  @override
+  String projectMovedToRecentlyDeleted(String name) {
+    return '“$name”已移到“最近删除”。';
+  }
+
+  @override
+  String get recentlyDeletedTitle => '最近删除';
+
+  @override
+  String get recentlyDeletedSubtitle =>
+      '从此配置文件删除的项目会连同备注、待办和工作时间在这里保留 30 天。磁盘上的文件永远不会被改动。';
+
+  @override
+  String get recentlyDeletedNothing => '这里没有内容。';
+
+  @override
+  String recentlyDeletedWhen(String when) {
+    return '删除于$when';
+  }
+
+  @override
+  String recentlyDeletedExpires(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count 天后永久删除',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get recentlyDeletedRestore => '恢复';
+
+  @override
+  String get recentlyDeletedDeleteForever => '永久删除';
+
+  @override
+  String get recentlyDeletedEmptyAll => '清空';
+
+  @override
+  String get emptyRecentlyDeletedTitle => '清空“最近删除”？';
+
+  @override
+  String emptyRecentlyDeletedBody(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count 个项目将连同备注、待办和工作时间被永久删除。磁盘上的文件不会被改动。',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String deleteForeverTitle(String name) {
+    return '永久删除“$name”？';
+  }
+
+  @override
+  String get deleteForeverBody => '它的备注、待办和工作时间将会消失。磁盘上的文件不会被改动。';
+
+  @override
+  String projectRestored(String name) {
+    return '已恢复“$name”。';
+  }
+
+  @override
+  String projectRestoredReplacingRescan(String name) {
+    return '已恢复“$name”，替换了之后扫描添加的空副本。';
   }
 }

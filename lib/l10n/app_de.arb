@@ -324,7 +324,7 @@
   },
   "deleteMissingProjects": "Fehlende löschen",
   "deleteMissingProjectsTitle": "Fehlende Projekte löschen?",
-  "deleteMissingProjectsConfirm": "{count} Projekt{plural}, deren Datei auf diesem Computer nicht gefunden werden konnte, werden dauerhaft gelöscht, zusammen mit allen Notizen, Fristen und dem Sitzungsverlauf. Dies kann nicht rückgängig gemacht werden.",
+  "deleteMissingProjectsConfirm": "{count} Projekt{plural}, deren Datei auf diesem Computer nicht gefunden werden konnte, kommen in „Zuletzt gelöscht“ (Einstellungen > Projektordner), wo du sie 30 Tage lang samt Notizen, Fristen und Sitzungsverlauf wiederherstellen kannst.",
   "@deleteMissingProjectsConfirm": {
     "placeholders": {
       "count": {
@@ -335,7 +335,7 @@
       }
     }
   },
-  "deleteMissingProjectsConfirmButton": "Endgültig löschen",
+  "deleteMissingProjectsConfirmButton": "Löschen",
   "missingProjectsDeleted": "{count} nicht gefundene Projekt{plural} gelöscht.",
   "@missingProjectsDeleted": {
     "placeholders": {
@@ -4346,5 +4346,26 @@
   "driveUploadProjects": "{count, plural, =1{1 Projekt hier hinzugefügt oder geändert} other{{count} Projekte hier hinzugefügt oder geändert}}",
   "driveUploadReleases": "{count, plural, =1{1 Release hier hinzugefügt} other{{count} Releases hier hinzugefügt}}",
   "drivePreviewLineWithNames": "{line}: {names}",
-  "driveNamesAndMore": "{names} und {count} weitere"
+  "driveNamesAndMore": "{names} und {count} weitere",
+  "deleteProjectMenu": "Löschen…",
+  "deleteProjectTitle": "„{name}“ löschen?",
+  "deleteProjectBody": "Es kommt in „Zuletzt gelöscht“ (Einstellungen > Projektordner), wo du es 30 Tage lang samt Notizen, Aufgaben und Arbeitszeit wiederherstellen kannst. Seine Dateien auf der Festplatte bleiben unberührt.",
+  "deleteProjectStillScanned": "Die Datei liegt in einem der Projektordner dieses Profils, daher würde der nächste Scan sie als neues, leeres Projekt wieder hinzufügen.",
+  "deleteProjectStopScanningFolder": "Auch seinen Ordner nicht mehr scannen",
+  "deleteProjectStopScanningFile": "Auch diese Datei nicht mehr scannen",
+  "projectMovedToRecentlyDeleted": "„{name}“ in „Zuletzt gelöscht“ verschoben.",
+  "recentlyDeletedTitle": "Zuletzt gelöscht",
+  "recentlyDeletedSubtitle": "Aus diesem Profil gelöschte Projekte bleiben 30 Tage hier, samt Notizen, Aufgaben und Arbeitszeit. Ihre Dateien auf der Festplatte werden nie angetastet.",
+  "recentlyDeletedNothing": "Hier ist nichts.",
+  "recentlyDeletedWhen": "Gelöscht {when}",
+  "recentlyDeletedExpires": "{count, plural, =1{endgültig weg in 1 Tag} other{endgültig weg in {count} Tagen}}",
+  "recentlyDeletedRestore": "Wiederherstellen",
+  "recentlyDeletedDeleteForever": "Endgültig löschen",
+  "recentlyDeletedEmptyAll": "Leeren",
+  "emptyRecentlyDeletedTitle": "„Zuletzt gelöscht“ leeren?",
+  "emptyRecentlyDeletedBody": "{count, plural, =1{1 Projekt wird endgültig gelöscht, samt Notizen, Aufgaben und Arbeitszeit. Seine Dateien auf der Festplatte bleiben unberührt.} other{{count} Projekte werden endgültig gelöscht, samt Notizen, Aufgaben und Arbeitszeit. Ihre Dateien auf der Festplatte bleiben unberührt.}}",
+  "deleteForeverTitle": "„{name}“ endgültig löschen?",
+  "deleteForeverBody": "Notizen, Aufgaben und Arbeitszeit sind dann weg. Seine Dateien auf der Festplatte bleiben unberührt.",
+  "projectRestored": "„{name}“ wiederhergestellt.",
+  "projectRestoredReplacingRescan": "„{name}“ wiederhergestellt, anstelle der leeren Kopie, die ein Scan inzwischen hinzugefügt hatte."
 }

@@ -541,11 +541,11 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String deleteMissingProjectsConfirm(int count, String plural) {
-    return '$count proyecto$plural cuyo archivo no se pudo encontrar en esta máquina se eliminarán permanentemente, junto con todas las notas, plazos e historial de sesiones. Esto no se puede deshacer.';
+    return '$count proyecto$plural cuyo archivo no se pudo encontrar en esta máquina pasarán a Eliminados recientemente (Ajustes > Carpetas de proyectos), donde puedes restaurarlos con sus notas, plazos e historial de sesiones durante 30 días.';
   }
 
   @override
-  String get deleteMissingProjectsConfirmButton => 'Eliminar permanentemente';
+  String get deleteMissingProjectsConfirmButton => 'Eliminar';
 
   @override
   String missingProjectsDeleted(int count, String plural) {
@@ -7770,5 +7770,104 @@ class AppLocalizationsEs extends AppLocalizations {
   @override
   String driveNamesAndMore(String names, int count) {
     return '$names y $count más';
+  }
+
+  @override
+  String get deleteProjectMenu => 'Eliminar…';
+
+  @override
+  String deleteProjectTitle(String name) {
+    return '¿Eliminar «$name»?';
+  }
+
+  @override
+  String get deleteProjectBody =>
+      'Pasa a Eliminados recientemente (Ajustes > Carpetas de proyectos), donde puedes restaurarlo con sus notas, tareas y tiempo de trabajo durante 30 días. Sus archivos en el disco no se tocan.';
+
+  @override
+  String get deleteProjectStillScanned =>
+      'Su archivo está dentro de una de las carpetas de proyectos de este perfil, así que el próximo escaneo lo volvería a añadir como un proyecto nuevo y vacío.';
+
+  @override
+  String get deleteProjectStopScanningFolder =>
+      'Dejar también de escanear su carpeta';
+
+  @override
+  String get deleteProjectStopScanningFile =>
+      'Dejar también de escanear este archivo';
+
+  @override
+  String projectMovedToRecentlyDeleted(String name) {
+    return '«$name» se movió a Eliminados recientemente.';
+  }
+
+  @override
+  String get recentlyDeletedTitle => 'Eliminados recientemente';
+
+  @override
+  String get recentlyDeletedSubtitle =>
+      'Los proyectos eliminados de este perfil se quedan aquí 30 días, con sus notas, tareas y tiempo de trabajo. Sus archivos en el disco nunca se tocan.';
+
+  @override
+  String get recentlyDeletedNothing => 'No hay nada aquí.';
+
+  @override
+  String recentlyDeletedWhen(String when) {
+    return 'Eliminado $when';
+  }
+
+  @override
+  String recentlyDeletedExpires(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'se elimina del todo en $count días',
+      one: 'se elimina del todo en 1 día',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get recentlyDeletedRestore => 'Restaurar';
+
+  @override
+  String get recentlyDeletedDeleteForever => 'Eliminar para siempre';
+
+  @override
+  String get recentlyDeletedEmptyAll => 'Vaciar';
+
+  @override
+  String get emptyRecentlyDeletedTitle => '¿Vaciar Eliminados recientemente?';
+
+  @override
+  String emptyRecentlyDeletedBody(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other:
+          'Se eliminarán para siempre $count proyectos, con sus notas, tareas y tiempo de trabajo. Sus archivos en el disco no se tocan.',
+      one:
+          'Se eliminará para siempre 1 proyecto, con sus notas, tareas y tiempo de trabajo. Sus archivos en el disco no se tocan.',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String deleteForeverTitle(String name) {
+    return '¿Eliminar «$name» para siempre?';
+  }
+
+  @override
+  String get deleteForeverBody =>
+      'Sus notas, tareas y tiempo de trabajo desaparecerán. Sus archivos en el disco no se tocan.';
+
+  @override
+  String projectRestored(String name) {
+    return '«$name» restaurado.';
+  }
+
+  @override
+  String projectRestoredReplacingRescan(String name) {
+    return '«$name» restaurado, en lugar de la copia vacía que un escaneo había añadido.';
   }
 }

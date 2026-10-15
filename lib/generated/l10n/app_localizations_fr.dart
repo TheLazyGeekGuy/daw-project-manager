@@ -543,11 +543,11 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String deleteMissingProjectsConfirm(int count, String plural) {
-    return '$count projet$plural dont le fichier est introuvable sur cette machine seront définitivement supprimés, ainsi que toutes les notes, échéances et l\'historique des sessions. Cette action est irréversible.';
+    return '$count projet$plural dont le fichier est introuvable sur cette machine passeront dans Supprimés récemment (Réglages > Dossiers de projets), où vous pourrez les restaurer avec leurs notes, échéances et historique des sessions pendant 30 jours.';
   }
 
   @override
-  String get deleteMissingProjectsConfirmButton => 'Supprimer définitivement';
+  String get deleteMissingProjectsConfirmButton => 'Supprimer';
 
   @override
   String missingProjectsDeleted(int count, String plural) {
@@ -7786,5 +7786,104 @@ class AppLocalizationsFr extends AppLocalizations {
   @override
   String driveNamesAndMore(String names, int count) {
     return '$names et $count autres';
+  }
+
+  @override
+  String get deleteProjectMenu => 'Supprimer…';
+
+  @override
+  String deleteProjectTitle(String name) {
+    return 'Supprimer « $name » ?';
+  }
+
+  @override
+  String get deleteProjectBody =>
+      'Il passe dans Supprimés récemment (Réglages > Dossiers de projets), où vous pouvez le restaurer avec ses notes, tâches et temps de travail pendant 30 jours. Ses fichiers sur le disque ne sont pas touchés.';
+
+  @override
+  String get deleteProjectStillScanned =>
+      'Son fichier se trouve dans l\'un des dossiers de projets de ce profil : la prochaine analyse le rajouterait comme un nouveau projet vide.';
+
+  @override
+  String get deleteProjectStopScanningFolder =>
+      'Ne plus analyser son dossier non plus';
+
+  @override
+  String get deleteProjectStopScanningFile =>
+      'Ne plus analyser ce fichier non plus';
+
+  @override
+  String projectMovedToRecentlyDeleted(String name) {
+    return '« $name » déplacé dans Supprimés récemment.';
+  }
+
+  @override
+  String get recentlyDeletedTitle => 'Supprimés récemment';
+
+  @override
+  String get recentlyDeletedSubtitle =>
+      'Les projets supprimés de ce profil restent ici 30 jours, avec leurs notes, tâches et temps de travail. Leurs fichiers sur le disque ne sont jamais touchés.';
+
+  @override
+  String get recentlyDeletedNothing => 'Rien ici.';
+
+  @override
+  String recentlyDeletedWhen(String when) {
+    return 'Supprimé $when';
+  }
+
+  @override
+  String recentlyDeletedExpires(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'supprimé définitivement dans $count jours',
+      one: 'supprimé définitivement dans 1 jour',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get recentlyDeletedRestore => 'Restaurer';
+
+  @override
+  String get recentlyDeletedDeleteForever => 'Supprimer définitivement';
+
+  @override
+  String get recentlyDeletedEmptyAll => 'Vider';
+
+  @override
+  String get emptyRecentlyDeletedTitle => 'Vider Supprimés récemment ?';
+
+  @override
+  String emptyRecentlyDeletedBody(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other:
+          '$count projets seront supprimés définitivement, avec leurs notes, tâches et temps de travail. Leurs fichiers sur le disque ne sont pas touchés.',
+      one:
+          '1 projet sera supprimé définitivement, avec ses notes, tâches et temps de travail. Ses fichiers sur le disque ne sont pas touchés.',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String deleteForeverTitle(String name) {
+    return 'Supprimer « $name » définitivement ?';
+  }
+
+  @override
+  String get deleteForeverBody =>
+      'Ses notes, tâches et temps de travail disparaîtront. Ses fichiers sur le disque ne sont pas touchés.';
+
+  @override
+  String projectRestored(String name) {
+    return '« $name » restauré.';
+  }
+
+  @override
+  String projectRestoredReplacingRescan(String name) {
+    return '« $name » restauré, à la place de la copie vide qu’une analyse avait ajoutée entre-temps.';
   }
 }

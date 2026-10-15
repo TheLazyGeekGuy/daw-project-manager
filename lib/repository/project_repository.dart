@@ -31,6 +31,7 @@ import '../utils/version_stacks.dart';
 import 'midi_clip_store.dart';
 import 'midi_collection_store.dart';
 import 'profile_repository.dart';
+import 'project_trash.dart';
 import 'sync_tombstones.dart';
 import '../models/profile.dart';
 
@@ -72,6 +73,9 @@ class ProjectRepository {
   /// This profile's stored MIDI clips (see [MidiClipStore]). Written by every
   /// full-metadata extraction; deleted along with the project.
   late final MidiClipStore midiClips = MidiClipStore(profileId);
+
+  /// This profile's "Recently deleted" (see [deleteProjects]).
+  late final ProjectTrash trash = ProjectTrash(profileId);
 
   /// This profile's MIDI collections (see [MidiCollectionStore]). Copies, so
   /// deleting a project never touches them.
@@ -586,13 +590,7 @@ class ProjectRepository {
 
     // Delete all projects from this root (except those in releases)
     if (projectsToDelete.isNotEmpty) {
-      await projectsBox.deleteAll(projectsToDelete);
-      await midiClips.deleteAll(projectsToDelete);
-      await SyncTombstoneStore.record(
-      TombstoneKind.project,
-      projectsToDelete,
-      profileId: profileId,
-    );
+      await _trashAndDelete(projectsToDelete);
     }
 
     // Remove the root after deleting projects
@@ -634,24 +632,78 @@ class ProjectRepository {
     );
   }
 
-  /// Permanently deletes [projectIds] and all their data (notes, deadlines,
-  /// session/timer history, etc.) — irreversible. Scans never call this on
-  /// their own (see `upsertFromFileSystemEntity`): a project whose file goes
-  /// missing just stays in the list flagged missing (a live filesystem
-  /// check, done in the UI) until the user explicitly deletes it, e.g. via
-  /// the "Delete Missing" bulk action.
-  Future<void> deleteProjectsPermanently(Iterable<String> projectIds) async {
-    await projectsBox.deleteAll(projectIds);
-    await midiClips.deleteAll(projectIds);
-    // So Drive sync carries the deletion instead of restoring the rows.
-    await SyncTombstoneStore.record(
-      TombstoneKind.project,
-      projectIds,
-      profileId: profileId,
-    );
+  /// Deletes [projectIds] from the library into "Recently deleted"
+  /// ([trash]), whole — notes, deadlines, to-dos, work time and MIDI clips —
+  /// where [restoreFromTrash] can put them back for [ProjectTrash.keepFor].
+  /// Scans never call this on their own (see `upsertFromFileSystemEntity`):
+  /// a project whose file goes missing just stays in the list flagged
+  /// missing until the user deletes it, e.g. via "Delete Missing".
+  Future<void> deleteProjects(Iterable<String> projectIds) async {
+    await _trashAndDelete(projectIds.toList());
     await cleanUpDanglingStackLinks();
     await rescheduleDeadlines();
   }
+
+  /// Every deletion of projects goes through here: kept in the trash, then
+  /// removed, then recorded so Drive sync carries the deletion instead of
+  /// restoring the rows.
+  Future<void> _trashAndDelete(List<String> ids) async {
+    if (ids.isEmpty) return;
+    final projects = [
+      for (final id in ids)
+        if (projectsBox.get(id) case final p?) p,
+    ];
+    final clips = <String, StoredMidiClips>{};
+    for (final project in projects) {
+      final c = await midiClips.get(project.id);
+      if (c != null) clips[project.id] = c;
+    }
+    await trash.add(projects, clips: clips);
+    await projectsBox.deleteAll(ids);
+    await midiClips.deleteAll(ids);
+    await SyncTombstoneStore.record(
+      TombstoneKind.project,
+      ids,
+      profileId: profileId,
+    );
+  }
+
+  /// Puts a project from "Recently deleted" back as it was, MIDI clips
+  /// included. It comes back as just changed, so it beats its own deletion
+  /// on every synced device too.
+  ///
+  /// A scan may have found its file again meanwhile and added a fresh row
+  /// for it, with nothing of the user's on it; that row gives way. Returns
+  /// whether one did.
+  Future<bool> restoreFromTrash(String id) async {
+    final trashed = await trash.get(id);
+    if (trashed == null) return false;
+    final project = trashed.project;
+    final target = p.normalize(project.filePath);
+    final rescanned = [
+      for (final other in projectsBox.values)
+        if (other.id != id && !other.isVirtual && p.normalize(other.filePath) == target)
+          other.id,
+    ];
+    if (rescanned.isNotEmpty) {
+      await projectsBox.deleteAll(rescanned);
+      await midiClips.deleteAll(rescanned);
+      await SyncTombstoneStore.record(
+        TombstoneKind.project,
+        rescanned,
+        profileId: profileId,
+      );
+    }
+    final clips = await trash.clipsOf(id);
+    await projectsBox.put(id, project.copyWith(updatedAt: DateTime.now()));
+    if (clips != null) await midiClips.put(id, clips);
+    await trash.remove([id]);
+    await rescheduleDeadlines();
+    return rescanned.isNotEmpty;
+  }
+
+  /// Removes projects from "Recently deleted" for good.
+  Future<void> deleteFromTrash(Iterable<String> ids) => trash.remove(ids);
 
   List<ScanRoot> getRoots() => rootsBox.values.toList(growable: false);
 
@@ -777,7 +829,10 @@ class ProjectRepository {
     for (final project in projectsBox.values) {
       try {
         final projectPath = p.normalize(project.filePath);
-        if (projectPath.startsWith(rootPathNormalized) ||
+        // The path itself counts too: an excluded file (not a folder) is
+        // the project it names.
+        if (projectPath == rootPath ||
+            projectPath.startsWith(rootPathNormalized) ||
             projectPath.startsWith(rootPath + p.separator)) {
           if (!protectedProjectIds.contains(project.id)) {
             projectsToDelete.add(project.id);
@@ -789,13 +844,7 @@ class ProjectRepository {
     }
 
     if (projectsToDelete.isNotEmpty) {
-      await projectsBox.deleteAll(projectsToDelete);
-      await midiClips.deleteAll(projectsToDelete);
-      await SyncTombstoneStore.record(
-      TombstoneKind.project,
-      projectsToDelete,
-      profileId: profileId,
-    );
+      await _trashAndDelete(projectsToDelete);
       await cleanUpDanglingStackLinks();
     }
   }

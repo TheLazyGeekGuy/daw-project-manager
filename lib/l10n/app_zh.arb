@@ -324,7 +324,7 @@
   },
   "deleteMissingProjects": "删除缺失项目",
   "deleteMissingProjectsTitle": "删除缺失的项目？",
-  "deleteMissingProjectsConfirm": "在此设备上找不到文件的{count}个项目{plural}将被永久删除，包括所有备注、截止日期和会话历史。此操作无法撤销。",
+  "deleteMissingProjectsConfirm": "在此设备上找不到文件的{count}个项目{plural}将移到“最近删除”（设置 > 项目文件夹），30 天内可连同备注、截止日期和会话历史一起恢复。",
   "@deleteMissingProjectsConfirm": {
     "placeholders": {
       "count": {
@@ -335,7 +335,7 @@
       }
     }
   },
-  "deleteMissingProjectsConfirmButton": "永久删除",
+  "deleteMissingProjectsConfirmButton": "删除",
   "missingProjectsDeleted": "已删除{count}个缺失的项目{plural}。",
   "@missingProjectsDeleted": {
     "placeholders": {
@@ -4346,5 +4346,26 @@
   "driveUploadProjects": "{count, plural, other{在此添加或更改的项目 {count} 个}}",
   "driveUploadReleases": "{count, plural, other{在此添加的发行 {count} 个}}",
   "drivePreviewLineWithNames": "{line}：{names}",
-  "driveNamesAndMore": "{names} 等另外 {count} 个"
+  "driveNamesAndMore": "{names} 等另外 {count} 个",
+  "deleteProjectMenu": "删除…",
+  "deleteProjectTitle": "删除“{name}”？",
+  "deleteProjectBody": "它会移到“最近删除”（设置 > 项目文件夹），30 天内可连同备注、待办和工作时间一起恢复。磁盘上的文件不会被改动。",
+  "deleteProjectStillScanned": "它的文件位于此配置文件的某个项目文件夹中，下次扫描会把它作为一个新的空项目重新添加。",
+  "deleteProjectStopScanningFolder": "同时停止扫描它的文件夹",
+  "deleteProjectStopScanningFile": "同时停止扫描此文件",
+  "projectMovedToRecentlyDeleted": "“{name}”已移到“最近删除”。",
+  "recentlyDeletedTitle": "最近删除",
+  "recentlyDeletedSubtitle": "从此配置文件删除的项目会连同备注、待办和工作时间在这里保留 30 天。磁盘上的文件永远不会被改动。",
+  "recentlyDeletedNothing": "这里没有内容。",
+  "recentlyDeletedWhen": "删除于{when}",
+  "recentlyDeletedExpires": "{count, plural, other{{count} 天后永久删除}}",
+  "recentlyDeletedRestore": "恢复",
+  "recentlyDeletedDeleteForever": "永久删除",
+  "recentlyDeletedEmptyAll": "清空",
+  "emptyRecentlyDeletedTitle": "清空“最近删除”？",
+  "emptyRecentlyDeletedBody": "{count, plural, other{{count} 个项目将连同备注、待办和工作时间被永久删除。磁盘上的文件不会被改动。}}",
+  "deleteForeverTitle": "永久删除“{name}”？",
+  "deleteForeverBody": "它的备注、待办和工作时间将会消失。磁盘上的文件不会被改动。",
+  "projectRestored": "已恢复“{name}”。",
+  "projectRestoredReplacingRescan": "已恢复“{name}”，替换了之后扫描添加的空副本。"
 }

@@ -538,11 +538,11 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String deleteMissingProjectsConfirm(int count, String plural) {
-    return '$count project$plural whose file could not be found on this machine will be permanently deleted, along with all notes, deadlines, and session history. This can\'t be undone.';
+    return '$count project$plural whose file could not be found on this machine will move to Recently deleted (Settings > Project folders), where you can restore them with their notes, deadlines and session history for 30 days.';
   }
 
   @override
-  String get deleteMissingProjectsConfirmButton => 'Delete Permanently';
+  String get deleteMissingProjectsConfirmButton => 'Delete';
 
   @override
   String missingProjectsDeleted(int count, String plural) {
@@ -7694,5 +7694,102 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String driveNamesAndMore(String names, int count) {
     return '$names and $count more';
+  }
+
+  @override
+  String get deleteProjectMenu => 'Delete…';
+
+  @override
+  String deleteProjectTitle(String name) {
+    return 'Delete \"$name\"?';
+  }
+
+  @override
+  String get deleteProjectBody =>
+      'It moves to Recently deleted (Settings > Project folders), where you can restore it with its notes, to-dos and work time for 30 days. Its files on disk aren\'t touched.';
+
+  @override
+  String get deleteProjectStillScanned =>
+      'Its file is inside one of this profile\'s project folders, so the next scan would add it back as a new, empty project.';
+
+  @override
+  String get deleteProjectStopScanningFolder => 'Also stop scanning its folder';
+
+  @override
+  String get deleteProjectStopScanningFile => 'Also stop scanning this file';
+
+  @override
+  String projectMovedToRecentlyDeleted(String name) {
+    return '\"$name\" moved to Recently deleted.';
+  }
+
+  @override
+  String get recentlyDeletedTitle => 'Recently deleted';
+
+  @override
+  String get recentlyDeletedSubtitle =>
+      'Projects deleted from this profile stay here for 30 days, with their notes, to-dos and work time. Their files on disk are never touched.';
+
+  @override
+  String get recentlyDeletedNothing => 'Nothing here.';
+
+  @override
+  String recentlyDeletedWhen(String when) {
+    return 'Deleted $when';
+  }
+
+  @override
+  String recentlyDeletedExpires(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'gone for good in $count days',
+      one: 'gone for good in 1 day',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get recentlyDeletedRestore => 'Restore';
+
+  @override
+  String get recentlyDeletedDeleteForever => 'Delete forever';
+
+  @override
+  String get recentlyDeletedEmptyAll => 'Empty';
+
+  @override
+  String get emptyRecentlyDeletedTitle => 'Empty Recently deleted?';
+
+  @override
+  String emptyRecentlyDeletedBody(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other:
+          '$count projects will be deleted for good, with their notes, to-dos and work time. Their files on disk aren\'t touched.',
+      one:
+          '1 project will be deleted for good, with its notes, to-dos and work time. Its files on disk aren\'t touched.',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String deleteForeverTitle(String name) {
+    return 'Delete \"$name\" for good?';
+  }
+
+  @override
+  String get deleteForeverBody =>
+      'Its notes, to-dos and work time will be gone. Its files on disk aren\'t touched.';
+
+  @override
+  String projectRestored(String name) {
+    return '\"$name\" restored.';
+  }
+
+  @override
+  String projectRestoredReplacingRescan(String name) {
+    return '\"$name\" restored, in place of the empty copy a scan had added since.';
   }
 }

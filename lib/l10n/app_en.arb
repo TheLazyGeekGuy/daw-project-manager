@@ -327,7 +327,7 @@
   },
   "deleteMissingProjects": "Delete Missing",
   "deleteMissingProjectsTitle": "Delete missing projects?",
-  "deleteMissingProjectsConfirm": "{count} project{plural} whose file could not be found on this machine will be permanently deleted, along with all notes, deadlines, and session history. This can't be undone.",
+  "deleteMissingProjectsConfirm": "{count} project{plural} whose file could not be found on this machine will move to Recently deleted (Settings > Project folders), where you can restore them with their notes, deadlines and session history for 30 days.",
   "@deleteMissingProjectsConfirm": {
     "placeholders": {
       "count": {
@@ -338,7 +338,7 @@
       }
     }
   },
-  "deleteMissingProjectsConfirmButton": "Delete Permanently",
+  "deleteMissingProjectsConfirmButton": "Delete",
   "missingProjectsDeleted": "{count} missing project{plural} deleted.",
   "@missingProjectsDeleted": {
     "placeholders": {
@@ -7635,6 +7635,83 @@
       },
       "count": {
         "type": "int"
+      }
+    }
+  },
+  "deleteProjectMenu": "Delete…",
+  "deleteProjectTitle": "Delete \"{name}\"?",
+  "@deleteProjectTitle": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "deleteProjectBody": "It moves to Recently deleted (Settings > Project folders), where you can restore it with its notes, to-dos and work time for 30 days. Its files on disk aren't touched.",
+  "deleteProjectStillScanned": "Its file is inside one of this profile's project folders, so the next scan would add it back as a new, empty project.",
+  "deleteProjectStopScanningFolder": "Also stop scanning its folder",
+  "deleteProjectStopScanningFile": "Also stop scanning this file",
+  "projectMovedToRecentlyDeleted": "\"{name}\" moved to Recently deleted.",
+  "@projectMovedToRecentlyDeleted": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "recentlyDeletedTitle": "Recently deleted",
+  "recentlyDeletedSubtitle": "Projects deleted from this profile stay here for 30 days, with their notes, to-dos and work time. Their files on disk are never touched.",
+  "recentlyDeletedNothing": "Nothing here.",
+  "recentlyDeletedWhen": "Deleted {when}",
+  "@recentlyDeletedWhen": {
+    "placeholders": {
+      "when": {
+        "type": "String"
+      }
+    }
+  },
+  "recentlyDeletedExpires": "{count, plural, =1{gone for good in 1 day} other{gone for good in {count} days}}",
+  "@recentlyDeletedExpires": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "recentlyDeletedRestore": "Restore",
+  "recentlyDeletedDeleteForever": "Delete forever",
+  "recentlyDeletedEmptyAll": "Empty",
+  "emptyRecentlyDeletedTitle": "Empty Recently deleted?",
+  "emptyRecentlyDeletedBody": "{count, plural, =1{1 project will be deleted for good, with its notes, to-dos and work time. Its files on disk aren't touched.} other{{count} projects will be deleted for good, with their notes, to-dos and work time. Their files on disk aren't touched.}}",
+  "@emptyRecentlyDeletedBody": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "deleteForeverTitle": "Delete \"{name}\" for good?",
+  "@deleteForeverTitle": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "deleteForeverBody": "Its notes, to-dos and work time will be gone. Its files on disk aren't touched.",
+  "projectRestored": "\"{name}\" restored.",
+  "@projectRestored": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "projectRestoredReplacingRescan": "\"{name}\" restored, in place of the empty copy a scan had added since.",
+  "@projectRestoredReplacingRescan": {
+    "placeholders": {
+      "name": {
+        "type": "String"
       }
     }
   }

@@ -324,7 +324,7 @@
   },
   "deleteMissingProjects": "Elimina mancanti",
   "deleteMissingProjectsTitle": "Eliminare i progetti mancanti?",
-  "deleteMissingProjectsConfirm": "{count} progetto{plural} il cui file non è stato trovato su questo computer verranno eliminati permanentemente, insieme a tutte le note, scadenze e cronologia delle sessioni. Questa azione non può essere annullata.",
+  "deleteMissingProjectsConfirm": "{count} progetto{plural} il cui file non è stato trovato su questo computer finiranno in Eliminati di recente (Impostazioni > Cartelle dei progetti), dove puoi ripristinarli con note, scadenze e cronologia delle sessioni per 30 giorni.",
   "@deleteMissingProjectsConfirm": {
     "placeholders": {
       "count": {
@@ -335,7 +335,7 @@
       }
     }
   },
-  "deleteMissingProjectsConfirmButton": "Elimina definitivamente",
+  "deleteMissingProjectsConfirmButton": "Elimina",
   "missingProjectsDeleted": "{count} progetto{plural} mancante eliminato.",
   "@missingProjectsDeleted": {
     "placeholders": {
@@ -4346,5 +4346,26 @@
   "driveUploadProjects": "{count, plural, =1{1 progetto aggiunto o modificato qui} other{{count} progetti aggiunti o modificati qui}}",
   "driveUploadReleases": "{count, plural, =1{1 uscita aggiunta qui} other{{count} uscite aggiunte qui}}",
   "drivePreviewLineWithNames": "{line}: {names}",
-  "driveNamesAndMore": "{names} e altri {count}"
+  "driveNamesAndMore": "{names} e altri {count}",
+  "deleteProjectMenu": "Elimina…",
+  "deleteProjectTitle": "Eliminare «{name}»?",
+  "deleteProjectBody": "Finisce in Eliminati di recente (Impostazioni > Cartelle dei progetti), dove puoi ripristinarlo con note, attività e tempo di lavoro per 30 giorni. I suoi file sul disco non vengono toccati.",
+  "deleteProjectStillScanned": "Il suo file è in una delle cartelle dei progetti di questo profilo, quindi la prossima scansione lo riaggiungerebbe come progetto nuovo e vuoto.",
+  "deleteProjectStopScanningFolder": "Smetti anche di scansionare la sua cartella",
+  "deleteProjectStopScanningFile": "Smetti anche di scansionare questo file",
+  "projectMovedToRecentlyDeleted": "«{name}» spostato in Eliminati di recente.",
+  "recentlyDeletedTitle": "Eliminati di recente",
+  "recentlyDeletedSubtitle": "I progetti eliminati da questo profilo restano qui per 30 giorni, con note, attività e tempo di lavoro. I loro file sul disco non vengono mai toccati.",
+  "recentlyDeletedNothing": "Qui non c’è niente.",
+  "recentlyDeletedWhen": "Eliminato {when}",
+  "recentlyDeletedExpires": "{count, plural, =1{eliminato del tutto tra 1 giorno} other{eliminato del tutto tra {count} giorni}}",
+  "recentlyDeletedRestore": "Ripristina",
+  "recentlyDeletedDeleteForever": "Elimina per sempre",
+  "recentlyDeletedEmptyAll": "Svuota",
+  "emptyRecentlyDeletedTitle": "Svuotare Eliminati di recente?",
+  "emptyRecentlyDeletedBody": "{count, plural, =1{1 progetto verrà eliminato per sempre, con note, attività e tempo di lavoro. I suoi file sul disco non vengono toccati.} other{{count} progetti verranno eliminati per sempre, con note, attività e tempo di lavoro. I loro file sul disco non vengono toccati.}}",
+  "deleteForeverTitle": "Eliminare «{name}» per sempre?",
+  "deleteForeverBody": "Note, attività e tempo di lavoro andranno persi. I suoi file sul disco non vengono toccati.",
+  "projectRestored": "«{name}» ripristinato.",
+  "projectRestoredReplacingRescan": "«{name}» ripristinato, al posto della copia vuota aggiunta nel frattempo da una scansione."
 }

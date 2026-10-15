@@ -16,6 +16,7 @@ import 'dialogs/card_initials_dialog.dart';
 import 'dialogs/move_project_dialog.dart';
 import 'preview_share.dart';
 import 'project_detail_page.dart';
+import 'recently_deleted_actions.dart';
 import 'session_actions.dart';
 import 'app_snack_bar.dart';
 
@@ -235,6 +236,21 @@ Future<void> showProjectContextMenu({
             ),
           ),
       ],
+      // Delete into Recently deleted (Settings > Project folders). Not on a
+      // stack — its shared details live on its row, and unstacking is the
+      // way out — nor on an archived project, the one row pointing at its
+      // zip.
+      if (!project.isVirtual && !project.isArchived)
+        PopupMenuItem<String>(
+          value: 'delete',
+          child: Row(
+            children: [
+              Icon(Icons.delete_outline, size: 20, color: Colors.red.shade300),
+              const SizedBox(width: 8),
+              Text(l10n.deleteProjectMenu),
+            ],
+          ),
+        ),
       PopupMenuItem<String>(
         value: project.hidden ? 'unhide' : 'hide',
         child: Row(
@@ -338,6 +354,9 @@ Future<void> showProjectContextMenu({
         break;
       case 'discardArchive':
         await showDiscardArchiveDialog(context, ref, project);
+        break;
+      case 'delete':
+        await deleteProjectFromLibrary(context, ref, project);
         break;
       case 'hide':
         final confirm = await showDialog<bool>(

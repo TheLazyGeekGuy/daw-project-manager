@@ -324,7 +324,7 @@
   },
   "deleteMissingProjects": "Excluir ausentes",
   "deleteMissingProjectsTitle": "Excluir projetos ausentes?",
-  "deleteMissingProjectsConfirm": "{count} projeto{plural} cujo arquivo não pôde ser encontrado nesta máquina serão excluídos permanentemente, junto com todas as notas, prazos e histórico de sessões. Isso não pode ser desfeito.",
+  "deleteMissingProjectsConfirm": "{count} projeto{plural} cujo arquivo não pôde ser encontrado nesta máquina vão para Excluídos recentemente (Configurações > Pastas de projetos), onde você pode restaurá-los com anotações, prazos e histórico de sessões por 30 dias.",
   "@deleteMissingProjectsConfirm": {
     "placeholders": {
       "count": {
@@ -335,7 +335,7 @@
       }
     }
   },
-  "deleteMissingProjectsConfirmButton": "Excluir permanentemente",
+  "deleteMissingProjectsConfirmButton": "Excluir",
   "missingProjectsDeleted": "{count} projeto{plural} ausente excluído.",
   "@missingProjectsDeleted": {
     "placeholders": {
@@ -4370,5 +4370,26 @@
   "driveUploadProjects": "{count, plural, =1{1 projeto adicionado ou alterado aqui} other{{count} projetos adicionados ou alterados aqui}}",
   "driveUploadReleases": "{count, plural, =1{1 lançamento adicionado aqui} other{{count} lançamentos adicionados aqui}}",
   "drivePreviewLineWithNames": "{line}: {names}",
-  "driveNamesAndMore": "{names} e mais {count}"
+  "driveNamesAndMore": "{names} e mais {count}",
+  "deleteProjectMenu": "Excluir…",
+  "deleteProjectTitle": "Excluir \"{name}\"?",
+  "deleteProjectBody": "Ele vai para Excluídos recentemente (Configurações > Pastas de projetos), onde você pode restaurá-lo com anotações, tarefas e tempo de trabalho por 30 dias. Os arquivos no disco não são tocados.",
+  "deleteProjectStillScanned": "O arquivo está em uma das pastas de projetos deste perfil, então a próxima varredura o adicionaria de volta como um projeto novo e vazio.",
+  "deleteProjectStopScanningFolder": "Parar também de varrer a pasta dele",
+  "deleteProjectStopScanningFile": "Parar também de varrer este arquivo",
+  "projectMovedToRecentlyDeleted": "\"{name}\" foi para Excluídos recentemente.",
+  "recentlyDeletedTitle": "Excluídos recentemente",
+  "recentlyDeletedSubtitle": "Projetos excluídos deste perfil ficam aqui por 30 dias, com anotações, tarefas e tempo de trabalho. Os arquivos no disco nunca são tocados.",
+  "recentlyDeletedNothing": "Nada por aqui.",
+  "recentlyDeletedWhen": "Excluído {when}",
+  "recentlyDeletedExpires": "{count, plural, =1{some de vez em 1 dia} other{some de vez em {count} dias}}",
+  "recentlyDeletedRestore": "Restaurar",
+  "recentlyDeletedDeleteForever": "Excluir para sempre",
+  "recentlyDeletedEmptyAll": "Esvaziar",
+  "emptyRecentlyDeletedTitle": "Esvaziar Excluídos recentemente?",
+  "emptyRecentlyDeletedBody": "{count, plural, =1{1 projeto será excluído para sempre, com anotações, tarefas e tempo de trabalho. Os arquivos no disco não são tocados.} other{{count} projetos serão excluídos para sempre, com anotações, tarefas e tempo de trabalho. Os arquivos no disco não são tocados.}}",
+  "deleteForeverTitle": "Excluir \"{name}\" para sempre?",
+  "deleteForeverBody": "As anotações, tarefas e tempo de trabalho serão perdidos. Os arquivos no disco não são tocados.",
+  "projectRestored": "\"{name}\" restaurado.",
+  "projectRestoredReplacingRescan": "\"{name}\" restaurado, no lugar da cópia vazia que uma varredura tinha adicionado."
 }

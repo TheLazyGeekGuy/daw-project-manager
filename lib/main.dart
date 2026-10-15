@@ -523,7 +523,7 @@ Future<int> _runInitialScan(
   var foundCount = 0;
   try {
     // Cria o scanner e processa as raízes de scan. Projects whose file goes
-    // missing are left alone here — see deleteProjectsPermanently's doc
+    // missing are left alone here — see deleteProjects's doc
     // comment for why scans no longer auto-delete anything.
     final scanner = ScannerService();
     final ignoredPaths = repo

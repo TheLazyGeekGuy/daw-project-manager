@@ -422,7 +422,7 @@ void main() {
       await atlasProjects.put('fmv', stray());
       await projectRepo.projectsBox.put('fmv', real());
       final atlasRepo = await HiveTestHelper.createRepository(profileId: atlas.id);
-      await atlasRepo.deleteProjectsPermanently(['fmv']);
+      await atlasRepo.deleteProjects(['fmv']);
 
       await service.syncDatabase(projectRepo: projectRepo, profileRepo: profileRepo);
 
@@ -473,7 +473,7 @@ void main() {
       final service = await signedIn();
       await projectRepo.projectsBox
           .put('gone', TestFactories.makeProject(id: 'gone'));
-      await projectRepo.deleteProjectsPermanently(['gone']);
+      await projectRepo.deleteProjects(['gone']);
 
       await service.uploadDatabase(
         projectRepo: projectRepo,
@@ -482,6 +482,27 @@ void main() {
 
       final deleted = tombstonesFromJson(backupOnDrive()['deletedRecords']);
       expect(deleted.map((t) => t.id), contains('gone'));
+    });
+
+    test('a restore from Recently deleted syncs back over the deletion',
+        () async {
+      final service = await signedIn();
+      await projectRepo.projectsBox
+          .put('back', TestFactories.makeProject(id: 'back', notes: 'kept'));
+      await projectRepo.deleteProjects(['back']);
+      await service.syncDatabase(projectRepo: projectRepo, profileRepo: profileRepo);
+      expect(projectIdsOnDrive(), isNot(contains('back')));
+
+      await projectRepo.restoreFromTrash('back');
+      await service.syncDatabase(projectRepo: projectRepo, profileRepo: profileRepo);
+
+      expect(projectIdsOnDrive(), contains('back'));
+      // Another device, holding the tombstone, takes the restore.
+      final backup = backupOnDrive();
+      final entry = (backup['projects'] as List).firstWhere((e) => e['id'] == 'back');
+      final tombstone =
+          tombstonesFromJson(backup['deletedRecords']).firstWhere((t) => t.id == 'back');
+      expect(tombstone.beats(DateTime.parse(entry['updatedAt'] as String)), isFalse);
     });
 
     test('a deletion elsewhere removes the row here', () async {
@@ -538,7 +559,7 @@ void main() {
         updatedAt: DateTime(2026, 1, 1),
       );
       await projectRepo.projectsBox.put('gone', stale);
-      await projectRepo.deleteProjectsPermanently(['gone']);
+      await projectRepo.deleteProjects(['gone']);
       seedBackupFromAnotherDevice(service, projects: [
         service.serializeProjectForTest(stale),
       ]);

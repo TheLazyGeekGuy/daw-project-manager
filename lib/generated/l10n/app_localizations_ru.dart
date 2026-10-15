@@ -541,11 +541,11 @@ class AppLocalizationsRu extends AppLocalizations {
 
   @override
   String deleteMissingProjectsConfirm(int count, String plural) {
-    return '$count проект$plural, файл которых не найден на этом компьютере, будут безвозвратно удалены вместе со всеми заметками, сроками и историей сессий. Это действие нельзя отменить.';
+    return '$count проект$plural, файл которых не найден на этом компьютере, попадут в «Недавно удалённые» (Настройки > Папки проектов), где их можно восстановить вместе с заметками, сроками и историей сессий в течение 30 дней.';
   }
 
   @override
-  String get deleteMissingProjectsConfirmButton => 'Удалить навсегда';
+  String get deleteMissingProjectsConfirmButton => 'Удалить';
 
   @override
   String missingProjectsDeleted(int count, String plural) {
@@ -7761,5 +7761,109 @@ class AppLocalizationsRu extends AppLocalizations {
   @override
   String driveNamesAndMore(String names, int count) {
     return '$names и ещё $count';
+  }
+
+  @override
+  String get deleteProjectMenu => 'Удалить…';
+
+  @override
+  String deleteProjectTitle(String name) {
+    return 'Удалить «$name»?';
+  }
+
+  @override
+  String get deleteProjectBody =>
+      'Он попадёт в «Недавно удалённые» (Настройки > Папки проектов), где его можно восстановить вместе с заметками, задачами и временем работы в течение 30 дней. Файлы на диске не затрагиваются.';
+
+  @override
+  String get deleteProjectStillScanned =>
+      'Его файл находится в одной из папок проектов этого профиля, поэтому следующее сканирование снова добавит его как новый пустой проект.';
+
+  @override
+  String get deleteProjectStopScanningFolder =>
+      'Также не сканировать его папку';
+
+  @override
+  String get deleteProjectStopScanningFile => 'Также не сканировать этот файл';
+
+  @override
+  String projectMovedToRecentlyDeleted(String name) {
+    return '«$name» перемещён в «Недавно удалённые».';
+  }
+
+  @override
+  String get recentlyDeletedTitle => 'Недавно удалённые';
+
+  @override
+  String get recentlyDeletedSubtitle =>
+      'Проекты, удалённые из этого профиля, хранятся здесь 30 дней вместе с заметками, задачами и временем работы. Файлы на диске никогда не затрагиваются.';
+
+  @override
+  String get recentlyDeletedNothing => 'Здесь пусто.';
+
+  @override
+  String recentlyDeletedWhen(String when) {
+    return 'Удалён $when';
+  }
+
+  @override
+  String recentlyDeletedExpires(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'удалится навсегда через $count дня',
+      many: 'удалится навсегда через $count дней',
+      few: 'удалится навсегда через $count дня',
+      one: 'удалится навсегда через $count день',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get recentlyDeletedRestore => 'Восстановить';
+
+  @override
+  String get recentlyDeletedDeleteForever => 'Удалить навсегда';
+
+  @override
+  String get recentlyDeletedEmptyAll => 'Очистить';
+
+  @override
+  String get emptyRecentlyDeletedTitle => 'Очистить «Недавно удалённые»?';
+
+  @override
+  String emptyRecentlyDeletedBody(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other:
+          '$count проекта будут удалены навсегда вместе с заметками, задачами и временем работы. Файлы на диске не затрагиваются.',
+      many:
+          '$count проектов будут удалены навсегда вместе с заметками, задачами и временем работы. Файлы на диске не затрагиваются.',
+      few:
+          '$count проекта будут удалены навсегда вместе с заметками, задачами и временем работы. Файлы на диске не затрагиваются.',
+      one:
+          '$count проект будет удалён навсегда вместе с заметками, задачами и временем работы. Файлы на диске не затрагиваются.',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String deleteForeverTitle(String name) {
+    return 'Удалить «$name» навсегда?';
+  }
+
+  @override
+  String get deleteForeverBody =>
+      'Заметки, задачи и время работы будут потеряны. Файлы на диске не затрагиваются.';
+
+  @override
+  String projectRestored(String name) {
+    return '«$name» восстановлен.';
+  }
+
+  @override
+  String projectRestoredReplacingRescan(String name) {
+    return '«$name» восстановлен вместо пустой копии, которую с тех пор добавило сканирование.';
   }
 }

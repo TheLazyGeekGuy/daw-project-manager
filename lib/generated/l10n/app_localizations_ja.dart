@@ -533,11 +533,11 @@ class AppLocalizationsJa extends AppLocalizations {
 
   @override
   String deleteMissingProjectsConfirm(int count, String plural) {
-    return 'このマシンでファイルが見つからなかった$count件のプロジェクト$pluralは、すべてのメモ、締切、セッション履歴とともに完全に削除されます。この操作は元に戻せません。';
+    return 'このマシンでファイルが見つからなかった$count件のプロジェクト$pluralは「最近削除した項目」（設定 > プロジェクトフォルダ）に移動し、30日間はメモ、締切、セッション履歴ごと復元できます。';
   }
 
   @override
-  String get deleteMissingProjectsConfirmButton => '完全に削除';
+  String get deleteMissingProjectsConfirmButton => '削除';
 
   @override
   String missingProjectsDeleted(int count, String plural) {
@@ -7490,5 +7490,97 @@ class AppLocalizationsJa extends AppLocalizations {
   @override
   String driveNamesAndMore(String names, int count) {
     return '$names ほか $count 件';
+  }
+
+  @override
+  String get deleteProjectMenu => '削除…';
+
+  @override
+  String deleteProjectTitle(String name) {
+    return '「$name」を削除しますか？';
+  }
+
+  @override
+  String get deleteProjectBody =>
+      '「最近削除した項目」（設定 > プロジェクトフォルダ）に移動し、30日間はメモ、ToDo、作業時間ごと復元できます。ディスク上のファイルには触れません。';
+
+  @override
+  String get deleteProjectStillScanned =>
+      'このファイルはこのプロファイルのプロジェクトフォルダ内にあるため、次回のスキャンで新しい空のプロジェクトとして再び追加されます。';
+
+  @override
+  String get deleteProjectStopScanningFolder => 'このフォルダのスキャンも停止する';
+
+  @override
+  String get deleteProjectStopScanningFile => 'このファイルのスキャンも停止する';
+
+  @override
+  String projectMovedToRecentlyDeleted(String name) {
+    return '「$name」を「最近削除した項目」に移動しました。';
+  }
+
+  @override
+  String get recentlyDeletedTitle => '最近削除した項目';
+
+  @override
+  String get recentlyDeletedSubtitle =>
+      'このプロファイルから削除したプロジェクトは、メモ、ToDo、作業時間ごと30日間ここに残ります。ディスク上のファイルには一切触れません。';
+
+  @override
+  String get recentlyDeletedNothing => 'ここには何もありません。';
+
+  @override
+  String recentlyDeletedWhen(String when) {
+    return '削除: $when';
+  }
+
+  @override
+  String recentlyDeletedExpires(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'あと$count日で完全に削除',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get recentlyDeletedRestore => '復元';
+
+  @override
+  String get recentlyDeletedDeleteForever => '完全に削除';
+
+  @override
+  String get recentlyDeletedEmptyAll => '空にする';
+
+  @override
+  String get emptyRecentlyDeletedTitle => '「最近削除した項目」を空にしますか？';
+
+  @override
+  String emptyRecentlyDeletedBody(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count件のプロジェクトが、メモ、ToDo、作業時間ごと完全に削除されます。ディスク上のファイルには触れません。',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String deleteForeverTitle(String name) {
+    return '「$name」を完全に削除しますか？';
+  }
+
+  @override
+  String get deleteForeverBody => 'メモ、ToDo、作業時間は失われます。ディスク上のファイルには触れません。';
+
+  @override
+  String projectRestored(String name) {
+    return '「$name」を復元しました。';
+  }
+
+  @override
+  String projectRestoredReplacingRescan(String name) {
+    return '「$name」を復元しました（その後スキャンで追加された空のコピーと置き換えました）。';
   }
 }

@@ -324,7 +324,7 @@
   },
   "deleteMissingProjects": "見つからない項目を削除",
   "deleteMissingProjectsTitle": "見つからないプロジェクトを削除しますか？",
-  "deleteMissingProjectsConfirm": "このマシンでファイルが見つからなかった{count}件のプロジェクト{plural}は、すべてのメモ、締切、セッション履歴とともに完全に削除されます。この操作は元に戻せません。",
+  "deleteMissingProjectsConfirm": "このマシンでファイルが見つからなかった{count}件のプロジェクト{plural}は「最近削除した項目」（設定 > プロジェクトフォルダ）に移動し、30日間はメモ、締切、セッション履歴ごと復元できます。",
   "@deleteMissingProjectsConfirm": {
     "placeholders": {
       "count": {
@@ -335,7 +335,7 @@
       }
     }
   },
-  "deleteMissingProjectsConfirmButton": "完全に削除",
+  "deleteMissingProjectsConfirmButton": "削除",
   "missingProjectsDeleted": "見つからないプロジェクト{plural}を{count}件削除しました。",
   "@missingProjectsDeleted": {
     "placeholders": {
@@ -4346,5 +4346,26 @@
   "driveUploadProjects": "{count, plural, other{ここで追加・変更されたプロジェクト {count} 件}}",
   "driveUploadReleases": "{count, plural, other{ここで追加されたリリース {count} 件}}",
   "drivePreviewLineWithNames": "{line}：{names}",
-  "driveNamesAndMore": "{names} ほか {count} 件"
+  "driveNamesAndMore": "{names} ほか {count} 件",
+  "deleteProjectMenu": "削除…",
+  "deleteProjectTitle": "「{name}」を削除しますか？",
+  "deleteProjectBody": "「最近削除した項目」（設定 > プロジェクトフォルダ）に移動し、30日間はメモ、ToDo、作業時間ごと復元できます。ディスク上のファイルには触れません。",
+  "deleteProjectStillScanned": "このファイルはこのプロファイルのプロジェクトフォルダ内にあるため、次回のスキャンで新しい空のプロジェクトとして再び追加されます。",
+  "deleteProjectStopScanningFolder": "このフォルダのスキャンも停止する",
+  "deleteProjectStopScanningFile": "このファイルのスキャンも停止する",
+  "projectMovedToRecentlyDeleted": "「{name}」を「最近削除した項目」に移動しました。",
+  "recentlyDeletedTitle": "最近削除した項目",
+  "recentlyDeletedSubtitle": "このプロファイルから削除したプロジェクトは、メモ、ToDo、作業時間ごと30日間ここに残ります。ディスク上のファイルには一切触れません。",
+  "recentlyDeletedNothing": "ここには何もありません。",
+  "recentlyDeletedWhen": "削除: {when}",
+  "recentlyDeletedExpires": "{count, plural, other{あと{count}日で完全に削除}}",
+  "recentlyDeletedRestore": "復元",
+  "recentlyDeletedDeleteForever": "完全に削除",
+  "recentlyDeletedEmptyAll": "空にする",
+  "emptyRecentlyDeletedTitle": "「最近削除した項目」を空にしますか？",
+  "emptyRecentlyDeletedBody": "{count, plural, other{{count}件のプロジェクトが、メモ、ToDo、作業時間ごと完全に削除されます。ディスク上のファイルには触れません。}}",
+  "deleteForeverTitle": "「{name}」を完全に削除しますか？",
+  "deleteForeverBody": "メモ、ToDo、作業時間は失われます。ディスク上のファイルには触れません。",
+  "projectRestored": "「{name}」を復元しました。",
+  "projectRestoredReplacingRescan": "「{name}」を復元しました（その後スキャンで追加された空のコピーと置き換えました）。"
 }

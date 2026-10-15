@@ -45,6 +45,7 @@ import '../utils/phase_colors.dart';
 import 'dashboard_page.dart' show appVersion;
 import 'dialogs/daw_launch_command_dialog.dart';
 import 'google_drive_sync_page.dart' show GoogleDriveSyncSection;
+import 'recently_deleted_actions.dart' show RecentlyDeletedSection;
 import 'metadata_extraction_info_page.dart';
 import 'notification_settings_page.dart' show WorkTimerSection;
 import 'onboarding_wizard_page.dart';
@@ -1552,6 +1553,7 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
         _SearchEntry(SettingsSection.projectFolders, Icons.visibility_outlined, l10n.alwaysShowSmartFolders, l10n.alwaysShowSmartFoldersDescription),
         _SearchEntry(SettingsSection.projectFolders, Icons.archive_outlined, l10n.archiveLocationTitle, l10n.archiveLocationSubtitle),
         _SearchEntry(SettingsSection.projectFolders, Icons.block, l10n.excludedFoldersSectionTitle, l10n.excludedFoldersSectionSubtitle),
+        _SearchEntry(SettingsSection.projectFolders, Icons.delete_outline, l10n.recentlyDeletedTitle, l10n.recentlyDeletedSubtitle),
         _SearchEntry(SettingsSection.projectFolders, Icons.description_outlined, l10n.exportAllProjectsInfo, l10n.exportAllProjectsInfoSubtitle),
         _SearchEntry(SettingsSection.projectFolders, Icons.table_view_outlined, l10n.exportAllPartsCsv, l10n.exportAllPartsCsvSubtitle),
         _SearchEntry(SettingsSection.projectFolders, Icons.grid_on, l10n.exportAllPartsXlsx, l10n.exportAllPartsXlsxSubtitle),
@@ -2458,6 +2460,10 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
           onExport: ({required bool asXlsx}) =>
               _exportAllParts(asXlsx: asXlsx),
         ),
+
+        const SizedBox(height: 12),
+
+        const RecentlyDeletedSection(),
       ],
     );
   }

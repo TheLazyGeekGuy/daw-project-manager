@@ -109,7 +109,7 @@ void main() {
 
     test('deleting projects permanently records them', () async {
       await repo.projectsBox.put('p', TestFactories.makeProject(id: 'p'));
-      await repo.deleteProjectsPermanently(['p']);
+      await repo.deleteProjects(['p']);
       final t = (await SyncTombstoneStore.all()).values.single;
       expect(t.id, 'p');
       expect(t.kind, TombstoneKind.project);

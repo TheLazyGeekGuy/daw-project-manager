@@ -457,7 +457,7 @@ void main() {
   group('missingProjectIds', () {
     // Regression coverage for the "Delete Missing" bulk action: scans no
     // longer auto-delete a project the moment its file disappears (see
-    // ProjectRepository.deleteProjectsPermanently's doc comment) — deleting
+    // ProjectRepository.deleteProjects's doc comment) — deleting
     // is now this explicit, selection-driven action instead, and it must
     // only ever touch the selected projects whose file is actually gone.
 

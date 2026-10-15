@@ -1505,7 +1505,7 @@ class _DashboardPageState extends ConsumerState<DashboardPage>
   /// missing (file gone from disk) — projects still present on disk are left
   /// untouched even if selected alongside missing ones. Scans no longer
   /// auto-delete anything on their own (see
-  /// ProjectRepository.deleteProjectsPermanently's doc comment); this is now
+  /// ProjectRepository.deleteProjects's doc comment); this is now
   /// the only way to actually remove a project's entry.
   ///
   /// Missing projects still referenced by a release are excluded by default,
@@ -1596,7 +1596,7 @@ class _DashboardPageState extends ConsumerState<DashboardPage>
 
     try {
       final repo = await ref.read(repositoryProvider.future);
-      await repo.deleteProjectsPermanently(idsToDelete);
+      await repo.deleteProjects(idsToDelete);
 
       if (alsoDeleteReleaseTracked) {
         final deleted = idsToDelete.toSet();
@@ -1609,6 +1609,7 @@ class _DashboardPageState extends ConsumerState<DashboardPage>
       }
 
       ref.invalidate(allProjectsStreamProvider);
+      ref.invalidate(recentlyDeletedProvider);
       if (mounted) {
         final plural = idsToDelete.length == 1 ? '' : 's';
         ScaffoldMessenger.of(context).showAppSnackBar(

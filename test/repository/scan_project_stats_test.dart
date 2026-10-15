@@ -156,7 +156,7 @@ void main() {
       await repo.upsertFromFileSystemEntity(file, fullMetadata: true);
       final project = repo.getByPath(file.path)!;
 
-      await repo.deleteProjectsPermanently([project.id]);
+      await repo.deleteProjects([project.id]);
 
       expect(await repo.midiClips.get(project.id), isNull);
     });

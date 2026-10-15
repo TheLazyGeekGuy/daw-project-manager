@@ -1057,13 +1057,13 @@ abstract class AppLocalizations {
   /// No description provided for @deleteMissingProjectsConfirm.
   ///
   /// In en, this message translates to:
-  /// **'{count} project{plural} whose file could not be found on this machine will be permanently deleted, along with all notes, deadlines, and session history. This can\'t be undone.'**
+  /// **'{count} project{plural} whose file could not be found on this machine will move to Recently deleted (Settings > Project folders), where you can restore them with their notes, deadlines and session history for 30 days.'**
   String deleteMissingProjectsConfirm(int count, String plural);
 
   /// No description provided for @deleteMissingProjectsConfirmButton.
   ///
   /// In en, this message translates to:
-  /// **'Delete Permanently'**
+  /// **'Delete'**
   String get deleteMissingProjectsConfirmButton;
 
   /// No description provided for @missingProjectsDeleted.
@@ -12670,6 +12670,132 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'{names} and {count} more'**
   String driveNamesAndMore(String names, int count);
+
+  /// No description provided for @deleteProjectMenu.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete…'**
+  String get deleteProjectMenu;
+
+  /// No description provided for @deleteProjectTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete \"{name}\"?'**
+  String deleteProjectTitle(String name);
+
+  /// No description provided for @deleteProjectBody.
+  ///
+  /// In en, this message translates to:
+  /// **'It moves to Recently deleted (Settings > Project folders), where you can restore it with its notes, to-dos and work time for 30 days. Its files on disk aren\'t touched.'**
+  String get deleteProjectBody;
+
+  /// No description provided for @deleteProjectStillScanned.
+  ///
+  /// In en, this message translates to:
+  /// **'Its file is inside one of this profile\'s project folders, so the next scan would add it back as a new, empty project.'**
+  String get deleteProjectStillScanned;
+
+  /// No description provided for @deleteProjectStopScanningFolder.
+  ///
+  /// In en, this message translates to:
+  /// **'Also stop scanning its folder'**
+  String get deleteProjectStopScanningFolder;
+
+  /// No description provided for @deleteProjectStopScanningFile.
+  ///
+  /// In en, this message translates to:
+  /// **'Also stop scanning this file'**
+  String get deleteProjectStopScanningFile;
+
+  /// No description provided for @projectMovedToRecentlyDeleted.
+  ///
+  /// In en, this message translates to:
+  /// **'\"{name}\" moved to Recently deleted.'**
+  String projectMovedToRecentlyDeleted(String name);
+
+  /// No description provided for @recentlyDeletedTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Recently deleted'**
+  String get recentlyDeletedTitle;
+
+  /// No description provided for @recentlyDeletedSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Projects deleted from this profile stay here for 30 days, with their notes, to-dos and work time. Their files on disk are never touched.'**
+  String get recentlyDeletedSubtitle;
+
+  /// No description provided for @recentlyDeletedNothing.
+  ///
+  /// In en, this message translates to:
+  /// **'Nothing here.'**
+  String get recentlyDeletedNothing;
+
+  /// No description provided for @recentlyDeletedWhen.
+  ///
+  /// In en, this message translates to:
+  /// **'Deleted {when}'**
+  String recentlyDeletedWhen(String when);
+
+  /// No description provided for @recentlyDeletedExpires.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =1{gone for good in 1 day} other{gone for good in {count} days}}'**
+  String recentlyDeletedExpires(int count);
+
+  /// No description provided for @recentlyDeletedRestore.
+  ///
+  /// In en, this message translates to:
+  /// **'Restore'**
+  String get recentlyDeletedRestore;
+
+  /// No description provided for @recentlyDeletedDeleteForever.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete forever'**
+  String get recentlyDeletedDeleteForever;
+
+  /// No description provided for @recentlyDeletedEmptyAll.
+  ///
+  /// In en, this message translates to:
+  /// **'Empty'**
+  String get recentlyDeletedEmptyAll;
+
+  /// No description provided for @emptyRecentlyDeletedTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Empty Recently deleted?'**
+  String get emptyRecentlyDeletedTitle;
+
+  /// No description provided for @emptyRecentlyDeletedBody.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =1{1 project will be deleted for good, with its notes, to-dos and work time. Its files on disk aren\'t touched.} other{{count} projects will be deleted for good, with their notes, to-dos and work time. Their files on disk aren\'t touched.}}'**
+  String emptyRecentlyDeletedBody(int count);
+
+  /// No description provided for @deleteForeverTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete \"{name}\" for good?'**
+  String deleteForeverTitle(String name);
+
+  /// No description provided for @deleteForeverBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Its notes, to-dos and work time will be gone. Its files on disk aren\'t touched.'**
+  String get deleteForeverBody;
+
+  /// No description provided for @projectRestored.
+  ///
+  /// In en, this message translates to:
+  /// **'\"{name}\" restored.'**
+  String projectRestored(String name);
+
+  /// No description provided for @projectRestoredReplacingRescan.
+  ///
+  /// In en, this message translates to:
+  /// **'\"{name}\" restored, in place of the empty copy a scan had added since.'**
+  String projectRestoredReplacingRescan(String name);
 }
 
 class _AppLocalizationsDelegate

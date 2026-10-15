@@ -324,7 +324,7 @@
   },
   "deleteMissingProjects": "Supprimer les manquants",
   "deleteMissingProjectsTitle": "Supprimer les projets manquants ?",
-  "deleteMissingProjectsConfirm": "{count} projet{plural} dont le fichier est introuvable sur cette machine seront définitivement supprimés, ainsi que toutes les notes, échéances et l'historique des sessions. Cette action est irréversible.",
+  "deleteMissingProjectsConfirm": "{count} projet{plural} dont le fichier est introuvable sur cette machine passeront dans Supprimés récemment (Réglages > Dossiers de projets), où vous pourrez les restaurer avec leurs notes, échéances et historique des sessions pendant 30 jours.",
   "@deleteMissingProjectsConfirm": {
     "placeholders": {
       "count": {
@@ -335,7 +335,7 @@
       }
     }
   },
-  "deleteMissingProjectsConfirmButton": "Supprimer définitivement",
+  "deleteMissingProjectsConfirmButton": "Supprimer",
   "missingProjectsDeleted": "{count} projet{plural} manquant supprimé.",
   "@missingProjectsDeleted": {
     "placeholders": {
@@ -4346,5 +4346,26 @@
   "driveUploadProjects": "{count, plural, =1{1 projet ajouté ou modifié ici} other{{count} projets ajoutés ou modifiés ici}}",
   "driveUploadReleases": "{count, plural, =1{1 sortie ajoutée ici} other{{count} sorties ajoutées ici}}",
   "drivePreviewLineWithNames": "{line} : {names}",
-  "driveNamesAndMore": "{names} et {count} autres"
+  "driveNamesAndMore": "{names} et {count} autres",
+  "deleteProjectMenu": "Supprimer…",
+  "deleteProjectTitle": "Supprimer « {name} » ?",
+  "deleteProjectBody": "Il passe dans Supprimés récemment (Réglages > Dossiers de projets), où vous pouvez le restaurer avec ses notes, tâches et temps de travail pendant 30 jours. Ses fichiers sur le disque ne sont pas touchés.",
+  "deleteProjectStillScanned": "Son fichier se trouve dans l'un des dossiers de projets de ce profil : la prochaine analyse le rajouterait comme un nouveau projet vide.",
+  "deleteProjectStopScanningFolder": "Ne plus analyser son dossier non plus",
+  "deleteProjectStopScanningFile": "Ne plus analyser ce fichier non plus",
+  "projectMovedToRecentlyDeleted": "« {name} » déplacé dans Supprimés récemment.",
+  "recentlyDeletedTitle": "Supprimés récemment",
+  "recentlyDeletedSubtitle": "Les projets supprimés de ce profil restent ici 30 jours, avec leurs notes, tâches et temps de travail. Leurs fichiers sur le disque ne sont jamais touchés.",
+  "recentlyDeletedNothing": "Rien ici.",
+  "recentlyDeletedWhen": "Supprimé {when}",
+  "recentlyDeletedExpires": "{count, plural, =1{supprimé définitivement dans 1 jour} other{supprimé définitivement dans {count} jours}}",
+  "recentlyDeletedRestore": "Restaurer",
+  "recentlyDeletedDeleteForever": "Supprimer définitivement",
+  "recentlyDeletedEmptyAll": "Vider",
+  "emptyRecentlyDeletedTitle": "Vider Supprimés récemment ?",
+  "emptyRecentlyDeletedBody": "{count, plural, =1{1 projet sera supprimé définitivement, avec ses notes, tâches et temps de travail. Ses fichiers sur le disque ne sont pas touchés.} other{{count} projets seront supprimés définitivement, avec leurs notes, tâches et temps de travail. Leurs fichiers sur le disque ne sont pas touchés.}}",
+  "deleteForeverTitle": "Supprimer « {name} » définitivement ?",
+  "deleteForeverBody": "Ses notes, tâches et temps de travail disparaîtront. Ses fichiers sur le disque ne sont pas touchés.",
+  "projectRestored": "« {name} » restauré.",
+  "projectRestoredReplacingRescan": "« {name} » restauré, à la place de la copie vide qu’une analyse avait ajoutée entre-temps."
 }

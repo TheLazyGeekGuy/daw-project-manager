@@ -542,11 +542,11 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String deleteMissingProjectsConfirm(int count, String plural) {
-    return '$count Projekt$plural, deren Datei auf diesem Computer nicht gefunden werden konnte, werden dauerhaft gelöscht, zusammen mit allen Notizen, Fristen und dem Sitzungsverlauf. Dies kann nicht rückgängig gemacht werden.';
+    return '$count Projekt$plural, deren Datei auf diesem Computer nicht gefunden werden konnte, kommen in „Zuletzt gelöscht“ (Einstellungen > Projektordner), wo du sie 30 Tage lang samt Notizen, Fristen und Sitzungsverlauf wiederherstellen kannst.';
   }
 
   @override
-  String get deleteMissingProjectsConfirmButton => 'Endgültig löschen';
+  String get deleteMissingProjectsConfirmButton => 'Löschen';
 
   @override
   String missingProjectsDeleted(int count, String plural) {
@@ -7752,5 +7752,104 @@ class AppLocalizationsDe extends AppLocalizations {
   @override
   String driveNamesAndMore(String names, int count) {
     return '$names und $count weitere';
+  }
+
+  @override
+  String get deleteProjectMenu => 'Löschen…';
+
+  @override
+  String deleteProjectTitle(String name) {
+    return '„$name“ löschen?';
+  }
+
+  @override
+  String get deleteProjectBody =>
+      'Es kommt in „Zuletzt gelöscht“ (Einstellungen > Projektordner), wo du es 30 Tage lang samt Notizen, Aufgaben und Arbeitszeit wiederherstellen kannst. Seine Dateien auf der Festplatte bleiben unberührt.';
+
+  @override
+  String get deleteProjectStillScanned =>
+      'Die Datei liegt in einem der Projektordner dieses Profils, daher würde der nächste Scan sie als neues, leeres Projekt wieder hinzufügen.';
+
+  @override
+  String get deleteProjectStopScanningFolder =>
+      'Auch seinen Ordner nicht mehr scannen';
+
+  @override
+  String get deleteProjectStopScanningFile =>
+      'Auch diese Datei nicht mehr scannen';
+
+  @override
+  String projectMovedToRecentlyDeleted(String name) {
+    return '„$name“ in „Zuletzt gelöscht“ verschoben.';
+  }
+
+  @override
+  String get recentlyDeletedTitle => 'Zuletzt gelöscht';
+
+  @override
+  String get recentlyDeletedSubtitle =>
+      'Aus diesem Profil gelöschte Projekte bleiben 30 Tage hier, samt Notizen, Aufgaben und Arbeitszeit. Ihre Dateien auf der Festplatte werden nie angetastet.';
+
+  @override
+  String get recentlyDeletedNothing => 'Hier ist nichts.';
+
+  @override
+  String recentlyDeletedWhen(String when) {
+    return 'Gelöscht $when';
+  }
+
+  @override
+  String recentlyDeletedExpires(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'endgültig weg in $count Tagen',
+      one: 'endgültig weg in 1 Tag',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get recentlyDeletedRestore => 'Wiederherstellen';
+
+  @override
+  String get recentlyDeletedDeleteForever => 'Endgültig löschen';
+
+  @override
+  String get recentlyDeletedEmptyAll => 'Leeren';
+
+  @override
+  String get emptyRecentlyDeletedTitle => '„Zuletzt gelöscht“ leeren?';
+
+  @override
+  String emptyRecentlyDeletedBody(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other:
+          '$count Projekte werden endgültig gelöscht, samt Notizen, Aufgaben und Arbeitszeit. Ihre Dateien auf der Festplatte bleiben unberührt.',
+      one:
+          '1 Projekt wird endgültig gelöscht, samt Notizen, Aufgaben und Arbeitszeit. Seine Dateien auf der Festplatte bleiben unberührt.',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String deleteForeverTitle(String name) {
+    return '„$name“ endgültig löschen?';
+  }
+
+  @override
+  String get deleteForeverBody =>
+      'Notizen, Aufgaben und Arbeitszeit sind dann weg. Seine Dateien auf der Festplatte bleiben unberührt.';
+
+  @override
+  String projectRestored(String name) {
+    return '„$name“ wiederhergestellt.';
+  }
+
+  @override
+  String projectRestoredReplacingRescan(String name) {
+    return '„$name“ wiederhergestellt, anstelle der leeren Kopie, die ein Scan inzwischen hinzugefügt hatte.';
   }
 }

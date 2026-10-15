@@ -540,11 +540,11 @@ class AppLocalizationsIt extends AppLocalizations {
 
   @override
   String deleteMissingProjectsConfirm(int count, String plural) {
-    return '$count progetto$plural il cui file non è stato trovato su questo computer verranno eliminati permanentemente, insieme a tutte le note, scadenze e cronologia delle sessioni. Questa azione non può essere annullata.';
+    return '$count progetto$plural il cui file non è stato trovato su questo computer finiranno in Eliminati di recente (Impostazioni > Cartelle dei progetti), dove puoi ripristinarli con note, scadenze e cronologia delle sessioni per 30 giorni.';
   }
 
   @override
-  String get deleteMissingProjectsConfirmButton => 'Elimina definitivamente';
+  String get deleteMissingProjectsConfirmButton => 'Elimina';
 
   @override
   String missingProjectsDeleted(int count, String plural) {
@@ -7755,5 +7755,104 @@ class AppLocalizationsIt extends AppLocalizations {
   @override
   String driveNamesAndMore(String names, int count) {
     return '$names e altri $count';
+  }
+
+  @override
+  String get deleteProjectMenu => 'Elimina…';
+
+  @override
+  String deleteProjectTitle(String name) {
+    return 'Eliminare «$name»?';
+  }
+
+  @override
+  String get deleteProjectBody =>
+      'Finisce in Eliminati di recente (Impostazioni > Cartelle dei progetti), dove puoi ripristinarlo con note, attività e tempo di lavoro per 30 giorni. I suoi file sul disco non vengono toccati.';
+
+  @override
+  String get deleteProjectStillScanned =>
+      'Il suo file è in una delle cartelle dei progetti di questo profilo, quindi la prossima scansione lo riaggiungerebbe come progetto nuovo e vuoto.';
+
+  @override
+  String get deleteProjectStopScanningFolder =>
+      'Smetti anche di scansionare la sua cartella';
+
+  @override
+  String get deleteProjectStopScanningFile =>
+      'Smetti anche di scansionare questo file';
+
+  @override
+  String projectMovedToRecentlyDeleted(String name) {
+    return '«$name» spostato in Eliminati di recente.';
+  }
+
+  @override
+  String get recentlyDeletedTitle => 'Eliminati di recente';
+
+  @override
+  String get recentlyDeletedSubtitle =>
+      'I progetti eliminati da questo profilo restano qui per 30 giorni, con note, attività e tempo di lavoro. I loro file sul disco non vengono mai toccati.';
+
+  @override
+  String get recentlyDeletedNothing => 'Qui non c’è niente.';
+
+  @override
+  String recentlyDeletedWhen(String when) {
+    return 'Eliminato $when';
+  }
+
+  @override
+  String recentlyDeletedExpires(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'eliminato del tutto tra $count giorni',
+      one: 'eliminato del tutto tra 1 giorno',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get recentlyDeletedRestore => 'Ripristina';
+
+  @override
+  String get recentlyDeletedDeleteForever => 'Elimina per sempre';
+
+  @override
+  String get recentlyDeletedEmptyAll => 'Svuota';
+
+  @override
+  String get emptyRecentlyDeletedTitle => 'Svuotare Eliminati di recente?';
+
+  @override
+  String emptyRecentlyDeletedBody(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other:
+          '$count progetti verranno eliminati per sempre, con note, attività e tempo di lavoro. I loro file sul disco non vengono toccati.',
+      one:
+          '1 progetto verrà eliminato per sempre, con note, attività e tempo di lavoro. I suoi file sul disco non vengono toccati.',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String deleteForeverTitle(String name) {
+    return 'Eliminare «$name» per sempre?';
+  }
+
+  @override
+  String get deleteForeverBody =>
+      'Note, attività e tempo di lavoro andranno persi. I suoi file sul disco non vengono toccati.';
+
+  @override
+  String projectRestored(String name) {
+    return '«$name» ripristinato.';
+  }
+
+  @override
+  String projectRestoredReplacingRescan(String name) {
+    return '«$name» ripristinato, al posto della copia vuota aggiunta nel frattempo da una scansione.';
   }
 }
