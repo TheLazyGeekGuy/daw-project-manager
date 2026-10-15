@@ -15,12 +15,18 @@ import 'package:daw_project_manager/services/auto_start_service.dart';
 /// The behaviour that matters and is easy to get wrong: the Hive value is
 /// only a *cache* of state the OS owns, so (a) it must never be written when
 /// the OS call failed, or the switch would claim a setting that isn't
-/// actually in effect, and (b) it must be corrected at startup when the user
-/// revoked auto-start outside the app.
+/// actually in effect, (b) it must be corrected at startup when the user
+/// revoked auto-start outside the app, and (c) a registration left pointing
+/// at nothing (a Store update, a moved install) must be repaired at startup
+/// rather than silently stop launching the app.
 class _FakeBackend implements AutoStartBackend {
   bool enabled = false;
   bool failEnable = false;
   bool throwOnAll = false;
+
+  /// Reported instead of on/off until the next enable() rewrites the
+  /// registration — stale and unknown come from the OS, not from [enabled].
+  AutoStartStatus? reportedStatus;
 
   int enableCalls = 0;
   int disableCalls = 0;
@@ -41,9 +47,10 @@ class _FakeBackend implements AutoStartBackend {
   }
 
   @override
-  Future<bool> isEnabled() async {
-    if (throwOnAll) throw Exception('isEnabled boom');
-    return enabled;
+  Future<AutoStartStatus> status() async {
+    if (throwOnAll) throw Exception('status boom');
+    return reportedStatus ??
+        (enabled ? AutoStartStatus.on : AutoStartStatus.off);
   }
 
   @override
@@ -53,6 +60,7 @@ class _FakeBackend implements AutoStartBackend {
     if (throwOnAll) throw Exception('enable boom');
     if (failEnable) return false;
     enabled = true;
+    if (reportedStatus == AutoStartStatus.stale) reportedStatus = null;
     return true;
   }
 
@@ -248,6 +256,107 @@ void main() {
         completes,
       );
       expect(container.read(autoStartProvider), isFalse);
+    });
+
+    test('keeps a cached "true" when the status read throws', () async {
+      final box = await Hive.openBox<String>('settings');
+      await box.put('autoStart', 'true');
+      fake.throwOnAll = true;
+
+      final container = ProviderContainer();
+      addTearDown(container.dispose);
+
+      await container.read(autoStartProvider.notifier).syncWithOs();
+
+      // A registry hiccup is not the user turning auto-start off.
+      expect(container.read(autoStartProvider), onDesktop ? isTrue : isFalse);
+      expect(box.get('autoStart'), 'true');
+    });
+
+    test('keeps the cached value where the OS cannot be asked (Flatpak)',
+        () async {
+      final box = await Hive.openBox<String>('settings');
+      await box.put('autoStart', 'true');
+      fake.reportedStatus = AutoStartStatus.unknown;
+
+      final container = ProviderContainer();
+      addTearDown(container.dispose);
+
+      await container.read(autoStartProvider.notifier).syncWithOs();
+
+      expect(container.read(autoStartProvider), onDesktop ? isTrue : isFalse);
+      expect(box.get('autoStart'), 'true');
+      expect(fake.enableCalls, 0);
+      expect(fake.disableCalls, 0);
+    });
+
+    test('repairs a stale registration and keeps auto-start on', () async {
+      final box = await Hive.openBox<String>('settings');
+      await box.put('autoStart', 'true');
+      fake.enabled = true;
+      // The Store update deleted the versioned folder the shortcut named.
+      fake.reportedStatus = AutoStartStatus.stale;
+
+      final container = ProviderContainer();
+      addTearDown(container.dispose);
+
+      await container.read(autoStartProvider.notifier).syncWithOs();
+
+      if (!onDesktop) return;
+      // Regression guard: this used to read as "on" (the shortcut file
+      // existed) and never rewrite it, so auto-start died at every update.
+      expect(fake.disableCalls, 1);
+      expect(fake.enableCalls, 1);
+      expect(fake.reportedStatus, isNull);
+      expect(container.read(autoStartProvider), isTrue);
+      expect(box.get('autoStart'), 'true');
+    });
+
+    test('repairs with the current "start minimized" flag', () async {
+      final box = await Hive.openBox<String>('settings');
+      await box.put('autoStart', 'true');
+      await box.put('startMinimized', 'true');
+      fake.reportedStatus = AutoStartStatus.stale;
+
+      final container = ProviderContainer();
+      addTearDown(container.dispose);
+
+      await container.read(autoStartProvider.notifier).syncWithOs();
+
+      if (!onDesktop) return;
+      expect(fake.minimizedAtEnable, isTrue);
+    });
+
+    test('adopts a repaired registration even if nothing was cached', () async {
+      final box = await Hive.openBox<String>('settings');
+      fake.reportedStatus = AutoStartStatus.stale;
+
+      final container = ProviderContainer();
+      addTearDown(container.dispose);
+
+      await container.read(autoStartProvider.notifier).syncWithOs();
+
+      if (!onDesktop) return;
+      expect(container.read(autoStartProvider), isTrue);
+      expect(box.get('autoStart'), 'true');
+    });
+
+    test('reports off when repairing a stale registration fails', () async {
+      final box = await Hive.openBox<String>('settings');
+      await box.put('autoStart', 'true');
+      fake.reportedStatus = AutoStartStatus.stale;
+      fake.failEnable = true;
+
+      final container = ProviderContainer();
+      addTearDown(container.dispose);
+
+      await container.read(autoStartProvider.notifier).syncWithOs();
+
+      if (!onDesktop) return;
+      // The repair unregistered the dead entry and couldn't write a new one:
+      // the app really won't launch at login, so the switch must say so.
+      expect(container.read(autoStartProvider), isFalse);
+      expect(box.get('autoStart'), 'false');
     });
   });
 

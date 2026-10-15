@@ -1906,8 +1906,9 @@ final closeToTrayProvider = NotifierProvider<CloseToTrayNotifier, bool>(() {
 /// Whether the OS launches the app automatically when the user signs in.
 ///
 /// Unlike every other setting here, the real source of truth lives outside
-/// the app — the Windows registry / a macOS login item / a Linux .desktop
-/// file — and the user can revoke it from Task Manager or System Settings
+/// the app — the Windows registry or Startup folder / a macOS login item / a
+/// Linux .desktop file (see [AutoStartService]) — and the user can revoke it
+/// from Task Manager or System Settings
 /// without the app ever knowing. The Hive value is therefore a *cache*: it
 /// exists so the settings switch can paint synchronously on first build
 /// (same rationale as [CloseToTrayNotifier]), and [syncWithOs] reconciles it
@@ -1979,16 +1980,20 @@ class AutoStartNotifier extends Notifier<bool> {
     return ok;
   }
 
-  /// Reconciles the cached value with what the OS actually reports. Call once
-  /// at startup: if the user removed the app from their startup items outside
-  /// the app, the settings switch must reflect that rather than keep claiming
-  /// the feature is on.
+  /// Reconciles the cached value with what the OS actually reports, repairing
+  /// a registration that has gone stale. Call once at startup: if the user
+  /// removed the app from their startup items outside the app, the settings
+  /// switch must reflect that rather than keep claiming the feature is on;
+  /// and if a Store update or a moved install left the registration pointing
+  /// at nothing, it must be rewritten rather than silently stop working.
+  /// Where the OS can't be asked (Flatpak), the cached value stands.
   Future<void> syncWithOs() async {
     if (!AutoStartService.isSupported) return;
 
-    await AutoStartService.setup(minimized: ref.read(startMinimizedProvider));
-    final actual = await AutoStartService.isEnabled();
-    if (actual == state) return;
+    final actual = await AutoStartService.reconcile(
+      minimized: ref.read(startMinimizedProvider),
+    );
+    if (actual == null || actual == state) return;
     state = actual;
     await _persist(actual);
   }

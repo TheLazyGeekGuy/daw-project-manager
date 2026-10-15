@@ -8,8 +8,8 @@
 #include "utils.h"
 
 // Must stay in sync with kStartMinimizedFlag in
-// lib/services/auto_start_service.dart, which is what bakes this flag into
-// the Run-key registration. Only a login launch ever carries it.
+// lib/services/auto_start/auto_start_backend.dart; auto-start bakes it into
+// the Run-key value or Startup shortcut. Only a login launch ever carries it.
 constexpr char kStartMinimizedFlag[] = "--minimized";
 
 int APIENTRY wWinMain(_In_ HINSTANCE instance, _In_opt_ HINSTANCE prev,
