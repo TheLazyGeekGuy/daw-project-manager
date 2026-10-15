@@ -16,6 +16,7 @@ import 'dialogs/card_initials_dialog.dart';
 import 'dialogs/move_project_dialog.dart';
 import 'preview_share.dart';
 import 'project_detail_page.dart';
+import 'profile_move_actions.dart';
 import 'recently_deleted_actions.dart';
 import 'session_actions.dart';
 import 'app_snack_bar.dart';
@@ -240,6 +241,19 @@ Future<void> showProjectContextMenu({
       // stack — its shared details live on its row, and unstacking is the
       // way out — nor on an archived project, the one row pointing at its
       // zip.
+      // To another artist's profile: a song moves whole, a version with its
+      // stack (see planProfileMove).
+      if (!project.isArchived)
+        PopupMenuItem<String>(
+          value: 'moveToProfile',
+          child: Row(
+            children: [
+              const Icon(Icons.switch_account_outlined, size: 20),
+              const SizedBox(width: 8),
+              Text(l10n.moveToProfileMenu),
+            ],
+          ),
+        ),
       if (!project.isVirtual && !project.isArchived)
         PopupMenuItem<String>(
           value: 'delete',
@@ -354,6 +368,9 @@ Future<void> showProjectContextMenu({
         break;
       case 'discardArchive':
         await showDiscardArchiveDialog(context, ref, project);
+        break;
+      case 'moveToProfile':
+        await moveToProfileFromMenu(context, ref, project);
         break;
       case 'delete':
         await deleteProjectFromLibrary(context, ref, project);

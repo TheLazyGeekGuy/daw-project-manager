@@ -17,6 +17,7 @@ import 'widgets/language_switcher.dart';
 import 'theme_labels.dart';
 import 'widgets/theme_preview_card.dart';
 import 'app_snack_bar.dart';
+import 'dialogs/root_overlap_dialog.dart';
 
 class OnboardingWizardPage extends ConsumerStatefulWidget {
   const OnboardingWizardPage({super.key});
@@ -421,6 +422,8 @@ class _FoldersPageState extends ConsumerState<_FoldersPage> {
       dialogTitle: widget.l10n.selectProjectsFolder,
     );
     if (picked == null || !mounted) return;
+    if (!await confirmScanFolderOverlap(context, ref, picked)) return;
+    if (!mounted) return;
     final container = ProviderScope.containerOf(context, listen: false);
     setState(() => _busy = true);
     try {

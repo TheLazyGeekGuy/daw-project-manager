@@ -78,6 +78,7 @@ import '../services/sample_pack/sample_pack_projects.dart';
 import 'dialogs/sample_pack_export_dialog.dart';
 import 'midi_collection_naming.dart' show midiNamingLabelsOf;
 import 'widgets/sample_pack_card.dart';
+import 'dialogs/root_overlap_dialog.dart';
 
 /// A Flatpak document-portal path, e.g.
 /// `/run/user/1000/doc/98127/projects` — the portal never exposes the real
@@ -923,6 +924,10 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
       }
       return;
     }
+
+    if (!mounted) return;
+    if (!await confirmScanFolderOverlap(context, ref, picked)) return;
+    if (!mounted) return;
 
     setState(() => _busy = true);
     try {

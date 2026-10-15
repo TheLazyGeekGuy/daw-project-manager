@@ -7583,4 +7583,135 @@ class AppLocalizationsJa extends AppLocalizations {
   String projectRestoredReplacingRescan(String name) {
     return '「$name」を復元しました（その後スキャンで追加された空のコピーと置き換えました）。';
   }
+
+  @override
+  String get scanFolderOverlapTitle => '別のプロファイルがすでにスキャンしています';
+
+  @override
+  String scanFolderOverlapSame(String profile) {
+    return '$profile がまさにこのフォルダをスキャンしています。';
+  }
+
+  @override
+  String scanFolderOverlapInside(String profile, String path) {
+    return '$profile はこのフォルダを含む $path をスキャンしています。';
+  }
+
+  @override
+  String scanFolderOverlapContains(String profile, String path) {
+    return '$profile はこのフォルダ内の $path をスキャンしています。';
+  }
+
+  @override
+  String get scanFolderOverlapBody =>
+      'プロファイルごとに見つけたプロジェクトのコピーを別々に持つため、これらは両方に表示され、メモ、ToDo、作業時間も別々になります。曲を別のプロファイルに渡すには、代わりに「プロファイルへ移動…」を使ってください。';
+
+  @override
+  String get scanFolderOverlapAddAnyway => 'それでも追加';
+
+  @override
+  String get moveToProfileMenu => 'プロファイルへ移動…';
+
+  @override
+  String moveToProfileTitle(String name) {
+    return '「$name」を別のプロファイルへ移動';
+  }
+
+  @override
+  String moveToProfileVersions(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count 個のバージョンすべてが1曲としてまとめて移動します。',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get moveToProfileTarget => 'プロファイル';
+
+  @override
+  String get moveToProfileKeepFiles => 'ファイルは今の場所のまま';
+
+  @override
+  String moveToProfileKeepFilesHint(String profile, String path) {
+    return '$profile は $path のスキャンをやめるので、そちらに戻ってきません。';
+  }
+
+  @override
+  String get moveToProfileKeepFilesHintUnscanned => 'ディスク上は何も変わりません。';
+
+  @override
+  String get moveToProfileMoveFiles => 'ファイルも移動する';
+
+  @override
+  String get moveToProfileInto => '移動先:';
+
+  @override
+  String get moveToProfileOtherFolder => '別のフォルダ…';
+
+  @override
+  String get moveToProfileNoFolder =>
+      'このプロファイルにはまだプロジェクトフォルダがありません。フォルダを選んでください。';
+
+  @override
+  String moveToProfileSize(int count, String size) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '約 $count 件のファイル（$size）をコピーして確認してから、元の場所から削除します。',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get moveToProfileCantMoveFiles =>
+      'バージョンが複数のフォルダにあるため、ファイルをまとめて移動できません。';
+
+  @override
+  String moveToProfileReleases(String profile, String releases) {
+    return '$profile の $releases から外れます。';
+  }
+
+  @override
+  String get moveToProfileConfirm => '移動';
+
+  @override
+  String get moveToProfileNoOtherProfiles => '移動先となる他のプロファイルがありません。';
+
+  @override
+  String get moveToProfileInSession => '先にこのプロジェクトの作業セッションを終了してください。';
+
+  @override
+  String get moveToProfileMoving => 'ファイルを移動しています…';
+
+  @override
+  String moveToProfileDone(String name, String profile) {
+    return '「$name」を $profile に移動しました。';
+  }
+
+  @override
+  String get moveToProfileBlockedArchived => 'アーカイブ済みです。先にアーカイブから復元してください。';
+
+  @override
+  String moveToProfileBlockedTargetCopy(String profile) {
+    return '$profile にはすでにこの曲があり、独自のメモや ToDo があります。何も移動していません。';
+  }
+
+  @override
+  String get moveToProfileBlockedSourceMissing => 'ファイルがこのコンピュータにありません。';
+
+  @override
+  String moveToProfileBlockedOccupied(String path) {
+    return '$path に同じ名前のものがすでにあります。何も移動していません。';
+  }
+
+  @override
+  String get moveToProfileBlockedInsideSource => 'そのフォルダは曲自身のフォルダの中にあります。';
+
+  @override
+  String get moveToProfileBlockedSameLocation => 'ファイルはすでにそこにあります。';
+
+  @override
+  String get moveToProfileCopyFailed => 'コピーが元のファイルと一致しなかったため、何も削除・移動していません:';
 }

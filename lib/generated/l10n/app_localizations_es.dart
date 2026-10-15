@@ -7870,4 +7870,146 @@ class AppLocalizationsEs extends AppLocalizations {
   String projectRestoredReplacingRescan(String name) {
     return '«$name» restaurado, en lugar de la copia vacía que un escaneo había añadido.';
   }
+
+  @override
+  String get scanFolderOverlapTitle => 'Otro perfil ya escanea esto';
+
+  @override
+  String scanFolderOverlapSame(String profile) {
+    return '$profile escanea esta misma carpeta.';
+  }
+
+  @override
+  String scanFolderOverlapInside(String profile, String path) {
+    return '$profile escanea $path, que contiene esta carpeta.';
+  }
+
+  @override
+  String scanFolderOverlapContains(String profile, String path) {
+    return '$profile escanea $path, que está dentro de esta carpeta.';
+  }
+
+  @override
+  String get scanFolderOverlapBody =>
+      'Cada perfil guarda su propia copia de cada proyecto que encuentra, así que estos aparecerían en ambos, con notas, tareas y tiempo de trabajo separados. Para pasar una canción a otro perfil, usa «Mover a perfil…» en ella.';
+
+  @override
+  String get scanFolderOverlapAddAnyway => 'Añadir igualmente';
+
+  @override
+  String get moveToProfileMenu => 'Mover a perfil…';
+
+  @override
+  String moveToProfileTitle(String name) {
+    return 'Mover «$name» a otro perfil';
+  }
+
+  @override
+  String moveToProfileVersions(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'Las $count versiones se mueven juntas, como una sola canción.',
+      one: 'Su versión se mueve con ella, como una sola canción.',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get moveToProfileTarget => 'Perfil';
+
+  @override
+  String get moveToProfileKeepFiles => 'Dejar sus archivos donde están';
+
+  @override
+  String moveToProfileKeepFilesHint(String profile, String path) {
+    return '$profile deja de escanear $path, para que no vuelva a aparecer allí.';
+  }
+
+  @override
+  String get moveToProfileKeepFilesHintUnscanned =>
+      'No cambia nada en el disco.';
+
+  @override
+  String get moveToProfileMoveFiles => 'Mover también sus archivos';
+
+  @override
+  String get moveToProfileInto => 'A:';
+
+  @override
+  String get moveToProfileOtherFolder => 'Otra carpeta…';
+
+  @override
+  String get moveToProfileNoFolder =>
+      'Este perfil aún no tiene carpetas de proyectos: elige una carpeta.';
+
+  @override
+  String moveToProfileSize(int count, String size) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other:
+          'Se copian, se comprueban y luego se quitan de su sitio actual unos $count archivos ($size).',
+      one:
+          'Se copia, se comprueba y luego se quita de su sitio actual aproximadamente 1 archivo ($size).',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get moveToProfileCantMoveFiles =>
+      'Sus versiones están en varias carpetas, así que sus archivos no pueden moverse juntos.';
+
+  @override
+  String moveToProfileReleases(String profile, String releases) {
+    return 'Sale de $releases en $profile.';
+  }
+
+  @override
+  String get moveToProfileConfirm => 'Mover';
+
+  @override
+  String get moveToProfileNoOtherProfiles =>
+      'No hay otro perfil al que moverlo.';
+
+  @override
+  String get moveToProfileInSession =>
+      'Termina primero la sesión de trabajo en ella.';
+
+  @override
+  String get moveToProfileMoving => 'Moviendo archivos…';
+
+  @override
+  String moveToProfileDone(String name, String profile) {
+    return '«$name» se movió a $profile.';
+  }
+
+  @override
+  String get moveToProfileBlockedArchived =>
+      'Está archivado: restáuralo primero desde su archivo.';
+
+  @override
+  String moveToProfileBlockedTargetCopy(String profile) {
+    return '$profile ya tiene esta canción, con notas o tareas propias. No se movió nada.';
+  }
+
+  @override
+  String get moveToProfileBlockedSourceMissing =>
+      'Sus archivos no están en este equipo.';
+
+  @override
+  String moveToProfileBlockedOccupied(String path) {
+    return 'Ya hay algo con ese nombre en $path. No se movió nada.';
+  }
+
+  @override
+  String get moveToProfileBlockedInsideSource =>
+      'Esa carpeta está dentro de la propia carpeta de la canción.';
+
+  @override
+  String get moveToProfileBlockedSameLocation => 'Sus archivos ya están ahí.';
+
+  @override
+  String get moveToProfileCopyFailed =>
+      'La copia no coincidía con el original, así que no se quitó ni se movió nada:';
 }

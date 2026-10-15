@@ -115,6 +115,7 @@ import 'widgets/custom_field_column.dart';
 import '../models/custom_field.dart';
 import 'package:uuid/uuid.dart';
 import 'app_snack_bar.dart';
+import 'dialogs/root_overlap_dialog.dart';
 
 /// App version embedded at build-time (CI passes `--dart-define=APP_VERSION=x.y.z`).
 /// For PR/local builds, we fall back to a dummy version.
@@ -774,7 +775,8 @@ class _DashboardPageState extends ConsumerState<DashboardPage>
     final picked = await FilePicker.getDirectoryPath(
       dialogTitle: l10n.selectProjectsFolder,
     );
-    if (picked == null) return;
+    if (picked == null || !mounted) return;
+    if (!await confirmScanFolderOverlap(context, ref, picked)) return;
 
     final repo = await ref.read(repositoryProvider.future);
     await repo.addRoot(picked);

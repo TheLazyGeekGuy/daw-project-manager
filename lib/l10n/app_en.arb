@@ -7714,5 +7714,132 @@
         "type": "String"
       }
     }
-  }
+  },
+  "scanFolderOverlapTitle": "Another profile already scans this",
+  "scanFolderOverlapSame": "{profile} scans this very folder.",
+  "@scanFolderOverlapSame": {
+    "placeholders": {
+      "profile": {
+        "type": "String"
+      }
+    }
+  },
+  "scanFolderOverlapInside": "{profile} scans {path}, which holds this folder.",
+  "@scanFolderOverlapInside": {
+    "placeholders": {
+      "profile": {
+        "type": "String"
+      },
+      "path": {
+        "type": "String"
+      }
+    }
+  },
+  "scanFolderOverlapContains": "{profile} scans {path}, inside this folder.",
+  "@scanFolderOverlapContains": {
+    "placeholders": {
+      "profile": {
+        "type": "String"
+      },
+      "path": {
+        "type": "String"
+      }
+    }
+  },
+  "scanFolderOverlapBody": "Each profile keeps its own copy of every project it finds, so these would appear in both, with separate notes, to-dos and work time. To give a song to another profile, use \"Move to profile…\" on it instead.",
+  "scanFolderOverlapAddAnyway": "Add anyway",
+  "moveToProfileMenu": "Move to profile…",
+  "moveToProfileTitle": "Move \"{name}\" to another profile",
+  "@moveToProfileTitle": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "moveToProfileVersions": "{count, plural, =1{Its version moves with it, as one song.} other{All {count} versions move together, as one song.}}",
+  "@moveToProfileVersions": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "moveToProfileTarget": "Profile",
+  "moveToProfileKeepFiles": "Keep its files where they are",
+  "moveToProfileKeepFilesHint": "{profile} stops scanning {path}, so it doesn't come back there.",
+  "@moveToProfileKeepFilesHint": {
+    "placeholders": {
+      "profile": {
+        "type": "String"
+      },
+      "path": {
+        "type": "String"
+      }
+    }
+  },
+  "moveToProfileKeepFilesHintUnscanned": "Nothing on disk changes.",
+  "moveToProfileMoveFiles": "Move its files too",
+  "moveToProfileInto": "Into:",
+  "moveToProfileOtherFolder": "Other folder…",
+  "moveToProfileNoFolder": "This profile has no project folders yet: pick a folder.",
+  "moveToProfileSize": "{count, plural, =1{About 1 file ({size}) is copied, checked, then removed from where it is now.} other{About {count} files ({size}) are copied, checked, then removed from where they are now.}}",
+  "@moveToProfileSize": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      },
+      "size": {
+        "type": "String"
+      }
+    }
+  },
+  "moveToProfileCantMoveFiles": "Its versions are in several folders, so their files can't move as one.",
+  "moveToProfileReleases": "It comes off {releases} in {profile}.",
+  "@moveToProfileReleases": {
+    "placeholders": {
+      "profile": {
+        "type": "String"
+      },
+      "releases": {
+        "type": "String"
+      }
+    }
+  },
+  "moveToProfileConfirm": "Move",
+  "moveToProfileNoOtherProfiles": "There's no other profile to move it to.",
+  "moveToProfileInSession": "End the work session on it first.",
+  "moveToProfileMoving": "Moving files…",
+  "moveToProfileDone": "Moved \"{name}\" to {profile}.",
+  "@moveToProfileDone": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      },
+      "profile": {
+        "type": "String"
+      }
+    }
+  },
+  "moveToProfileBlockedArchived": "It is archived: restore it from its archive first.",
+  "moveToProfileBlockedTargetCopy": "{profile} already has this song, with notes or to-dos of its own. Nothing was moved.",
+  "@moveToProfileBlockedTargetCopy": {
+    "placeholders": {
+      "profile": {
+        "type": "String"
+      }
+    }
+  },
+  "moveToProfileBlockedSourceMissing": "Its files aren't on this computer.",
+  "moveToProfileBlockedOccupied": "Something with that name is already in {path}. Nothing was moved.",
+  "@moveToProfileBlockedOccupied": {
+    "placeholders": {
+      "path": {
+        "type": "String"
+      }
+    }
+  },
+  "moveToProfileBlockedInsideSource": "That folder is inside the song's own folder.",
+  "moveToProfileBlockedSameLocation": "Its files are already there.",
+  "moveToProfileCopyFailed": "The copy didn't match the original, so nothing was removed or moved:"
 }

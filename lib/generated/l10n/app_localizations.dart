@@ -12796,6 +12796,198 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'\"{name}\" restored, in place of the empty copy a scan had added since.'**
   String projectRestoredReplacingRescan(String name);
+
+  /// No description provided for @scanFolderOverlapTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Another profile already scans this'**
+  String get scanFolderOverlapTitle;
+
+  /// No description provided for @scanFolderOverlapSame.
+  ///
+  /// In en, this message translates to:
+  /// **'{profile} scans this very folder.'**
+  String scanFolderOverlapSame(String profile);
+
+  /// No description provided for @scanFolderOverlapInside.
+  ///
+  /// In en, this message translates to:
+  /// **'{profile} scans {path}, which holds this folder.'**
+  String scanFolderOverlapInside(String profile, String path);
+
+  /// No description provided for @scanFolderOverlapContains.
+  ///
+  /// In en, this message translates to:
+  /// **'{profile} scans {path}, inside this folder.'**
+  String scanFolderOverlapContains(String profile, String path);
+
+  /// No description provided for @scanFolderOverlapBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Each profile keeps its own copy of every project it finds, so these would appear in both, with separate notes, to-dos and work time. To give a song to another profile, use \"Move to profile…\" on it instead.'**
+  String get scanFolderOverlapBody;
+
+  /// No description provided for @scanFolderOverlapAddAnyway.
+  ///
+  /// In en, this message translates to:
+  /// **'Add anyway'**
+  String get scanFolderOverlapAddAnyway;
+
+  /// No description provided for @moveToProfileMenu.
+  ///
+  /// In en, this message translates to:
+  /// **'Move to profile…'**
+  String get moveToProfileMenu;
+
+  /// No description provided for @moveToProfileTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Move \"{name}\" to another profile'**
+  String moveToProfileTitle(String name);
+
+  /// No description provided for @moveToProfileVersions.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =1{Its version moves with it, as one song.} other{All {count} versions move together, as one song.}}'**
+  String moveToProfileVersions(int count);
+
+  /// No description provided for @moveToProfileTarget.
+  ///
+  /// In en, this message translates to:
+  /// **'Profile'**
+  String get moveToProfileTarget;
+
+  /// No description provided for @moveToProfileKeepFiles.
+  ///
+  /// In en, this message translates to:
+  /// **'Keep its files where they are'**
+  String get moveToProfileKeepFiles;
+
+  /// No description provided for @moveToProfileKeepFilesHint.
+  ///
+  /// In en, this message translates to:
+  /// **'{profile} stops scanning {path}, so it doesn\'t come back there.'**
+  String moveToProfileKeepFilesHint(String profile, String path);
+
+  /// No description provided for @moveToProfileKeepFilesHintUnscanned.
+  ///
+  /// In en, this message translates to:
+  /// **'Nothing on disk changes.'**
+  String get moveToProfileKeepFilesHintUnscanned;
+
+  /// No description provided for @moveToProfileMoveFiles.
+  ///
+  /// In en, this message translates to:
+  /// **'Move its files too'**
+  String get moveToProfileMoveFiles;
+
+  /// No description provided for @moveToProfileInto.
+  ///
+  /// In en, this message translates to:
+  /// **'Into:'**
+  String get moveToProfileInto;
+
+  /// No description provided for @moveToProfileOtherFolder.
+  ///
+  /// In en, this message translates to:
+  /// **'Other folder…'**
+  String get moveToProfileOtherFolder;
+
+  /// No description provided for @moveToProfileNoFolder.
+  ///
+  /// In en, this message translates to:
+  /// **'This profile has no project folders yet: pick a folder.'**
+  String get moveToProfileNoFolder;
+
+  /// No description provided for @moveToProfileSize.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =1{About 1 file ({size}) is copied, checked, then removed from where it is now.} other{About {count} files ({size}) are copied, checked, then removed from where they are now.}}'**
+  String moveToProfileSize(int count, String size);
+
+  /// No description provided for @moveToProfileCantMoveFiles.
+  ///
+  /// In en, this message translates to:
+  /// **'Its versions are in several folders, so their files can\'t move as one.'**
+  String get moveToProfileCantMoveFiles;
+
+  /// No description provided for @moveToProfileReleases.
+  ///
+  /// In en, this message translates to:
+  /// **'It comes off {releases} in {profile}.'**
+  String moveToProfileReleases(String profile, String releases);
+
+  /// No description provided for @moveToProfileConfirm.
+  ///
+  /// In en, this message translates to:
+  /// **'Move'**
+  String get moveToProfileConfirm;
+
+  /// No description provided for @moveToProfileNoOtherProfiles.
+  ///
+  /// In en, this message translates to:
+  /// **'There\'s no other profile to move it to.'**
+  String get moveToProfileNoOtherProfiles;
+
+  /// No description provided for @moveToProfileInSession.
+  ///
+  /// In en, this message translates to:
+  /// **'End the work session on it first.'**
+  String get moveToProfileInSession;
+
+  /// No description provided for @moveToProfileMoving.
+  ///
+  /// In en, this message translates to:
+  /// **'Moving files…'**
+  String get moveToProfileMoving;
+
+  /// No description provided for @moveToProfileDone.
+  ///
+  /// In en, this message translates to:
+  /// **'Moved \"{name}\" to {profile}.'**
+  String moveToProfileDone(String name, String profile);
+
+  /// No description provided for @moveToProfileBlockedArchived.
+  ///
+  /// In en, this message translates to:
+  /// **'It is archived: restore it from its archive first.'**
+  String get moveToProfileBlockedArchived;
+
+  /// No description provided for @moveToProfileBlockedTargetCopy.
+  ///
+  /// In en, this message translates to:
+  /// **'{profile} already has this song, with notes or to-dos of its own. Nothing was moved.'**
+  String moveToProfileBlockedTargetCopy(String profile);
+
+  /// No description provided for @moveToProfileBlockedSourceMissing.
+  ///
+  /// In en, this message translates to:
+  /// **'Its files aren\'t on this computer.'**
+  String get moveToProfileBlockedSourceMissing;
+
+  /// No description provided for @moveToProfileBlockedOccupied.
+  ///
+  /// In en, this message translates to:
+  /// **'Something with that name is already in {path}. Nothing was moved.'**
+  String moveToProfileBlockedOccupied(String path);
+
+  /// No description provided for @moveToProfileBlockedInsideSource.
+  ///
+  /// In en, this message translates to:
+  /// **'That folder is inside the song\'s own folder.'**
+  String get moveToProfileBlockedInsideSource;
+
+  /// No description provided for @moveToProfileBlockedSameLocation.
+  ///
+  /// In en, this message translates to:
+  /// **'Its files are already there.'**
+  String get moveToProfileBlockedSameLocation;
+
+  /// No description provided for @moveToProfileCopyFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'The copy didn\'t match the original, so nothing was removed or moved:'**
+  String get moveToProfileCopyFailed;
 }
 
 class _AppLocalizationsDelegate

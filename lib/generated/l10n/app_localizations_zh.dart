@@ -7496,4 +7496,133 @@ class AppLocalizationsZh extends AppLocalizations {
   String projectRestoredReplacingRescan(String name) {
     return '已恢复“$name”，替换了之后扫描添加的空副本。';
   }
+
+  @override
+  String get scanFolderOverlapTitle => '另一个配置文件已经在扫描这里';
+
+  @override
+  String scanFolderOverlapSame(String profile) {
+    return '$profile 正在扫描这个文件夹。';
+  }
+
+  @override
+  String scanFolderOverlapInside(String profile, String path) {
+    return '$profile 正在扫描包含此文件夹的 $path。';
+  }
+
+  @override
+  String scanFolderOverlapContains(String profile, String path) {
+    return '$profile 正在扫描此文件夹内的 $path。';
+  }
+
+  @override
+  String get scanFolderOverlapBody =>
+      '每个配置文件都会为找到的项目各保留一份副本，所以它们会同时出现在两边，备注、待办和工作时间各自独立。要把一首歌交给另一个配置文件，请改用“移动到配置文件…”。';
+
+  @override
+  String get scanFolderOverlapAddAnyway => '仍然添加';
+
+  @override
+  String get moveToProfileMenu => '移动到配置文件…';
+
+  @override
+  String moveToProfileTitle(String name) {
+    return '将“$name”移动到另一个配置文件';
+  }
+
+  @override
+  String moveToProfileVersions(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '全部 $count 个版本会作为一首歌一起移动。',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get moveToProfileTarget => '配置文件';
+
+  @override
+  String get moveToProfileKeepFiles => '文件保留在原处';
+
+  @override
+  String moveToProfileKeepFilesHint(String profile, String path) {
+    return '$profile 将停止扫描 $path，这样它不会再回到那里。';
+  }
+
+  @override
+  String get moveToProfileKeepFilesHintUnscanned => '磁盘上不会有任何改动。';
+
+  @override
+  String get moveToProfileMoveFiles => '同时移动文件';
+
+  @override
+  String get moveToProfileInto => '移到：';
+
+  @override
+  String get moveToProfileOtherFolder => '其他文件夹…';
+
+  @override
+  String get moveToProfileNoFolder => '此配置文件还没有项目文件夹：请选择一个文件夹。';
+
+  @override
+  String moveToProfileSize(int count, String size) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '大约 $count 个文件（$size）会先复制并校验，再从原位置删除。',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get moveToProfileCantMoveFiles => '它的版本分布在多个文件夹中，因此文件无法一起移动。';
+
+  @override
+  String moveToProfileReleases(String profile, String releases) {
+    return '它会从 $profile 的 $releases 中移除。';
+  }
+
+  @override
+  String get moveToProfileConfirm => '移动';
+
+  @override
+  String get moveToProfileNoOtherProfiles => '没有其他可以移动到的配置文件。';
+
+  @override
+  String get moveToProfileInSession => '请先结束它的工作会话。';
+
+  @override
+  String get moveToProfileMoving => '正在移动文件…';
+
+  @override
+  String moveToProfileDone(String name, String profile) {
+    return '已将“$name”移动到 $profile。';
+  }
+
+  @override
+  String get moveToProfileBlockedArchived => '它已归档：请先从归档中恢复。';
+
+  @override
+  String moveToProfileBlockedTargetCopy(String profile) {
+    return '$profile 已经有这首歌，并带有自己的备注或待办。没有移动任何内容。';
+  }
+
+  @override
+  String get moveToProfileBlockedSourceMissing => '它的文件不在这台电脑上。';
+
+  @override
+  String moveToProfileBlockedOccupied(String path) {
+    return '$path 中已有同名内容。没有移动任何内容。';
+  }
+
+  @override
+  String get moveToProfileBlockedInsideSource => '该文件夹位于这首歌自己的文件夹内。';
+
+  @override
+  String get moveToProfileBlockedSameLocation => '它的文件已经在那里了。';
+
+  @override
+  String get moveToProfileCopyFailed => '副本与原文件不一致，因此没有删除或移动任何内容：';
 }

@@ -11,6 +11,7 @@ import '../../utils/mobile_utils.dart';
 import '../google_drive_sync_page.dart';
 import '../settings_page.dart';
 import '../app_snack_bar.dart';
+import '../dialogs/root_overlap_dialog.dart';
 
 const _kHideStartupDialogKey = 'hideStartupDialog';
 
@@ -51,6 +52,8 @@ class _StartupDialogState extends ConsumerState<_StartupDialog> {
       dialogTitle: l10n.selectProjectsFolder,
     );
     if (picked == null || !mounted) return;
+    if (!await confirmScanFolderOverlap(context, ref, picked)) return;
+    if (!mounted) return;
 
     final container = ProviderScope.containerOf(context, listen: false);
     setState(() => _busy = true);

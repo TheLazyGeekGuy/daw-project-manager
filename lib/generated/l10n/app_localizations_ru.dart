@@ -7866,4 +7866,152 @@ class AppLocalizationsRu extends AppLocalizations {
   String projectRestoredReplacingRescan(String name) {
     return '«$name» восстановлен вместо пустой копии, которую с тех пор добавило сканирование.';
   }
+
+  @override
+  String get scanFolderOverlapTitle => 'Другой профиль уже сканирует это';
+
+  @override
+  String scanFolderOverlapSame(String profile) {
+    return '$profile сканирует эту же папку.';
+  }
+
+  @override
+  String scanFolderOverlapInside(String profile, String path) {
+    return '$profile сканирует $path, в которой находится эта папка.';
+  }
+
+  @override
+  String scanFolderOverlapContains(String profile, String path) {
+    return '$profile сканирует $path внутри этой папки.';
+  }
+
+  @override
+  String get scanFolderOverlapBody =>
+      'Каждый профиль хранит собственную копию каждого найденного проекта, поэтому они появятся в обоих, с отдельными заметками, задачами и временем работы. Чтобы передать песню другому профилю, используйте «Переместить в профиль…».';
+
+  @override
+  String get scanFolderOverlapAddAnyway => 'Всё равно добавить';
+
+  @override
+  String get moveToProfileMenu => 'Переместить в профиль…';
+
+  @override
+  String moveToProfileTitle(String name) {
+    return 'Переместить «$name» в другой профиль';
+  }
+
+  @override
+  String moveToProfileVersions(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'Все $count версии переместятся вместе, как одна песня.',
+      many: 'Все $count версий переместятся вместе, как одна песня.',
+      few: 'Все $count версии переместятся вместе, как одна песня.',
+      one: '$count версия переместится вместе, как одна песня.',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get moveToProfileTarget => 'Профиль';
+
+  @override
+  String get moveToProfileKeepFiles => 'Оставить файлы на месте';
+
+  @override
+  String moveToProfileKeepFilesHint(String profile, String path) {
+    return '$profile перестанет сканировать $path, чтобы песня не вернулась туда.';
+  }
+
+  @override
+  String get moveToProfileKeepFilesHintUnscanned =>
+      'На диске ничего не меняется.';
+
+  @override
+  String get moveToProfileMoveFiles => 'Переместить и файлы';
+
+  @override
+  String get moveToProfileInto => 'В:';
+
+  @override
+  String get moveToProfileOtherFolder => 'Другая папка…';
+
+  @override
+  String get moveToProfileNoFolder =>
+      'У этого профиля пока нет папок проектов: выберите папку.';
+
+  @override
+  String moveToProfileSize(int count, String size) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other:
+          'Около $count файлов ($size) будут скопированы, проверены и удалены со старого места.',
+      many:
+          'Около $count файлов ($size) будут скопированы, проверены и удалены со старого места.',
+      few:
+          'Около $count файлов ($size) будут скопированы, проверены и удалены со старого места.',
+      one:
+          'Около $count файла ($size) будет скопировано, проверено и удалено со старого места.',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get moveToProfileCantMoveFiles =>
+      'Его версии лежат в нескольких папках, поэтому их файлы нельзя переместить вместе.';
+
+  @override
+  String moveToProfileReleases(String profile, String releases) {
+    return 'Песня будет убрана из $releases в $profile.';
+  }
+
+  @override
+  String get moveToProfileConfirm => 'Переместить';
+
+  @override
+  String get moveToProfileNoOtherProfiles =>
+      'Нет другого профиля, куда его можно переместить.';
+
+  @override
+  String get moveToProfileInSession =>
+      'Сначала завершите рабочую сессию с ним.';
+
+  @override
+  String get moveToProfileMoving => 'Перемещение файлов…';
+
+  @override
+  String moveToProfileDone(String name, String profile) {
+    return '«$name» перемещён в $profile.';
+  }
+
+  @override
+  String get moveToProfileBlockedArchived =>
+      'Он в архиве: сначала восстановите его из архива.';
+
+  @override
+  String moveToProfileBlockedTargetCopy(String profile) {
+    return 'В $profile эта песня уже есть, со своими заметками или задачами. Ничего не перемещено.';
+  }
+
+  @override
+  String get moveToProfileBlockedSourceMissing =>
+      'Его файлов нет на этом компьютере.';
+
+  @override
+  String moveToProfileBlockedOccupied(String path) {
+    return 'В $path уже есть что-то с таким именем. Ничего не перемещено.';
+  }
+
+  @override
+  String get moveToProfileBlockedInsideSource =>
+      'Эта папка находится внутри папки самой песни.';
+
+  @override
+  String get moveToProfileBlockedSameLocation => 'Его файлы уже там.';
+
+  @override
+  String get moveToProfileCopyFailed =>
+      'Копия не совпала с оригиналом, поэтому ничего не удалено и не перемещено:';
 }
