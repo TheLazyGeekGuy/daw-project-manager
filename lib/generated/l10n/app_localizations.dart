@@ -12988,6 +12988,24 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'The copy didn\'t match the original, so nothing was removed or moved:'**
   String get moveToProfileCopyFailed;
+
+  /// No description provided for @foldersProfilePickerLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Profile'**
+  String get foldersProfilePickerLabel;
+
+  /// No description provided for @foldersProfileActive.
+  ///
+  /// In en, this message translates to:
+  /// **'{name} (active)'**
+  String foldersProfileActive(String name);
+
+  /// No description provided for @foldersEditingOtherProfile.
+  ///
+  /// In en, this message translates to:
+  /// **'You\'re editing {name}\'s folders, not the active profile\'s. New files in them show up the next time you switch to {name}.'**
+  String foldersEditingOtherProfile(String name);
 }
 
 class _AppLocalizationsDelegate

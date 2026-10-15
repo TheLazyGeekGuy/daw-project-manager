@@ -4399,5 +4399,8 @@
   "moveToProfileBlockedOccupied": "In {path} gibt es bereits etwas mit diesem Namen. Es wurde nichts verschoben.",
   "moveToProfileBlockedInsideSource": "Dieser Ordner liegt im eigenen Ordner des Songs.",
   "moveToProfileBlockedSameLocation": "Die Dateien sind bereits dort.",
-  "moveToProfileCopyFailed": "Die Kopie stimmte nicht mit dem Original überein, daher wurde nichts entfernt oder verschoben:"
+  "moveToProfileCopyFailed": "Die Kopie stimmte nicht mit dem Original überein, daher wurde nichts entfernt oder verschoben:",
+  "foldersProfilePickerLabel": "Profil",
+  "foldersProfileActive": "{name} (aktiv)",
+  "foldersEditingOtherProfile": "Du bearbeitest die Ordner von {name}, nicht die des aktiven Profils. Neue Dateien darin erscheinen, sobald du das nächste Mal zu {name} wechselst."
 }

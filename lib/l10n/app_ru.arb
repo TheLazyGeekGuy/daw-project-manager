@@ -4399,5 +4399,8 @@
   "moveToProfileBlockedOccupied": "В {path} уже есть что-то с таким именем. Ничего не перемещено.",
   "moveToProfileBlockedInsideSource": "Эта папка находится внутри папки самой песни.",
   "moveToProfileBlockedSameLocation": "Его файлы уже там.",
-  "moveToProfileCopyFailed": "Копия не совпала с оригиналом, поэтому ничего не удалено и не перемещено:"
+  "moveToProfileCopyFailed": "Копия не совпала с оригиналом, поэтому ничего не удалено и не перемещено:",
+  "foldersProfilePickerLabel": "Профиль",
+  "foldersProfileActive": "{name} (активный)",
+  "foldersEditingOtherProfile": "Вы редактируете папки {name}, а не активного профиля. Новые файлы в них появятся, когда вы в следующий раз переключитесь на {name}."
 }

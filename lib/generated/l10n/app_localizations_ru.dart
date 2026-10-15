@@ -8014,4 +8014,17 @@ class AppLocalizationsRu extends AppLocalizations {
   @override
   String get moveToProfileCopyFailed =>
       'Копия не совпала с оригиналом, поэтому ничего не удалено и не перемещено:';
+
+  @override
+  String get foldersProfilePickerLabel => 'Профиль';
+
+  @override
+  String foldersProfileActive(String name) {
+    return '$name (активный)';
+  }
+
+  @override
+  String foldersEditingOtherProfile(String name) {
+    return 'Вы редактируете папки $name, а не активного профиля. Новые файлы в них появятся, когда вы в следующий раз переключитесь на $name.';
+  }
 }

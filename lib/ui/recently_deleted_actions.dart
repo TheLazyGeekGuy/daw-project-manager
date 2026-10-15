@@ -90,9 +90,11 @@ Future<void> deleteProjectFromLibrary(
   ));
 }
 
-/// Settings > Project folders > Recently deleted, for the current profile.
+/// Settings > Project folders > Recently deleted, for [profileId].
 class RecentlyDeletedSection extends ConsumerStatefulWidget {
-  const RecentlyDeletedSection({super.key});
+  const RecentlyDeletedSection({super.key, required this.profileId});
+
+  final String profileId;
 
   @override
   ConsumerState<RecentlyDeletedSection> createState() => _RecentlyDeletedSectionState();
@@ -104,7 +106,7 @@ class _RecentlyDeletedSectionState extends ConsumerState<RecentlyDeletedSection>
   Future<void> _run(Future<void> Function(ProjectRepository repo) action) async {
     setState(() => _busy = true);
     try {
-      await action(await ref.read(repositoryProvider.future));
+      await action(await ref.read(repositoryForProfileProvider(widget.profileId).future));
     } finally {
       ref.invalidate(allProjectsStreamProvider);
       ref.invalidate(recentlyDeletedProvider);
@@ -150,7 +152,8 @@ class _RecentlyDeletedSectionState extends ConsumerState<RecentlyDeletedSection>
 
   @override
   Widget build(BuildContext context) {
-    final items = ref.watch(recentlyDeletedProvider).value ?? const <TrashedProject>[];
+    final items =
+        ref.watch(recentlyDeletedProvider(widget.profileId)).value ?? const <TrashedProject>[];
     return RecentlyDeletedCard(
       items: items,
       now: DateTime.now(),

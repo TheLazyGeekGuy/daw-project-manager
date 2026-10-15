@@ -7932,4 +7932,17 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get moveToProfileCopyFailed =>
       'The copy didn\'t match the original, so nothing was removed or moved:';
+
+  @override
+  String get foldersProfilePickerLabel => 'Profile';
+
+  @override
+  String foldersProfileActive(String name) {
+    return '$name (active)';
+  }
+
+  @override
+  String foldersEditingOtherProfile(String name) {
+    return 'You\'re editing $name\'s folders, not the active profile\'s. New files in them show up the next time you switch to $name.';
+  }
 }

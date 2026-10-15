@@ -7841,5 +7841,22 @@
   },
   "moveToProfileBlockedInsideSource": "That folder is inside the song's own folder.",
   "moveToProfileBlockedSameLocation": "Its files are already there.",
-  "moveToProfileCopyFailed": "The copy didn't match the original, so nothing was removed or moved:"
+  "moveToProfileCopyFailed": "The copy didn't match the original, so nothing was removed or moved:",
+  "foldersProfilePickerLabel": "Profile",
+  "foldersProfileActive": "{name} (active)",
+  "@foldersProfileActive": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "foldersEditingOtherProfile": "You're editing {name}'s folders, not the active profile's. New files in them show up the next time you switch to {name}.",
+  "@foldersEditingOtherProfile": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  }
 }

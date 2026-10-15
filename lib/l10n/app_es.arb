@@ -4399,5 +4399,8 @@
   "moveToProfileBlockedOccupied": "Ya hay algo con ese nombre en {path}. No se movió nada.",
   "moveToProfileBlockedInsideSource": "Esa carpeta está dentro de la propia carpeta de la canción.",
   "moveToProfileBlockedSameLocation": "Sus archivos ya están ahí.",
-  "moveToProfileCopyFailed": "La copia no coincidía con el original, así que no se quitó ni se movió nada:"
+  "moveToProfileCopyFailed": "La copia no coincidía con el original, así que no se quitó ni se movió nada:",
+  "foldersProfilePickerLabel": "Perfil",
+  "foldersProfileActive": "{name} (activo)",
+  "foldersEditingOtherProfile": "Estás editando las carpetas de {name}, no las del perfil activo. Los archivos nuevos en ellas aparecerán la próxima vez que cambies a {name}."
 }

@@ -7714,4 +7714,17 @@ class AppLocalizationsJa extends AppLocalizations {
 
   @override
   String get moveToProfileCopyFailed => 'コピーが元のファイルと一致しなかったため、何も削除・移動していません:';
+
+  @override
+  String get foldersProfilePickerLabel => 'プロファイル';
+
+  @override
+  String foldersProfileActive(String name) {
+    return '$name（使用中）';
+  }
+
+  @override
+  String foldersEditingOtherProfile(String name) {
+    return '有効なプロファイルではなく、$name のフォルダを編集しています。その中の新しいファイルは、次に $name に切り替えたときに表示されます。';
+  }
 }

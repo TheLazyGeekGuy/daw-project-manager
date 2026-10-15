@@ -14,6 +14,8 @@ import '../models/scan_mode.dart';
 import '../models/project_detail_layout.dart';
 import '../models/waveform_style.dart';
 import '../models/scan_root.dart';
+import '../models/ignored_path.dart';
+import '../models/profile.dart';
 import 'dialogs/auto_stack_confirm_dialog.dart';
 import '../providers/providers.dart';
 import '../providers/theme_provider.dart';
@@ -46,6 +48,7 @@ import 'dashboard_page.dart' show appVersion;
 import 'dialogs/daw_launch_command_dialog.dart';
 import 'google_drive_sync_page.dart' show GoogleDriveSyncSection;
 import 'recently_deleted_actions.dart' show RecentlyDeletedSection;
+import 'widgets/folders_profile_picker.dart';
 import 'metadata_extraction_info_page.dart';
 import 'notification_settings_page.dart' show WorkTimerSection;
 import 'onboarding_wizard_page.dart';
@@ -145,6 +148,34 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
   }();
 
   bool _busy = false;
+
+  /// The profile Project folders edits (folders, excluded folders, Recently
+  /// deleted): null — the active one — unless another was picked there.
+  String? _foldersProfileId;
+
+  String? get _editedProfileId =>
+      _foldersProfileId ?? ref.read(currentProfileProvider).value?.id;
+
+  Future<ProjectRepository> _foldersRepo() {
+    final id = _editedProfileId;
+    return id == null
+        ? ref.read(repositoryProvider.future)
+        : ref.read(repositoryForProfileProvider(id).future);
+  }
+
+  List<ScanRoot> _foldersRoots() {
+    final id = _editedProfileId;
+    return id == null
+        ? ref.read(scanRootsProvider)
+        : ref.read(scanRootsForProfileProvider(id)).value ?? const [];
+  }
+
+  List<IgnoredPath> _foldersIgnored() {
+    final id = _editedProfileId;
+    return id == null
+        ? ref.read(ignoredPathsProvider)
+        : ref.read(ignoredPathsForProfileProvider(id)).value ?? const [];
+  }
   bool _anonymizeTemplateExport = false;
   bool _melodicIncludeChords = false;
   bool _melodicIncludeBass = false;
@@ -914,7 +945,7 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
     if (picked == null) return;
 
     // Reject if this exact folder is already a scan root.
-    final existingRoots = ref.read(scanRootsProvider);
+    final existingRoots = _foldersRoots();
     final pickedNorm = p.normalize(picked);
     if (existingRoots.any((r) => p.normalize(r.path) == pickedNorm)) {
       if (mounted) {
@@ -926,12 +957,19 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
     }
 
     if (!mounted) return;
-    if (!await confirmScanFolderOverlap(context, ref, picked)) return;
+    if (!await confirmScanFolderOverlap(
+      context,
+      ref,
+      picked,
+      forProfileId: _editedProfileId,
+    )) {
+      return;
+    }
     if (!mounted) return;
 
     setState(() => _busy = true);
     try {
-      final repo = await ref.read(repositoryProvider.future);
+      final repo = await _foldersRepo();
       final root = await repo.addRoot(picked);
 
       ref.invalidate(rootsWatchProvider);
@@ -964,7 +1002,7 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
 
     setState(() => _busy = true);
     try {
-      final repo = await ref.read(repositoryProvider.future);
+      final repo = await _foldersRepo();
       final count = await repo.relocateRoot(folderId, picked);
       ref.invalidate(rootsWatchProvider);
       ref.invalidate(scanRootsProvider);
@@ -1019,7 +1057,7 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
     controller.dispose();
     if (newName == null || !mounted) return;
 
-    final repo = await ref.read(repositoryProvider.future);
+    final repo = await _foldersRepo();
     await repo.setRootDisplayName(folderId, newName);
     ref.invalidate(scanRootsProvider);
   }
@@ -1032,7 +1070,7 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
     if (_busy) return;
     setState(() => _busy = true);
     try {
-      final repo = await ref.read(repositoryProvider.future);
+      final repo = await _foldersRepo();
       await repo.setRootEnabled(root.id, enabled);
       ref.invalidate(rootsWatchProvider);
       ref.invalidate(scanRootsProvider);
@@ -1058,7 +1096,7 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
     if (_busy) return;
 
     final l10n = AppLocalizations.of(context)!;
-    final folders = ref.read(scanRootsProvider);
+    final folders = _foldersRoots();
     final folder = folders.where((r) => r.id == folderId).toList();
     final folderPath = folder.isNotEmpty ? folder.first.path : '';
 
@@ -1075,7 +1113,10 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
           ),
           ElevatedButton(
             onPressed: () => Navigator.pop(ctx, true),
-            style: ElevatedButton.styleFrom(backgroundColor: Colors.red),
+            style: ElevatedButton.styleFrom(
+              backgroundColor: Colors.red,
+              foregroundColor: Colors.white,
+            ),
             child: Text(l10n.delete),
           ),
         ],
@@ -1086,7 +1127,7 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
 
     setState(() => _busy = true);
     try {
-      final repo = await ref.read(repositoryProvider.future);
+      final repo = await _foldersRepo();
       await repo.removeRoot(folderId);
       ref.invalidate(rootsWatchProvider);
       ref.invalidate(scanRootsProvider);
@@ -1098,7 +1139,7 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
 
   Future<void> _updateScanMode(ScanRoot root, ScanMode newMode) async {
     if (newMode == root.scanMode) return;
-    final repo = await ref.read(repositoryProvider.future);
+    final repo = await _foldersRepo();
 
     // Version Stack restructures rows rather than redrawing them, so the user
     // sees what it would do before it happens. Only worth asking when it would
@@ -1224,7 +1265,7 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
 
     setState(() => _busy = true);
     try {
-      final repo = await ref.read(repositoryProvider.future);
+      final repo = await _foldersRepo();
       await repo.addIgnoredPath(picked);
       ref.invalidate(ignoredPathsWatchProvider);
       ref.invalidate(ignoredPathsProvider);
@@ -1238,7 +1279,7 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
     if (_busy) return;
 
     final l10n = AppLocalizations.of(context)!;
-    final excludedFolders = ref.read(ignoredPathsProvider);
+    final excludedFolders = _foldersIgnored();
     final excluded = excludedFolders.where((p) => p.id == excludedId).toList();
     final excludedPath = excluded.isNotEmpty ? excluded.first.path : '';
 
@@ -1267,7 +1308,7 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
 
     setState(() => _busy = true);
     try {
-      final repo = await ref.read(repositoryProvider.future);
+      final repo = await _foldersRepo();
       await repo.removeIgnoredPath(excludedId);
       ref.invalidate(ignoredPathsWatchProvider);
       ref.invalidate(ignoredPathsProvider);
@@ -1998,13 +2039,36 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
   }
 
   Widget _buildProjectFoldersSection(AppLocalizations l10n) {
-    final projectFolders = ref.watch(scanRootsProvider);
-    final excludedFolders = ref.watch(ignoredPathsProvider);
+    final activeId = ref.watch(currentProfileProvider).value?.id;
+    final editedId = _foldersProfileId ?? activeId;
+    final projectFolders = editedId == null
+        ? ref.watch(scanRootsProvider)
+        : ref.watch(scanRootsForProfileProvider(editedId)).value ?? const <ScanRoot>[];
+    final excludedFolders = editedId == null
+        ? ref.watch(ignoredPathsProvider)
+        : ref.watch(ignoredPathsForProfileProvider(editedId)).value ??
+            const <IgnoredPath>[];
+    final profiles = ref.watch(allProfilesProvider).value ?? const <Profile>[];
     final dateFormat = ref.watch(dateFormatProvider);
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
+        // Which profile's folders these are: the active one unless another
+        // is picked, so an artist's folders can be fixed without switching
+        // to it. Only the cards down to Recently deleted follow it; the
+        // ones below are the same for every profile.
+        if (profiles.length > 1 && editedId != null) ...[
+          FoldersProfilePicker(
+            profiles: [
+              for (final pr in profiles)
+                (id: pr.id, name: pr.name, active: pr.id == activeId),
+            ],
+            selectedId: editedId,
+            onChanged: (id) => setState(() => _foldersProfileId = id == activeId ? null : id),
+          ),
+          const SizedBox(height: 12),
+        ],
         // Project folders section
         Card(
           clipBehavior: Clip.antiAlias,
@@ -2212,6 +2276,70 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
 
         const SizedBox(height: 12),
 
+        // Excluded folders section
+        Card(
+          clipBehavior: Clip.antiAlias,
+          child: Padding(
+            padding: const EdgeInsets.all(16),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
+                  children: [
+                    const Icon(Icons.block),
+                    const SizedBox(width: 10),
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(l10n.excludedFoldersSectionTitle, style: Theme.of(context).textTheme.titleMedium),
+                          const SizedBox(height: 2),
+                          Text(
+                            l10n.excludedFoldersSectionSubtitle,
+                            style: Theme.of(context).textTheme.bodySmall,
+                          ),
+                        ],
+                      ),
+                    ),
+                    FilledButton.tonalIcon(
+                      onPressed: _busy ? null : _addExcludedFolder,
+                      icon: const Icon(Icons.add),
+                      label: Text(l10n.addExcludedFolder),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 12),
+                if (excludedFolders.isEmpty)
+                  _EmptyState(
+                    icon: Icons.block,
+                    title: l10n.excludedFoldersEmptyTitle,
+                    subtitle: l10n.excludedFoldersEmptySubtitle,
+                  )
+                else
+                  ...excludedFolders.map((p) {
+                    return ListTile(
+                      contentPadding: EdgeInsets.zero,
+                      leading: const Icon(Icons.block),
+                      title: Text(p.path),
+                      trailing: IconButton(
+                        tooltip: l10n.remove,
+                        onPressed: _busy ? null : () => _removeExcludedFolder(p.id),
+                        icon: const Icon(Icons.delete_outline),
+                      ),
+                    );
+                  }),
+              ],
+            ),
+          ),
+        ),
+
+        const SizedBox(height: 12),
+
+        if (editedId != null) ...[
+          RecentlyDeletedSection(profileId: editedId),
+          const SizedBox(height: 12),
+        ],
+
         // Archive location (#116). Device-local: it names a folder on this
         // machine (often an external drive), so unlike the project data around
         // it this is deliberately in neither Drive sync nor local backup.
@@ -2366,65 +2494,6 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
 
         const SizedBox(height: 12),
 
-        // Excluded folders section
-        Card(
-          clipBehavior: Clip.antiAlias,
-          child: Padding(
-            padding: const EdgeInsets.all(16),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Row(
-                  children: [
-                    const Icon(Icons.block),
-                    const SizedBox(width: 10),
-                    Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(l10n.excludedFoldersSectionTitle, style: Theme.of(context).textTheme.titleMedium),
-                          const SizedBox(height: 2),
-                          Text(
-                            l10n.excludedFoldersSectionSubtitle,
-                            style: Theme.of(context).textTheme.bodySmall,
-                          ),
-                        ],
-                      ),
-                    ),
-                    FilledButton.tonalIcon(
-                      onPressed: _busy ? null : _addExcludedFolder,
-                      icon: const Icon(Icons.add),
-                      label: Text(l10n.addExcludedFolder),
-                    ),
-                  ],
-                ),
-                const SizedBox(height: 12),
-                if (excludedFolders.isEmpty)
-                  _EmptyState(
-                    icon: Icons.block,
-                    title: l10n.excludedFoldersEmptyTitle,
-                    subtitle: l10n.excludedFoldersEmptySubtitle,
-                  )
-                else
-                  ...excludedFolders.map((p) {
-                    return ListTile(
-                      contentPadding: EdgeInsets.zero,
-                      leading: const Icon(Icons.block),
-                      title: Text(p.path),
-                      trailing: IconButton(
-                        tooltip: l10n.remove,
-                        onPressed: _busy ? null : () => _removeExcludedFolder(p.id),
-                        icon: const Icon(Icons.delete_outline),
-                      ),
-                    );
-                  }),
-              ],
-            ),
-          ),
-        ),
-
-        const SizedBox(height: 12),
-
         // Data / export section
         Card(
           clipBehavior: Clip.antiAlias,
@@ -2467,8 +2536,6 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
         ),
 
         const SizedBox(height: 12),
-
-        const RecentlyDeletedSection(),
       ],
     );
   }

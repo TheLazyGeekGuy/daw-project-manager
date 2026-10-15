@@ -7625,4 +7625,17 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get moveToProfileCopyFailed => '副本与原文件不一致，因此没有删除或移动任何内容：';
+
+  @override
+  String get foldersProfilePickerLabel => '配置文件';
+
+  @override
+  String foldersProfileActive(String name) {
+    return '$name（当前）';
+  }
+
+  @override
+  String foldersEditingOtherProfile(String name) {
+    return '你正在编辑 $name 的文件夹，而不是当前配置文件的。其中的新文件会在你下次切换到 $name 时出现。';
+  }
 }

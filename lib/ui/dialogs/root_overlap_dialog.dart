@@ -8,17 +8,24 @@ import '../../utils/root_overlap.dart';
 /// Before adding [path] as a scan folder: when another profile already
 /// scans it (or a folder inside or around it), says so and asks. Returns
 /// whether to go ahead — true straight away when nothing overlaps.
+///
+/// [forProfileId] is the profile the folder is being added to — by default
+/// the active one; Settings can add to another.
 Future<bool> confirmScanFolderOverlap(
   BuildContext context,
   WidgetRef ref,
-  String path,
-) async {
+  String path, {
+  String? forProfileId,
+}) async {
   List<RootOverlap> overlaps;
   try {
     final profileRepo = await ref.read(profileRepositoryProvider.future);
     overlaps = findRootOverlaps(
       path,
-      await otherProfilesRoots(profileRepo, profileRepo.getCurrentProfileId()),
+      await otherProfilesRoots(
+        profileRepo,
+        forProfileId ?? profileRepo.getCurrentProfileId(),
+      ),
     );
   } catch (_) {
     return true; // Can't tell: don't stand in the way.

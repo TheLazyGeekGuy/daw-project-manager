@@ -162,10 +162,42 @@ final ignoredPathsWatchProvider = StreamProvider<void>((ref) async* {
   yield* repo.watchIgnoredPaths().map((_) {});
 });
 
-/// The current profile's "Recently deleted", most recent first. Invalidate
-/// after deleting, restoring or emptying.
-final recentlyDeletedProvider = FutureProvider<List<TrashedProject>>((ref) async {
-  final repo = await ref.watch(repositoryProvider.future);
+/// The repository of [profileId] — the active profile's own when it is the
+/// active one, so edits made through either show everywhere. Lets Settings
+/// edit another profile's folders without switching to it.
+final repositoryForProfileProvider =
+    FutureProvider.family<ProjectRepository, String>((ref, profileId) async {
+  final current = await ref.watch(currentProfileProvider.future);
+  if (current?.id == profileId) return ref.watch(repositoryProvider.future);
+  final profileRepo = await ref.watch(profileRepositoryProvider.future);
+  return ProjectRepository.initWithProfile(profileRepo, profileId);
+});
+
+/// [profileId]'s scan folders, kept current as they change.
+final scanRootsForProfileProvider =
+    StreamProvider.family<List<ScanRoot>, String>((ref, profileId) async* {
+  final repo = await ref.watch(repositoryForProfileProvider(profileId).future);
+  yield repo.getRoots();
+  await for (final _ in repo.watchRoots()) {
+    yield repo.getRoots();
+  }
+});
+
+/// [profileId]'s excluded folders, kept current as they change.
+final ignoredPathsForProfileProvider =
+    StreamProvider.family<List<IgnoredPath>, String>((ref, profileId) async* {
+  final repo = await ref.watch(repositoryForProfileProvider(profileId).future);
+  yield repo.getIgnoredPaths();
+  await for (final _ in repo.watchIgnoredPaths()) {
+    yield repo.getIgnoredPaths();
+  }
+});
+
+/// [profileId]'s "Recently deleted", most recent first. Invalidate (the
+/// whole family) after deleting, restoring or emptying.
+final recentlyDeletedProvider =
+    FutureProvider.family<List<TrashedProject>, String>((ref, profileId) async {
+  final repo = await ref.watch(repositoryForProfileProvider(profileId).future);
   return repo.trash.list();
 });
 

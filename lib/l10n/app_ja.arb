@@ -4399,5 +4399,8 @@
   "moveToProfileBlockedOccupied": "{path} に同じ名前のものがすでにあります。何も移動していません。",
   "moveToProfileBlockedInsideSource": "そのフォルダは曲自身のフォルダの中にあります。",
   "moveToProfileBlockedSameLocation": "ファイルはすでにそこにあります。",
-  "moveToProfileCopyFailed": "コピーが元のファイルと一致しなかったため、何も削除・移動していません:"
+  "moveToProfileCopyFailed": "コピーが元のファイルと一致しなかったため、何も削除・移動していません:",
+  "foldersProfilePickerLabel": "プロファイル",
+  "foldersProfileActive": "{name}（使用中）",
+  "foldersEditingOtherProfile": "有効なプロファイルではなく、{name} のフォルダを編集しています。その中の新しいファイルは、次に {name} に切り替えたときに表示されます。"
 }

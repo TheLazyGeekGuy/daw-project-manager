@@ -8012,4 +8012,17 @@ class AppLocalizationsEs extends AppLocalizations {
   @override
   String get moveToProfileCopyFailed =>
       'La copia no coincidía con el original, así que no se quitó ni se movió nada:';
+
+  @override
+  String get foldersProfilePickerLabel => 'Perfil';
+
+  @override
+  String foldersProfileActive(String name) {
+    return '$name (activo)';
+  }
+
+  @override
+  String foldersEditingOtherProfile(String name) {
+    return 'Estás editando las carpetas de $name, no las del perfil activo. Los archivos nuevos en ellas aparecerán la próxima vez que cambies a $name.';
+  }
 }

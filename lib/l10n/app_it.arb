@@ -4399,5 +4399,8 @@
   "moveToProfileBlockedOccupied": "In {path} c’è già qualcosa con quel nome. Non è stato spostato nulla.",
   "moveToProfileBlockedInsideSource": "Quella cartella è dentro la cartella stessa del brano.",
   "moveToProfileBlockedSameLocation": "I suoi file sono già lì.",
-  "moveToProfileCopyFailed": "La copia non corrispondeva all’originale, quindi non è stato rimosso né spostato nulla:"
+  "moveToProfileCopyFailed": "La copia non corrispondeva all’originale, quindi non è stato rimosso né spostato nulla:",
+  "foldersProfilePickerLabel": "Profilo",
+  "foldersProfileActive": "{name} (attivo)",
+  "foldersEditingOtherProfile": "Stai modificando le cartelle di {name}, non quelle del profilo attivo. I nuovi file al loro interno compariranno la prossima volta che passi a {name}."
 }

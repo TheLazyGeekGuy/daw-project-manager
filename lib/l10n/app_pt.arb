@@ -4423,5 +4423,8 @@
   "moveToProfileBlockedOccupied": "Já existe algo com esse nome em {path}. Nada foi movido.",
   "moveToProfileBlockedInsideSource": "Essa pasta fica dentro da própria pasta da música.",
   "moveToProfileBlockedSameLocation": "Os arquivos já estão lá.",
-  "moveToProfileCopyFailed": "A cópia não bateu com o original, então nada foi removido nem movido:"
+  "moveToProfileCopyFailed": "A cópia não bateu com o original, então nada foi removido nem movido:",
+  "foldersProfilePickerLabel": "Perfil",
+  "foldersProfileActive": "{name} (ativo)",
+  "foldersEditingOtherProfile": "Você está editando as pastas de {name}, não as do perfil ativo. Arquivos novos nelas aparecem na próxima vez que você mudar para {name}."
 }
