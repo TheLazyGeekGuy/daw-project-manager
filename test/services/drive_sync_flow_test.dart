@@ -340,6 +340,132 @@ void main() {
     });
   });
 
+  group('one project id in two profiles', () {
+    // Seen in a real library: "Follow My Voice" sat in two profiles under
+    // one id — a stray hidden copy in one, the real project in the other.
+    // The upload kept the first profile's copy while its id→profile map
+    // named the last, so Drive held the hidden copy labelled as the real
+    // project; and comparing by id paired the wrong rows, so it read as
+    // "changed here" forever.
+    late Profile atlas;
+    late Box<MusicProject> atlasProjects;
+
+    setUp(() async {
+      atlas = await profileRepo.createProfile('ATLAS');
+      atlasProjects = await Hive.openBox<MusicProject>('${atlas.id}_projects');
+    });
+
+    MusicProject real() => TestFactories.makeProject(
+          id: 'fmv',
+          hidden: false,
+          updatedAt: DateTime(2026, 10, 15),
+        );
+    MusicProject stray() => TestFactories.makeProject(
+          id: 'fmv',
+          hidden: true,
+          updatedAt: DateTime(2026, 7, 30),
+        );
+
+    test('each copy goes up under its own profile', () async {
+      final service = await signedIn();
+      await atlasProjects.put('fmv', stray());
+      await projectRepo.projectsBox.put('fmv', real());
+
+      await service.uploadDatabase(projectRepo: projectRepo, profileRepo: profileRepo);
+
+      final entries = [
+        for (final e in backupOnDrive()['projects'] as List)
+          if (e['id'] == 'fmv') e as Map,
+      ];
+      expect(entries.length, 2);
+      final byProfile = {for (final e in entries) e['profileId']: e['hidden']};
+      expect(byProfile[profile.id], false);
+      expect(byProfile[atlas.id], true);
+    });
+
+    test('a synced library then previews as in sync', () async {
+      final service = await signedIn();
+      await atlasProjects.put('fmv', stray());
+      await projectRepo.projectsBox.put('fmv', real());
+      await service.syncDatabase(projectRepo: projectRepo, profileRepo: profileRepo);
+
+      final preview =
+          await service.previewMerge(await service.downloadDatabase(), profileRepo);
+
+      expect(preview.inSync, isTrue,
+          reason: 'was "1 project added or changed here: Follow My Voice"');
+    });
+
+    test('restoring puts each copy in its own profile, hidden only where it was',
+        () async {
+      final service = await signedIn();
+      await atlasProjects.put('fmv', stray());
+      await projectRepo.projectsBox.put('fmv', real());
+      await service.uploadDatabase(projectRepo: projectRepo, profileRepo: profileRepo);
+      final backup = await service.downloadDatabase();
+      await atlasProjects.clear();
+      await projectRepo.projectsBox.clear();
+
+      await service.mergeData(
+        remoteData: backup,
+        projectRepo: projectRepo,
+        profileRepo: profileRepo,
+        downloadPreviewSongs: false,
+      );
+
+      expect(projectRepo.projectsBox.get('fmv')!.hidden, isFalse);
+      expect(atlasProjects.get('fmv')!.hidden, isTrue);
+    });
+
+    test("deleting the stray copy doesn't delete the real one", () async {
+      final service = await signedIn();
+      await atlasProjects.put('fmv', stray());
+      await projectRepo.projectsBox.put('fmv', real());
+      final atlasRepo = await HiveTestHelper.createRepository(profileId: atlas.id);
+      await atlasRepo.deleteProjectsPermanently(['fmv']);
+
+      await service.syncDatabase(projectRepo: projectRepo, profileRepo: profileRepo);
+
+      expect(projectRepo.projectsBox.get('fmv'), isNotNull);
+      expect(atlasProjects.get('fmv'), isNull);
+      expect(
+        [
+          for (final e in backupOnDrive()['projects'] as List)
+            if (e['id'] == 'fmv') e['profileId'],
+        ],
+        [profile.id],
+      );
+    });
+
+    test('an older backup with only the id→profile map still restores', () async {
+      final service = await signedIn();
+      final entry = service.serializeProjectForTest(real());
+      await service.mergeData(
+        remoteData: {
+          'projects': [entry],
+          'projectToProfile': {'fmv': atlas.id},
+        },
+        projectRepo: projectRepo,
+        profileRepo: profileRepo,
+        downloadPreviewSongs: false,
+      );
+      expect(atlasProjects.get('fmv'), isNotNull);
+      expect(projectRepo.projectsBox.get('fmv'), isNull);
+    });
+
+    test('remoteEntryProfile: own field, then the map, then none', () {
+      expect(
+        GoogleDriveSyncService.remoteEntryProfile(
+          {'id': 'x', 'profileId': 'A'},
+          {'x': 'B'},
+        ),
+        'A',
+      );
+      expect(GoogleDriveSyncService.remoteEntryProfile({'id': 'x'}, {'x': 'B'}), 'B');
+      expect(GoogleDriveSyncService.remoteEntryProfile({'id': 'x'}, null), isNull);
+    });
+  });
+
   group('deletions sync', () {
     // The bug: merging is a union, so a project deleted on one device came
     // straight back from any other device that still had it.

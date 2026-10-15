@@ -14,21 +14,36 @@ enum TombstoneKind { project, release }
 /// edited elsewhere *after* it was deleted here comes back, as the newer
 /// side). Ids are random uuids, so a rescanned file arrives as a new row a
 /// tombstone never matches.
+///
+/// It names the profile the row was deleted from: one id can sit in two
+/// profiles (old restores copied projects into every profile), and deleting
+/// a stray copy from one must not delete the real one from the other. A
+/// tombstone without a profile (none were written that way, but a backup
+/// could carry one) applies to every profile.
 class SyncTombstone {
   const SyncTombstone({
     required this.id,
     required this.kind,
     required this.deletedAt,
+    this.profileId,
   });
 
   final String id;
   final TombstoneKind kind;
   final DateTime deletedAt;
+  final String? profileId;
+
+  /// What it is stored under: one per profile and id.
+  String get key => keyFor(id, profileId);
+
+  static String keyFor(String id, String? profileId) =>
+      profileId == null ? id : '$profileId/$id';
 
   Map<String, dynamic> toJson() => {
         'id': id,
         'kind': kind.name,
         'deletedAt': deletedAt.toUtc().toIso8601String(),
+        if (profileId != null) 'profileId': profileId,
       };
 
   static SyncTombstone? fromJson(Object? json) {
@@ -38,8 +53,14 @@ class SyncTombstone {
         .where((k) => k.name == json['kind'])
         .firstOrNull;
     final deletedAt = DateTime.tryParse('${json['deletedAt']}');
+    final profileId = json['profileId'];
     if (id is! String || kind == null || deletedAt == null) return null;
-    return SyncTombstone(id: id, kind: kind, deletedAt: deletedAt);
+    return SyncTombstone(
+      id: id,
+      kind: kind,
+      deletedAt: deletedAt,
+      profileId: profileId is String ? profileId : null,
+    );
   }
 
   /// Whether this deletion beats a copy last changed at [updatedAt]. A
@@ -48,16 +69,26 @@ class SyncTombstone {
       updatedAt == null || deletedAt.isAfter(updatedAt);
 }
 
-/// Union of two tombstone sets, the later deletion winning per id.
+/// The tombstone, if any, for the row [id] in [profileId] — one for that
+/// profile, or one for every profile.
+SyncTombstone? tombstoneFor(
+  Map<String, SyncTombstone> tombstones,
+  String id,
+  String? profileId,
+) =>
+    (profileId == null ? null : tombstones[SyncTombstone.keyFor(id, profileId)]) ??
+    tombstones[id];
+
+/// Union of two tombstone sets, the later deletion winning per key.
 Map<String, SyncTombstone> mergeTombstones(
   Map<String, SyncTombstone> a,
   Iterable<SyncTombstone> b,
 ) {
   final merged = Map<String, SyncTombstone>.of(a);
   for (final t in b) {
-    final existing = merged[t.id];
+    final existing = merged[t.key];
     if (existing == null || t.deletedAt.isAfter(existing.deletedAt)) {
-      merged[t.id] = t;
+      merged[t.key] = t;
     }
   }
   return merged;
@@ -87,21 +118,28 @@ class SyncTombstoneStore {
   static Future<void> record(
     TombstoneKind kind,
     Iterable<String> ids, {
+    required String profileId,
     DateTime? at,
   }) async {
     if (ids.isEmpty) return;
     final deletedAt = (at ?? DateTime.now()).toUtc();
     await putAll([
       for (final id in ids)
-        SyncTombstone(id: id, kind: kind, deletedAt: deletedAt),
+        SyncTombstone(
+          id: id,
+          kind: kind,
+          deletedAt: deletedAt,
+          profileId: profileId,
+        ),
     ]);
   }
 
+  /// Every tombstone, by [SyncTombstone.key].
   static Future<Map<String, SyncTombstone>> all() async {
     final box = await _box();
     return {
       for (final raw in box.values)
-        if (SyncTombstone.fromJson(_decode(raw)) case final t?) t.id: t,
+        if (SyncTombstone.fromJson(_decode(raw)) case final t?) t.key: t,
     };
   }
 
@@ -115,14 +153,14 @@ class SyncTombstoneStore {
     final cutoff = (now ?? DateTime.now()).toUtc().subtract(maxAge);
     final stale = [
       for (final t in merged.values)
-        if (t.deletedAt.isBefore(cutoff)) t.id,
+        if (t.deletedAt.isBefore(cutoff)) t.key,
     ];
-    for (final id in stale) {
-      merged.remove(id);
+    for (final key in stale) {
+      merged.remove(key);
     }
     await box.deleteAll(stale);
     await box.putAll({
-      for (final t in merged.values) t.id: jsonEncode(t.toJson()),
+      for (final t in merged.values) t.key: jsonEncode(t.toJson()),
     });
     return merged;
   }

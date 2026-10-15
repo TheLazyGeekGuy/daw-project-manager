@@ -588,7 +588,11 @@ class ProjectRepository {
     if (projectsToDelete.isNotEmpty) {
       await projectsBox.deleteAll(projectsToDelete);
       await midiClips.deleteAll(projectsToDelete);
-      await SyncTombstoneStore.record(TombstoneKind.project, projectsToDelete);
+      await SyncTombstoneStore.record(
+      TombstoneKind.project,
+      projectsToDelete,
+      profileId: profileId,
+    );
     }
 
     // Remove the root after deleting projects
@@ -640,7 +644,11 @@ class ProjectRepository {
     await projectsBox.deleteAll(projectIds);
     await midiClips.deleteAll(projectIds);
     // So Drive sync carries the deletion instead of restoring the rows.
-    await SyncTombstoneStore.record(TombstoneKind.project, projectIds);
+    await SyncTombstoneStore.record(
+      TombstoneKind.project,
+      projectIds,
+      profileId: profileId,
+    );
     await cleanUpDanglingStackLinks();
     await rescheduleDeadlines();
   }
@@ -783,7 +791,11 @@ class ProjectRepository {
     if (projectsToDelete.isNotEmpty) {
       await projectsBox.deleteAll(projectsToDelete);
       await midiClips.deleteAll(projectsToDelete);
-      await SyncTombstoneStore.record(TombstoneKind.project, projectsToDelete);
+      await SyncTombstoneStore.record(
+      TombstoneKind.project,
+      projectsToDelete,
+      profileId: profileId,
+    );
       await cleanUpDanglingStackLinks();
     }
   }
@@ -1373,7 +1385,11 @@ class ProjectRepository {
       await projectsBox.put(member.id, member.copyWith(clearStackId: true));
     }
     await projectsBox.delete(stackId);
-    await SyncTombstoneStore.record(TombstoneKind.project, [stackId]);
+    await SyncTombstoneStore.record(
+      TombstoneKind.project,
+      [stackId],
+      profileId: profileId,
+    );
   }
 
   /// Attaches [projectId] to [stackId] — used when a scan finds a new version
@@ -1800,7 +1816,11 @@ class ProjectRepository {
 
   Future<void> deleteRelease(String releaseId) async {
     await releasesBox.delete(releaseId);
-    await SyncTombstoneStore.record(TombstoneKind.release, [releaseId]);
+    await SyncTombstoneStore.record(
+      TombstoneKind.release,
+      [releaseId],
+      profileId: profileId,
+    );
     await rescheduleDeadlines();
   }
 

@@ -40,6 +40,30 @@ void main() {
       expect(tombstonesFromJson(null), isEmpty);
     });
 
+    test('one per profile: the same id deleted from two profiles is two', () {
+      final inA = SyncTombstone(
+        id: 'a',
+        kind: TombstoneKind.project,
+        deletedAt: DateTime.utc(2026, 2, 1),
+        profileId: 'A',
+      );
+      final inB = SyncTombstone(
+        id: 'a',
+        kind: TombstoneKind.project,
+        deletedAt: DateTime.utc(2026, 3, 1),
+        profileId: 'B',
+      );
+      final merged = mergeTombstones({}, [inA, inB]);
+      expect(merged.length, 2);
+      expect(tombstoneFor(merged, 'a', 'A'), same(inA));
+      expect(tombstoneFor(merged, 'a', 'C'), isNull);
+      expect(SyncTombstone.fromJson(inA.toJson())!.profileId, 'A');
+    });
+
+    test('one naming no profile applies to every profile', () {
+      expect(tombstoneFor({'a': t}, 'a', 'any-profile'), same(t));
+    });
+
     test('merging keeps the later deletion of the same row', () {
       final later = SyncTombstone(
         id: 'a',
@@ -80,13 +104,16 @@ void main() {
           deletedAt: now.subtract(const Duration(days: 10)),
         ),
       ], now: now);
-      expect((await SyncTombstoneStore.all()).keys, ['recent']);
+      expect((await SyncTombstoneStore.all()).values.map((t) => t.id), ['recent']);
     });
 
     test('deleting projects permanently records them', () async {
       await repo.projectsBox.put('p', TestFactories.makeProject(id: 'p'));
       await repo.deleteProjectsPermanently(['p']);
-      expect((await SyncTombstoneStore.all())['p']?.kind, TombstoneKind.project);
+      final t = (await SyncTombstoneStore.all()).values.single;
+      expect(t.id, 'p');
+      expect(t.kind, TombstoneKind.project);
+      expect(t.profileId, repo.profileId, reason: 'names the profile it left');
     });
 
     test('deleting a release records it', () async {
@@ -95,7 +122,10 @@ void main() {
         Release(id: 'r', title: 'EP', trackIds: const []),
       );
       await repo.deleteRelease('r');
-      expect((await SyncTombstoneStore.all())['r']?.kind, TombstoneKind.release);
+      final t = (await SyncTombstoneStore.all()).values.single;
+      expect(t.id, 'r');
+      expect(t.kind, TombstoneKind.release);
+      expect(t.profileId, repo.profileId);
     });
 
     test('unstacking records the stack row it deletes', () async {
@@ -104,9 +134,9 @@ void main() {
       await repo.projectsBox.putAll({'a': a, 'b': b});
       final stack = await repo.stackProjects(memberIds: ['a', 'b']);
       await repo.unstack(stack.id);
-      final tombstones = await SyncTombstoneStore.all();
-      expect(tombstones.keys, contains(stack.id));
-      expect(tombstones.keys, isNot(contains('a')),
+      final ids = (await SyncTombstoneStore.all()).values.map((t) => t.id);
+      expect(ids, contains(stack.id));
+      expect(ids, isNot(contains('a')),
           reason: 'members are kept, not deleted');
     });
 

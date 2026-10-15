@@ -2662,8 +2662,13 @@ class GoogleDriveSyncService {
       
       // Collect projects, releases, and roots from ALL profiles
       // IMPORTANT: We need to track which profile each project/release/root belongs to
-      final allProjects = <MusicProject>[];
-      final allReleases = <Release>[];
+      // One entry per profile and row, each naming its profile: an id can
+      // sit in two profiles (old restores copied projects into every one),
+      // and the id→profile maps below can only name one. Deduplicating by id
+      // here kept the first profile's copy while the map named the last —
+      // a stray hidden copy went up labelled as the real project.
+      final allProjects = <(String, MusicProject)>[];
+      final allReleases = <(String, Release)>[];
       final allRoots = <ScanRoot>[];
 
       // Shared box for global/per-profile preferences (app_settings)
@@ -2844,10 +2849,9 @@ class GoogleDriveSyncService {
               totalItems: profileProjectsList.length,
               progress: ((profileIndex - 1) + projectFraction) / allProfiles.length * 0.2,
             ));
-            if (!allProjects.any((p) => p.id == project.id)) {
-              allProjects.add(project);
-            }
-            // Track that this project belongs to this profile
+            allProjects.add((profile.id, project));
+            // Track that this project belongs to this profile (kept for
+            // older builds; entries carry their own profileId)
             projectToProfileMap[project.id] = profile.id;
 
             // Check project cover art status (#110). Unlike preview songs and
@@ -3034,10 +3038,9 @@ class GoogleDriveSyncService {
           
           // Collect releases and track which profile they belong to
           for (final release in profileReleasesBox.values) {
-            if (!allReleases.any((r) => r.id == release.id)) {
-              allReleases.add(release);
-            }
-            // Track that this release belongs to this profile
+            allReleases.add((profile.id, release));
+            // Track that this release belongs to this profile (kept for
+            // older builds; entries carry their own profileId)
             releaseToProfileMap[release.id] = profile.id;
             
             // Check release artwork status (only on desktop - mobile doesn't upload artwork)
@@ -3575,12 +3578,18 @@ class GoogleDriveSyncService {
         'device': deviceName,
         'deletedRecords': [for (final t in tombstones.values) t.toJson()],
         'profiles': allProfiles.map((p) => _serializeProfile(p)).toList(),
-        'projects': allProjects.map((p) => _serializeProject(p)).toList(),
+        'projects': [
+          for (final (profileId, p) in allProjects)
+            {..._serializeProject(p), 'profileId': profileId},
+        ],
         // project id -> StoredMidiClips.toJson(). Absent on older backups.
         'midiClips': midiClipsByProject,
         // profile id -> [MidiCollection.toJson()]. Absent on older backups.
         'midiCollectionsByProfile': midiCollectionsByProfile,
-        'releases': allReleases.map((r) => _serializeRelease(r)).toList(),
+        'releases': [
+          for (final (profileId, r) in allReleases)
+            {..._serializeRelease(r), 'profileId': profileId},
+        ],
         'roots': allRoots.map((r) => _serializeRoot(r)).toList(),
         'templates': allTemplates.map((t) => _serializeTemplate(t)).toList(),
         'partTemplates': allPartTemplates.map((t) => t.toJson()).toList(),
@@ -3893,6 +3902,10 @@ class GoogleDriveSyncService {
   /// new rows are added, a row whose remote copy is newer and different is
   /// updated, and only a deletion made on some device removes anything — and
   /// what the upload after it would add to Drive.
+  ///
+  /// Rows are matched by profile and id, as the merge places them: one id
+  /// can sit in two profiles, and matching by id alone paired one profile's
+  /// copy with the other's — a project that read as "changed here" forever.
   Future<MergePreview> previewMerge(
     Map<String, dynamic> remoteData,
     ProfileRepository profileRepo,
@@ -3901,21 +3914,30 @@ class GoogleDriveSyncService {
       await SyncTombstoneStore.all(),
       tombstonesFromJson(remoteData['deletedRecords']),
     );
-    final localProjects = <String, MusicProject>{};
-    final localReleaseIds = <String>{};
+    String key(String? profileId, String id) => '${profileId ?? '*'}/$id';
+    final localProjects = <String, (String, MusicProject)>{};
+    final localProjectsById = <String, MusicProject>{};
+    final localReleases = <String, (String, String)>{};
     for (final profile in profileRepo.getAllProfiles()) {
       try {
         final projects = await Hive.openBox<MusicProject>('${profile.id}_projects');
         for (final p in projects.values) {
-          localProjects[p.id] = p;
+          localProjects[key(profile.id, p.id)] = (profile.id, p);
+          localProjectsById.putIfAbsent(p.id, () => p);
         }
         final releases = await Hive.openBox<Release>('${profile.id}_releases');
-        localReleaseIds.addAll(releases.keys.cast<String>());
+        for (final id in releases.keys.cast<String>()) {
+          localReleases[key(profile.id, id)] = (profile.id, id);
+        }
       } catch (_) {}
     }
 
+    final projectToProfile = remoteData['projectToProfile'] as Map<String, dynamic>?;
+    final releaseToProfile = remoteData['releaseToProfile'] as Map<String, dynamic>?;
+
     var added = 0, updated = 0;
     final updatedNames = <String>[], uploadNames = <String>[];
+    final remoteKeys = <String>{};
     final remoteProjects = <String, MusicProject>{};
     for (final raw in (remoteData['projects'] as List?) ?? const []) {
       final MusicProject remote;
@@ -3924,9 +3946,15 @@ class GoogleDriveSyncService {
       } catch (_) {
         continue;
       }
-      remoteProjects[remote.id] = remote;
-      if (tombstones[remote.id]?.beats(remote.updatedAt) ?? false) continue;
-      final local = localProjects[remote.id];
+      final profileId = remoteEntryProfile(raw, projectToProfile);
+      remoteKeys.add(key(profileId, remote.id));
+      remoteProjects[key(profileId, remote.id)] = remote;
+      if (tombstoneFor(tombstones, remote.id, profileId)?.beats(remote.updatedAt) ?? false) {
+        continue;
+      }
+      final local = profileId == null
+          ? localProjectsById[remote.id]
+          : localProjects[key(profileId, remote.id)]?.$2;
       if (local == null) {
         added++;
       } else if (_changedAfter(remote.updatedAt, local.updatedAt) &&
@@ -3940,13 +3968,15 @@ class GoogleDriveSyncService {
       }
     }
     var deleted = 0, toUpload = 0;
-    for (final local in localProjects.values) {
-      final t = tombstones[local.id];
+    for (final entry in localProjects.values) {
+      final (profileId, local) = entry;
+      final t = tombstoneFor(tombstones, local.id, profileId);
       if (t != null && t.kind == TombstoneKind.project && t.beats(local.updatedAt)) {
         deleted++;
         continue;
       }
-      final remote = remoteProjects[local.id];
+      final remote = remoteProjects[key(profileId, local.id)] ??
+          remoteProjects[key(null, local.id)];
       if (remote == null ||
           (_changedAfter(local.updatedAt, remote.updatedAt) &&
               _hasMetadataChanged(remote, local))) {
@@ -3954,7 +3984,7 @@ class GoogleDriveSyncService {
         uploadNames.add(local.displayName);
         if (kDebugMode) {
           print(remote == null
-              ? 'Only here, not on Drive: ${local.displayName}'
+              ? 'Only here, not on Drive: ${local.displayName} (profile $profileId)'
               : 'Changed here since Drive: ${local.displayName}: '
                   '${_metadataDifferences(remote, local).join(', ')}');
         }
@@ -3962,20 +3992,27 @@ class GoogleDriveSyncService {
     }
 
     var releasesAdded = 0;
-    final remoteReleaseIds = <String>{};
+    final remoteReleaseKeys = <String>{};
     for (final raw in (remoteData['releases'] as List?) ?? const []) {
       final id = raw is Map ? raw['id'] : null;
       if (id is! String) continue;
-      remoteReleaseIds.add(id);
-      if (localReleaseIds.contains(id)) continue;
-      if (tombstones[id]?.kind == TombstoneKind.release) continue;
+      final profileId = remoteEntryProfile(raw, releaseToProfile);
+      remoteReleaseKeys
+        ..add(key(profileId, id))
+        ..add(key(null, id));
+      final here = profileId == null
+          ? localReleases.values.any((r) => r.$2 == id)
+          : localReleases.containsKey(key(profileId, id));
+      if (here) continue;
+      if (tombstoneFor(tombstones, id, profileId)?.kind == TombstoneKind.release) continue;
       releasesAdded++;
     }
     var releasesDeleted = 0, releasesToUpload = 0;
-    for (final id in localReleaseIds) {
-      if (tombstones[id]?.kind == TombstoneKind.release) {
+    for (final (profileId, id) in localReleases.values) {
+      if (tombstoneFor(tombstones, id, profileId)?.kind == TombstoneKind.release) {
         releasesDeleted++;
-      } else if (!remoteReleaseIds.contains(id)) {
+      } else if (!remoteReleaseKeys.contains(key(profileId, id)) &&
+          !remoteReleaseKeys.contains(key(null, id))) {
         releasesToUpload++;
       }
     }
@@ -3991,6 +4028,18 @@ class GoogleDriveSyncService {
       updatedNames: updatedNames,
       uploadNames: uploadNames,
     );
+  }
+
+  /// The profile a backup entry belongs to: its own `profileId` (written
+  /// since one id can sit in two profiles), else the backup's id→profile
+  /// map, else null (an old backup with neither: every profile).
+  @visibleForTesting
+  static String? remoteEntryProfile(Object? raw, Map<String, dynamic>? idToProfile) {
+    if (raw is! Map) return null;
+    final own = raw['profileId'];
+    if (own is String) return own;
+    final mapped = idToProfile?[raw['id']];
+    return mapped?.toString();
   }
 
   /// Roughly what a first upload sends besides the database: every preview
@@ -4465,23 +4514,9 @@ class GoogleDriveSyncService {
 
     int coverArtIndex = 0;
     
-    // Create reverse lookup: profileId -> list of project/release/root IDs
-    final profileToProjects = <String, List<String>>{};
-    final profileToReleases = <String, List<String>>{};
+    // Reverse lookup for roots (projects and releases go by each entry's
+    // own profile; see remoteEntryProfile).
     final profileToRoots = <String, List<String>>{};
-    
-    if (projectToProfileMap != null) {
-      // New format (v1.1+): Use profile mappings
-      projectToProfileMap.forEach((projectId, profileId) {
-        profileToProjects.putIfAbsent(profileId.toString(), () => []).add(projectId);
-      });
-    }
-    
-    if (releaseToProfileMap != null) {
-      releaseToProfileMap.forEach((releaseId, profileId) {
-        profileToReleases.putIfAbsent(profileId.toString(), () => []).add(releaseId);
-      });
-    }
     
     if (rootToProfileMap != null) {
       rootToProfileMap.forEach((rootId, profileId) {
@@ -4529,13 +4564,22 @@ class GoogleDriveSyncService {
 
     // Merge projects - distribute to CORRECT profiles (or ALL if no mappings)
     if (remoteData['projects'] != null) {
-      final remoteProjects = (remoteData['projects'] as List)
+      final rawProjects = remoteData['projects'] as List;
+      final remoteProjects = rawProjects
           .map((p) => _deserializeProject(p as Map<String, dynamic>))
           .toList();
+      // Each entry's profile (see remoteEntryProfile); null on an old backup
+      // with no mapping at all, which goes to every profile.
+      final remoteProjectProfiles = [
+        for (final raw in rawProjects) remoteEntryProfile(raw, projectToProfileMap),
+      ];
+      final anyProjectProfile = remoteProjectProfiles.any((p) => p != null);
+      bool projectBelongs(int i, Profile profile) =>
+          !anyProjectProfile || remoteProjectProfiles[i] == profile.id;
       
       // If we have profile mappings, use them; otherwise distribute to all profiles (backward compatibility)
-      final targetProfiles = projectToProfileMap != null 
-          ? allProfiles.where((p) => profileToProjects.containsKey(p.id)).toList()
+      final targetProfiles = anyProjectProfile
+          ? allProfiles.where((p) => remoteProjectProfiles.contains(p.id)).toList()
           : allProfiles;
       
       for (final profile in targetProfiles) {
@@ -4545,15 +4589,19 @@ class GoogleDriveSyncService {
           int profileProjectsUpdated = 0;
           
           // Get projects that belong to this profile
-          final profileProjectIds = projectToProfileMap != null
-              ? (profileToProjects[profile.id] ?? [])
-              : remoteProjects.map((p) => p.id).toList(); // All projects if no mapping
+          final profileProjectIds = [
+            for (var i = 0; i < remoteProjects.length; i++)
+              if (projectBelongs(i, profile)) remoteProjects[i].id,
+          ];
           
-          for (final remoteProject in remoteProjects) {
+          for (var i = 0; i < remoteProjects.length; i++) {
+            final remoteProject = remoteProjects[i];
             if (_isCancelled) throw UploadCancelledException('Download cancelled by user');
-            // Only process if this project belongs to this profile (or all if no mapping)
-            if (profileProjectIds.contains(remoteProject.id)) {
-              if (tombstones[remoteProject.id]?.beats(remoteProject.updatedAt) ?? false) {
+            // Only process if this entry belongs to this profile (or all if no mapping)
+            if (projectBelongs(i, profile)) {
+              if (tombstoneFor(tombstones, remoteProject.id, profile.id)
+                      ?.beats(remoteProject.updatedAt) ??
+                  false) {
                 continue; // Deleted somewhere after this copy was last changed.
               }
               final localProject = profileProjectsBox.get(remoteProject.id);
@@ -5271,13 +5319,20 @@ class GoogleDriveSyncService {
 
     // Merge releases - distribute to CORRECT profiles (or ALL if no mappings)
     if (remoteData['releases'] != null) {
-      final remoteReleases = (remoteData['releases'] as List)
+      final rawReleases = remoteData['releases'] as List;
+      final remoteReleases = rawReleases
           .map((r) => _deserializeRelease(r as Map<String, dynamic>))
           .toList();
+      final remoteReleaseProfiles = [
+        for (final raw in rawReleases) remoteEntryProfile(raw, releaseToProfileMap),
+      ];
+      final anyReleaseProfile = remoteReleaseProfiles.any((p) => p != null);
+      bool releaseBelongs(int i, Profile profile) =>
+          !anyReleaseProfile || remoteReleaseProfiles[i] == profile.id;
       
       // If we have profile mappings, use them; otherwise distribute to all profiles (backward compatibility)
-      final targetProfiles = releaseToProfileMap != null 
-          ? allProfiles.where((p) => profileToReleases.containsKey(p.id)).toList()
+      final targetProfiles = anyReleaseProfile
+          ? allProfiles.where((p) => remoteReleaseProfiles.contains(p.id)).toList()
           : allProfiles;
       
       for (final profile in targetProfiles) {
@@ -5286,16 +5341,13 @@ class GoogleDriveSyncService {
           int profileReleasesAdded = 0;
           int profileReleasesUpdated = 0;
           
-          // Get releases that belong to this profile
-          final profileReleaseIds = releaseToProfileMap != null
-              ? (profileToReleases[profile.id] ?? [])
-              : remoteReleases.map((r) => r.id).toList(); // All releases if no mapping
-          
-          for (final remoteRelease in remoteReleases) {
+          for (var i = 0; i < remoteReleases.length; i++) {
+            final remoteRelease = remoteReleases[i];
             if (_isCancelled) throw UploadCancelledException('Download cancelled by user');
-            // Only process if this release belongs to this profile (or all if no mapping)
-            if (profileReleaseIds.contains(remoteRelease.id)) {
-              if (tombstones[remoteRelease.id]?.kind == TombstoneKind.release) {
+            // Only process if this entry belongs to this profile (or all if no mapping)
+            if (releaseBelongs(i, profile)) {
+              if (tombstoneFor(tombstones, remoteRelease.id, profile.id)?.kind ==
+                  TombstoneKind.release) {
                 continue; // Deleted on some device; a release never returns.
               }
               final localRelease = profileReleasesBox.get(remoteRelease.id);
@@ -5733,28 +5785,34 @@ class GoogleDriveSyncService {
     );
   }
 
-  /// Deletes the rows of [kind] that a tombstone beats, in every profile.
-  /// Returns how many went.
+  /// Deletes the rows of [kind] that a tombstone beats — in the profile it
+  /// names, or in every profile for one that names none. Returns how many
+  /// went.
   Future<int> _applyTombstones(
     Map<String, SyncTombstone> tombstones,
     List<Profile> profiles,
     ProjectRepository projectRepo,
     TombstoneKind kind,
   ) async {
-    final relevant = {
+    final relevant = [
       for (final t in tombstones.values)
-        if (t.kind == kind) t.id: t,
-    };
+        if (t.kind == kind) t,
+    ];
     if (relevant.isEmpty) return 0;
     var deleted = 0;
     for (final profile in profiles) {
+      final here = [
+        for (final t in relevant)
+          if (t.profileId == null || t.profileId == profile.id) t,
+      ];
+      if (here.isEmpty) continue;
       try {
         if (kind == TombstoneKind.project) {
           final box = await Hive.openBox<MusicProject>('${profile.id}_projects');
-          final doomed = [
-            for (final id in relevant.keys)
-              if (box.get(id) case final p? when relevant[id]!.beats(p.updatedAt)) id,
-          ];
+          final doomed = {
+            for (final t in here)
+              if (box.get(t.id) case final p? when t.beats(p.updatedAt)) t.id,
+          };
           if (doomed.isEmpty) continue;
           await box.deleteAll(doomed);
           await MidiClipStore(profile.id).deleteAll(doomed);
@@ -5764,10 +5822,10 @@ class GoogleDriveSyncService {
           }
         } else {
           final box = await Hive.openBox<Release>('${profile.id}_releases');
-          final doomed = [
-            for (final id in relevant.keys)
-              if (box.containsKey(id)) id,
-          ];
+          final doomed = {
+            for (final t in here)
+              if (box.containsKey(t.id)) t.id,
+          };
           await box.deleteAll(doomed);
           deleted += doomed.length;
         }
