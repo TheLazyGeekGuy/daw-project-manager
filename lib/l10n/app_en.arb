@@ -7472,7 +7472,7 @@
   "driveBrowserErrorTitle": "Something went wrong",
   "driveBrowserErrorBody": "Close this tab and try signing in again from DAW Project Manager.",
   "driveAutoSyncTitle": "Automatic sync",
-  "driveAutoSyncDescription": "While the app is open, syncs with Google Drive at the interval you choose, and once each time the app starts.",
+  "driveAutoSyncDescription": "While the app is open, syncs with Google Drive at the interval you choose.",
   "driveAutoSyncIntervalLabel": "Sync automatically",
   "driveNextSync": "Next sync {when}",
   "@driveNextSync": {
@@ -7594,5 +7594,7 @@
         "type": "String"
       }
     }
-  }
+  },
+  "driveSyncOnStartup": "Sync when the app starts",
+  "driveSyncOnStartupHint": "Brings in what your other devices changed each time you open the app."
 }

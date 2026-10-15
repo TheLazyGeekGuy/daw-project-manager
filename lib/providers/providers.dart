@@ -1477,6 +1477,48 @@ final uploadAutoPreviewSongsProvider =
     );
 
 // ---------------------------------------------------------------------------
+// Sync when the app starts
+// ---------------------------------------------------------------------------
+
+/// Whether to sync with Google Drive once each time the app starts —
+/// separate from the interval, so a device can sync at startup without a
+/// timer (or the other way round). On unless turned off. Device-local: it is
+/// in neither Drive sync nor local backup.
+class SyncOnStartupNotifier extends Notifier<bool> {
+  static const storageKey = 'syncOnStartup';
+
+  /// The stored value read as a setting: anything but "false" is on.
+  static bool fromStored(String? value) => value != 'false';
+
+  @override
+  bool build() {
+    SchedulerBinding.instance.addPostFrameCallback((_) => _load());
+    return true;
+  }
+
+  Future<void> _load() async {
+    try {
+      await ensureHiveInitialized();
+      final box = await Hive.openBox<String>('app_settings');
+      state = fromStored(box.get(storageKey));
+    } catch (_) {}
+  }
+
+  Future<void> set(bool value) async {
+    state = value;
+    try {
+      await ensureHiveInitialized();
+      final box = await Hive.openBox<String>('app_settings');
+      await box.put(storageKey, value.toString());
+    } catch (_) {}
+  }
+}
+
+final syncOnStartupProvider = NotifierProvider<SyncOnStartupNotifier, bool>(
+  SyncOnStartupNotifier.new,
+);
+
+// ---------------------------------------------------------------------------
 // Update Check Setting
 // ---------------------------------------------------------------------------
 

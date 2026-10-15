@@ -4291,7 +4291,7 @@
   "driveBrowserErrorTitle": "Etwas ist schiefgelaufen",
   "driveBrowserErrorBody": "Schließe diesen Tab und melde dich in DAW Project Manager erneut an.",
   "driveAutoSyncTitle": "Automatische Synchronisierung",
-  "driveAutoSyncDescription": "Synchronisiert mit Google Drive im gewählten Abstand, solange die App geöffnet ist, und einmal bei jedem Start.",
+  "driveAutoSyncDescription": "Synchronisiert mit Google Drive im gewählten Abstand, solange die App geöffnet ist.",
   "driveAutoSyncIntervalLabel": "Automatisch synchronisieren",
   "driveNextSync": "Nächste Synchronisierung {when}",
   "driveMoreOptions": "Wiederherstellen und weitere Optionen",
@@ -4337,5 +4337,7 @@
   "driveStatusFailed": "Die letzte Google-Drive-Synchronisierung ist fehlgeschlagen",
   "driveStatusNewer": "Neue Änderungen in Google Drive",
   "driveStatusUpToDate": "Google Drive: aktuell",
-  "trayLastSyncFailed": "Letzte Synchronisierung fehlgeschlagen: {when}"
+  "trayLastSyncFailed": "Letzte Synchronisierung fehlgeschlagen: {when}",
+  "driveSyncOnStartup": "Beim Start der App synchronisieren",
+  "driveSyncOnStartupHint": "Übernimmt bei jedem Öffnen der App, was deine anderen Geräte geändert haben."
 }

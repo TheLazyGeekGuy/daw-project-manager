@@ -10,6 +10,8 @@ import 'package:intl/date_symbol_data_local.dart';
 import 'package:daw_project_manager/generated/l10n/app_localizations.dart';
 import 'package:daw_project_manager/models/auto_backup_interval.dart';
 import 'package:daw_project_manager/models/drive_sync_status.dart';
+import 'package:daw_project_manager/providers/providers.dart'
+    show SyncOnStartupNotifier;
 import 'package:daw_project_manager/services/drive_sync_errors.dart';
 import 'package:daw_project_manager/services/google_drive_sync_service.dart';
 import 'package:daw_project_manager/utils/drive_sync_format.dart';
@@ -150,43 +152,95 @@ void main() {
     });
   });
 
-  group('AutoBackupInterval.isDue', () {
+  group('automatic sync timing', () {
     final now = DateTime(2026, 10, 15, 12);
+    final justNow = now.subtract(const Duration(minutes: 1));
 
-    test('never when off, even at launch', () {
+    test('at startup, the startup switch decides on its own', () {
+      // Startup sync used to happen only with an interval set; now it is
+      // its own switch, so a device can sync at startup with no timer.
       expect(
-        AutoBackupInterval.off.isDue(lastSync: null, now: now, atLaunch: true),
+        AutoBackupInterval.off.shouldSyncNow(
+          lastSync: justNow,
+          now: now,
+          syncOnStartup: true,
+          atLaunch: true,
+        ),
+        isTrue,
+      );
+      expect(
+        AutoBackupInterval.daily.shouldSyncNow(
+          lastSync: justNow,
+          now: now,
+          syncOnStartup: false,
+          atLaunch: true,
+        ),
         isFalse,
       );
     });
 
-    test('at launch whenever it is on', () {
+    test('with startup sync off, a due interval still syncs at startup', () {
       expect(
-        AutoBackupInterval.daily.isDue(
-          lastSync: now.subtract(const Duration(minutes: 1)),
+        AutoBackupInterval.hourly.shouldSyncNow(
+          lastSync: now.subtract(const Duration(hours: 2)),
           now: now,
+          syncOnStartup: false,
           atLaunch: true,
         ),
         isTrue,
       );
     });
 
-    test('otherwise once the interval has passed', () {
+    test('after startup only the interval counts', () {
       expect(
-        AutoBackupInterval.hourly.isDue(
-          lastSync: now.subtract(const Duration(minutes: 59)),
+        AutoBackupInterval.off.shouldSyncNow(
+          lastSync: null,
           now: now,
+          syncOnStartup: true,
         ),
         isFalse,
       );
       expect(
-        AutoBackupInterval.hourly.isDue(
+        AutoBackupInterval.hourly.shouldSyncNow(
+          lastSync: now.subtract(const Duration(minutes: 59)),
+          now: now,
+          syncOnStartup: true,
+        ),
+        isFalse,
+      );
+      expect(
+        AutoBackupInterval.hourly.shouldSyncNow(
           lastSync: now.subtract(const Duration(minutes: 60)),
           now: now,
+          syncOnStartup: true,
         ),
         isTrue,
       );
-      expect(AutoBackupInterval.hourly.isDue(lastSync: null, now: now), isTrue);
+      expect(
+        AutoBackupInterval.hourly.isDue(lastSync: null, now: now),
+        isTrue,
+      );
+    });
+
+    test('a device syncs on its own if either is on', () {
+      expect(
+        AutoBackupInterval.off.syncsAutomatically(syncOnStartup: false),
+        isFalse,
+      );
+      expect(
+        AutoBackupInterval.off.syncsAutomatically(syncOnStartup: true),
+        isTrue,
+      );
+      expect(
+        AutoBackupInterval.daily.syncsAutomatically(syncOnStartup: false),
+        isTrue,
+      );
+    });
+
+    test('startup sync is on unless turned off', () {
+      expect(SyncOnStartupNotifier.fromStored(null), isTrue);
+      expect(SyncOnStartupNotifier.fromStored('true'), isTrue);
+      expect(SyncOnStartupNotifier.fromStored('false'), isFalse);
     });
   });
 }

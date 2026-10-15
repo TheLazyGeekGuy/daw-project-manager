@@ -43,6 +43,7 @@ void main() {
             onDeleteDriveData: () => calls.add('delete'),
             onIntervalChanged: (i) => calls.add('interval:${i.name}'),
             onUploadAutoDetectedChanged: (v) => calls.add('auto:$v'),
+            onSyncOnStartupChanged: (v) => calls.add('startup:$v'),
           ),
         ),
       ),
@@ -178,6 +179,22 @@ void main() {
       await tester.tap(find.text("Replace Drive's copy with this device"));
       await tester.tap(find.text('Delete my data from Google Drive'));
       expect(calls, ['restore', 'recover', 'overwrite', 'delete']);
+    });
+
+    testWidgets('startup sync is its own switch', (tester) async {
+      await pump(tester, signedIn());
+      expect(find.text('Sync when the app starts'), findsOneWidget);
+      final toggle = find.widgetWithText(SwitchListTile, 'Sync when the app starts');
+      expect(tester.widget<SwitchListTile>(toggle).value, isTrue);
+      await tester.tap(toggle);
+      expect(calls, ['startup:false']);
+    });
+
+    testWidgets('startup sync can only be changed while signed in',
+        (tester) async {
+      await pump(tester, DriveSyncPanelData(now: now));
+      final toggle = find.widgetWithText(SwitchListTile, 'Sync when the app starts');
+      expect(tester.widget<SwitchListTile>(toggle).onChanged, isNull);
     });
 
     testWidgets('lays out on a phone', (tester) async {

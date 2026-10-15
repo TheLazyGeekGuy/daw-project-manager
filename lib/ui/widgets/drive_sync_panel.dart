@@ -27,6 +27,7 @@ class DriveSyncPanelData {
     this.interval = AutoBackupInterval.off,
     this.lastAutoSyncAt,
     this.uploadAutoDetected = false,
+    this.syncOnStartup = true,
     this.isMobile = false,
   });
 
@@ -57,6 +58,7 @@ class DriveSyncPanelData {
   /// When automatic sync last ran, for its "next sync in …" line.
   final DateTime? lastAutoSyncAt;
   final bool uploadAutoDetected;
+  final bool syncOnStartup;
   final bool isMobile;
 }
 
@@ -74,6 +76,7 @@ class DriveSyncPanel extends StatelessWidget {
     required this.onDeleteDriveData,
     required this.onIntervalChanged,
     required this.onUploadAutoDetectedChanged,
+    required this.onSyncOnStartupChanged,
     required this.snapshotsKept,
   });
 
@@ -88,6 +91,7 @@ class DriveSyncPanel extends StatelessWidget {
   final VoidCallback onDeleteDriveData;
   final ValueChanged<AutoBackupInterval> onIntervalChanged;
   final ValueChanged<bool> onUploadAutoDetectedChanged;
+  final ValueChanged<bool> onSyncOnStartupChanged;
   final int snapshotsKept;
 
   @override
@@ -367,7 +371,17 @@ class DriveSyncPanel extends StatelessWidget {
               l10n.driveAutoSyncDescription,
               style: Theme.of(context).textTheme.bodySmall,
             ),
-            const SizedBox(height: 12),
+            const SizedBox(height: 4),
+            SwitchListTile(
+              contentPadding: EdgeInsets.zero,
+              title: Text(l10n.driveSyncOnStartup, style: const TextStyle(fontSize: 14)),
+              subtitle: Text(
+                l10n.driveSyncOnStartupHint,
+                style: Theme.of(context).textTheme.bodySmall,
+              ),
+              value: data.syncOnStartup,
+              onChanged: enabled ? onSyncOnStartupChanged : null,
+            ),
             Wrap(
               crossAxisAlignment: WrapCrossAlignment.center,
               spacing: 16,

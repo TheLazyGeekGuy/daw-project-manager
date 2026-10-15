@@ -12338,7 +12338,7 @@ abstract class AppLocalizations {
   /// No description provided for @driveAutoSyncDescription.
   ///
   /// In en, this message translates to:
-  /// **'While the app is open, syncs with Google Drive at the interval you choose, and once each time the app starts.'**
+  /// **'While the app is open, syncs with Google Drive at the interval you choose.'**
   String get driveAutoSyncDescription;
 
   /// No description provided for @driveAutoSyncIntervalLabel.
@@ -12616,6 +12616,18 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Last sync failed: {when}'**
   String trayLastSyncFailed(String when);
+
+  /// No description provided for @driveSyncOnStartup.
+  ///
+  /// In en, this message translates to:
+  /// **'Sync when the app starts'**
+  String get driveSyncOnStartup;
+
+  /// No description provided for @driveSyncOnStartupHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Brings in what your other devices changed each time you open the app.'**
+  String get driveSyncOnStartupHint;
 }
 
 class _AppLocalizationsDelegate

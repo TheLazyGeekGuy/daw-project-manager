@@ -4291,7 +4291,7 @@
   "driveBrowserErrorTitle": "Что-то пошло не так",
   "driveBrowserErrorBody": "Закройте эту вкладку и снова войдите в DAW Project Manager.",
   "driveAutoSyncTitle": "Автосинхронизация",
-  "driveAutoSyncDescription": "Пока приложение открыто, синхронизирует с Google Drive с выбранным интервалом, а также один раз при каждом запуске.",
+  "driveAutoSyncDescription": "Пока приложение открыто, синхронизирует с Google Drive с выбранным интервалом.",
   "driveAutoSyncIntervalLabel": "Синхронизировать автоматически",
   "driveNextSync": "Следующая синхронизация {when}",
   "driveMoreOptions": "Восстановление и другие параметры",
@@ -4337,5 +4337,7 @@
   "driveStatusFailed": "Последняя синхронизация с Google Drive не удалась",
   "driveStatusNewer": "Новые изменения на Google Drive",
   "driveStatusUpToDate": "Google Drive: актуально",
-  "trayLastSyncFailed": "Последняя синхронизация не удалась: {when}"
+  "trayLastSyncFailed": "Последняя синхронизация не удалась: {when}",
+  "driveSyncOnStartup": "Синхронизировать при запуске",
+  "driveSyncOnStartupHint": "При каждом запуске получает изменения с других ваших устройств."
 }

@@ -587,6 +587,7 @@ class _GoogleDriveSyncSectionState extends ConsumerState<GoogleDriveSyncSection>
         interval: interval,
         lastAutoSyncAt: _lastUpload,
         uploadAutoDetected: ref.watch(uploadAutoPreviewSongsProvider),
+        syncOnStartup: ref.watch(syncOnStartupProvider),
         isMobile: MobileUtils.isMobile(),
       ),
       snapshotsKept: GoogleDriveSyncService.snapshotsKept,
@@ -600,6 +601,7 @@ class _GoogleDriveSyncSectionState extends ConsumerState<GoogleDriveSyncSection>
       onDeleteDriveData: _deleteDriveData,
       onIntervalChanged: (v) => ref.read(autoBackupIntervalProvider.notifier).setInterval(v),
       onUploadAutoDetectedChanged: (_) => ref.read(uploadAutoPreviewSongsProvider.notifier).toggle(),
+      onSyncOnStartupChanged: (v) => ref.read(syncOnStartupProvider.notifier).set(v),
     );
   }
 }

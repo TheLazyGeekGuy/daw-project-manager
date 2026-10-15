@@ -7168,8 +7168,7 @@ class AppLocalizationsZh extends AppLocalizations {
   String get driveAutoSyncTitle => '自动同步';
 
   @override
-  String get driveAutoSyncDescription =>
-      '应用打开期间按你选择的间隔与 Google 云端硬盘同步，每次启动时也会同步一次。';
+  String get driveAutoSyncDescription => '应用打开期间，按你选择的间隔与 Google 云端硬盘同步。';
 
   @override
   String get driveAutoSyncIntervalLabel => '自动同步';
@@ -7360,4 +7359,10 @@ class AppLocalizationsZh extends AppLocalizations {
   String trayLastSyncFailed(String when) {
     return '上次同步失败：$when';
   }
+
+  @override
+  String get driveSyncOnStartup => '启动应用时同步';
+
+  @override
+  String get driveSyncOnStartupHint => '每次打开应用时，获取你在其他设备上所做的更改。';
 }

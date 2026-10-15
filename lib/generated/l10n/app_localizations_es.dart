@@ -7512,7 +7512,7 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get driveAutoSyncDescription =>
-      'Mientras la app está abierta, se sincroniza con Google Drive cada el intervalo que elijas, y una vez cada vez que se inicia.';
+      'Mientras la app está abierta, se sincroniza con Google Drive con el intervalo que elijas.';
 
   @override
   String get driveAutoSyncIntervalLabel => 'Sincronizar automáticamente';
@@ -7722,4 +7722,11 @@ class AppLocalizationsEs extends AppLocalizations {
   String trayLastSyncFailed(String when) {
     return 'Última sincronización fallida: $when';
   }
+
+  @override
+  String get driveSyncOnStartup => 'Sincronizar al iniciar la app';
+
+  @override
+  String get driveSyncOnStartupHint =>
+      'Trae lo que cambiaron tus otros dispositivos cada vez que abres la app.';
 }

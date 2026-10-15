@@ -261,6 +261,9 @@ Future<void> _runAutoSync(
     final interval = AutoBackupInterval.fromStorageKey(
       settingsBox.get('autoBackupInterval'),
     );
+    final syncOnStartup = SyncOnStartupNotifier.fromStored(
+      settingsBox.get(SyncOnStartupNotifier.storageKey),
+    );
 
     if (!syncService.isSignedIn) {
       // Phones too: this is the same instance the sync page signs in, and
@@ -273,7 +276,8 @@ Future<void> _runAutoSync(
       if (!restored) {
         // Saved credentials Google no longer takes: say so rather than let
         // every later backup silently not happen.
-        if (hadCredentials && interval.duration != null) {
+        if (hadCredentials &&
+            interval.syncsAutomatically(syncOnStartup: syncOnStartup)) {
           await syncService.recordFailure(
             Exception('Not signed in to Google Drive'),
           );
@@ -284,9 +288,10 @@ Future<void> _runAutoSync(
     }
 
     final lastSync = await syncService.getLastBackupUploadTimestamp();
-    if (!interval.isDue(
+    if (!interval.shouldSyncNow(
       lastSync: lastSync,
       now: DateTime.now(),
+      syncOnStartup: syncOnStartup,
       atLaunch: atLaunch,
     )) {
       await status.refresh();

@@ -7250,8 +7250,7 @@ class AppLocalizationsJa extends AppLocalizations {
   String get driveAutoSyncTitle => '自動同期';
 
   @override
-  String get driveAutoSyncDescription =>
-      'アプリを開いている間は選んだ間隔でGoogleドライブと同期し、起動するたびにも1回同期します。';
+  String get driveAutoSyncDescription => 'アプリを開いている間、選んだ間隔でGoogleドライブと同期します。';
 
   @override
   String get driveAutoSyncIntervalLabel => '自動同期';
@@ -7447,4 +7446,10 @@ class AppLocalizationsJa extends AppLocalizations {
   String trayLastSyncFailed(String when) {
     return '前回の同期に失敗: $when';
   }
+
+  @override
+  String get driveSyncOnStartup => 'アプリ起動時に同期';
+
+  @override
+  String get driveSyncOnStartupHint => 'アプリを開くたびに、他のデバイスでの変更を取り込みます。';
 }

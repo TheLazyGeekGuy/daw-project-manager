@@ -4315,7 +4315,7 @@
   "driveBrowserErrorTitle": "Algo deu errado",
   "driveBrowserErrorBody": "Feche esta aba e tente fazer login de novo pelo DAW Project Manager.",
   "driveAutoSyncTitle": "Sincronização automática",
-  "driveAutoSyncDescription": "Enquanto o app está aberto, sincroniza com o Google Drive no intervalo escolhido e uma vez sempre que o app é iniciado.",
+  "driveAutoSyncDescription": "Enquanto o app está aberto, sincroniza com o Google Drive no intervalo escolhido.",
   "driveAutoSyncIntervalLabel": "Sincronizar automaticamente",
   "driveNextSync": "Próxima sincronização {when}",
   "driveMoreOptions": "Restaurar e outras opções",
@@ -4361,5 +4361,7 @@
   "driveStatusFailed": "A última sincronização com o Google Drive falhou",
   "driveStatusNewer": "Novas alterações no Google Drive",
   "driveStatusUpToDate": "Google Drive: atualizado",
-  "trayLastSyncFailed": "Última sincronização falhou: {when}"
+  "trayLastSyncFailed": "Última sincronização falhou: {when}",
+  "driveSyncOnStartup": "Sincronizar ao abrir o app",
+  "driveSyncOnStartupHint": "Traz o que seus outros dispositivos mudaram sempre que você abre o app."
 }

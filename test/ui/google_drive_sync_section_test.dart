@@ -40,6 +40,11 @@ class _FixedUploadAuto extends UploadAutoPreviewSongsNotifier {
   bool build() => false;
 }
 
+class _FixedSyncOnStartup extends SyncOnStartupNotifier {
+  @override
+  bool build() => true;
+}
+
 void main() {
   testWidgets('leaving the sync page does not use ref after it is gone',
       (tester) async {
@@ -51,6 +56,7 @@ void main() {
         googleDriveSyncServiceProvider.overrideWithValue(_SignedOutService()),
         autoBackupIntervalProvider.overrideWith(_FixedInterval.new),
         uploadAutoPreviewSongsProvider.overrideWith(_FixedUploadAuto.new),
+        syncOnStartupProvider.overrideWith(_FixedSyncOnStartup.new),
       ],
       child: const MaterialApp(
         localizationsDelegates: AppLocalizations.localizationsDelegates,

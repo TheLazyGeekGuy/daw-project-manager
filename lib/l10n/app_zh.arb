@@ -4291,7 +4291,7 @@
   "driveBrowserErrorTitle": "出了点问题",
   "driveBrowserErrorBody": "请关闭此标签页，然后在 DAW Project Manager 中重新登录。",
   "driveAutoSyncTitle": "自动同步",
-  "driveAutoSyncDescription": "应用打开期间按你选择的间隔与 Google 云端硬盘同步，每次启动时也会同步一次。",
+  "driveAutoSyncDescription": "应用打开期间，按你选择的间隔与 Google 云端硬盘同步。",
   "driveAutoSyncIntervalLabel": "自动同步",
   "driveNextSync": "下次同步：{when}",
   "driveMoreOptions": "恢复和其他选项",
@@ -4337,5 +4337,7 @@
   "driveStatusFailed": "上次 Google 云端硬盘同步失败",
   "driveStatusNewer": "Google 云端硬盘上有新更改",
   "driveStatusUpToDate": "Google 云端硬盘：已是最新",
-  "trayLastSyncFailed": "上次同步失败：{when}"
+  "trayLastSyncFailed": "上次同步失败：{when}",
+  "driveSyncOnStartup": "启动应用时同步",
+  "driveSyncOnStartupHint": "每次打开应用时，获取你在其他设备上所做的更改。"
 }

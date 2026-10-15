@@ -4291,7 +4291,7 @@
   "driveBrowserErrorTitle": "Qualcosa è andato storto",
   "driveBrowserErrorBody": "Chiudi questa scheda e riprova ad accedere da DAW Project Manager.",
   "driveAutoSyncTitle": "Sincronizzazione automatica",
-  "driveAutoSyncDescription": "Mentre l’app è aperta, sincronizza con Google Drive all’intervallo scelto e una volta a ogni avvio.",
+  "driveAutoSyncDescription": "Mentre l’app è aperta, sincronizza con Google Drive all’intervallo scelto.",
   "driveAutoSyncIntervalLabel": "Sincronizza automaticamente",
   "driveNextSync": "Prossima sincronizzazione {when}",
   "driveMoreOptions": "Ripristino e altre opzioni",
@@ -4337,5 +4337,7 @@
   "driveStatusFailed": "L’ultima sincronizzazione con Google Drive non è riuscita",
   "driveStatusNewer": "Nuove modifiche su Google Drive",
   "driveStatusUpToDate": "Google Drive: aggiornato",
-  "trayLastSyncFailed": "Ultima sincronizzazione non riuscita: {when}"
+  "trayLastSyncFailed": "Ultima sincronizzazione non riuscita: {when}",
+  "driveSyncOnStartup": "Sincronizza all’avvio dell’app",
+  "driveSyncOnStartupHint": "Riceve ciò che hanno modificato gli altri tuoi dispositivi ogni volta che apri l’app."
 }

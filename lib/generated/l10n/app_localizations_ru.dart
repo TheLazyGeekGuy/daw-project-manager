@@ -7487,7 +7487,7 @@ class AppLocalizationsRu extends AppLocalizations {
 
   @override
   String get driveAutoSyncDescription =>
-      'Пока приложение открыто, синхронизирует с Google Drive с выбранным интервалом, а также один раз при каждом запуске.';
+      'Пока приложение открыто, синхронизирует с Google Drive с выбранным интервалом.';
 
   @override
   String get driveAutoSyncIntervalLabel => 'Синхронизировать автоматически';
@@ -7709,4 +7709,11 @@ class AppLocalizationsRu extends AppLocalizations {
   String trayLastSyncFailed(String when) {
     return 'Последняя синхронизация не удалась: $when';
   }
+
+  @override
+  String get driveSyncOnStartup => 'Синхронизировать при запуске';
+
+  @override
+  String get driveSyncOnStartupHint =>
+      'При каждом запуске получает изменения с других ваших устройств.';
 }
