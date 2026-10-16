@@ -34,6 +34,14 @@ UPDATE_FIXTURES=1 flutter test test/fixtures/
 
 Only projects you own; no commercial audio or MIDI transcriptions.
 
+## Surveying a whole library
+
+```bash
+SURVEY_ROOT="D:\Music\Projects" SURVEY_OUT=survey.jsonl flutter test tool/library_survey/library_survey_test.dart
+```
+
+Reads every project in a folder (read only) and flags crashes, slow reads, odd clips and missing tempos — run it before and after a reader change and compare. Local folders only: on a cloud drive every read is a download.
+
 ## Writing a flow
 
 A flow opens a `FlowLibrary` (`test/flows/flow_library.dart`) — a database and a scan folder of fixture copies — drives the app's services, and checks what comes out the far end. If something stands in the way (a file dialog), split the work from it, as `BackupService.buildBackupJson` was.
