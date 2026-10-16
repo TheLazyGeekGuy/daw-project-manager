@@ -1,28 +1,30 @@
 {
-  "dawType": "Cubase",
-  "dawVersion": "11",
-  "bpm": 145.0,
-  "key": "C Major",
-  "markers": [],
-  "stats": {
-    "audio": 0,
-    "midi": 0,
-    "instrument": 0,
-    "sampler": 0,
-    "bus": 0,
-    "folder": 0,
-    "plugins": [
-      "Black Box Analog Design HG-2",
-      "bx_digital V3",
-      "elysia museq master",
-      "Invisible Limiter",
-      "reastream-standalone",
-      "VBC FG-MU",
-      "VBC FG-Red",
-      "Vertigo VSM-3"
-    ],
-    "midiClips": 0
-  },
-  "midiClips": [],
-  "sampleReferences": []
+  "master project.cpr": {
+    "dawType": "Cubase",
+    "dawVersion": "11",
+    "bpm": 145.0,
+    "key": "C Major",
+    "markers": [],
+    "stats": {
+      "audio": 0,
+      "midi": 0,
+      "instrument": 0,
+      "sampler": 0,
+      "bus": 0,
+      "folder": 0,
+      "plugins": [
+        "Black Box Analog Design HG-2",
+        "bx_digital V3",
+        "elysia museq master",
+        "Invisible Limiter",
+        "reastream-standalone",
+        "VBC FG-MU",
+        "VBC FG-Red",
+        "Vertigo VSM-3"
+      ],
+      "midiClips": 0
+    },
+    "midiClips": [],
+    "sampleReferences": []
+  }
 }

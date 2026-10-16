@@ -9,11 +9,16 @@
   over -MaxFileMB. Stops if the copy would pass -MaxTotalMB: every byte here
   is in every clone of the repo, forever.
 
+  With -Versions, the other project files in the folder come too: a folder
+  of one song's versions (Song.flp, Song_2.flp…), which the app stacks.
+
   Then: UPDATE_FIXTURES=1 flutter test test/fixtures/project_corpus_test.dart
   writes its .expected.json — read it, then commit both.
 
 .EXAMPLE
   scripts/add_test_fixture.ps1 -Daw ableton -Project "D:\MusicProduction\Projects\Ableton Live\Song Project\Song.als"
+.EXAMPLE
+  scripts/add_test_fixture.ps1 -Daw flstudio -Versions -MaxFileMB 1 -Project "D:\...\Song\Song.flp"
 #>
 param(
   [Parameter(Mandatory)] [ValidateSet('cubase', 'ableton', 'flstudio', 'reaper', 'studioone', 'bitwig', 'dawproject', 'protools')]
@@ -21,7 +26,8 @@ param(
   [Parameter(Mandatory)] [string] $Project,
   [string] $Name,
   [int] $MaxFileMB = 8,
-  [int] $MaxTotalMB = 40
+  [int] $MaxTotalMB = 40,
+  [switch] $Versions
 )
 $ErrorActionPreference = 'Stop'
 
@@ -40,20 +46,23 @@ $maxFile = $MaxFileMB * 1MB
 
 # A folder holding other projects too (FL Studio keeps many songs in one) is
 # not this project's: everything else in it belongs to the others, so only
-# the project file comes in.
+# the project file comes in — unless they are its versions (-Versions).
 $siblings = Get-ChildItem -LiteralPath $source -Recurse -File | Where-Object {
   $_.FullName -ne $projectFile.FullName -and ($projectExts -contains $_.Extension.ToLower()) -and
   $_.FullName.Substring($source.Length) -notmatch $skipDirs
 }
-if ($siblings) {
+if ($siblings -and -not $Versions) {
   "Shared folder ($($siblings.Count) other projects): copying the project file only."
   $files = @($projectFile)
 } else {
+if ($siblings) { "Versions: $($siblings.Count + 1) project files." }
 $files = Get-ChildItem -LiteralPath $source -Recurse -File | Where-Object {
   $rel = $_.FullName.Substring($source.Length)
   if ($_.FullName -eq $projectFile.FullName) { return $true }
   if ($rel -match $skipDirs) { return $false }
-  if ($projectExts -contains $_.Extension.ToLower()) { return $false }
+  if ($projectExts -contains $_.Extension.ToLower()) {
+    return $Versions -and $_.Extension.ToLower() -notin '.bak', '.rpp-bak'
+  }
   if ($_.Name -match '(?i)autosave|\.peak$|\.reapeaks$|\.asd$|\.pk$|\.sfk$|\.lnk$|desktop\.ini|thumbs\.db') { return $false }
   return $_.Length -le $maxFile
 }

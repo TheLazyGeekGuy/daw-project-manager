@@ -51,6 +51,33 @@ class _Flp {
     into.addAll(d.buffer.asUint8List());
   }
 
+  /// A note as FL 7 wrote it: 20 bytes, with the bytes it fills in for
+  /// every note — flags 0x4000, fine pitch 120, release 64, pan 64, mod X/Y
+  /// 128 — which read as nonsense when taken 24 bytes at a time.
+  void note7(List<int> into, {
+    required int position,
+    required int channel,
+    required int length,
+    required int key,
+    required int velocity,
+    int midiChannel = 0,
+  }) {
+    final d = ByteData(20)
+      ..setUint32(0, position, Endian.little)
+      ..setUint16(4, 0x4000, Endian.little)
+      ..setUint16(6, channel, Endian.little)
+      ..setUint32(8, length, Endian.little)
+      ..setUint8(12, key)
+      ..setUint8(13, 120)
+      ..setUint8(14, 64)
+      ..setUint8(15, midiChannel)
+      ..setUint8(16, 64)
+      ..setUint8(17, velocity)
+      ..setUint8(18, 128)
+      ..setUint8(19, 128);
+    into.addAll(d.buffer.asUint8List());
+  }
+
   Uint8List build({int ppq = 96}) {
     final body = _events.toBytes();
     final header = ByteData(14)
@@ -130,6 +157,129 @@ void main() {
 
       final serum = clips.firstWhere((c) => c.trackName == 'Serum');
       expect(serum.notes.single.velocity, 90);
+    });
+  });
+
+  test('before FL 12 a channel is named by event 192, after its plug-in state', () {
+    // As FL 10 wrote a wrapped VST: internal name, state, then the name.
+    final f = _Flp();
+    f.data(199, ascii.encode('10.0.0\u0000'));
+    f.word(64, 0);
+    f.byte(21, 2);
+    f.data(201, ascii.encode('Fruity Wrapper\u0000'));
+    f.data(213, List.filled(64, 7));
+    f.data(192, ascii.encode('Sylenth1 #3\u0000'));
+    f.word(64, 1);
+    f.byte(21, 0);
+    f.data(192, ascii.encode('Kick 2013\u0000'));
+    f.word(65, 1);
+    final notes = <int>[];
+    f.note(notes, position: 0, channel: 0, length: 96, key: 60, velocity: 100);
+    f.note(notes, position: 0, channel: 1, length: 24, key: 36, velocity: 100);
+    f.data(224, notes);
+    final parser = FlpProjectParser(f.build());
+    expect(parser.readStats().plugins, ['Sylenth1'],
+        reason: 'the wrapped VST by its name, not its instance number; a sampler is no plug-in');
+    expect(parser.readMidiClips().map((c) => c.trackName).toSet(), {'Sylenth1 #3', 'Kick 2013'});
+  });
+
+  group('a wrapped VST is named by the plug-in it hosts', () {
+    // The wrapper's state: a u32, then (id u32, size u64, data) records;
+    // 54 is the plug-in's name.
+    List<int> wrapperState(String plugin) {
+      final out = BytesBuilder()..add([7, 0, 0, 0]);
+      void record(int id, List<int> data) {
+        final head = ByteData(12)
+          ..setUint32(0, id, Endian.little)
+          ..setUint64(4, data.length, Endian.little);
+        out..add(head.buffer.asUint8List())..add(data);
+      }
+      record(51, ascii.encode('1lys'));
+      record(54, utf8.encode(plugin));
+      record(55, ascii.encode('C:/Program Files/Image-Line'));
+      return out.toBytes();
+    }
+
+    test('not the channel, renamed after a preset — whichever comes first', () {
+      final f = _Flp();
+      // FL 20: display name, then state.
+      f.word(64, 0);
+      f.byte(21, 2);
+      f.text(201, 'Fruity Wrapper');
+      f.text(203, 'LD Menu Special');
+      f.data(213, wrapperState('Sylenth1'));
+      // FL 10: state, then the name (192).
+      f.word(64, 1);
+      f.byte(21, 2);
+      f.data(201, ascii.encode('Fruity Wrapper\u0000'));
+      f.data(213, wrapperState('Serum'));
+      f.data(192, ascii.encode('BAS Deeper Bass\u0000'));
+      expect(FlpProjectParser(f.build()).readStats().plugins, ['Serum', 'Sylenth1']);
+    });
+
+    test('the FL 7 spelling "Fruity wrapper" is the wrapper too, not a plug-in', () {
+      final f = _Flp();
+      f.word(64, 0);
+      f.byte(21, 2);
+      f.data(201, ascii.encode('Fruity wrapper\u0000'));
+      f.data(192, ascii.encode('Waves RBass\u0000'));
+      expect(FlpProjectParser(f.build()).readStats().plugins, ['Waves RBass']);
+    });
+  });
+
+  group('FL 7 notes (20-byte records)', () {
+    List<(int, int, int, int)> read(void Function(_Flp f, List<int> notes) write) {
+      final f = _Flp();
+      f.data(199, ascii.encode('7.0.0\u0000'));
+      f.word(65, 1);
+      final notes = <int>[];
+      write(f, notes);
+      f.data(224, notes);
+      final clip = FlpProjectParser(f.build()).readMidiClips().single;
+      return [for (final n in clip.notes) (n.startTick, n.lengthTicks, n.pitch, n.velocity)];
+    }
+
+    test('are read when only 20 divides the pattern', () {
+      final notes = read((f, into) {
+        for (final (i, key) in [60, 63, 67].indexed) {
+          f.note7(into, position: i * 96, channel: 0, length: 48, key: key, velocity: 100);
+        }
+      });
+      expect(notes, [(0, 48, 60, 100), (96, 48, 63, 100), (192, 48, 67, 100)]);
+    });
+
+    test('are read when 24 divides the pattern too — six notes are 120 bytes', () {
+      // A real FL 7 file read 24 bytes at a time came out with every clip
+      // 2 billion ticks long, and a minute to read it.
+      final notes = read((f, into) {
+        for (var i = 0; i < 6; i++) {
+          f.note7(into, position: i * 48, channel: 0, length: 24, key: 48 + i, velocity: 90);
+        }
+      });
+      expect(notes, [for (var i = 0; i < 6; i++) (i * 48, 24, 48 + i, 90)]);
+    });
+
+    test('keep the MIDI channel of each note, so a part doubled on two stays two', () {
+      // A MIDI file imported into FL 7: its parts on their channels, two of
+      // them doubling one note. On one channel the two would collide.
+      final f = _Flp();
+      f.word(65, 1);
+      final notes = <int>[];
+      f.note7(notes, position: 0, channel: 0, length: 96, key: 60, velocity: 127, midiChannel: 0);
+      f.note7(notes, position: 0, channel: 0, length: 96, key: 60, velocity: 127, midiChannel: 1);
+      f.note7(notes, position: 0, channel: 0, length: 96, key: 64, velocity: 127, midiChannel: 2);
+      f.data(224, notes);
+      final clip = FlpProjectParser(f.build()).readMidiClips().single;
+      expect(clip.notes.map((n) => (n.pitch, n.channel)).toSet(), {(60, 0), (60, 1), (64, 2)});
+    });
+
+    test('a newer pattern both sizes divide still reads as 24-byte records', () {
+      final notes = read((f, into) {
+        for (var i = 0; i < 5; i++) {
+          f.note(into, position: i * 96, channel: 0, length: 96, key: 40 + i, velocity: 80);
+        }
+      });
+      expect(notes, [for (var i = 0; i < 5; i++) (i * 96, 96, 40 + i, 80)]);
     });
   });
 

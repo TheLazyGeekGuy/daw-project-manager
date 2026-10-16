@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:flutter_test/flutter_test.dart';
 
 import 'package:daw_project_manager/models/midi_clip.dart';
@@ -198,6 +200,61 @@ void main() {
     test('a clip of one bar or less is already as short as it gets', () {
       final c = clip('x', [n(0, 240), n(480, 240)], length: 960);
       expect(identical(reduceToRepeatingPattern(c), c), isTrue);
+    });
+
+    // A real FL Studio 7 project, misread, had clips five million bars long:
+    // trying every bar as a period took a minute per scan.
+    test('a clip millions of bars long is reduced at once', () {
+      final notes = [for (var b = 0; b < 4; b++) n(b * 1920, 240, 36)];
+      final c = clip('x', [...notes, n(5000000 * 1920, 240, 38)], length: 5000001 * 1920);
+      final watch = Stopwatch()..start();
+      final r = reduceToRepeatingPattern(c);
+      expect(watch.elapsed, lessThan(const Duration(seconds: 1)));
+      expect(r.lengthTicks, c.lengthTicks, reason: 'no repeat: left as it is');
+    });
+
+    test('finds the same pattern as trying every bar, on any clip', () {
+      // The reduction as it was: every whole-bar period, shortest first.
+      MidiClip everyBar(MidiClip c) {
+        final bar = c.ppq * 4;
+        for (var period = bar; period < c.lengthTicks; period += bar) {
+          final first = [for (final x in c.notes) if (x.startTick < period) x];
+          if (first.isEmpty) continue;
+          final tiled = windowMidiNotes(first,
+              windowStart: 0, windowLength: c.lengthTicks, loop: true, loopStart: 0, loopEnd: period);
+          List<String> keys(List<MidiNote> ns) =>
+              [for (final x in ns) '${x.startTick}:${x.lengthTicks}:${x.pitch}:${x.velocity}']..sort();
+          if (keys(tiled).join() != keys(c.notes).join()) continue;
+          return c.copyWith(
+              lengthTicks: period,
+              notes: windowMidiNotes(first, windowStart: 0, windowLength: period));
+        }
+        return c;
+      }
+
+      final random = Random(7);
+      for (var round = 0; round < 2000; round++) {
+        // Bars of 16 ticks; a pattern of 1–3 bars, repeated, sometimes
+        // broken, cut short or shifted — and sometimes nothing but noise.
+        const bar = 16;
+        final patternBars = 1 + random.nextInt(3);
+        final pattern = [
+          for (var i = 0; i < 1 + random.nextInt(4); i++)
+            n(random.nextInt(patternBars * bar), 1 + random.nextInt(8), 36 + random.nextInt(4)),
+        ];
+        final length = (1 + random.nextInt(10)) * bar - (random.nextBool() ? 0 : random.nextInt(bar));
+        final notes = [
+          for (var start = 0; start < length; start += patternBars * bar)
+            for (final x in pattern)
+              if (start + x.startTick < length) n(start + x.startTick, x.lengthTicks, x.pitch),
+        ];
+        if (notes.isEmpty) continue;
+        if (random.nextInt(4) == 0) notes[random.nextInt(notes.length)] = n(random.nextInt(length), 3, 50);
+        final c = MidiClip(name: 'c', ppq: 4, lengthTicks: length, notes: notes);
+        final expected = everyBar(c), actual = reduceToRepeatingPattern(c);
+        expect((actual.lengthTicks, actual.notes.length), (expected.lengthTicks, expected.notes.length),
+            reason: 'round $round: $notes over $length ticks');
+      }
     });
   });
 

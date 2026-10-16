@@ -1,6 +1,7 @@
 // The DAW project collection: real projects, one folder each under
-// test/fixtures/projects/<daw>/<name>/, read with the app's own readers and
-// compared with what was recorded for them in <name>.expected.json.
+// test/fixtures/projects/<daw>/<name>/ (a project, or one song's versions),
+// read with the app's own readers and compared with what was recorded for
+// them in <name>.expected.json, by project file.
 //
 // Adding one:
 //   1. scripts/add_test_fixture.ps1 -Daw cubase -Project "D:\...\Song\Song.cpr"
@@ -14,27 +15,15 @@
 import 'dart:convert';
 import 'dart:io';
 
-import 'package:crypto/crypto.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:path/path.dart' as p;
 import 'package:daw_project_manager/models/midi_clip.dart';
 import 'package:daw_project_manager/services/metadata_extractor.dart';
 import 'package:daw_project_manager/services/sample_pack/project_sample_reader.dart';
 
-final _root = p.join('test', 'fixtures', 'projects');
-final _update = Platform.environment['UPDATE_FIXTURES'] == '1';
+import 'fixture_collection.dart';
 
-/// The project file of a fixture folder: the one file there with a DAW
-/// extension the scanner knows (bundles aside, a fixture is one project).
-File? _projectFileIn(Directory folder) {
-  const exts = {'.cpr', '.npr', '.als', '.flp', '.rpp', '.song', '.bwproject', '.dawproject', '.ptx'};
-  final files = folder
-      .listSync()
-      .whereType<File>()
-      .where((f) => exts.contains(p.extension(f.path).toLowerCase()))
-      .toList();
-  return files.length == 1 ? files.single : null;
-}
+final _update = Platform.environment['UPDATE_FIXTURES'] == '1';
 
 /// What the readers make of [project], in a form that is the same on every
 /// machine: no absolute paths, notes and events summarised by a hash.
@@ -58,10 +47,7 @@ Future<Map<String, Object?>> readFixture(File project) async {
           'lengthTicks': c.lengthTicks,
           'notes': c.notes.length,
           'events': c.events.length,
-          'content': _hash([
-            for (final n in c.notes) '${n.startTick}:${n.lengthTicks}:${n.pitch}:${n.velocity}',
-            for (final e in c.events) '$e',
-          ]),
+          'content': clipContentHash(c),
         },
     ],
     'sampleReferences': [
@@ -75,32 +61,24 @@ Future<Map<String, Object?>> readFixture(File project) async {
   };
 }
 
-String _hash(List<String> parts) =>
-    sha1.convert(utf8.encode(parts.join('\n'))).toString().substring(0, 12);
-
 const _json = JsonEncoder.withIndent('  ');
 
 void main() {
-  final root = Directory(_root);
-  final fixtures = <(String daw, Directory folder)>[
-    if (root.existsSync())
-      for (final daw in root.listSync().whereType<Directory>())
-        for (final folder in daw.listSync().whereType<Directory>())
-          (p.basename(daw.path), folder),
-  ]..sort((a, b) => a.$2.path.compareTo(b.$2.path));
+  final fixtures = allFixtures();
 
   test('the collection has projects in it', () {
-    expect(fixtures, isNotEmpty, reason: 'nothing under $_root');
+    expect(fixtures, isNotEmpty, reason: 'nothing under ${fixtureRoot.path}');
   });
 
-  for (final (daw, folder) in fixtures) {
-    final name = p.basename(folder.path);
-    test('$daw / $name reads as recorded', () async {
-      final project = _projectFileIn(folder);
-      expect(project, isNotNull, reason: '$folder needs exactly one project file');
+  for (final f in fixtures) {
+    test('${f.daw} / ${f.name} reads as recorded', () async {
+      final projects = f.projectFiles;
+      expect(projects, isNotEmpty, reason: '${f.folder} holds no project file');
 
-      final read = await readFixture(project!);
-      final expectedFile = File('${folder.path}.expected.json');
+      final read = {
+        for (final project in projects) p.basename(project.path): await readFixture(project),
+      };
+      final expectedFile = f.expectedFile;
       final actual = '${_json.convert(read)}\n';
       if (_update) {
         await expectedFile.writeAsString(actual);
@@ -109,13 +87,13 @@ void main() {
       expect(
         expectedFile.existsSync(),
         isTrue,
-        reason: 'no ${p.basename(expectedFile.path)} — run with UPDATE_FIXTURES=1 and review it',
+        reason: 'no ${expectedFile.path} — run with UPDATE_FIXTURES=1 and review it',
       );
       final expected = await expectedFile.readAsString();
       expect(
         jsonDecode(actual),
         jsonDecode(expected),
-        reason: 'what the readers make of $daw/$name changed; if that is intended, '
+        reason: 'what the readers make of $f changed; if that is intended, '
             'rerun with UPDATE_FIXTURES=1 and review the diff',
       );
     }, timeout: const Timeout(Duration(minutes: 2)));

@@ -1,3 +1,5 @@
+import 'dart:math' show max;
+
 /// One note of a [MidiClip], in ticks relative to the clip's start.
 class MidiNote {
   const MidiNote({
@@ -331,7 +333,7 @@ bool _sameNotes(List<MidiNote> a, List<MidiNote> b) {
 MidiClip reduceToRepeatingPattern(MidiClip clip) {
   final bar = clip.ppq * 4;
   if (bar <= 0 || clip.notes.isEmpty) return clip;
-  for (var period = bar; period < clip.lengthTicks; period += bar) {
+  for (final period in _patternPeriods(clip, bar)) {
     final first = [for (final n in clip.notes) if (n.startTick < period) n];
     if (first.isEmpty) continue;
     final tiled = windowMidiNotes(
@@ -363,6 +365,34 @@ MidiClip reduceToRepeatingPattern(MidiClip clip) {
     );
   }
   return clip;
+}
+
+/// The whole-bar periods [reduceToRepeatingPattern] could find a repeat at,
+/// shortest first — the same answer as trying every one, without the cost:
+/// a clip thousands of bars long made that a minute per scan.
+///
+/// Tiled at period `p`, the earliest note comes back at `first + p`, so `p`
+/// can only work when a note starts there — or when that repeat falls past
+/// the clip's end, where the shortest period holding every note is the one
+/// that can.
+List<int> _patternPeriods(MidiClip clip, int bar) {
+  var first = clip.notes.first.startTick, last = first;
+  for (final n in clip.notes) {
+    if (n.startTick < first) first = n.startTick;
+    if (n.startTick > last) last = n.startTick;
+  }
+  final periods = <int>{
+    for (final n in clip.notes)
+      if (n.startTick - first case final p when p >= bar && p % bar == 0) p,
+  };
+  int roundUp(int ticks) => (ticks + bar - 1) ~/ bar * bar;
+  final pastTheEnd = roundUp(clip.lengthTicks - first);
+  final holdsAll = (last ~/ bar + 1) * bar;
+  periods.add(max(bar, max(pastTheEnd, holdsAll)));
+  return [
+    for (final p in periods.toList()..sort())
+      if (p < clip.lengthTicks) p,
+  ];
 }
 
 /// Event lists compared channel-blind, like notes: the same line on a second
