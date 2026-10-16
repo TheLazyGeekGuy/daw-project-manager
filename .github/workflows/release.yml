@@ -203,13 +203,30 @@ jobs:
       - name: Generate Localizations
         run: flutter gen-l10n
 
+      # One file at a time, stopping any app a file leaves behind: the app
+      # runs as a single copy, so one that failed to quit would stop every
+      # later file's app from starting.
       - name: Run integration tests (Windows)
         if: runner.os == 'Windows'
-        run: flutter test integration_test -d windows --dart-define=DPM_DATA_DIR=daw_project_manager_uitest
+        shell: pwsh
+        run: |
+          $failed = 0
+          foreach ($f in Get-ChildItem integration_test -Filter *_test.dart) {
+            flutter test $f.FullName -d windows --dart-define=DPM_DATA_DIR=daw_project_manager_uitest
+            if ($LASTEXITCODE -ne 0) { $failed++ }
+            Get-Process daw_project_manager -ErrorAction SilentlyContinue | Stop-Process -Force
+          }
+          exit $failed
 
       - name: Run integration tests (Linux, virtual display)
         if: runner.os == 'Linux'
-        run: xvfb-run -a flutter test integration_test -d linux --dart-define=DPM_DATA_DIR=daw_project_manager_uitest
+        run: |
+          failed=0
+          for f in integration_test/*_test.dart; do
+            xvfb-run -a flutter test "$f" -d linux --dart-define=DPM_DATA_DIR=daw_project_manager_uitest || failed=$((failed+1))
+            pkill -f daw_project_manager || true
+          done
+          exit $failed
 
   # Job de Teste de Integração (para Pull Requests)
   test_pr_build:

@@ -2,7 +2,6 @@
 // Settings > Project folders > Recently deleted, restore it, and check it
 // came back with its notes. See harness.dart for how to run it.
 
-import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:hive_ce/hive.dart';
@@ -31,7 +30,7 @@ void main() {
     await tester.step();
 
     // Right-click the card: the project menu.
-    await tester.tapAndWait(song.first, buttons: kSecondaryMouseButton);
+    await tester.rightClick(song.first);
     await tester.pumpUntilFound(find.text('Delete…'));
     await tester.tapAndWait(find.text('Delete…'));
 
@@ -80,7 +79,7 @@ void main() {
     await tester.step();
 
     // Back on the dashboard, it is there again — notes and all.
-    tester.state<NavigatorState>(find.byType(Navigator).first).pop();
+    await tester.goBack();
     await tester.pumpUntilFound(song);
     await tester.step();
 

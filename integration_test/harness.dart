@@ -14,6 +14,7 @@
 import 'dart:io';
 
 import 'package:flutter/gestures.dart';
+import 'package:flutter/material.dart' show Icons;
 import 'package:flutter_test/flutter_test.dart';
 import 'package:hive_ce/hive.dart';
 import 'package:path/path.dart' as p;
@@ -29,9 +30,18 @@ const _stepMs = int.fromEnvironment('UITEST_STEP_MS');
 
 /// The library seeded for a test.
 class SeededLibrary {
-  SeededLibrary({required this.profileId, required this.projectsFolder});
+  SeededLibrary({
+    required this.profileId,
+    required this.projectsFolder,
+    this.otherProfileId,
+    this.otherProjectsFolder,
+  });
   final String profileId;
   final Directory projectsFolder;
+
+  /// With `secondProfile:`, another artist's profile and its scan folder.
+  final String? otherProfileId;
+  final Directory? otherProjectsFolder;
 }
 
 /// The DAW project collection (`test/fixtures/projects/<daw>/<name>/`), as
@@ -71,7 +81,10 @@ Future<void> _copyTree(Directory from, Directory to) async {
 /// projects, one of them with notes. With [withFixtures], the scan folder
 /// holds a copy of the whole DAW project collection instead, for the app's
 /// own startup scan to find.
-Future<SeededLibrary> seedLibrary({bool withFixtures = false}) async {
+///
+/// With [secondProfile], a second profile of that name is created too, with
+/// an empty scan folder of its own — somewhere to move a song to.
+Future<SeededLibrary> seedLibrary({bool withFixtures = false, String? secondProfile}) async {
   if (!isAppDataDirPinned || !appDataDirName.endsWith('_uitest')) {
     throw StateError(
       'Refusing to wipe "$appDataDirName". Run with '
@@ -121,6 +134,11 @@ Future<SeededLibrary> seedLibrary({bool withFixtures = false}) async {
     'onboardingComplete': 'true',
     'hidePinnedLibraryWarning': 'true',
     'dashboardViewMode': 'cards',
+    // So the app quits when the test tool closes it. "Warn before quitting"
+    // (on by default) kept the window open on its confirmation, and the
+    // next test file's app could not start beside it.
+    'warnBeforeQuit': 'false',
+    'closeToTray': 'false',
   });
   // No Drive sync from a test run, even if this library were ever signed
   // in (it keeps a sign-in of its own, never the real app's).
@@ -130,7 +148,26 @@ Future<SeededLibrary> seedLibrary({bool withFixtures = false}) async {
     'autoBackupInterval': 'off',
   });
 
-  return SeededLibrary(profileId: profileId, projectsFolder: projects);
+  String? otherId;
+  Directory? otherFolder;
+  if (secondProfile != null) {
+    final other = await profileRepo.createProfile(secondProfile);
+    otherId = other.id;
+    otherFolder = Directory(p.join(Directory.systemTemp.path, 'dpm_uitest_${other.id.substring(0, 8)}'));
+    if (await otherFolder.exists()) await otherFolder.delete(recursive: true);
+    await otherFolder.create(recursive: true);
+    final otherRepo = await ProjectRepository.initWithProfile(profileRepo, other.id);
+    await otherRepo.addRoot(otherFolder.path);
+    // createProfile can make the new one current: the test starts on the first.
+    await profileRepo.setCurrentProfileId(profileId);
+  }
+
+  return SeededLibrary(
+    profileId: profileId,
+    projectsFolder: projects,
+    otherProfileId: otherId,
+    otherProjectsFolder: otherFolder,
+  );
 }
 
 extension Driving on WidgetTester {
@@ -167,6 +204,41 @@ extension Driving on WidgetTester {
       if (finder.evaluate().isEmpty) return;
     }
     throw TestFailure('Still showing $finder');
+  }
+
+  /// The page's own back button, as a person would leave it.
+  Future<void> goBack() async {
+    await tapAndWait(find.byIcon(Icons.arrow_back).hitTestable().first);
+    await settleTransition();
+  }
+
+  /// Lets a page transition finish: the navigator ignores pointers while a
+  /// route animates, so a click straight after "back" goes nowhere.
+  Future<void> settleTransition() async {
+    for (var i = 0; i < 8; i++) {
+      await pump(const Duration(milliseconds: 100));
+    }
+  }
+
+  /// A real right-click: a mouse pointer, secondary button — what opens a
+  /// project's menu.
+  Future<void> rightClick(Finder finder) async {
+    await ensureVisible(finder);
+    await step();
+    // Added, moved there, pressed, released and removed — as a real mouse
+    // does. A bare tapAt with a mouse left the device added, and the next
+    // right-click was dropped.
+    final mouse = await createGesture(
+      kind: PointerDeviceKind.mouse,
+      buttons: kSecondaryMouseButton,
+    );
+    await mouse.addPointer(location: getCenter(finder));
+    await pump();
+    await mouse.down(getCenter(finder));
+    await pump();
+    await mouse.up();
+    await mouse.removePointer();
+    await step();
   }
 
   /// Taps [finder] after showing it a moment, then gives the app a beat.
