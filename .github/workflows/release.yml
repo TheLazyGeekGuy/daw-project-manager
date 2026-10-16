@@ -152,7 +152,7 @@ jobs:
   # virtual display. Not a `needs:` of the builds yet — informative until it
   # has proved stable.
   integration_tests:
-    name: Integration Tests (${{ matrix.os }})
+    name: App tests on ${{ matrix.os == 'windows-latest' && 'Windows' || matrix.os == 'macos-latest' && 'macOS' || 'Linux' }} (clicks through the real app window)
     if: github.event_name == 'pull_request' || github.ref == 'refs/heads/main'
     strategy:
       fail-fast: false
