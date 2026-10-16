@@ -257,7 +257,8 @@ class FlpProjectParser {
       final id = _data.getUint32(pos, Endian.little);
       final size = _data.getUint64(pos + 4, Endian.little);
       pos += 12;
-      if (size > end - pos) return null;
+      // A u64 past 2^63 reads negative: FL 7's state is laid out otherwise.
+      if (size < 0 || size > end - pos) return null;
       if (id == 54) {
         final name = utf8.decode(bytes.sublist(pos, pos + size), allowMalformed: true)
             .replaceAll('\u0000', '')

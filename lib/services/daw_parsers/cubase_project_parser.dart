@@ -379,10 +379,85 @@ class CubaseProjectParser {
 
   // --- notes ---------------------------------------------------------------
 
+  /// The version of Cubase/Nuendo that saved [bytes] ("11.0.41"), from the
+  /// `PAppVersion` record: a big-endian u32 length, "Version 11.0.41" and a
+  /// NUL. Cubase 6 and later write it first, SX, 4 and 5 last. Null when
+  /// there is none.
+  static String? appVersion(Uint8List bytes) {
+    const tag = [0x56, 0x65, 0x72, 0x73, 0x69, 0x6F, 0x6E, 0x20]; // "Version "
+    final data = ByteData.sublistView(bytes);
+    outer:
+    for (var i = 4; i + tag.length < bytes.length; i++) {
+      for (var j = 0; j < tag.length; j++) {
+        if (bytes[i + j] != tag[j]) continue outer;
+      }
+      final length = data.getUint32(i - 4, Endian.big);
+      final end = i + length - 1; // the NUL
+      if (length < tag.length + 2 || length > 32 || end >= bytes.length || bytes[end] != 0) {
+        continue;
+      }
+      final text = String.fromCharCodes(bytes.sublist(i + tag.length, end));
+      if (_versionText.hasMatch(text)) return text;
+    }
+    return null;
+  }
+
+  static final _versionText = RegExp(r'^\d+(\.\d+)*$');
+
+  /// Whether Cubase SX, 4 or 5 saved this — they write notes as
+  /// [_legacyNote]s.
+  late final bool _legacy = switch (appVersion(bytes)) {
+    final v? => (int.tryParse(v.split('.').first) ?? 99) <= 5,
+    null => false,
+  };
+
+  /// A note as Cubase SX, 4 and 5 write it, at [o]: status, start (f64),
+  /// channel, pitch, velocity, a flags byte (2 on nearly every note), four
+  /// zero bytes, no attributes, the length (f64), 16 zero bytes and the
+  /// note-off velocity — 43 bytes. Measured across 115,000 notes of 51 real
+  /// projects; null where [o] holds no such record.
+  MidiNote? _legacyNote(int o, int end) {
+    if (o + 43 > end) return null;
+    final status = bytes[o];
+    if (status < 0x90 || status > 0x9F) return null;
+    if (bytes[o + 9] > 0x0F || bytes[o + 10] > 0x7F || bytes[o + 11] > 0x7F) return null;
+    for (var i = 13; i <= 17; i++) {
+      if (bytes[o + i] != 0) return null;
+    }
+    for (var i = 26; i < 42; i++) {
+      if (bytes[o + i] != 0) return null;
+    }
+    final startTick = _f64(o + 1), length = _f64(o + 18);
+    if (startTick == null ||
+        length == null ||
+        !(length >= 0 && length < 1e8) ||
+        !(startTick > -1e9 && startTick < 1e9)) {
+      return null;
+    }
+    final velocity = bytes[o + 11];
+    return MidiNote(
+      startTick: startTick.round(),
+      lengthTicks: length.round() < 1 ? 1 : length.round(),
+      pitch: bytes[o + 10],
+      velocity: velocity == 0 ? 1 : velocity,
+      channel: status & 0x0F,
+    );
+  }
+
   List<MidiNote> _readNotes(int start, int end) {
     final notes = <MidiNote>[];
     var o = start;
     while (o + 18 < end) {
+      if (_legacy) {
+        final note = _legacyNote(o, end);
+        if (note != null) {
+          notes.add(note);
+          o += 43;
+        } else {
+          o++;
+        }
+        continue;
+      }
       final status = bytes[o];
       if (status < 0x90 ||
           status > 0x9F ||

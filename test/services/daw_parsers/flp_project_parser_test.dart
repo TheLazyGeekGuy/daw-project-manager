@@ -217,6 +217,19 @@ void main() {
       expect(FlpProjectParser(f.build()).readStats().plugins, ['Serum', 'Sylenth1']);
     });
 
+    test('a state laid out otherwise names it by the channel, and costs nothing else', () {
+      // FL 7's wrapper state: what would be a record size reads past 2^63.
+      final f = _Flp();
+      f.word(64, 0);
+      f.byte(21, 2);
+      f.text(201, 'Fruity Wrapper');
+      f.data(213, [7, 0, 0, 0, 54, 0, 0, 0, ...List.filled(8, 0xF5), ...List.filled(20, 1)]);
+      f.text(203, 'Vanguard');
+      final stats = FlpProjectParser(f.build()).readStats();
+      expect(stats.plugins, ['Vanguard']);
+      expect(stats.instrumentTracks, 1, reason: 'a stats read that threw lost every count');
+    });
+
     test('the FL 7 spelling "Fruity wrapper" is the wrapper too, not a plug-in', () {
       final f = _Flp();
       f.word(64, 0);

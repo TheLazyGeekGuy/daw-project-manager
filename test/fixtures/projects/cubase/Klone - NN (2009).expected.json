@@ -1,8 +1,8 @@
 {
   "NN.cpr": {
     "dawType": "Cubase",
-    "dawVersion": null,
-    "bpm": null,
+    "dawVersion": "3",
+    "bpm": 130.0,
     "key": null,
     "markers": [],
     "stats": {
@@ -13,9 +13,37 @@
       "bus": 0,
       "folder": 1,
       "plugins": [],
-      "midiClips": 0
+      "midiClips": 3
     },
-    "midiClips": [],
+    "midiClips": [
+      {
+        "name": "MIDI 01",
+        "track": "MIDI 01",
+        "ppq": 480,
+        "lengthTicks": 1920,
+        "notes": 6,
+        "events": 0,
+        "content": "0faae6273adf"
+      },
+      {
+        "name": "MIDI 01",
+        "track": "MIDI 01",
+        "ppq": 480,
+        "lengthTicks": 1920,
+        "notes": 6,
+        "events": 0,
+        "content": "d4f3417042b8"
+      },
+      {
+        "name": "MIDI 01",
+        "track": "MIDI 01",
+        "ppq": 480,
+        "lengthTicks": 3840,
+        "notes": 16,
+        "events": 0,
+        "content": "862c9651e475"
+      }
+    ],
     "sampleReferences": [
       {
         "file": "KICK6.wav",

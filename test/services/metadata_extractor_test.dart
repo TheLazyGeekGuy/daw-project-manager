@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'dart:io';
+import 'dart:typed_data';
 
 import 'package:archive/archive.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -520,6 +521,67 @@ TEMPO 120 4 4 0
       final metadata = await MetadataExtractor.extractMetadata(path);
       expect(metadata.projectNotes, isNull);
     });
+
+    // PAppVersion: the application, then the version, each length-prefixed.
+    List<int> appVersion(String app, String version) => [
+          ...pstring('PAppVersion'),
+          0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+          ...pstring(app),
+          ...pstring(version),
+          ...pstring('Oct 13 2005'),
+        ];
+
+    test('reads the version whatever its length — and where SX writes it, last', () async {
+      // Only versions 15 characters long ("Version 11.0.41") used to read.
+      for (final (app, version, major) in [
+        ('Cubase', 'Version 11.0.41', '11'),
+        ('Cubase', 'Version 9.5.50', '9'),
+        ('Cubase SX', 'Version 3.1.1', '3'),
+        ('Cubase', 'Version 13.0.51', '13'),
+      ]) {
+        final path = await writeCprFixture([
+          ...utf8.encode('ROOT Arrangement1 lots of project'),
+          ...appVersion(app, version),
+        ]);
+        final metadata = await MetadataExtractor.extractMetadata(path);
+        expect(metadata.dawVersion, major, reason: version);
+      }
+    });
+
+    test('a "Version " that is not the version record is not read as one', () async {
+      final path = await writeCprFixture([
+        ...pstring('Version notes for the mix'),
+        ...appVersion('Cubase', 'Version 12.0.70'),
+      ]);
+      expect((await MetadataExtractor.extractMetadata(path)).dawVersion, '12');
+    });
+
+    // Cubase SX/4/5's tempo track: class name, version u16, size u32, then a
+    // u32 event count and the first event — its tempo a float32 at +26.
+    List<int> tempoTrack(double bpm) {
+      final payload = ByteData(36)
+        ..setUint32(0, 1)
+        ..setUint8(4, 0x3f)
+        ..setFloat32(26, bpm)
+        ..setUint16(30, 1);
+      return [
+        ...utf8.encode('MTempoTrackEvent'), 0x00,
+        0x00, 0x02, 0x00, 0x00, 0x00, 36,
+        ...payload.buffer.asUint8List(),
+      ];
+    }
+
+    test('Cubase SX/4/5: the tempo is the tempo track\'s — the song\'s, not the devices\'', () async {
+      // As the real files lay it out: the song's tempo track under the
+      // arrangement, a default one under the devices later on.
+      final path = await writeCprFixture([
+        ...utf8.encode('ROOT Arrangement1'),
+        ...tempoTrack(142),
+        ...utf8.encode('ROOT Devices'),
+        ...tempoTrack(120),
+      ]);
+      expect((await MetadataExtractor.extractMetadata(path)).bpm, 142);
+    });
   });
 
   group('MetadataExtractor — MAGDA (.mgd) full extraction', () {
@@ -693,6 +755,39 @@ TEMPO 120 4 4 0
 
       final metadata = await MetadataExtractor.extractMetadata(path);
       expect(metadata.bpm, 126.5);
+    });
+
+    test('Live 8: the tempo is its automation\'s first event — it has no Manual', () async {
+      // As a real Live 8.3 set writes it; its tempo read as none.
+      final path = await writeAlsFixture('''
+<?xml version="1.0" encoding="UTF-8"?>
+<Ableton MajorVersion="4" MinorVersion="8.1_226" Creator="Ableton Live 8.3.4">
+	<LiveSet>
+		<MasterTrack>
+			<DeviceChain>
+				<Mixer>
+					<Tempo>
+						<LomId Value="0" />
+						<ArrangerAutomation>
+							<Events>
+								<FloatEvent Time="64" Value="140" />
+								<FloatEvent Time="-63072000" Value="132" />
+							</Events>
+						</ArrangerAutomation>
+						<MidiControllerRange>
+							<Min Value="60" />
+							<Max Value="200" />
+						</MidiControllerRange>
+					</Tempo>
+				</Mixer>
+			</DeviceChain>
+		</MasterTrack>
+	</LiveSet>
+</Ableton>
+''');
+
+      final metadata = await MetadataExtractor.extractMetadata(path);
+      expect(metadata.bpm, 132, reason: 'the value it starts at, not a later change');
     });
 
     test('malformed file returns empty metadata instead of throwing', () async {
