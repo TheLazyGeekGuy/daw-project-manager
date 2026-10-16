@@ -1,0 +1,165 @@
+{
+  "dawType": "Ableton Live",
+  "dawVersion": "9.1",
+  "bpm": 135.0,
+  "key": null,
+  "markers": [],
+  "stats": {
+    "audio": 3,
+    "midi": 3,
+    "instrument": 0,
+    "sampler": 0,
+    "bus": 2,
+    "folder": 0,
+    "plugins": [
+      "BazzISM2",
+      "Sylenth1"
+    ],
+    "midiClips": 3
+  },
+  "midiClips": [
+    {
+      "name": "",
+      "track": "1-BazzISM2",
+      "ppq": 960,
+      "lengthTicks": 3840,
+      "notes": 4,
+      "events": 0,
+      "content": "2dce0aed5fe5"
+    },
+    {
+      "name": "",
+      "track": "2-Sylenth1",
+      "ppq": 960,
+      "lengthTicks": 15360,
+      "notes": 48,
+      "events": 0,
+      "content": "d6bfaaa2a6ba"
+    },
+    {
+      "name": "",
+      "track": "6-Sylenth1",
+      "ppq": 960,
+      "lengthTicks": 15360,
+      "notes": 64,
+      "events": 0,
+      "content": "c2d8e4af5f0e"
+    }
+  ],
+  "sampleReferences": [
+    {
+      "file": "EHU_IDH_SnareDrum-1.wav",
+      "use": "audio",
+      "kind": "processed"
+    },
+    {
+      "file": "EHU_IDH_SnareDrum-1.wav",
+      "use": "audio",
+      "kind": "processed"
+    },
+    {
+      "file": "EHU_OpenHat_013-1.wav",
+      "use": "audio",
+      "kind": "processed"
+    },
+    {
+      "file": "EHU_OpenHat_013-1.wav",
+      "use": "audio",
+      "kind": "processed"
+    },
+    {
+      "file": "EHU_OpenHat_013-1.wav",
+      "use": "audio",
+      "kind": "processed"
+    },
+    {
+      "file": "EHU_OpenHat_013-1.wav",
+      "use": "audio",
+      "kind": "processed"
+    },
+    {
+      "file": "EHU_OpenHat_013-1.wav",
+      "use": "audio",
+      "kind": "processed"
+    },
+    {
+      "file": "EHU_OpenHat_013-1.wav",
+      "use": "audio",
+      "kind": "processed"
+    },
+    {
+      "file": "EHU_OpenHat_013-1.wav",
+      "use": "audio",
+      "kind": "processed"
+    },
+    {
+      "file": "EHU_OpenHat_013-1.wav",
+      "use": "audio",
+      "kind": "processed"
+    },
+    {
+      "file": "EHU_808_OpenHat1.wav",
+      "use": "audio"
+    },
+    {
+      "file": "EHU_808_OpenHat1.wav",
+      "use": "audio"
+    },
+    {
+      "file": "EHU_808_OpenHat1.wav",
+      "use": "audio"
+    },
+    {
+      "file": "EHU_808_OpenHat1.wav",
+      "use": "audio"
+    },
+    {
+      "file": "EHU_808_OpenHat1.wav",
+      "use": "audio"
+    },
+    {
+      "file": "EHU_808_OpenHat1.wav",
+      "use": "audio"
+    },
+    {
+      "file": "EHU_808_OpenHat1.wav",
+      "use": "audio"
+    },
+    {
+      "file": "EHU_808_OpenHat1.wav",
+      "use": "audio"
+    },
+    {
+      "file": "EHU_808_OpenHat1.wav",
+      "use": "audio"
+    },
+    {
+      "file": "EHU_808_OpenHat1.wav",
+      "use": "audio"
+    },
+    {
+      "file": "EHU_808_OpenHat1.wav",
+      "use": "audio"
+    },
+    {
+      "file": "EHU_808_OpenHat1.wav",
+      "use": "audio"
+    },
+    {
+      "file": "EHU_808_OpenHat1.wav",
+      "use": "audio"
+    },
+    {
+      "file": "EHU_808_OpenHat1.wav",
+      "use": "audio"
+    },
+    {
+      "file": "EHU_808_OpenHat1.wav",
+      "use": "audio"
+    },
+    {
+      "file": "EHU_808_OpenHat1.wav",
+      "use": "audio"
+    }
+  ]
+}

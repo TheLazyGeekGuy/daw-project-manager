@@ -1,0 +1,76 @@
+{
+  "dawType": "Cubase",
+  "dawVersion": null,
+  "bpm": null,
+  "key": null,
+  "markers": [],
+  "stats": {
+    "audio": 6,
+    "midi": 1,
+    "instrument": 0,
+    "sampler": 0,
+    "bus": 0,
+    "folder": 1,
+    "plugins": [],
+    "midiClips": 0
+  },
+  "midiClips": [],
+  "sampleReferences": [
+    {
+      "file": "KICK6.wav",
+      "use": "audio"
+    },
+    {
+      "file": "KICK6.wav",
+      "use": "audio"
+    },
+    {
+      "file": "RIM7.wav",
+      "use": "audio"
+    },
+    {
+      "file": "RIM7.wav",
+      "use": "audio"
+    },
+    {
+      "file": "SNARE134.wav",
+      "use": "audio"
+    },
+    {
+      "file": "SNARE134.wav",
+      "use": "audio"
+    },
+    {
+      "file": "RIM19.wav",
+      "use": "audio"
+    },
+    {
+      "file": "RIM19.wav",
+      "use": "audio"
+    },
+    {
+      "file": "CLAP148.wav",
+      "use": "audio"
+    },
+    {
+      "file": "CLAP148.wav",
+      "use": "audio"
+    },
+    {
+      "file": "HIHAT37(CLSD).wav",
+      "use": "audio"
+    },
+    {
+      "file": "HIHAT37(CLSD).wav",
+      "use": "audio"
+    },
+    {
+      "file": "HIHAT322(CLSD).wav",
+      "use": "audio"
+    },
+    {
+      "file": "HIHAT322(CLSD).wav",
+      "use": "audio"
+    }
+  ]
+}

@@ -34,10 +34,44 @@ class SeededLibrary {
   final Directory projectsFolder;
 }
 
-/// Wipes the test library and seeds it: one profile with one scan folder
-/// holding two small REAPER projects, one of them with notes, and the
-/// first-run screens already passed.
-Future<SeededLibrary> seedLibrary() async {
+/// The DAW project collection (`test/fixtures/projects/<daw>/<name>/`), as
+/// checked out next to the running test.
+Directory get fixtureProjects =>
+    Directory(p.join(Directory.current.path, 'test', 'fixtures', 'projects'));
+
+/// Every fixture project file, keyed by DAW folder ("ableton", "cubase"…).
+Map<String, List<File>> fixtureProjectFiles(Directory root) {
+  const exts = {'.cpr', '.npr', '.als', '.flp', '.rpp', '.song', '.bwproject', '.dawproject', '.ptx'};
+  return {
+    for (final daw in root.listSync().whereType<Directory>())
+      p.basename(daw.path): [
+        for (final folder in daw.listSync().whereType<Directory>())
+          ...folder
+              .listSync()
+              .whereType<File>()
+              .where((f) => exts.contains(p.extension(f.path).toLowerCase())),
+      ],
+  };
+}
+
+Future<void> _copyTree(Directory from, Directory to) async {
+  await to.create(recursive: true);
+  await for (final e in from.list(recursive: false, followLinks: false)) {
+    final target = p.join(to.path, p.basename(e.path));
+    if (e is Directory) {
+      await _copyTree(e, Directory(target));
+    } else if (e is File) {
+      await e.copy(target);
+    }
+  }
+}
+
+/// Wipes the test library and seeds it: one profile, first-run screens
+/// passed, and one scan folder holding — by default — two small REAPER
+/// projects, one of them with notes. With [withFixtures], the scan folder
+/// holds a copy of the whole DAW project collection instead, for the app's
+/// own startup scan to find.
+Future<SeededLibrary> seedLibrary({bool withFixtures = false}) async {
   if (!isAppDataDirPinned || !appDataDirName.endsWith('_uitest')) {
     throw StateError(
       'Refusing to wipe "$appDataDirName". Run with '
@@ -62,17 +96,23 @@ Future<SeededLibrary> seedLibrary() async {
     return file;
   }
 
-  final followMyVoice = await reaperProject('Follow My Voice', 128);
-  final teardrop = await reaperProject('Teardrop Remix', 140);
-
   final profileRepo = await ProfileRepository.init();
   final profileId = profileRepo.getCurrentProfileId()!;
   final repo = await ProjectRepository.initWithProfile(profileRepo, profileId);
   await repo.addRoot(projects.path);
-  await repo.upsertFromFileSystemEntity(followMyVoice);
-  await repo.upsertFromFileSystemEntity(teardrop);
-  final fmv = repo.getByPath(followMyVoice.path)!;
-  await repo.updateProject(fmv.copyWith(notes: 'Hook idea: vocal chop in the drop'));
+
+  if (withFixtures) {
+    // Copies: a scan, a deep scan or a move must never write into the
+    // checked-in collection.
+    await _copyTree(fixtureProjects, projects);
+  } else {
+    final followMyVoice = await reaperProject('Follow My Voice', 128);
+    final teardrop = await reaperProject('Teardrop Remix', 140);
+    await repo.upsertFromFileSystemEntity(followMyVoice);
+    await repo.upsertFromFileSystemEntity(teardrop);
+    final fmv = repo.getByPath(followMyVoice.path)!;
+    await repo.updateProject(fmv.copyWith(notes: 'Hook idea: vocal chop in the drop'));
+  }
 
   // Past the first-run screens, onto the card view (its right-click menu is
   // one gesture away).

@@ -1,0 +1,126 @@
+{
+  "dawType": "Ableton Live",
+  "dawVersion": "11.2",
+  "bpm": 145.0,
+  "key": null,
+  "markers": [],
+  "stats": {
+    "audio": 2,
+    "midi": 5,
+    "instrument": 0,
+    "sampler": 0,
+    "bus": 2,
+    "folder": 0,
+    "plugins": [
+      "A.N.A.64",
+      "FabFilter Pro-C 2",
+      "FabFilter Pro-Q 3",
+      "FabFilter Saturn 2",
+      "Kick 2",
+      "LFOTool",
+      "RBass Stereo",
+      "Scaler 2",
+      "Spire",
+      "TransX Multi Stereo",
+      "Zebra2"
+    ],
+    "midiClips": 9
+  },
+  "midiClips": [
+    {
+      "name": "",
+      "track": "1-Zebra2",
+      "ppq": 960,
+      "lengthTicks": 15360,
+      "notes": 48,
+      "events": 0,
+      "content": "c9c491138179"
+    },
+    {
+      "name": "",
+      "track": "1-Zebra2",
+      "ppq": 960,
+      "lengthTicks": 15360,
+      "notes": 48,
+      "events": 0,
+      "content": "dbc1dcc51d41"
+    },
+    {
+      "name": "",
+      "track": "2-Kick 2 x64",
+      "ppq": 960,
+      "lengthTicks": 3840,
+      "notes": 4,
+      "events": 0,
+      "content": "5abba9a0a791"
+    },
+    {
+      "name": "6-Spire 7",
+      "track": "6-Spire",
+      "ppq": 960,
+      "lengthTicks": 39285,
+      "notes": 45,
+      "events": 0,
+      "content": "60614855c245"
+    },
+    {
+      "name": "Spire 5",
+      "track": "6-Spire",
+      "ppq": 960,
+      "lengthTicks": 7680,
+      "notes": 33,
+      "events": 0,
+      "content": "3b7c22c58d7d"
+    },
+    {
+      "name": "6-Spire 11",
+      "track": "6-Spire",
+      "ppq": 960,
+      "lengthTicks": 21383,
+      "notes": 90,
+      "events": 0,
+      "content": "eebb53192576"
+    },
+    {
+      "name": "6-Spire 7",
+      "track": "6-Spire",
+      "ppq": 960,
+      "lengthTicks": 15360,
+      "notes": 15,
+      "events": 0,
+      "content": "becae1f1382d"
+    },
+    {
+      "name": "6-Spire 7",
+      "track": "6-Spire",
+      "ppq": 960,
+      "lengthTicks": 16417,
+      "notes": 30,
+      "events": 0,
+      "content": "b737d61746fb"
+    },
+    {
+      "name": "6-Spire 11",
+      "track": "7-A.N.A.64",
+      "ppq": 960,
+      "lengthTicks": 15360,
+      "notes": 64,
+      "events": 0,
+      "content": "6051678484a6"
+    }
+  ],
+  "sampleReferences": [
+    {
+      "file": "Clicks 01.aiff",
+      "use": "plugin"
+    },
+    {
+      "file": "AMS P 01.wav",
+      "use": "plugin"
+    },
+    {
+      "file": "House 17.aiff",
+      "use": "plugin"
+    }
+  ]
+}
