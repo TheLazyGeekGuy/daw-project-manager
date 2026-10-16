@@ -2,13 +2,9 @@ import Cocoa
 import FlutterMacOS
 import ServiceManagement
 
-/// Native half of the `launch_at_startup` package on macOS.
-///
-/// That package is pure Dart: its Windows (registry) and Linux (.desktop)
-/// backends work on their own, but its macOS backend only talks over the
-/// `launch_at_startup` method channel and expects the host app to answer.
-/// Rather than pull in the LaunchAtLogin Swift package it documents, this
-/// answers the channel directly:
+/// Native half of launch-at-login on macOS, answering the `launch_at_startup`
+/// channel the Dart macOS backend (lib/services/auto_start/platform_backends.dart)
+/// talks on:
 ///
 /// - macOS 13+: `SMAppService.mainApp`, the supported API — the app shows up
 ///   in System Settings → General → Login Items, where the user can revoke
@@ -25,22 +21,26 @@ import ServiceManagement
 enum LaunchAtStartupHandler {
   private static let channelName = "launch_at_startup"
   private static let minimizedDefaultsKey = "launchAtStartupMinimized"
-  private static let minimizedFlag = "--minimized"
+  /// Must stay in sync with kStartMinimizedFlag in
+  /// lib/services/auto_start/auto_start_backend.dart.
+  static let minimizedFlag = "--minimized"
+
+  /// Whether this process is a login launch that should stay hidden.
+  static let launchedMinimized = CommandLine.arguments.contains(minimizedFlag)
 
   static func register(with registrar: FlutterBinaryMessenger) {
     let channel = FlutterMethodChannel(name: channelName, binaryMessenger: registrar)
     channel.setMethodCallHandler { call, result in
       switch call.method {
-      case "launchAtStartupIsEnabled":
-        result(isEnabled())
+      case "launchAtStartupStatus":
+        result(status())
       case "launchAtStartupSetEnabled":
         let args = call.arguments as? [String: Any]
         let value = args?["setEnabledValue"] as? Bool ?? false
         result(setEnabled(value))
       case "launchAtStartupSetLaunchMinimized":
-        // Sent by AutoStartService.setup() before any enable(), because
-        // launch_at_startup's macOS backend drops its own `args` parameter.
-        // Persisted so a later isEnabled()/setEnabled() in a fresh process
+        // Sent by AutoStartService.setup() before any enable() or status().
+        // Persisted so a later status()/setEnabled() in a fresh process
         // still knows which mechanism this install is using.
         let args = call.arguments as? [String: Any]
         let value = args?["minimized"] as? Bool ?? false
@@ -66,16 +66,54 @@ enum LaunchAtStartupHandler {
       .appendingPathComponent("\(bundleIdentifier).plist")
   }
 
-  /// True if *either* mechanism is registered — the Dart side only wants to
-  /// know whether the app launches at login, not how.
-  private static func isEnabled() -> Bool {
-    if FileManager.default.fileExists(atPath: legacyAgentURL.path) {
-      return true
+  /// The agent's `ProgramArguments` for this bundle and flag.
+  private static var expectedAgentArguments: [String] {
+    // `open -a <bundle>` rather than the raw executable: launchd starts
+    // agents outside an app context, and launching the binary directly
+    // gives a process with no Dock icon and no proper activation.
+    // `--args` forwards everything after it to the app itself.
+    var arguments = ["/usr/bin/open", "-a", Bundle.main.bundlePath]
+    if wantsMinimized {
+      arguments.append(contentsOf: ["--args", minimizedFlag])
+    }
+    return arguments
+  }
+
+  /// The installed agent's `ProgramArguments`: nil without an agent, empty
+  /// for one that can't be read.
+  private static func installedAgentArguments() -> [String]? {
+    guard FileManager.default.fileExists(atPath: legacyAgentURL.path) else { return nil }
+    guard let data = try? Data(contentsOf: legacyAgentURL),
+      let plist = try? PropertyListSerialization.propertyList(from: data, format: nil)
+        as? [String: Any]
+    else { return [] }
+    return plist["ProgramArguments"] as? [String] ?? []
+  }
+
+  /// "on", "off" or "stale" — an AutoStartStatus name on the Dart side.
+  ///
+  /// The agent stores the bundle's path, so moving the app leaves it
+  /// opening nothing: an agent for this bundle, or for one that no longer
+  /// exists, that isn't exactly what setEnabled(true) would write now is
+  /// "stale", for the Dart side to rewrite. An agent opening another copy of
+  /// the app that still exists is that copy's, and left alone.
+  private static func status() -> String {
+    if let arguments = installedAgentArguments() {
+      if arguments == expectedAgentArguments { return "on" }
+      let bundle = arguments.count > 2 ? arguments[2] : ""
+      if bundle == Bundle.main.bundlePath || !FileManager.default.fileExists(atPath: bundle) {
+        return "stale"
+      }
     }
     if #available(macOS 13.0, *) {
-      return SMAppService.mainApp.status == .enabled
+      // Anything but .enabled — .requiresApproval is the user switching it
+      // off in Login Items — is off, and stays the user's call.
+      if SMAppService.mainApp.status == .enabled {
+        // A login item can't carry the minimized flag (see above).
+        return wantsMinimized ? "stale" : "on"
+      }
     }
-    return false
+    return "off"
   }
 
   private static func setEnabled(_ enabled: Bool) -> Bool {
@@ -132,17 +170,9 @@ enum LaunchAtStartupHandler {
       }
       try fm.createDirectory(
         at: url.deletingLastPathComponent(), withIntermediateDirectories: true)
-      // `open -a <bundle>` rather than the raw executable: launchd starts
-      // agents outside an app context, and launching the binary directly
-      // gives a process with no Dock icon and no proper activation.
-      // `--args` forwards everything after it to the app itself.
-      var programArguments = ["/usr/bin/open", "-a", Bundle.main.bundlePath]
-      if wantsMinimized {
-        programArguments.append(contentsOf: ["--args", minimizedFlag])
-      }
       let plist: [String: Any] = [
         "Label": bundleIdentifier,
-        "ProgramArguments": programArguments,
+        "ProgramArguments": expectedAgentArguments,
         "RunAtLoad": true,
       ]
       let data = try PropertyListSerialization.data(
@@ -160,9 +190,33 @@ class MainFlutterWindow: NSWindow {
   private var isTitleBarDragging = false
   private var dragStartScreenPoint = NSPoint.zero
   private var dragStartFrameOrigin = NSPoint.zero
+  private var launchShowHandled = false
+
+  /// The nib shows the window as soon as it loads, before Dart has decided
+  /// anything — so on a "start minimized" login launch it is hidden again on
+  /// that first ordering (the same thing window_manager's
+  /// `hiddenWindowAtLaunch()` does). Dart skips its own show() for that
+  /// launch, and the menu bar icon or the Dock brings the window back.
+  override func order(_ place: NSWindow.OrderingMode, relativeTo otherWin: Int) {
+    super.order(place, relativeTo: otherWin)
+    if !launchShowHandled {
+      launchShowHandled = true
+      if LaunchAtStartupHandler.launchedMinimized {
+        setIsVisible(false)
+      }
+    }
+  }
 
   override func awakeFromNib() {
-    let flutterViewController = FlutterViewController()
+    // The macOS embedder doesn't hand the process's arguments to Dart's
+    // main(), so a login launch's --minimized never reached it. Only that
+    // flag is forwarded: it is the one argument main() reads on macOS (quick
+    // actions arrive through the Dock menu, in-process).
+    let project = FlutterDartProject()
+    if LaunchAtStartupHandler.launchedMinimized {
+      project.dartEntrypointArguments = [LaunchAtStartupHandler.minimizedFlag]
+    }
+    let flutterViewController = FlutterViewController(project: project)
     let windowFrame = self.frame
     self.contentViewController = flutterViewController
     self.setFrame(windowFrame, display: true)
@@ -181,7 +235,7 @@ class MainFlutterWindow: NSWindow {
 
     RegisterGeneratedPlugins(registry: flutterViewController)
 
-    // launch_at_startup has no macOS plugin of its own — see the handler above.
+    // Launch at login is answered natively — see the handler above.
     LaunchAtStartupHandler.register(with: flutterViewController.engine.binaryMessenger)
 
     super.awakeFromNib()

@@ -108,7 +108,7 @@ dependencies:
   super_drag_and_drop: ^0.9.1
   win32: ^5.15.0
   ffi: ^2.1.4
-  launch_at_startup: ^0.5.1
+  win32_registry: ^2.1.0
 
 dev_dependencies:
   flutter_test:
@@ -214,6 +214,10 @@ msix_config:
   display_name: DAW Project Manager
   publisher_display_name: BandPass Records
   identity_name: BandPassRecords.DAWProjectManager
+  # Launch at login points the Startup shortcut here instead of at the exe,
+  # whose folder is named after the version and goes away on every update.
+  # Must stay in sync with kMsixExecutionAlias (lib/services/auto_start/auto_start_rules.dart).
+  execution_alias: dawprojectmanager
   msix_version: 0.0.0.0
   logo_path: windows/msix_logo.png
   capabilities: "internetClient"

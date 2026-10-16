@@ -8,8 +8,8 @@ const kMsixPackageName = 'BandPassRecords.DAWProjectManager';
 /// Microsoft Store, or the `.msix` sideloaded from a release. Windows puts
 /// every package under `WindowsApps`, in a folder named after its identity.
 ///
-/// launch_at_startup detects MSIX the same way, which is why the auto-start
-/// code relies on this exact test.
+/// Auto-start picks its Windows registration by this test: a packaged app
+/// registers with a Startup folder shortcut, an unpackaged one in the Run key.
 bool isMsixExecutablePath(String exePath) =>
     exePath.contains('WindowsApps') && exePath.contains(kMsixPackageName);
 

@@ -7,9 +7,15 @@
 
 #include "flutter/generated_plugin_registrant.h"
 
+// Must stay in sync with kStartMinimizedFlag in
+// lib/services/auto_start/auto_start_backend.dart, which bakes this flag into
+// the autostart entry. Only a login launch ever carries it.
+static const char kStartMinimizedFlag[] = "--minimized";
+
 struct _MyApplication {
   GtkApplication parent_instance;
   char** dart_entrypoint_arguments;
+  gboolean start_minimized;
 };
 
 G_DEFINE_TYPE(MyApplication, my_application, GTK_TYPE_APPLICATION)
@@ -17,6 +23,10 @@ G_DEFINE_TYPE(MyApplication, my_application, GTK_TYPE_APPLICATION)
 // Called when first Flutter frame received.
 static void first_frame_cb(MyApplication* self, FlView *view)
 {
+  // A "start minimized" login launch stays hidden: Dart (main.dart) skips
+  // windowManager.show() for it, but this unconditional show would pop the
+  // window up anyway. The tray icon brings it back.
+  if (self->start_minimized) return;
   gtk_widget_show(gtk_widget_get_toplevel(GTK_WIDGET(view)));
 }
 
@@ -81,6 +91,9 @@ static gboolean my_application_local_command_line(GApplication* application, gch
   MyApplication* self = MY_APPLICATION(application);
   // Strip out the first argument as it is the binary name.
   self->dart_entrypoint_arguments = g_strdupv(*arguments + 1);
+  self->start_minimized = g_strv_contains(
+      const_cast<const gchar* const*>(self->dart_entrypoint_arguments),
+      kStartMinimizedFlag);
 
   g_autoptr(GError) error = nullptr;
   if (!g_application_register(application, nullptr, &error)) {

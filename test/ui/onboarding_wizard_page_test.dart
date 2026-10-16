@@ -17,7 +17,7 @@ class _NoopAutoStartBackend implements AutoStartBackend {
   @override
   Future<void> setup({required bool minimized}) async {}
   @override
-  Future<bool> isEnabled() async => false;
+  Future<AutoStartStatus> status() async => AutoStartStatus.off;
   @override
   Future<bool> enable() async => true;
   @override
