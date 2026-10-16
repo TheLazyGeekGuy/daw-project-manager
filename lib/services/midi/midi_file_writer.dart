@@ -41,6 +41,50 @@ class MidiExport {
       bpm: bpm, musicalKey: musicalKey, timeSignature: timeSignature);
 }
 
+/// [notes] as a `.mid` can hold them. A channel sounds each pitch once at a
+/// time — a second note-on there ends the first, and a note-off ends
+/// whichever is sounding — so where two notes of one pitch overlap on a
+/// channel, the earlier ends where the later starts, and of two starting
+/// together the longer stays (DAWs save overlaps the same way). Written as
+/// they were, a doubled note came back as a 10-tick blip and an overlapped
+/// one cut short. Notes that don't overlap come back untouched.
+List<MidiNote> notesForMidiFile(List<MidiNote> notes) {
+  final byLane = <int, List<MidiNote>>{};
+  for (final n in notes) {
+    (byLane[((n.channel & 0x0F) << 8) | (n.pitch & 0x7F)] ??= []).add(n);
+  }
+  if (byLane.values.every((lane) => lane.length == 1)) return notes;
+  final out = <MidiNote>[];
+  for (final lane in byLane.values) {
+    lane.sort((a, b) {
+      final c = a.startTick.compareTo(b.startTick);
+      return c != 0 ? c : b.endTick.compareTo(a.endTick);
+    });
+    MidiNote? sounding;
+    for (final n in lane) {
+      if (sounding != null) {
+        if (n.startTick == sounding.startTick) continue;
+        if (sounding.endTick > n.startTick) {
+          out[out.length - 1] = MidiNote(
+            startTick: sounding.startTick,
+            lengthTicks: n.startTick - sounding.startTick,
+            pitch: sounding.pitch,
+            velocity: sounding.velocity,
+            channel: sounding.channel,
+          );
+        }
+      }
+      out.add(n);
+      sounding = n;
+    }
+  }
+  return out
+    ..sort((a, b) {
+      final c = a.startTick.compareTo(b.startTick);
+      return c != 0 ? c : a.pitch.compareTo(b.pitch);
+    });
+}
+
 /// Encodes a [MidiClip] as a Standard MIDI File (format 0, one track) that
 /// any DAW can import or have dropped onto it.
 ///
@@ -92,7 +136,7 @@ Uint8List encodeMidiClip(
   // changes so they apply to the notes starting there, then note-ons.
   final events = <(int, int, int, List<int>)>[];
   var seq = 0;
-  for (final n in clip.notes) {
+  for (final n in notesForMidiFile(clip.notes)) {
     final ch = n.channel & 0x0F;
     events.add((n.endTick, 0, seq++, [0x80 | ch, n.pitch & 0x7F, 0x40]));
     events.add((n.startTick, 2, seq++,
