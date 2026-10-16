@@ -30,6 +30,87 @@ import 'custom_theme_merge.dart';
 import '../utils/app_paths.dart';
 
 class BackupService {
+  /// The backup [exportBackup] writes, as JSON — everything but the file
+  /// dialog, so a backup can be made and read back without one.
+  static Future<String> buildBackupJson({
+    required ProjectRepository projectRepo,
+    required ProfileRepository profileRepo,
+    required String profileId,
+  }) async {
+      // Get all data
+    final projects = projectRepo.getAllProjects();
+    final roots = projectRepo.getRoots();
+    final ignoredPaths = projectRepo.getIgnoredPaths();
+    final releases = projectRepo.getAllReleases();
+    final profile = profileRepo.getProfileById(profileId);
+
+    // Globally-scoped user data (not per-profile). Drive sync has always
+    // included these; a local backup that omitted them meant anyone without
+    // Drive — notably Flatpak, where Drive sync is unavailable — had no way
+    // to back up their templates or phase customization at all.
+    final templates = await _readGlobalTemplates();
+    final partTemplates = await _readGlobalPartTemplates();
+    final projectTemplates = await _readGlobalProjectTemplates();
+    final templateRoots = await _readGlobalTemplateRoots();
+    final customMixdownFolders = await _readCustomMixdownFolders();
+    final customMixdownFoldersByDaw = await _readCustomMixdownFoldersByDaw();
+    final dawLaunchCommands = await _readDawLaunchCommands();
+    final customThemes = await _readCustomThemes();
+    final customFieldDefinitions = await _readCustomFieldDefinitions();
+    // Unlike Drive (which stores a byProfile map for every profile), a local
+    // backup covers a single profile, so only that profile's phase settings
+    // are relevant here.
+    final phaseSettings = await _readPhaseSettings(profileId);
+    final midiCollections =
+        await projectRepo.midiCollections.all(includeDeleted: true);
+    final midiClips = await projectRepo.midiClips.getAll(
+      onlyProjects: projects.map((p) => p.id).toSet(),
+    );
+
+    // Create backup data structure
+    final backupData = {
+      // 1.1 added templates/projectTemplates/templateRoots/
+      // customMixdownFolders/phaseSettings. 1.2 added partTemplates (and, on
+      // each project, its parts). 1.3 added customThemes. 1.4 added
+      // customFieldDefinitions (and, on each project, customFields),
+      // midiClips and midiCollections. Importing an older file still works —
+      // every new key is read with a null check on the way back in.
+      'version': '1.4',
+      'exportDate': DateTime.now().toIso8601String(),
+      'profileId': profileId,
+      'profile': profile != null ? await _profileToJson(profile) : null,
+      'projects': await Future.wait(projects.map(_projectToJsonWithCoverArt)),
+      // 1.4: project id -> stored MIDI clips. Flatpak's only way to keep
+      // them, since Drive sync isn't offered there.
+      'midiClips': storedMidiClipsToJson(midiClips),
+      // 1.4: this profile's MIDI collections (copies of clips).
+      'midiCollections': [for (final c in midiCollections) c.toJson()],
+      'roots': roots.map((r) => _rootToJson(r)).toList(),
+      'ignoredPaths': ignoredPaths.map((ip) => _ignoredPathToJson(ip)).toList(),
+      'releases': await Future.wait(releases.map((r) => _releaseToJson(r))),
+      'templates': templates.map(_todoTemplateToJson).toList(),
+      'partTemplates': partTemplates.map((t) => t.toJson()).toList(),
+      'projectTemplates': projectTemplates.map(_projectTemplateToJson).toList(),
+      'templateRoots': templateRoots.map(_templateRootToJson).toList(),
+      'customMixdownFolders': customMixdownFolders,
+      'customMixdownFoldersByDaw': customMixdownFoldersByDaw,
+      'dawLaunchCommands': dawLaunchCommands,
+      // User-authored themes. Global (not per-profile), and this is the only
+      // backup path Flatpak has, so leaving them out would mean Flatpak
+      // users could never back a theme up at all. The *selected* theme is
+      // deliberately absent: that is a device-local preference.
+      'customThemes': customThemes.map((t) => t.toJson()).toList(),
+      // The user's own fields — global user data, same reasoning as the
+      // themes. Tombstones included, so a restore can't revive a field
+      // deleted since (see CustomFieldDefinition.deletedAt).
+      'customFieldDefinitions':
+          customFieldDefinitions.map((f) => f.toJson()).toList(),
+      'phaseSettings': phaseSettings,
+    };
+
+    return const JsonEncoder.withIndent('  ').convert(backupData);
+  }
+
   /// Exports all data for the current profile to a JSON file
   static Future<File?> exportBackup({
     required ProjectRepository projectRepo,
@@ -38,79 +119,11 @@ class BackupService {
     String? exportDialogTitle,
   }) async {
     try {
-      // Get all data
-      final projects = projectRepo.getAllProjects();
-      final roots = projectRepo.getRoots();
-      final ignoredPaths = projectRepo.getIgnoredPaths();
-      final releases = projectRepo.getAllReleases();
-      final profile = profileRepo.getProfileById(profileId);
-
-      // Globally-scoped user data (not per-profile). Drive sync has always
-      // included these; a local backup that omitted them meant anyone without
-      // Drive — notably Flatpak, where Drive sync is unavailable — had no way
-      // to back up their templates or phase customization at all.
-      final templates = await _readGlobalTemplates();
-      final partTemplates = await _readGlobalPartTemplates();
-      final projectTemplates = await _readGlobalProjectTemplates();
-      final templateRoots = await _readGlobalTemplateRoots();
-      final customMixdownFolders = await _readCustomMixdownFolders();
-      final customMixdownFoldersByDaw = await _readCustomMixdownFoldersByDaw();
-      final dawLaunchCommands = await _readDawLaunchCommands();
-      final customThemes = await _readCustomThemes();
-      final customFieldDefinitions = await _readCustomFieldDefinitions();
-      // Unlike Drive (which stores a byProfile map for every profile), a local
-      // backup covers a single profile, so only that profile's phase settings
-      // are relevant here.
-      final phaseSettings = await _readPhaseSettings(profileId);
-      final midiCollections =
-          await projectRepo.midiCollections.all(includeDeleted: true);
-      final midiClips = await projectRepo.midiClips.getAll(
-        onlyProjects: projects.map((p) => p.id).toSet(),
+      final jsonString = await buildBackupJson(
+        projectRepo: projectRepo,
+        profileRepo: profileRepo,
+        profileId: profileId,
       );
-
-      // Create backup data structure
-      final backupData = {
-        // 1.1 added templates/projectTemplates/templateRoots/
-        // customMixdownFolders/phaseSettings. 1.2 added partTemplates (and, on
-        // each project, its parts). 1.3 added customThemes. 1.4 added
-        // customFieldDefinitions (and, on each project, customFields),
-        // midiClips and midiCollections. Importing an older file still works —
-        // every new key is read with a null check on the way back in.
-        'version': '1.4',
-        'exportDate': DateTime.now().toIso8601String(),
-        'profileId': profileId,
-        'profile': profile != null ? await _profileToJson(profile) : null,
-        'projects': await Future.wait(projects.map(_projectToJsonWithCoverArt)),
-        // 1.4: project id -> stored MIDI clips. Flatpak's only way to keep
-        // them, since Drive sync isn't offered there.
-        'midiClips': storedMidiClipsToJson(midiClips),
-        // 1.4: this profile's MIDI collections (copies of clips).
-        'midiCollections': [for (final c in midiCollections) c.toJson()],
-        'roots': roots.map((r) => _rootToJson(r)).toList(),
-        'ignoredPaths': ignoredPaths.map((ip) => _ignoredPathToJson(ip)).toList(),
-        'releases': await Future.wait(releases.map((r) => _releaseToJson(r))),
-        'templates': templates.map(_todoTemplateToJson).toList(),
-        'partTemplates': partTemplates.map((t) => t.toJson()).toList(),
-        'projectTemplates': projectTemplates.map(_projectTemplateToJson).toList(),
-        'templateRoots': templateRoots.map(_templateRootToJson).toList(),
-        'customMixdownFolders': customMixdownFolders,
-        'customMixdownFoldersByDaw': customMixdownFoldersByDaw,
-        'dawLaunchCommands': dawLaunchCommands,
-        // User-authored themes. Global (not per-profile), and this is the only
-        // backup path Flatpak has, so leaving them out would mean Flatpak
-        // users could never back a theme up at all. The *selected* theme is
-        // deliberately absent: that is a device-local preference.
-        'customThemes': customThemes.map((t) => t.toJson()).toList(),
-        // The user's own fields — global user data, same reasoning as the
-        // themes. Tombstones included, so a restore can't revive a field
-        // deleted since (see CustomFieldDefinition.deletedAt).
-        'customFieldDefinitions':
-            customFieldDefinitions.map((f) => f.toJson()).toList(),
-        'phaseSettings': phaseSettings,
-      };
-
-      // Convert to JSON
-      final jsonString = const JsonEncoder.withIndent('  ').convert(backupData);
 
       // Save to file
       final result = await FilePicker.saveFile(
@@ -157,7 +170,36 @@ class BackupService {
       }
 
       final file = File(result.files.single.path!);
-      final jsonString = await file.readAsString();
+      return await importBackupJson(
+        await file.readAsString(),
+        projectRepo: projectRepo,
+        profileRepo: profileRepo,
+        currentProfileId: currentProfileId,
+        importMode: importMode,
+        newProfileName: newProfileName,
+        invalidBackupFormatMessage: invalidBackupFormatMessage,
+        profileNameRequiredMessage: profileNameRequiredMessage,
+        currentProfileRequiredMessage: currentProfileRequiredMessage,
+      );
+    } catch (e) {
+      throw Exception('Failed to import backup: $e');
+    }
+  }
+
+  /// What [importBackup] does with the file it picks: [jsonString] read into
+  /// the library as [importMode] says — everything but the file dialog.
+  static Future<ImportResult> importBackupJson(
+    String jsonString, {
+    required ProjectRepository? projectRepo,
+    required ProfileRepository profileRepo,
+    required String? currentProfileId,
+    required ImportMode importMode,
+    String? newProfileName,
+    String? invalidBackupFormatMessage,
+    String? profileNameRequiredMessage,
+    String? currentProfileRequiredMessage,
+  }) async {
+    try {
       final backupData = jsonDecode(jsonString) as Map<String, dynamic>;
 
       // Validate backup format
