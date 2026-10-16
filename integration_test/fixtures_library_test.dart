@@ -15,7 +15,6 @@ import 'package:path/path.dart' as p;
 import 'package:daw_project_manager/main.dart' as app;
 import 'package:daw_project_manager/models/music_project.dart';
 import 'package:daw_project_manager/repository/midi_clip_store.dart';
-import 'package:daw_project_manager/ui/dashboard_page.dart' show RailAction;
 
 import 'harness.dart';
 
@@ -52,9 +51,7 @@ void main() {
     await tester.step();
 
     // Deep Scan reads every project, MIDI clips included.
-    await tester.tapAndWait(
-      find.byWidgetPredicate((w) => w is RailAction && w.label == 'Deep Scan').first,
-    );
+    await tester.tapRailAction('Deep Scan');
     await tester.tapAndWait(find.widgetWithText(ElevatedButton, 'Deep Scan'));
 
     final projects = Hive.box<MusicProject>('${library.profileId}_projects');

@@ -57,13 +57,10 @@ void main() {
       ),
       findsOneWidget,
     );
-    await tester.tapAndWait(
-      find.descendant(of: snackBar, matching: find.byIcon(Icons.close)),
-    );
-    await tester.pumpUntilGone(snackBar);
+    await tester.closeSnackBar();
 
     // Settings > Project folders > Recently deleted.
-    await tester.tapAndWait(find.byIcon(Icons.settings_outlined).hitTestable().first);
+    await tester.tapRailAction('Settings');
     // The side menu's entry ("Project Folders"; the section's own heading
     // is "Project folders").
     await tester.pumpUntilFound(find.text('Project Folders'));

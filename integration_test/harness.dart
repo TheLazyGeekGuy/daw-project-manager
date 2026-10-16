@@ -14,12 +14,13 @@
 import 'dart:io';
 
 import 'package:flutter/gestures.dart';
-import 'package:flutter/material.dart' show Icons;
+import 'package:flutter/material.dart' show IconData, Icons, NavigationRail, SnackBar;
 import 'package:flutter_test/flutter_test.dart';
 import 'package:hive_ce/hive.dart';
 import 'package:path/path.dart' as p;
 
 import 'package:daw_project_manager/repository/profile_repository.dart';
+import 'package:daw_project_manager/ui/dashboard_page.dart' show RailAction;
 import 'package:daw_project_manager/repository/project_repository.dart';
 import 'package:daw_project_manager/utils/app_paths.dart';
 
@@ -80,11 +81,16 @@ Future<void> _copyTree(Directory from, Directory to) async {
 /// passed, and one scan folder holding — by default — two small REAPER
 /// projects, one of them with notes. With [withFixtures], the scan folder
 /// holds a copy of the whole DAW project collection instead, for the app's
-/// own startup scan to find.
+/// own startup scan to find; with [fixtures] (`'<daw>/<name>'` each), just
+/// those of it — a deep scan of one project is quicker than of them all.
 ///
 /// With [secondProfile], a second profile of that name is created too, with
 /// an empty scan folder of its own — somewhere to move a song to.
-Future<SeededLibrary> seedLibrary({bool withFixtures = false, String? secondProfile}) async {
+Future<SeededLibrary> seedLibrary({
+  bool withFixtures = false,
+  List<String>? fixtures,
+  String? secondProfile,
+}) async {
   if (!isAppDataDirPinned || !appDataDirName.endsWith('_uitest')) {
     throw StateError(
       'Refusing to wipe "$appDataDirName". Run with '
@@ -118,6 +124,10 @@ Future<SeededLibrary> seedLibrary({bool withFixtures = false, String? secondProf
     // Copies: a scan, a deep scan or a move must never write into the
     // checked-in collection.
     await _copyTree(fixtureProjects, projects);
+  } else if (fixtures != null) {
+    for (final f in fixtures) {
+      await _copyTree(Directory(p.join(fixtureProjects.path, f)), Directory(p.join(projects.path, f)));
+    }
   } else {
     final followMyVoice = await reaperProject('Follow My Voice', 128);
     final teardrop = await reaperProject('Teardrop Remix', 140);
@@ -210,6 +220,38 @@ extension Driving on WidgetTester {
   Future<void> goBack() async {
     await tapAndWait(find.byIcon(Icons.arrow_back).hitTestable().first);
     await settleTransition();
+  }
+
+  /// Opens a dashboard tab from the side rail, by its icon (the rail shows
+  /// no labels), and lets the tab slide in.
+  Future<void> openTab(IconData icon) async {
+    await tapAndWait(
+      find.descendant(of: find.byType(NavigationRail), matching: find.byIcon(icon)).first,
+    );
+    await settleTransition();
+  }
+
+  /// Presses one of the side rail's actions (Deep Scan, Settings…) by its
+  /// label. On a short screen the rail scrolls and the last ones sit below
+  /// the fold, so it is found as it is, never `hitTestable()` — tapping
+  /// scrolls it into view first.
+  Future<void> tapRailAction(String label) async {
+    await tapAndWait(
+      find.byWidgetPredicate((w) => w is RailAction && w.label == label).first,
+    );
+  }
+
+  /// Closes the snackbar on screen with its own close button — once it has
+  /// slid in far enough to take the tap. (A bare `Icons.close` can be the
+  /// window's own, which quits the app.)
+  Future<void> closeSnackBar() async {
+    final close = find
+        .descendant(of: find.byType(SnackBar), matching: find.byIcon(Icons.close))
+        .hitTestable();
+    await pumpUntilFound(close);
+    await settleTransition();
+    await tapAndWait(close.first);
+    await pumpUntilGone(find.byType(SnackBar));
   }
 
   /// Lets a page transition finish: the navigator ignores pointers while a
