@@ -4139,6 +4139,18 @@ bool _jabInitialized = false;
 
 void markJabInitialized() => _jabInitialized = true;
 
+/// Whether the phone player is making sound, as its play/pause button shows
+/// it: asked to play, and not finished.
+///
+/// just_audio keeps `playing` true after the queue ends (`completed`), and
+/// loading a new source then starts it without `playingStream` emitting
+/// again. Tracking `playing` and completion separately left the button on
+/// play while the next song played, so both are read from one
+/// [ja.PlayerState].
+bool phonePlayerIsPlaying(ja.PlayerState playerState) =>
+    playerState.playing &&
+    playerState.processingState != ja.ProcessingState.completed;
+
 /// The order in which tracks are visited for [mode]. For shuffle, [current]
 /// (if present) is kept first so playback continues from the current track and
 /// the rest are randomly permuted; otherwise the natural order is returned
@@ -4219,11 +4231,11 @@ class MobilePlayerNotifier extends Notifier<MobilePlayerState> {
 
   // Subscriptions Android (vivas durante todo o ciclo de vida do notifier).
   StreamSubscription<int?>? _indexSub;
-  StreamSubscription<bool>? _jaPlayingSub;
+  StreamSubscription<ja.PlayerState>? _jaStateSub;
   StreamSubscription<Duration>? _jaPosSub;
   StreamSubscription<Duration?>? _jaDurSub;
-  StreamSubscription<ja.PlayerState>? _jaCompleteSub;
   StreamSubscription<ja.PlaybackEvent>? _jaEventSub;
+  AppLifecycleListener? _lifecycle;
 
   // Desktop fallback: audioplayers (subscriptions re-criadas por play).
   AudioPlayer? _fallbackPlayer;
@@ -4256,6 +4268,9 @@ class MobilePlayerNotifier extends Notifier<MobilePlayerState> {
       _jaPlayer = ja.AudioPlayer();
       _attachJaListeners();
       unawaited(_prepareArtUri());
+      // Back in front — opened from the media notification, say — the button
+      // is read again from the live player rather than trusted from before.
+      _lifecycle = AppLifecycleListener(onResume: _syncPlayingFromJa);
     }
     return const MobilePlayerState();
   }
@@ -4290,8 +4305,13 @@ class MobilePlayerNotifier extends Notifier<MobilePlayerState> {
         state = state.copyWith(currentProject: q[idx], queueIndex: idx);
       }
     });
-    _jaPlayingSub = p.playingStream.listen((playing) {
-      state = state.copyWith(isPlaying: playing);
+    // Play/pause and the end of the whole queue, from one stream: see
+    // [phonePlayerIsPlaying].
+    _jaStateSub = p.playerStateStream.listen((s) {
+      final playing = phonePlayerIsPlaying(s);
+      state = s.processingState == ja.ProcessingState.completed
+          ? state.copyWith(isPlaying: false, position: Duration.zero)
+          : state.copyWith(isPlaying: playing);
       if (playing) AppAudioFocus.claim(this);
     });
     _jaPosSub = p.positionStream.listen((pos) {
@@ -4300,12 +4320,6 @@ class MobilePlayerNotifier extends Notifier<MobilePlayerState> {
     _jaDurSub = p.durationStream.listen((dur) {
       if (dur != null) state = state.copyWith(duration: dur);
     });
-    // Toda a fila terminou.
-    _jaCompleteSub = p.playerStateStream
-        .where((s) => s.processingState == ja.ProcessingState.completed)
-        .listen((_) {
-          state = state.copyWith(isPlaying: false, position: Duration.zero);
-        });
     // Erros do pipeline (fonte inválida, decode) chegam aqui; sem tratá-los, o
     // BehaviorSubject fecha, playingStream para de emitir e isPlaying trava.
     _jaEventSub = p.playbackEventStream.listen(
@@ -4315,6 +4329,15 @@ class MobilePlayerNotifier extends Notifier<MobilePlayerState> {
         state = state.copyWith(isPlaying: false);
       },
     );
+  }
+
+  void _syncPlayingFromJa() {
+    final p = _jaPlayer;
+    if (p == null || !_usingJaPlayer || !state.hasTrack) return;
+    final playing = phonePlayerIsPlaying(p.playerState);
+    if (playing != state.isPlaying) {
+      state = state.copyWith(isPlaying: playing, position: p.position);
+    }
   }
 
   // ── Listeners Desktop ─────────────────────────────────────────────────────
@@ -4475,11 +4498,17 @@ class MobilePlayerNotifier extends Notifier<MobilePlayerState> {
       // If a stream hiccup left `isPlaying` stale, the cached path could call
       // pause() on an already-stopped player (button appears dead), so read the
       // player directly.
-      final playing = _jaPlayer?.playing ?? state.isPlaying;
-      if (playing) {
-        await _jaPlayer?.pause();
+      final p = _jaPlayer;
+      if (p == null) return;
+      if (phonePlayerIsPlaying(p.playerState)) {
+        await p.pause();
       } else {
-        await _jaPlayer?.play();
+        // At the end of the queue `playing` is still true, so play() alone
+        // would do nothing: start the current track over.
+        if (p.processingState == ja.ProcessingState.completed) {
+          await p.seek(Duration.zero, index: p.currentIndex);
+        }
+        await p.play();
       }
     } else {
       if (state.isPlaying) {
@@ -4690,11 +4719,11 @@ class MobilePlayerNotifier extends Notifier<MobilePlayerState> {
 
   void _dispose() {
     _indexSub?.cancel();
-    _jaPlayingSub?.cancel();
+    _jaStateSub?.cancel();
     _jaPosSub?.cancel();
     _jaDurSub?.cancel();
-    _jaCompleteSub?.cancel();
     _jaEventSub?.cancel();
+    _lifecycle?.dispose();
     _cancelFallbackSubs();
     _jaPlayer?.dispose();
     _fallbackPlayer?.dispose();
