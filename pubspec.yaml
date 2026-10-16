@@ -113,6 +113,10 @@ dependencies:
 dev_dependencies:
   flutter_test:
     sdk: flutter
+  # Drives the real app to capture the documentation's screenshots
+  # (integration_test/screenshots/); not run by CI.
+  integration_test:
+    sdk: flutter
   flutter_lints: ^6.0.0
   msix: ^3.16.12
   build_runner: ^2.4.0
