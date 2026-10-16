@@ -1,0 +1,6898 @@
+{
+  "22_06_2015_B_138.als": {
+    "dawType": "Ableton Live",
+    "dawVersion": "9.1",
+    "bpm": 138.0,
+    "key": null,
+    "markers": [],
+    "stats": {
+      "audio": 13,
+      "midi": 4,
+      "instrument": 0,
+      "sampler": 0,
+      "bus": 3,
+      "folder": 0,
+      "plugins": [
+        "Serum",
+        "Sonalksis Creative Filter Stereo (64 bit)",
+        "Sylenth1"
+      ],
+      "midiClips": 6
+    },
+    "midiClips": [
+      {
+        "name": "",
+        "track": "1-5th Stab Lead",
+        "ppq": 960,
+        "lengthTicks": 26880,
+        "notes": 114,
+        "events": 0,
+        "content": "0c48ce2d8d3f"
+      },
+      {
+        "name": "",
+        "track": "1-5th Stab Lead",
+        "ppq": 960,
+        "lengthTicks": 30720,
+        "notes": 129,
+        "events": 0,
+        "content": "a80cc652274a"
+      },
+      {
+        "name": "",
+        "track": "8-Sylenth1",
+        "ppq": 960,
+        "lengthTicks": 23040,
+        "notes": 27,
+        "events": 0,
+        "content": "cecfc85540cd"
+      },
+      {
+        "name": "",
+        "track": "8-Sylenth1",
+        "ppq": 960,
+        "lengthTicks": 30720,
+        "notes": 35,
+        "events": 0,
+        "content": "5d3f9b3d5750"
+      },
+      {
+        "name": "",
+        "track": "9-Serum_x64",
+        "ppq": 960,
+        "lengthTicks": 23040,
+        "notes": 24,
+        "events": 0,
+        "content": "bc8e73e46909"
+      },
+      {
+        "name": "",
+        "track": "9-Serum_x64",
+        "ppq": 960,
+        "lengthTicks": 30720,
+        "notes": 32,
+        "events": 0,
+        "content": "41bd532fc8c7"
+      }
+    ],
+    "sampleReferences": [
+      {
+        "file": "EHU_SnareDrum_001.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "EHU_SnareDrum_001.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "EHU_SnareDrum_001.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "EHU_SnareDrum_001.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "EHU_SnareDrum_001.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "EHU_SnareDrum_001.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "EHU_SnareDrum_001.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "EHU_SnareDrum_001.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "EHU_SnareDrum_001.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "EHU_SnareDrum_001.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "EHU_SnareDrum_001.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "EHU_SnareDrum_001.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "EHU_SnareDrum_001.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "EHU_SnareDrum_001.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "EHU_SnareDrum_001.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "EHU_SnareDrum_001.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "EHU_SnareDrum_001.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "EHU_SnareDrum_001.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "EHU_SnareDrum_001.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "EHU_SnareDrum_001.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "EHU_SnareDrum_001.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "EHU_SnareDrum_001.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "EHU_SnareDrum_001.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "EHU_SnareDrum_001.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "EHU_SnareDrum_001.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "EHU_SnareDrum_001.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "EHU_SnareDrum_001.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "EHU_SnareDrum_001.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "EHU_SnareDrum_001.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "EHU_SnareDrum_001.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "EHU_SnareDrum_001.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "EHU_SnareDrum_001.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "EHU_SnareDrum_001.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "EHU_SnareDrum_001.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "EHU_SnareDrum_001.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "EHU_SnareDrum_001.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "RIM15.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "RIM15.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "RIM15.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "RIM15.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "RIM15.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "RIM15.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "RIM15.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "RIM15.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_kick7.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_kick7.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_kick7.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_kick7.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_kick7.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_kick7.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_kick7.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_kick7.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_kick7.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_kick7.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_kick7.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_kick7.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_kick7.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_kick7.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_kick7.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_kick7.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_kick7.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_kick7.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_kick7.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_kick7.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_kick7.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_kick7.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_kick7.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_kick7.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_kick7.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_kick7.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_kick7.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_kick7.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_kick7.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_kick7.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_kick7.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_kick7.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_kick7.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_kick7.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_kick7.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_kick7.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_kick7.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_kick7.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_kick7.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_kick7.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_kick7.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_kick7.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_kick7.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_kick7.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_kick7.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_kick7.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_kick7.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_kick7.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_kick7.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_kick7.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_kick7.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_kick7.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_kick7.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_kick7.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_kick7.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_kick7.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_kick7.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_kick7.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_kick7.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_kick7.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_kick7.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_kick7.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_kick7.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_kick7.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_kick7.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_kick7.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_kick7.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_kick7.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_kick7.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_kick7.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_kick7.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_kick7.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_kick7.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_kick7.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_kick7.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_kick7.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_kick7.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_kick7.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_kick7.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_kick7.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_kick7.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_kick7.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_kick7.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_kick7.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_kick7.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_kick7.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_kick7.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_kick7.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_kick7.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_kick7.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_kick7.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_kick7.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_kick7.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_kick7.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_kick7.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_kick7.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "VDE2 128BPM Progressive Kick.wav",
+        "use": "audio"
+      },
+      {
+        "file": "VDE2 128BPM Progressive Kick.wav",
+        "use": "audio"
+      },
+      {
+        "file": "VDE2 128BPM Progressive Kick.wav",
+        "use": "audio"
+      },
+      {
+        "file": "VDE2 128BPM Progressive Kick.wav",
+        "use": "audio"
+      },
+      {
+        "file": "VDE2 128BPM Progressive Kick.wav",
+        "use": "audio"
+      },
+      {
+        "file": "VDE2 128BPM Progressive Kick.wav",
+        "use": "audio"
+      },
+      {
+        "file": "VDE2 128BPM Progressive Kick.wav",
+        "use": "audio"
+      },
+      {
+        "file": "VDE2 128BPM Progressive Kick.wav",
+        "use": "audio"
+      },
+      {
+        "file": "VDE2 128BPM Progressive Kick.wav",
+        "use": "audio"
+      },
+      {
+        "file": "VDE2 128BPM Progressive Kick.wav",
+        "use": "audio"
+      },
+      {
+        "file": "VDE2 128BPM Progressive Kick.wav",
+        "use": "audio"
+      },
+      {
+        "file": "VDE2 128BPM Progressive Kick.wav",
+        "use": "audio"
+      },
+      {
+        "file": "VDE2 128BPM Progressive Kick.wav",
+        "use": "audio"
+      },
+      {
+        "file": "VDE2 128BPM Progressive Kick.wav",
+        "use": "audio"
+      },
+      {
+        "file": "VDE2 128BPM Progressive Kick.wav",
+        "use": "audio"
+      },
+      {
+        "file": "VDE2 128BPM Progressive Kick.wav",
+        "use": "audio"
+      },
+      {
+        "file": "VDE2 128BPM Progressive Kick.wav",
+        "use": "audio"
+      },
+      {
+        "file": "VDE2 128BPM Progressive Kick.wav",
+        "use": "audio"
+      },
+      {
+        "file": "VDE2 128BPM Progressive Kick.wav",
+        "use": "audio"
+      },
+      {
+        "file": "VDE2 128BPM Progressive Kick.wav",
+        "use": "audio"
+      },
+      {
+        "file": "VDE2 128BPM Progressive Kick.wav",
+        "use": "audio"
+      },
+      {
+        "file": "VDE2 128BPM Progressive Kick.wav",
+        "use": "audio"
+      },
+      {
+        "file": "VDE2 128BPM Progressive Kick.wav",
+        "use": "audio"
+      },
+      {
+        "file": "VDE2 128BPM Progressive Kick.wav",
+        "use": "audio"
+      },
+      {
+        "file": "VDE2 128BPM Progressive Kick.wav",
+        "use": "audio"
+      },
+      {
+        "file": "VDE2 128BPM Progressive Kick.wav",
+        "use": "audio"
+      },
+      {
+        "file": "VDE2 128BPM Progressive Kick.wav",
+        "use": "audio"
+      },
+      {
+        "file": "VDE2 128BPM Progressive Kick.wav",
+        "use": "audio"
+      },
+      {
+        "file": "VDE2 128BPM Progressive Kick.wav",
+        "use": "audio"
+      },
+      {
+        "file": "VDE2 128BPM Progressive Kick.wav",
+        "use": "audio"
+      },
+      {
+        "file": "VDE2 128BPM Progressive Kick.wav",
+        "use": "audio"
+      },
+      {
+        "file": "VDE2 128BPM Progressive Kick.wav",
+        "use": "audio"
+      },
+      {
+        "file": "VDE2 128BPM Progressive Kick.wav",
+        "use": "audio"
+      },
+      {
+        "file": "VDE2 128BPM Progressive Kick.wav",
+        "use": "audio"
+      },
+      {
+        "file": "VDE2 128BPM Progressive Kick.wav",
+        "use": "audio"
+      },
+      {
+        "file": "VDE2 128BPM Progressive Kick.wav",
+        "use": "audio"
+      },
+      {
+        "file": "VDE2 128BPM Progressive Kick.wav",
+        "use": "audio"
+      },
+      {
+        "file": "VDE2 128BPM Progressive Kick.wav",
+        "use": "audio"
+      },
+      {
+        "file": "VDE2 128BPM Progressive Kick.wav",
+        "use": "audio"
+      },
+      {
+        "file": "VDE2 128BPM Progressive Kick.wav",
+        "use": "audio"
+      },
+      {
+        "file": "VDE2 128BPM Progressive Kick.wav",
+        "use": "audio"
+      },
+      {
+        "file": "VDE2 128BPM Progressive Kick.wav",
+        "use": "audio"
+      },
+      {
+        "file": "VDE2 128BPM Progressive Kick.wav",
+        "use": "audio"
+      },
+      {
+        "file": "VDE2 128BPM Progressive Kick.wav",
+        "use": "audio"
+      },
+      {
+        "file": "VDE2 128BPM Progressive Kick.wav",
+        "use": "audio"
+      },
+      {
+        "file": "VDE2 128BPM Progressive Kick.wav",
+        "use": "audio"
+      },
+      {
+        "file": "VDE2 128BPM Progressive Kick.wav",
+        "use": "audio"
+      },
+      {
+        "file": "VDE2 128BPM Progressive Kick.wav",
+        "use": "audio"
+      },
+      {
+        "file": "VDE2 128BPM Progressive Kick.wav",
+        "use": "audio"
+      },
+      {
+        "file": "VDE2 128BPM Progressive Kick.wav",
+        "use": "audio"
+      },
+      {
+        "file": "VDE2 128BPM Progressive Kick.wav",
+        "use": "audio"
+      },
+      {
+        "file": "VDE2 128BPM Progressive Kick.wav",
+        "use": "audio"
+      },
+      {
+        "file": "VDE2 128BPM Progressive Kick.wav",
+        "use": "audio"
+      },
+      {
+        "file": "VDE2 128BPM Progressive Kick.wav",
+        "use": "audio"
+      },
+      {
+        "file": "VDE2 128BPM Progressive Kick.wav",
+        "use": "audio"
+      },
+      {
+        "file": "VDE2 128BPM Progressive Kick.wav",
+        "use": "audio"
+      },
+      {
+        "file": "VDE2 128BPM Progressive Kick.wav",
+        "use": "audio"
+      },
+      {
+        "file": "VDE2 128BPM Progressive Kick.wav",
+        "use": "audio"
+      },
+      {
+        "file": "VDE2 128BPM Progressive Kick.wav",
+        "use": "audio"
+      },
+      {
+        "file": "VDE2 128BPM Progressive Kick.wav",
+        "use": "audio"
+      },
+      {
+        "file": "VDE2 128BPM Progressive Kick.wav",
+        "use": "audio"
+      },
+      {
+        "file": "VDE2 128BPM Progressive Kick.wav",
+        "use": "audio"
+      },
+      {
+        "file": "VDE2 128BPM Progressive Kick.wav",
+        "use": "audio"
+      },
+      {
+        "file": "VDE2 128BPM Progressive Kick.wav",
+        "use": "audio"
+      },
+      {
+        "file": "VDE2 128BPM Progressive Kick.wav",
+        "use": "audio"
+      },
+      {
+        "file": "VDE2 128BPM Progressive Kick.wav",
+        "use": "audio"
+      },
+      {
+        "file": "VDE2 128BPM Progressive Kick.wav",
+        "use": "audio"
+      },
+      {
+        "file": "VDE2 128BPM Progressive Kick.wav",
+        "use": "audio"
+      },
+      {
+        "file": "VDE2 128BPM Progressive Kick.wav",
+        "use": "audio"
+      },
+      {
+        "file": "VDE2 128BPM Progressive Kick.wav",
+        "use": "audio"
+      },
+      {
+        "file": "VDE2 128BPM Progressive Kick.wav",
+        "use": "audio"
+      },
+      {
+        "file": "VDE2 128BPM Progressive Kick.wav",
+        "use": "audio"
+      },
+      {
+        "file": "VDE2 128BPM Progressive Kick.wav",
+        "use": "audio"
+      },
+      {
+        "file": "VDE2 128BPM Progressive Kick.wav",
+        "use": "audio"
+      },
+      {
+        "file": "VDE2 128BPM Progressive Kick.wav",
+        "use": "audio"
+      },
+      {
+        "file": "VDE2 128BPM Progressive Kick.wav",
+        "use": "audio"
+      },
+      {
+        "file": "VDE2 128BPM Progressive Kick.wav",
+        "use": "audio"
+      },
+      {
+        "file": "VDE2 128BPM Progressive Kick.wav",
+        "use": "audio"
+      },
+      {
+        "file": "VDE2 128BPM Progressive Kick.wav",
+        "use": "audio"
+      },
+      {
+        "file": "VDE2 128BPM Progressive Kick.wav",
+        "use": "audio"
+      },
+      {
+        "file": "VDE2 128BPM Progressive Kick.wav",
+        "use": "audio"
+      },
+      {
+        "file": "VDE2 128BPM Progressive Kick.wav",
+        "use": "audio"
+      },
+      {
+        "file": "VDE2 128BPM Progressive Kick.wav",
+        "use": "audio"
+      },
+      {
+        "file": "VDE2 128BPM Progressive Kick.wav",
+        "use": "audio"
+      },
+      {
+        "file": "VDE2 128BPM Progressive Kick.wav",
+        "use": "audio"
+      },
+      {
+        "file": "VDE2 128BPM Progressive Kick.wav",
+        "use": "audio"
+      },
+      {
+        "file": "VDE2 128BPM Progressive Kick.wav",
+        "use": "audio"
+      },
+      {
+        "file": "VDE2 128BPM Progressive Kick.wav",
+        "use": "audio"
+      },
+      {
+        "file": "VDE2 128BPM Progressive Kick.wav",
+        "use": "audio"
+      },
+      {
+        "file": "VDE2 128BPM Progressive Kick.wav",
+        "use": "audio"
+      },
+      {
+        "file": "VDE2 128BPM Progressive Kick.wav",
+        "use": "audio"
+      },
+      {
+        "file": "VDE2 128BPM Progressive Kick.wav",
+        "use": "audio"
+      },
+      {
+        "file": "VVE2 Vocal FX 013.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "VVE2 Vocal FX 013.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "VVE2 Vocal FX 013.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "VVE2 Vocal FX 013.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "VVE2 Vocal FX 013.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "VVE2 Vocal FX 013.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "VVE2 Vocal FX 013.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "VVE2 Vocal FX 013.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "VVE2 Vocal FX 013.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "VVE2 Vocal FX 013.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "VVE2 Vocal FX 013.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "VVE2 Vocal FX 013.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "VVE2 Vocal FX 013.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "VVE2 Vocal FX 013.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "VVE2 Vocal FX 013.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "VVE2 Vocal FX 013.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "VVE2 Vocal FX 013.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "fx 06.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "fx 06.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "fx 06.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "fx 06.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "fx 06.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "fx 06.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "fx 06.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "fx 06.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "fx 06.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "fx 06.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "fx 06.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "fx 06.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "CRASH11.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "CRASH11.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "CLAP23.wav",
+        "use": "audio"
+      },
+      {
+        "file": "CLAP23.wav",
+        "use": "audio"
+      },
+      {
+        "file": "eeth_drm_snare6.wav",
+        "use": "audio",
+        "kind": "processed"
+      },
+      {
+        "file": "upfilter 14.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "VDUB2 Fill In 031.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "VDUB2 Fill In 031.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "VDUB2 Fill In 031.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_hat4.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_hat4.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_hat4.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_hat4.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_hat4.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_hat4.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_hat4.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_hat4.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_hat4.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_hat4.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_hat4.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_hat4.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_hat4.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_hat4.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_hat4.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_hat4.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_hat4.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_hat4.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_hat4.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_hat4.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_hat4.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_hat4.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_hat4.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_hat4.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_hat4.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_hat4.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_hat4.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_hat4.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_hat4.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_hat4.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_hat4.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_hat4.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_hat4.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_hat4.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_hat4.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_hat4.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_hat4.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_hat4.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_hat4.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_hat4.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_hat4.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_hat4.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_hat4.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_hat4.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_hat4.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_hat4.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_hat4.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_hat4.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_hat4.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_hat4.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_hat4.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_hat4.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_hat4.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_hat4.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_hat4.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_hat4.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_hat4.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_hat4.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_hat4.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_hat4.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_hat4.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_hat4.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_hat4.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_hat4.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_hat4.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_hat4.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_hat4.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_hat4.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_hat4.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_hat4.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_hat4.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_hat4.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_hat4.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_hat4.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_hat4.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_hat4.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_hat4.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_hat4.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_hat4.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_hat4.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_hat4.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_hat4.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_hat4.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_hat4.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_hat4.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_hat4.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_hat4.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_hat4.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_hat4.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_hat4.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_hat4.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_hat4.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_hat4.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_hat4.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_hat4.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_hat4.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_hat4.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_hat4.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_hat4.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_hat4.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_hat4.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_hat4.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_hat4.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_hat4.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_hat4.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_hat4.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_hat4.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_hat4.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_hat4.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_hat4.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_hat4.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_hat4.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_hat4.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_hat4.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_hat4.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_hat4.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_hat4.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_hat4.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_hat4.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_hat4.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_hat4.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_hat4.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_hat4.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_hat4.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_hat4.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_hat4.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_hat4.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_hat4.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "EHU_909_ClosedHat4.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "EHU_909_ClosedHat4.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "EHU_909_ClosedHat4.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "EHU_909_ClosedHat4.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "EHU_909_ClosedHat4.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "EHU_909_ClosedHat4.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "EHU_909_ClosedHat4.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "EHU_909_ClosedHat4.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "EHU_909_ClosedHat4.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "EHU_909_ClosedHat4.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "EHU_909_ClosedHat4.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "EHU_909_ClosedHat4.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "EHU_909_ClosedHat4.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "EHU_909_ClosedHat4.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "EHU_909_ClosedHat4.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "EHU_909_ClosedHat4.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "EHU_909_ClosedHat4.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "EHU_909_ClosedHat4.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "EHU_909_ClosedHat4.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "EHU_909_ClosedHat4.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "EHU_909_ClosedHat4.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "EHU_909_ClosedHat4.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "EHU_909_ClosedHat4.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "EHU_909_ClosedHat4.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "EHU_909_ClosedHat4.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "EHU_909_ClosedHat4.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "EHU_909_ClosedHat4.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "EHU_909_ClosedHat4.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "EHU_909_ClosedHat4.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "EHU_909_ClosedHat4.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "EHU_909_ClosedHat4.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "EHU_909_ClosedHat4.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "EHU_909_ClosedHat4.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "EHU_909_ClosedHat4.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "EHU_909_ClosedHat4.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "EHU_909_ClosedHat4.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "EHU_909_ClosedHat4.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "EHU_909_ClosedHat4.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "EHU_909_ClosedHat4.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "EHU_909_ClosedHat4.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "EHU_909_ClosedHat4.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "EHU_909_ClosedHat4.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "EHU_909_ClosedHat4.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "EHU_909_ClosedHat4.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "EHU_909_ClosedHat4.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "EHU_909_ClosedHat4.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "EHU_909_ClosedHat4.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "EHU_909_ClosedHat4.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "EHU_909_ClosedHat4.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "EHU_909_ClosedHat4.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "EHU_909_ClosedHat4.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "EHU_909_ClosedHat4.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "EHU_909_ClosedHat4.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "EHU_909_ClosedHat4.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "EHU_909_ClosedHat4.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "EHU_909_ClosedHat4.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "EHU_909_ClosedHat4.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "EHU_909_ClosedHat4.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "EHU_909_ClosedHat4.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "EHU_909_ClosedHat4.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "EHU_909_ClosedHat4.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "EHU_909_ClosedHat4.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "EHU_909_ClosedHat4.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "EHU_909_ClosedHat4.wav",
+        "use": "audio",
+        "kind": "imported"
+      }
+    ]
+  },
+  "22_06_2015_B_138_9.6.2.als": {
+    "dawType": "Ableton Live",
+    "dawVersion": "9.6",
+    "bpm": 138.0,
+    "key": null,
+    "markers": [],
+    "stats": {
+      "audio": 13,
+      "midi": 4,
+      "instrument": 0,
+      "sampler": 0,
+      "bus": 3,
+      "folder": 0,
+      "plugins": [
+        "Serum",
+        "Sonalksis Creative Filter Stereo (64 bit)",
+        "Sylenth1"
+      ],
+      "midiClips": 6
+    },
+    "midiClips": [
+      {
+        "name": "",
+        "track": "1-5th Stab Lead",
+        "ppq": 960,
+        "lengthTicks": 26880,
+        "notes": 114,
+        "events": 0,
+        "content": "0c48ce2d8d3f"
+      },
+      {
+        "name": "",
+        "track": "1-5th Stab Lead",
+        "ppq": 960,
+        "lengthTicks": 30720,
+        "notes": 129,
+        "events": 0,
+        "content": "a80cc652274a"
+      },
+      {
+        "name": "",
+        "track": "8-Sylenth1",
+        "ppq": 960,
+        "lengthTicks": 23040,
+        "notes": 27,
+        "events": 0,
+        "content": "cecfc85540cd"
+      },
+      {
+        "name": "",
+        "track": "8-Sylenth1",
+        "ppq": 960,
+        "lengthTicks": 30720,
+        "notes": 35,
+        "events": 0,
+        "content": "5d3f9b3d5750"
+      },
+      {
+        "name": "",
+        "track": "9-Serum_x64",
+        "ppq": 960,
+        "lengthTicks": 23040,
+        "notes": 24,
+        "events": 0,
+        "content": "bc8e73e46909"
+      },
+      {
+        "name": "",
+        "track": "9-Serum_x64",
+        "ppq": 960,
+        "lengthTicks": 30720,
+        "notes": 32,
+        "events": 0,
+        "content": "41bd532fc8c7"
+      }
+    ],
+    "sampleReferences": [
+      {
+        "file": "EHU_SnareDrum_001.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "EHU_SnareDrum_001.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "EHU_SnareDrum_001.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "EHU_SnareDrum_001.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "EHU_SnareDrum_001.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "EHU_SnareDrum_001.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "EHU_SnareDrum_001.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "EHU_SnareDrum_001.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "EHU_SnareDrum_001.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "EHU_SnareDrum_001.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "EHU_SnareDrum_001.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "EHU_SnareDrum_001.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "EHU_SnareDrum_001.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "EHU_SnareDrum_001.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "EHU_SnareDrum_001.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "EHU_SnareDrum_001.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "EHU_SnareDrum_001.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "EHU_SnareDrum_001.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "EHU_SnareDrum_001.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "EHU_SnareDrum_001.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "EHU_SnareDrum_001.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "EHU_SnareDrum_001.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "EHU_SnareDrum_001.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "EHU_SnareDrum_001.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "EHU_SnareDrum_001.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "EHU_SnareDrum_001.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "EHU_SnareDrum_001.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "EHU_SnareDrum_001.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "EHU_SnareDrum_001.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "EHU_SnareDrum_001.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "EHU_SnareDrum_001.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "EHU_SnareDrum_001.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "EHU_SnareDrum_001.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "EHU_SnareDrum_001.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "EHU_SnareDrum_001.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "EHU_SnareDrum_001.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "RIM15.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "RIM15.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "RIM15.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "RIM15.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "RIM15.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "RIM15.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "RIM15.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "RIM15.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_kick7.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_kick7.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_kick7.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_kick7.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_kick7.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_kick7.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_kick7.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_kick7.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_kick7.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_kick7.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_kick7.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_kick7.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_kick7.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_kick7.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_kick7.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_kick7.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_kick7.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_kick7.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_kick7.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_kick7.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_kick7.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_kick7.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_kick7.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_kick7.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_kick7.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_kick7.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_kick7.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_kick7.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_kick7.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_kick7.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_kick7.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_kick7.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_kick7.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_kick7.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_kick7.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_kick7.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_kick7.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_kick7.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_kick7.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_kick7.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_kick7.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_kick7.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_kick7.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_kick7.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_kick7.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_kick7.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_kick7.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_kick7.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_kick7.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_kick7.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_kick7.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_kick7.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_kick7.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_kick7.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_kick7.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_kick7.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_kick7.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_kick7.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_kick7.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_kick7.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_kick7.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_kick7.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_kick7.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_kick7.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_kick7.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_kick7.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_kick7.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_kick7.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_kick7.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_kick7.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_kick7.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_kick7.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_kick7.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_kick7.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_kick7.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_kick7.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_kick7.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_kick7.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_kick7.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_kick7.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_kick7.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_kick7.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_kick7.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_kick7.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_kick7.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_kick7.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_kick7.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_kick7.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_kick7.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_kick7.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_kick7.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_kick7.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_kick7.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_kick7.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_kick7.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_kick7.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "VDE2 128BPM Progressive Kick.wav",
+        "use": "audio"
+      },
+      {
+        "file": "VDE2 128BPM Progressive Kick.wav",
+        "use": "audio"
+      },
+      {
+        "file": "VDE2 128BPM Progressive Kick.wav",
+        "use": "audio"
+      },
+      {
+        "file": "VDE2 128BPM Progressive Kick.wav",
+        "use": "audio"
+      },
+      {
+        "file": "VDE2 128BPM Progressive Kick.wav",
+        "use": "audio"
+      },
+      {
+        "file": "VDE2 128BPM Progressive Kick.wav",
+        "use": "audio"
+      },
+      {
+        "file": "VDE2 128BPM Progressive Kick.wav",
+        "use": "audio"
+      },
+      {
+        "file": "VDE2 128BPM Progressive Kick.wav",
+        "use": "audio"
+      },
+      {
+        "file": "VDE2 128BPM Progressive Kick.wav",
+        "use": "audio"
+      },
+      {
+        "file": "VDE2 128BPM Progressive Kick.wav",
+        "use": "audio"
+      },
+      {
+        "file": "VDE2 128BPM Progressive Kick.wav",
+        "use": "audio"
+      },
+      {
+        "file": "VDE2 128BPM Progressive Kick.wav",
+        "use": "audio"
+      },
+      {
+        "file": "VDE2 128BPM Progressive Kick.wav",
+        "use": "audio"
+      },
+      {
+        "file": "VDE2 128BPM Progressive Kick.wav",
+        "use": "audio"
+      },
+      {
+        "file": "VDE2 128BPM Progressive Kick.wav",
+        "use": "audio"
+      },
+      {
+        "file": "VDE2 128BPM Progressive Kick.wav",
+        "use": "audio"
+      },
+      {
+        "file": "VDE2 128BPM Progressive Kick.wav",
+        "use": "audio"
+      },
+      {
+        "file": "VDE2 128BPM Progressive Kick.wav",
+        "use": "audio"
+      },
+      {
+        "file": "VDE2 128BPM Progressive Kick.wav",
+        "use": "audio"
+      },
+      {
+        "file": "VDE2 128BPM Progressive Kick.wav",
+        "use": "audio"
+      },
+      {
+        "file": "VDE2 128BPM Progressive Kick.wav",
+        "use": "audio"
+      },
+      {
+        "file": "VDE2 128BPM Progressive Kick.wav",
+        "use": "audio"
+      },
+      {
+        "file": "VDE2 128BPM Progressive Kick.wav",
+        "use": "audio"
+      },
+      {
+        "file": "VDE2 128BPM Progressive Kick.wav",
+        "use": "audio"
+      },
+      {
+        "file": "VDE2 128BPM Progressive Kick.wav",
+        "use": "audio"
+      },
+      {
+        "file": "VDE2 128BPM Progressive Kick.wav",
+        "use": "audio"
+      },
+      {
+        "file": "VDE2 128BPM Progressive Kick.wav",
+        "use": "audio"
+      },
+      {
+        "file": "VDE2 128BPM Progressive Kick.wav",
+        "use": "audio"
+      },
+      {
+        "file": "VDE2 128BPM Progressive Kick.wav",
+        "use": "audio"
+      },
+      {
+        "file": "VDE2 128BPM Progressive Kick.wav",
+        "use": "audio"
+      },
+      {
+        "file": "VDE2 128BPM Progressive Kick.wav",
+        "use": "audio"
+      },
+      {
+        "file": "VDE2 128BPM Progressive Kick.wav",
+        "use": "audio"
+      },
+      {
+        "file": "VDE2 128BPM Progressive Kick.wav",
+        "use": "audio"
+      },
+      {
+        "file": "VDE2 128BPM Progressive Kick.wav",
+        "use": "audio"
+      },
+      {
+        "file": "VDE2 128BPM Progressive Kick.wav",
+        "use": "audio"
+      },
+      {
+        "file": "VDE2 128BPM Progressive Kick.wav",
+        "use": "audio"
+      },
+      {
+        "file": "VDE2 128BPM Progressive Kick.wav",
+        "use": "audio"
+      },
+      {
+        "file": "VDE2 128BPM Progressive Kick.wav",
+        "use": "audio"
+      },
+      {
+        "file": "VDE2 128BPM Progressive Kick.wav",
+        "use": "audio"
+      },
+      {
+        "file": "VDE2 128BPM Progressive Kick.wav",
+        "use": "audio"
+      },
+      {
+        "file": "VDE2 128BPM Progressive Kick.wav",
+        "use": "audio"
+      },
+      {
+        "file": "VDE2 128BPM Progressive Kick.wav",
+        "use": "audio"
+      },
+      {
+        "file": "VDE2 128BPM Progressive Kick.wav",
+        "use": "audio"
+      },
+      {
+        "file": "VDE2 128BPM Progressive Kick.wav",
+        "use": "audio"
+      },
+      {
+        "file": "VDE2 128BPM Progressive Kick.wav",
+        "use": "audio"
+      },
+      {
+        "file": "VDE2 128BPM Progressive Kick.wav",
+        "use": "audio"
+      },
+      {
+        "file": "VDE2 128BPM Progressive Kick.wav",
+        "use": "audio"
+      },
+      {
+        "file": "VDE2 128BPM Progressive Kick.wav",
+        "use": "audio"
+      },
+      {
+        "file": "VDE2 128BPM Progressive Kick.wav",
+        "use": "audio"
+      },
+      {
+        "file": "VDE2 128BPM Progressive Kick.wav",
+        "use": "audio"
+      },
+      {
+        "file": "VDE2 128BPM Progressive Kick.wav",
+        "use": "audio"
+      },
+      {
+        "file": "VDE2 128BPM Progressive Kick.wav",
+        "use": "audio"
+      },
+      {
+        "file": "VDE2 128BPM Progressive Kick.wav",
+        "use": "audio"
+      },
+      {
+        "file": "VDE2 128BPM Progressive Kick.wav",
+        "use": "audio"
+      },
+      {
+        "file": "VDE2 128BPM Progressive Kick.wav",
+        "use": "audio"
+      },
+      {
+        "file": "VDE2 128BPM Progressive Kick.wav",
+        "use": "audio"
+      },
+      {
+        "file": "VDE2 128BPM Progressive Kick.wav",
+        "use": "audio"
+      },
+      {
+        "file": "VDE2 128BPM Progressive Kick.wav",
+        "use": "audio"
+      },
+      {
+        "file": "VDE2 128BPM Progressive Kick.wav",
+        "use": "audio"
+      },
+      {
+        "file": "VDE2 128BPM Progressive Kick.wav",
+        "use": "audio"
+      },
+      {
+        "file": "VDE2 128BPM Progressive Kick.wav",
+        "use": "audio"
+      },
+      {
+        "file": "VDE2 128BPM Progressive Kick.wav",
+        "use": "audio"
+      },
+      {
+        "file": "VDE2 128BPM Progressive Kick.wav",
+        "use": "audio"
+      },
+      {
+        "file": "VDE2 128BPM Progressive Kick.wav",
+        "use": "audio"
+      },
+      {
+        "file": "VDE2 128BPM Progressive Kick.wav",
+        "use": "audio"
+      },
+      {
+        "file": "VDE2 128BPM Progressive Kick.wav",
+        "use": "audio"
+      },
+      {
+        "file": "VDE2 128BPM Progressive Kick.wav",
+        "use": "audio"
+      },
+      {
+        "file": "VDE2 128BPM Progressive Kick.wav",
+        "use": "audio"
+      },
+      {
+        "file": "VDE2 128BPM Progressive Kick.wav",
+        "use": "audio"
+      },
+      {
+        "file": "VDE2 128BPM Progressive Kick.wav",
+        "use": "audio"
+      },
+      {
+        "file": "VDE2 128BPM Progressive Kick.wav",
+        "use": "audio"
+      },
+      {
+        "file": "VDE2 128BPM Progressive Kick.wav",
+        "use": "audio"
+      },
+      {
+        "file": "VDE2 128BPM Progressive Kick.wav",
+        "use": "audio"
+      },
+      {
+        "file": "VDE2 128BPM Progressive Kick.wav",
+        "use": "audio"
+      },
+      {
+        "file": "VDE2 128BPM Progressive Kick.wav",
+        "use": "audio"
+      },
+      {
+        "file": "VDE2 128BPM Progressive Kick.wav",
+        "use": "audio"
+      },
+      {
+        "file": "VDE2 128BPM Progressive Kick.wav",
+        "use": "audio"
+      },
+      {
+        "file": "VDE2 128BPM Progressive Kick.wav",
+        "use": "audio"
+      },
+      {
+        "file": "VDE2 128BPM Progressive Kick.wav",
+        "use": "audio"
+      },
+      {
+        "file": "VDE2 128BPM Progressive Kick.wav",
+        "use": "audio"
+      },
+      {
+        "file": "VDE2 128BPM Progressive Kick.wav",
+        "use": "audio"
+      },
+      {
+        "file": "VDE2 128BPM Progressive Kick.wav",
+        "use": "audio"
+      },
+      {
+        "file": "VDE2 128BPM Progressive Kick.wav",
+        "use": "audio"
+      },
+      {
+        "file": "VDE2 128BPM Progressive Kick.wav",
+        "use": "audio"
+      },
+      {
+        "file": "VDE2 128BPM Progressive Kick.wav",
+        "use": "audio"
+      },
+      {
+        "file": "VDE2 128BPM Progressive Kick.wav",
+        "use": "audio"
+      },
+      {
+        "file": "VDE2 128BPM Progressive Kick.wav",
+        "use": "audio"
+      },
+      {
+        "file": "VDE2 128BPM Progressive Kick.wav",
+        "use": "audio"
+      },
+      {
+        "file": "VDE2 128BPM Progressive Kick.wav",
+        "use": "audio"
+      },
+      {
+        "file": "VDE2 128BPM Progressive Kick.wav",
+        "use": "audio"
+      },
+      {
+        "file": "VDE2 128BPM Progressive Kick.wav",
+        "use": "audio"
+      },
+      {
+        "file": "VDE2 128BPM Progressive Kick.wav",
+        "use": "audio"
+      },
+      {
+        "file": "VVE2 Vocal FX 013.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "VVE2 Vocal FX 013.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "VVE2 Vocal FX 013.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "VVE2 Vocal FX 013.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "VVE2 Vocal FX 013.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "VVE2 Vocal FX 013.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "VVE2 Vocal FX 013.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "VVE2 Vocal FX 013.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "VVE2 Vocal FX 013.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "VVE2 Vocal FX 013.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "VVE2 Vocal FX 013.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "VVE2 Vocal FX 013.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "VVE2 Vocal FX 013.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "VVE2 Vocal FX 013.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "VVE2 Vocal FX 013.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "VVE2 Vocal FX 013.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "VVE2 Vocal FX 013.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "fx 06.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "fx 06.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "fx 06.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "fx 06.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "fx 06.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "fx 06.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "fx 06.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "fx 06.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "fx 06.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "fx 06.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "fx 06.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "fx 06.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "CRASH11.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "CRASH11.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "CLAP23.wav",
+        "use": "audio"
+      },
+      {
+        "file": "CLAP23.wav",
+        "use": "audio"
+      },
+      {
+        "file": "eeth_drm_snare6.wav",
+        "use": "audio",
+        "kind": "processed"
+      },
+      {
+        "file": "upfilter 14.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "VDUB2 Fill In 031.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "VDUB2 Fill In 031.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "VDUB2 Fill In 031.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_hat4.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_hat4.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_hat4.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_hat4.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_hat4.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_hat4.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_hat4.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_hat4.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_hat4.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_hat4.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_hat4.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_hat4.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_hat4.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_hat4.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_hat4.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_hat4.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_hat4.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_hat4.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_hat4.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_hat4.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_hat4.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_hat4.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_hat4.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_hat4.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_hat4.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_hat4.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_hat4.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_hat4.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_hat4.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_hat4.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_hat4.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_hat4.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_hat4.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_hat4.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_hat4.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_hat4.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_hat4.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_hat4.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_hat4.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_hat4.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_hat4.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_hat4.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_hat4.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_hat4.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_hat4.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_hat4.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_hat4.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_hat4.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_hat4.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_hat4.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_hat4.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_hat4.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_hat4.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_hat4.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_hat4.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_hat4.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_hat4.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_hat4.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_hat4.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_hat4.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_hat4.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_hat4.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_hat4.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_hat4.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_hat4.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_hat4.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_hat4.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_hat4.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_hat4.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_hat4.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_hat4.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_hat4.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_hat4.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_hat4.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_hat4.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_hat4.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_hat4.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_hat4.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_hat4.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_hat4.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_hat4.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_hat4.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_hat4.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_hat4.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_hat4.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_hat4.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_hat4.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_hat4.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_hat4.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_hat4.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_hat4.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_hat4.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_hat4.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_hat4.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_hat4.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_hat4.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_hat4.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_hat4.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_hat4.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_hat4.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_hat4.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_hat4.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_hat4.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_hat4.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_hat4.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_hat4.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_hat4.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_hat4.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_hat4.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_hat4.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_hat4.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_hat4.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_hat4.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_hat4.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_hat4.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_hat4.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_hat4.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_hat4.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_hat4.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_hat4.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_hat4.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_hat4.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_hat4.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_hat4.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_hat4.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_hat4.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_hat4.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_hat4.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "EHU_909_ClosedHat4.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "EHU_909_ClosedHat4.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "EHU_909_ClosedHat4.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "EHU_909_ClosedHat4.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "EHU_909_ClosedHat4.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "EHU_909_ClosedHat4.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "EHU_909_ClosedHat4.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "EHU_909_ClosedHat4.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "EHU_909_ClosedHat4.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "EHU_909_ClosedHat4.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "EHU_909_ClosedHat4.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "EHU_909_ClosedHat4.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "EHU_909_ClosedHat4.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "EHU_909_ClosedHat4.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "EHU_909_ClosedHat4.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "EHU_909_ClosedHat4.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "EHU_909_ClosedHat4.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "EHU_909_ClosedHat4.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "EHU_909_ClosedHat4.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "EHU_909_ClosedHat4.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "EHU_909_ClosedHat4.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "EHU_909_ClosedHat4.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "EHU_909_ClosedHat4.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "EHU_909_ClosedHat4.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "EHU_909_ClosedHat4.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "EHU_909_ClosedHat4.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "EHU_909_ClosedHat4.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "EHU_909_ClosedHat4.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "EHU_909_ClosedHat4.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "EHU_909_ClosedHat4.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "EHU_909_ClosedHat4.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "EHU_909_ClosedHat4.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "EHU_909_ClosedHat4.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "EHU_909_ClosedHat4.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "EHU_909_ClosedHat4.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "EHU_909_ClosedHat4.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "EHU_909_ClosedHat4.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "EHU_909_ClosedHat4.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "EHU_909_ClosedHat4.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "EHU_909_ClosedHat4.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "EHU_909_ClosedHat4.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "EHU_909_ClosedHat4.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "EHU_909_ClosedHat4.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "EHU_909_ClosedHat4.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "EHU_909_ClosedHat4.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "EHU_909_ClosedHat4.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "EHU_909_ClosedHat4.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "EHU_909_ClosedHat4.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "EHU_909_ClosedHat4.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "EHU_909_ClosedHat4.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "EHU_909_ClosedHat4.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "EHU_909_ClosedHat4.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "EHU_909_ClosedHat4.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "EHU_909_ClosedHat4.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "EHU_909_ClosedHat4.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "EHU_909_ClosedHat4.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "EHU_909_ClosedHat4.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "EHU_909_ClosedHat4.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "EHU_909_ClosedHat4.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "EHU_909_ClosedHat4.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "EHU_909_ClosedHat4.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "EHU_909_ClosedHat4.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "EHU_909_ClosedHat4.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "EHU_909_ClosedHat4.wav",
+        "use": "audio",
+        "kind": "imported"
+      }
+    ]
+  },
+  "22_06_2015_B_138_Master.als": {
+    "dawType": "Ableton Live",
+    "dawVersion": "9.1",
+    "bpm": 138.0,
+    "key": null,
+    "markers": [],
+    "stats": {
+      "audio": 13,
+      "midi": 4,
+      "instrument": 0,
+      "sampler": 0,
+      "bus": 3,
+      "folder": 0,
+      "plugins": [
+        "C1 comp Stereo",
+        "Center Stereo",
+        "L2 Stereo",
+        "L3 UltraMaximizer Stereo",
+        "LinMB Stereo",
+        "PAZ- Analyzer Stereo",
+        "PuigChild 670 Stereo",
+        "RBass Stereo",
+        "REQ 6 Stereo",
+        "Serum",
+        "Sonalksis Creative Filter Stereo (64 bit)",
+        "SSLComp Stereo",
+        "SSLGChannel Stereo",
+        "Sylenth1"
+      ],
+      "midiClips": 6
+    },
+    "midiClips": [
+      {
+        "name": "",
+        "track": "1-5th Stab Lead",
+        "ppq": 960,
+        "lengthTicks": 26880,
+        "notes": 114,
+        "events": 0,
+        "content": "0c48ce2d8d3f"
+      },
+      {
+        "name": "",
+        "track": "1-5th Stab Lead",
+        "ppq": 960,
+        "lengthTicks": 30720,
+        "notes": 129,
+        "events": 0,
+        "content": "a80cc652274a"
+      },
+      {
+        "name": "",
+        "track": "8-Sylenth1",
+        "ppq": 960,
+        "lengthTicks": 23040,
+        "notes": 27,
+        "events": 0,
+        "content": "cecfc85540cd"
+      },
+      {
+        "name": "",
+        "track": "8-Sylenth1",
+        "ppq": 960,
+        "lengthTicks": 30720,
+        "notes": 35,
+        "events": 0,
+        "content": "5d3f9b3d5750"
+      },
+      {
+        "name": "",
+        "track": "9-Serum_x64",
+        "ppq": 960,
+        "lengthTicks": 23040,
+        "notes": 24,
+        "events": 0,
+        "content": "bc8e73e46909"
+      },
+      {
+        "name": "",
+        "track": "9-Serum_x64",
+        "ppq": 960,
+        "lengthTicks": 30720,
+        "notes": 32,
+        "events": 0,
+        "content": "41bd532fc8c7"
+      }
+    ],
+    "sampleReferences": [
+      {
+        "file": "EHU_SnareDrum_001.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "EHU_SnareDrum_001.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "EHU_SnareDrum_001.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "EHU_SnareDrum_001.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "EHU_SnareDrum_001.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "EHU_SnareDrum_001.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "EHU_SnareDrum_001.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "EHU_SnareDrum_001.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "EHU_SnareDrum_001.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "EHU_SnareDrum_001.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "EHU_SnareDrum_001.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "EHU_SnareDrum_001.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "EHU_SnareDrum_001.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "EHU_SnareDrum_001.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "EHU_SnareDrum_001.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "EHU_SnareDrum_001.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "EHU_SnareDrum_001.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "EHU_SnareDrum_001.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "EHU_SnareDrum_001.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "EHU_SnareDrum_001.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "EHU_SnareDrum_001.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "EHU_SnareDrum_001.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "EHU_SnareDrum_001.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "EHU_SnareDrum_001.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "EHU_SnareDrum_001.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "EHU_SnareDrum_001.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "EHU_SnareDrum_001.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "EHU_SnareDrum_001.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "EHU_SnareDrum_001.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "EHU_SnareDrum_001.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "EHU_SnareDrum_001.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "EHU_SnareDrum_001.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "EHU_SnareDrum_001.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "EHU_SnareDrum_001.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "EHU_SnareDrum_001.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "EHU_SnareDrum_001.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "RIM15.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "RIM15.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "RIM15.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "RIM15.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "RIM15.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "RIM15.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "RIM15.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "RIM15.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_kick7.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_kick7.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_kick7.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_kick7.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_kick7.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_kick7.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_kick7.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_kick7.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_kick7.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_kick7.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_kick7.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_kick7.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_kick7.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_kick7.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_kick7.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_kick7.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_kick7.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_kick7.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_kick7.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_kick7.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_kick7.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_kick7.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_kick7.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_kick7.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_kick7.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_kick7.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_kick7.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_kick7.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_kick7.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_kick7.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_kick7.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_kick7.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_kick7.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_kick7.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_kick7.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_kick7.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_kick7.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_kick7.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_kick7.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_kick7.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_kick7.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_kick7.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_kick7.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_kick7.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_kick7.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_kick7.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_kick7.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_kick7.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_kick7.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_kick7.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_kick7.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_kick7.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_kick7.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_kick7.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_kick7.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_kick7.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_kick7.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_kick7.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_kick7.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_kick7.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_kick7.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_kick7.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_kick7.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_kick7.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_kick7.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_kick7.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_kick7.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_kick7.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_kick7.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_kick7.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_kick7.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_kick7.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_kick7.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_kick7.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_kick7.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_kick7.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_kick7.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_kick7.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_kick7.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_kick7.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_kick7.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_kick7.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_kick7.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_kick7.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_kick7.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_kick7.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_kick7.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_kick7.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_kick7.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_kick7.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_kick7.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_kick7.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_kick7.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_kick7.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_kick7.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_kick7.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "VDE2 128BPM Progressive Kick.wav",
+        "use": "audio"
+      },
+      {
+        "file": "VDE2 128BPM Progressive Kick.wav",
+        "use": "audio"
+      },
+      {
+        "file": "VDE2 128BPM Progressive Kick.wav",
+        "use": "audio"
+      },
+      {
+        "file": "VDE2 128BPM Progressive Kick.wav",
+        "use": "audio"
+      },
+      {
+        "file": "VDE2 128BPM Progressive Kick.wav",
+        "use": "audio"
+      },
+      {
+        "file": "VDE2 128BPM Progressive Kick.wav",
+        "use": "audio"
+      },
+      {
+        "file": "VDE2 128BPM Progressive Kick.wav",
+        "use": "audio"
+      },
+      {
+        "file": "VDE2 128BPM Progressive Kick.wav",
+        "use": "audio"
+      },
+      {
+        "file": "VDE2 128BPM Progressive Kick.wav",
+        "use": "audio"
+      },
+      {
+        "file": "VDE2 128BPM Progressive Kick.wav",
+        "use": "audio"
+      },
+      {
+        "file": "VDE2 128BPM Progressive Kick.wav",
+        "use": "audio"
+      },
+      {
+        "file": "VDE2 128BPM Progressive Kick.wav",
+        "use": "audio"
+      },
+      {
+        "file": "VDE2 128BPM Progressive Kick.wav",
+        "use": "audio"
+      },
+      {
+        "file": "VDE2 128BPM Progressive Kick.wav",
+        "use": "audio"
+      },
+      {
+        "file": "VDE2 128BPM Progressive Kick.wav",
+        "use": "audio"
+      },
+      {
+        "file": "VDE2 128BPM Progressive Kick.wav",
+        "use": "audio"
+      },
+      {
+        "file": "VDE2 128BPM Progressive Kick.wav",
+        "use": "audio"
+      },
+      {
+        "file": "VDE2 128BPM Progressive Kick.wav",
+        "use": "audio"
+      },
+      {
+        "file": "VDE2 128BPM Progressive Kick.wav",
+        "use": "audio"
+      },
+      {
+        "file": "VDE2 128BPM Progressive Kick.wav",
+        "use": "audio"
+      },
+      {
+        "file": "VDE2 128BPM Progressive Kick.wav",
+        "use": "audio"
+      },
+      {
+        "file": "VDE2 128BPM Progressive Kick.wav",
+        "use": "audio"
+      },
+      {
+        "file": "VDE2 128BPM Progressive Kick.wav",
+        "use": "audio"
+      },
+      {
+        "file": "VDE2 128BPM Progressive Kick.wav",
+        "use": "audio"
+      },
+      {
+        "file": "VDE2 128BPM Progressive Kick.wav",
+        "use": "audio"
+      },
+      {
+        "file": "VDE2 128BPM Progressive Kick.wav",
+        "use": "audio"
+      },
+      {
+        "file": "VDE2 128BPM Progressive Kick.wav",
+        "use": "audio"
+      },
+      {
+        "file": "VDE2 128BPM Progressive Kick.wav",
+        "use": "audio"
+      },
+      {
+        "file": "VDE2 128BPM Progressive Kick.wav",
+        "use": "audio"
+      },
+      {
+        "file": "VDE2 128BPM Progressive Kick.wav",
+        "use": "audio"
+      },
+      {
+        "file": "VDE2 128BPM Progressive Kick.wav",
+        "use": "audio"
+      },
+      {
+        "file": "VDE2 128BPM Progressive Kick.wav",
+        "use": "audio"
+      },
+      {
+        "file": "VDE2 128BPM Progressive Kick.wav",
+        "use": "audio"
+      },
+      {
+        "file": "VDE2 128BPM Progressive Kick.wav",
+        "use": "audio"
+      },
+      {
+        "file": "VDE2 128BPM Progressive Kick.wav",
+        "use": "audio"
+      },
+      {
+        "file": "VDE2 128BPM Progressive Kick.wav",
+        "use": "audio"
+      },
+      {
+        "file": "VDE2 128BPM Progressive Kick.wav",
+        "use": "audio"
+      },
+      {
+        "file": "VDE2 128BPM Progressive Kick.wav",
+        "use": "audio"
+      },
+      {
+        "file": "VDE2 128BPM Progressive Kick.wav",
+        "use": "audio"
+      },
+      {
+        "file": "VDE2 128BPM Progressive Kick.wav",
+        "use": "audio"
+      },
+      {
+        "file": "VDE2 128BPM Progressive Kick.wav",
+        "use": "audio"
+      },
+      {
+        "file": "VDE2 128BPM Progressive Kick.wav",
+        "use": "audio"
+      },
+      {
+        "file": "VDE2 128BPM Progressive Kick.wav",
+        "use": "audio"
+      },
+      {
+        "file": "VDE2 128BPM Progressive Kick.wav",
+        "use": "audio"
+      },
+      {
+        "file": "VDE2 128BPM Progressive Kick.wav",
+        "use": "audio"
+      },
+      {
+        "file": "VDE2 128BPM Progressive Kick.wav",
+        "use": "audio"
+      },
+      {
+        "file": "VDE2 128BPM Progressive Kick.wav",
+        "use": "audio"
+      },
+      {
+        "file": "VDE2 128BPM Progressive Kick.wav",
+        "use": "audio"
+      },
+      {
+        "file": "VDE2 128BPM Progressive Kick.wav",
+        "use": "audio"
+      },
+      {
+        "file": "VDE2 128BPM Progressive Kick.wav",
+        "use": "audio"
+      },
+      {
+        "file": "VDE2 128BPM Progressive Kick.wav",
+        "use": "audio"
+      },
+      {
+        "file": "VDE2 128BPM Progressive Kick.wav",
+        "use": "audio"
+      },
+      {
+        "file": "VDE2 128BPM Progressive Kick.wav",
+        "use": "audio"
+      },
+      {
+        "file": "VDE2 128BPM Progressive Kick.wav",
+        "use": "audio"
+      },
+      {
+        "file": "VDE2 128BPM Progressive Kick.wav",
+        "use": "audio"
+      },
+      {
+        "file": "VDE2 128BPM Progressive Kick.wav",
+        "use": "audio"
+      },
+      {
+        "file": "VDE2 128BPM Progressive Kick.wav",
+        "use": "audio"
+      },
+      {
+        "file": "VDE2 128BPM Progressive Kick.wav",
+        "use": "audio"
+      },
+      {
+        "file": "VDE2 128BPM Progressive Kick.wav",
+        "use": "audio"
+      },
+      {
+        "file": "VDE2 128BPM Progressive Kick.wav",
+        "use": "audio"
+      },
+      {
+        "file": "VDE2 128BPM Progressive Kick.wav",
+        "use": "audio"
+      },
+      {
+        "file": "VDE2 128BPM Progressive Kick.wav",
+        "use": "audio"
+      },
+      {
+        "file": "VDE2 128BPM Progressive Kick.wav",
+        "use": "audio"
+      },
+      {
+        "file": "VDE2 128BPM Progressive Kick.wav",
+        "use": "audio"
+      },
+      {
+        "file": "VDE2 128BPM Progressive Kick.wav",
+        "use": "audio"
+      },
+      {
+        "file": "VDE2 128BPM Progressive Kick.wav",
+        "use": "audio"
+      },
+      {
+        "file": "VDE2 128BPM Progressive Kick.wav",
+        "use": "audio"
+      },
+      {
+        "file": "VDE2 128BPM Progressive Kick.wav",
+        "use": "audio"
+      },
+      {
+        "file": "VDE2 128BPM Progressive Kick.wav",
+        "use": "audio"
+      },
+      {
+        "file": "VDE2 128BPM Progressive Kick.wav",
+        "use": "audio"
+      },
+      {
+        "file": "VDE2 128BPM Progressive Kick.wav",
+        "use": "audio"
+      },
+      {
+        "file": "VDE2 128BPM Progressive Kick.wav",
+        "use": "audio"
+      },
+      {
+        "file": "VDE2 128BPM Progressive Kick.wav",
+        "use": "audio"
+      },
+      {
+        "file": "VDE2 128BPM Progressive Kick.wav",
+        "use": "audio"
+      },
+      {
+        "file": "VDE2 128BPM Progressive Kick.wav",
+        "use": "audio"
+      },
+      {
+        "file": "VDE2 128BPM Progressive Kick.wav",
+        "use": "audio"
+      },
+      {
+        "file": "VDE2 128BPM Progressive Kick.wav",
+        "use": "audio"
+      },
+      {
+        "file": "VDE2 128BPM Progressive Kick.wav",
+        "use": "audio"
+      },
+      {
+        "file": "VDE2 128BPM Progressive Kick.wav",
+        "use": "audio"
+      },
+      {
+        "file": "VDE2 128BPM Progressive Kick.wav",
+        "use": "audio"
+      },
+      {
+        "file": "VDE2 128BPM Progressive Kick.wav",
+        "use": "audio"
+      },
+      {
+        "file": "VDE2 128BPM Progressive Kick.wav",
+        "use": "audio"
+      },
+      {
+        "file": "VDE2 128BPM Progressive Kick.wav",
+        "use": "audio"
+      },
+      {
+        "file": "VDE2 128BPM Progressive Kick.wav",
+        "use": "audio"
+      },
+      {
+        "file": "VDE2 128BPM Progressive Kick.wav",
+        "use": "audio"
+      },
+      {
+        "file": "VDE2 128BPM Progressive Kick.wav",
+        "use": "audio"
+      },
+      {
+        "file": "VDE2 128BPM Progressive Kick.wav",
+        "use": "audio"
+      },
+      {
+        "file": "VDE2 128BPM Progressive Kick.wav",
+        "use": "audio"
+      },
+      {
+        "file": "VDE2 128BPM Progressive Kick.wav",
+        "use": "audio"
+      },
+      {
+        "file": "VDE2 128BPM Progressive Kick.wav",
+        "use": "audio"
+      },
+      {
+        "file": "VDE2 128BPM Progressive Kick.wav",
+        "use": "audio"
+      },
+      {
+        "file": "VDE2 128BPM Progressive Kick.wav",
+        "use": "audio"
+      },
+      {
+        "file": "VVE2 Vocal FX 013.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "VVE2 Vocal FX 013.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "VVE2 Vocal FX 013.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "VVE2 Vocal FX 013.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "VVE2 Vocal FX 013.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "VVE2 Vocal FX 013.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "VVE2 Vocal FX 013.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "VVE2 Vocal FX 013.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "VVE2 Vocal FX 013.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "VVE2 Vocal FX 013.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "VVE2 Vocal FX 013.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "VVE2 Vocal FX 013.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "VVE2 Vocal FX 013.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "VVE2 Vocal FX 013.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "VVE2 Vocal FX 013.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "VVE2 Vocal FX 013.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "VVE2 Vocal FX 013.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "fx 06.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "fx 06.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "fx 06.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "fx 06.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "fx 06.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "fx 06.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "fx 06.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "fx 06.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "fx 06.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "fx 06.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "fx 06.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "fx 06.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "CRASH11.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "CRASH11.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "CLAP23.wav",
+        "use": "audio"
+      },
+      {
+        "file": "CLAP23.wav",
+        "use": "audio"
+      },
+      {
+        "file": "eeth_drm_snare6.wav",
+        "use": "audio",
+        "kind": "processed"
+      },
+      {
+        "file": "upfilter 14.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "VDUB2 Fill In 031.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "VDUB2 Fill In 031.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "VDUB2 Fill In 031.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_hat4.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_hat4.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_hat4.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_hat4.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_hat4.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_hat4.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_hat4.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_hat4.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_hat4.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_hat4.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_hat4.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_hat4.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_hat4.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_hat4.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_hat4.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_hat4.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_hat4.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_hat4.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_hat4.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_hat4.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_hat4.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_hat4.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_hat4.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_hat4.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_hat4.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_hat4.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_hat4.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_hat4.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_hat4.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_hat4.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_hat4.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_hat4.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_hat4.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_hat4.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_hat4.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_hat4.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_hat4.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_hat4.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_hat4.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_hat4.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_hat4.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_hat4.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_hat4.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_hat4.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_hat4.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_hat4.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_hat4.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_hat4.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_hat4.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_hat4.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_hat4.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_hat4.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_hat4.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_hat4.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_hat4.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_hat4.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_hat4.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_hat4.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_hat4.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_hat4.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_hat4.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_hat4.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_hat4.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_hat4.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_hat4.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_hat4.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_hat4.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_hat4.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_hat4.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_hat4.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_hat4.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_hat4.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_hat4.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_hat4.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_hat4.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_hat4.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_hat4.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_hat4.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_hat4.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_hat4.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_hat4.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_hat4.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_hat4.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_hat4.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_hat4.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_hat4.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_hat4.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_hat4.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_hat4.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_hat4.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_hat4.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_hat4.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_hat4.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_hat4.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_hat4.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_hat4.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_hat4.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_hat4.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_hat4.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_hat4.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_hat4.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_hat4.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_hat4.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_hat4.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_hat4.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_hat4.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_hat4.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_hat4.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_hat4.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_hat4.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_hat4.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_hat4.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_hat4.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_hat4.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_hat4.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_hat4.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_hat4.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_hat4.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_hat4.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_hat4.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_hat4.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_hat4.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_hat4.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_hat4.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_hat4.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_hat4.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_hat4.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "eeth_drm_hat4.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "EHU_909_ClosedHat4.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "EHU_909_ClosedHat4.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "EHU_909_ClosedHat4.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "EHU_909_ClosedHat4.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "EHU_909_ClosedHat4.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "EHU_909_ClosedHat4.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "EHU_909_ClosedHat4.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "EHU_909_ClosedHat4.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "EHU_909_ClosedHat4.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "EHU_909_ClosedHat4.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "EHU_909_ClosedHat4.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "EHU_909_ClosedHat4.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "EHU_909_ClosedHat4.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "EHU_909_ClosedHat4.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "EHU_909_ClosedHat4.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "EHU_909_ClosedHat4.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "EHU_909_ClosedHat4.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "EHU_909_ClosedHat4.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "EHU_909_ClosedHat4.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "EHU_909_ClosedHat4.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "EHU_909_ClosedHat4.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "EHU_909_ClosedHat4.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "EHU_909_ClosedHat4.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "EHU_909_ClosedHat4.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "EHU_909_ClosedHat4.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "EHU_909_ClosedHat4.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "EHU_909_ClosedHat4.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "EHU_909_ClosedHat4.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "EHU_909_ClosedHat4.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "EHU_909_ClosedHat4.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "EHU_909_ClosedHat4.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "EHU_909_ClosedHat4.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "EHU_909_ClosedHat4.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "EHU_909_ClosedHat4.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "EHU_909_ClosedHat4.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "EHU_909_ClosedHat4.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "EHU_909_ClosedHat4.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "EHU_909_ClosedHat4.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "EHU_909_ClosedHat4.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "EHU_909_ClosedHat4.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "EHU_909_ClosedHat4.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "EHU_909_ClosedHat4.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "EHU_909_ClosedHat4.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "EHU_909_ClosedHat4.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "EHU_909_ClosedHat4.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "EHU_909_ClosedHat4.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "EHU_909_ClosedHat4.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "EHU_909_ClosedHat4.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "EHU_909_ClosedHat4.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "EHU_909_ClosedHat4.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "EHU_909_ClosedHat4.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "EHU_909_ClosedHat4.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "EHU_909_ClosedHat4.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "EHU_909_ClosedHat4.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "EHU_909_ClosedHat4.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "EHU_909_ClosedHat4.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "EHU_909_ClosedHat4.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "EHU_909_ClosedHat4.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "EHU_909_ClosedHat4.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "EHU_909_ClosedHat4.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "EHU_909_ClosedHat4.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "EHU_909_ClosedHat4.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "EHU_909_ClosedHat4.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "EHU_909_ClosedHat4.wav",
+        "use": "audio",
+        "kind": "imported"
+      }
+    ]
+  }
+}

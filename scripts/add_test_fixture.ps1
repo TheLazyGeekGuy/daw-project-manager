@@ -63,7 +63,7 @@ $files = Get-ChildItem -LiteralPath $source -Recurse -File | Where-Object {
   if ($projectExts -contains $_.Extension.ToLower()) {
     return $Versions -and $_.Extension.ToLower() -notin '.bak', '.rpp-bak'
   }
-  if ($_.Name -match '(?i)autosave|\.peak$|\.reapeaks$|\.asd$|\.pk$|\.sfk$|\.lnk$|desktop\.ini|thumbs\.db') { return $false }
+  if ($_.Name -match '(?i)autosave|\.peak$|\.reapeaks$|\.asd$|\.pk$|\.sfk$|\.csh$|\.lnk$|desktop\.ini|thumbs\.db') { return $false }
   return $_.Length -le $maxFile
 }
 }

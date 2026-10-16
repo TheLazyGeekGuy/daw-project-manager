@@ -1,0 +1,233 @@
+{
+  "Ananda Balada Plant (Sundose Final Mix) F#m Hook.mid": {
+    "bpm": 146.00032120070665,
+    "key": null,
+    "nameKey": "F#m",
+    "nameBpm": null,
+    "clips": [
+      {
+        "name": "Ananda Balada Plant (Sundose Final Mix) F#m Hook",
+        "track": null,
+        "ppq": 480,
+        "lengthTicks": 3840,
+        "notes": 16,
+        "events": 0,
+        "content": "70222159a979"
+      }
+    ]
+  },
+  "Ananda Balada Plant (Sundose Final Mix) F#m Melody Lead.mid": {
+    "bpm": 146.00032120070665,
+    "key": null,
+    "nameKey": "F#m",
+    "nameBpm": null,
+    "clips": [
+      {
+        "name": "Ananda Balada Plant (Sundose Final Mix) F#m Melody Lead",
+        "track": null,
+        "ppq": 480,
+        "lengthTicks": 15360,
+        "notes": 85,
+        "events": 0,
+        "content": "d8a3cd6ec989"
+      }
+    ]
+  },
+  "Bass 1.mid": {
+    "bpm": null,
+    "key": null,
+    "nameKey": null,
+    "nameBpm": null,
+    "clips": [
+      {
+        "name": "Bass 1",
+        "track": null,
+        "ppq": 96,
+        "lengthTicks": 5952,
+        "notes": 121,
+        "events": 279,
+        "content": "0f5b860de8e9"
+      }
+    ]
+  },
+  "Digicult - Every Single Second (merged).mid": {
+    "bpm": 145.00003625000906,
+    "key": null,
+    "nameKey": null,
+    "nameBpm": null,
+    "clips": [
+      {
+        "name": "Digicult - Every Single Second (merged)",
+        "track": "MIDI EVERY SINGLE SECOND",
+        "ppq": 480,
+        "lengthTicks": 107518,
+        "notes": 346,
+        "events": 21,
+        "content": "5ee12747e71b"
+      }
+    ]
+  },
+  "Hook G#m_gabriel.mid": {
+    "bpm": null,
+    "key": null,
+    "nameKey": "G#m",
+    "nameBpm": null,
+    "clips": [
+      {
+        "name": "Hook G#m_gabriel",
+        "track": "Idea 12 G#m",
+        "ppq": 96,
+        "lengthTicks": 5952,
+        "notes": 22,
+        "events": 0,
+        "content": "7e89cac9edda"
+      }
+    ]
+  },
+  "Melody 1.mid": {
+    "bpm": null,
+    "key": null,
+    "nameKey": null,
+    "nameBpm": null,
+    "clips": [
+      {
+        "name": "Melody 1",
+        "track": null,
+        "ppq": 96,
+        "lengthTicks": 6138,
+        "notes": 25,
+        "events": 1055,
+        "content": "2169863ee3bf"
+      }
+    ]
+  },
+  "Midi Files (Bundled).mid": {
+    "bpm": 146.00032120070665,
+    "key": null,
+    "nameKey": null,
+    "nameBpm": null,
+    "clips": [
+      {
+        "name": "First Bassline",
+        "track": "Midi Files (Bundled)",
+        "ppq": 480,
+        "lengthTicks": 61438,
+        "notes": 48,
+        "events": 0,
+        "content": "2bd6ee2aa023"
+      },
+      {
+        "name": "Final Bassline",
+        "track": "Midi Files (Bundled)",
+        "ppq": 480,
+        "lengthTicks": 61438,
+        "notes": 48,
+        "events": 0,
+        "content": "b96b1cd6cb1d"
+      },
+      {
+        "name": "Groovy Bass",
+        "track": "Midi Files (Bundled)",
+        "ppq": 480,
+        "lengthTicks": 61438,
+        "notes": 78,
+        "events": 0,
+        "content": "9716ba781a88"
+      },
+      {
+        "name": "Final Melody",
+        "track": "Midi Files (Bundled)",
+        "ppq": 480,
+        "lengthTicks": 61438,
+        "notes": 26,
+        "events": 0,
+        "content": "2d3203491fac"
+      }
+    ]
+  },
+  "SHORT ARP MIDI FULLON 01.mid": {
+    "bpm": 145.00003625000906,
+    "key": null,
+    "nameKey": null,
+    "nameBpm": null,
+    "clips": [
+      {
+        "name": "SHORT ARP MIDI FULLON 01",
+        "track": null,
+        "ppq": 480,
+        "lengthTicks": 1920,
+        "notes": 10,
+        "events": 0,
+        "content": "15e712bc99ef"
+      }
+    ]
+  },
+  "iCOn - Arp Lead 02 D#_Cm.mid": {
+    "bpm": 146.00032120070665,
+    "key": null,
+    "nameKey": "Cm",
+    "nameBpm": null,
+    "clips": [
+      {
+        "name": "iCOn - Arp Lead 02 D#_Cm",
+        "track": "iCOn - Arp Lead 02 D#/Cm",
+        "ppq": 480,
+        "lengthTicks": 3840,
+        "notes": 25,
+        "events": 0,
+        "content": "c9b889487e6a"
+      }
+    ]
+  },
+  "iCOn - Arp Lead 03 G#m.mid": {
+    "bpm": 146.00032120070665,
+    "key": null,
+    "nameKey": "G#m",
+    "nameBpm": null,
+    "clips": [
+      {
+        "name": "iCOn - Arp Lead 03 G#m",
+        "track": null,
+        "ppq": 480,
+        "lengthTicks": 7680,
+        "notes": 39,
+        "events": 0,
+        "content": "90fb90a157d3"
+      }
+    ]
+  },
+  "iCOn - Arp Lead 04 G Phrygian.mid": {
+    "bpm": 146.00032120070665,
+    "key": null,
+    "nameKey": "G Phrygian",
+    "nameBpm": null,
+    "clips": [
+      {
+        "name": "iCOn - Arp Lead 04 G Phrygian",
+        "track": null,
+        "ppq": 480,
+        "lengthTicks": 7680,
+        "notes": 64,
+        "events": 0,
+        "content": "603e245d1487"
+      }
+    ]
+  },
+  "iCOn - Passing Time - Arp Lead 05 Bm.mid": {
+    "bpm": 146.00032120070665,
+    "key": null,
+    "nameKey": "Bm",
+    "nameBpm": null,
+    "clips": [
+      {
+        "name": "iCOn - Passing Time - Arp Lead 05 Bm",
+        "track": null,
+        "ppq": 480,
+        "lengthTicks": 15360,
+        "notes": 128,
+        "events": 7,
+        "content": "4418836fd557"
+      }
+    ]
+  }
+}

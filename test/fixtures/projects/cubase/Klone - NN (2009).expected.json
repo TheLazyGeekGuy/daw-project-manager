@@ -12,7 +12,9 @@
       "sampler": 0,
       "bus": 0,
       "folder": 1,
-      "plugins": [],
+      "plugins": [
+        "Vanguard"
+      ],
       "midiClips": 3
     },
     "midiClips": [

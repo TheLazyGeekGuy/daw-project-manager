@@ -3,7 +3,7 @@
     "dawType": "Cubase",
     "dawVersion": "11",
     "bpm": 145.0,
-    "key": "C Major",
+    "key": null,
     "markers": [],
     "stats": {
       "audio": 0,

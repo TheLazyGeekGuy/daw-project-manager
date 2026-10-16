@@ -1,0 +1,2671 @@
+{
+  "np_-_chris-schweizer-ben-gold-style.als": {
+    "dawType": "Ableton Live",
+    "dawVersion": "8.3",
+    "bpm": 132.0,
+    "key": null,
+    "markers": [],
+    "stats": {
+      "audio": 21,
+      "midi": 26,
+      "instrument": 0,
+      "sampler": 0,
+      "bus": 6,
+      "folder": 0,
+      "plugins": [
+        "FabFilter Pro-Q 2",
+        "Sylenth1",
+        "TP Basslane"
+      ],
+      "midiClips": 36
+    },
+    "midiClips": [
+      {
+        "name": "",
+        "track": "Sidechain",
+        "ppq": 960,
+        "lengthTicks": 3840,
+        "notes": 4,
+        "events": 0,
+        "content": "b91741f909f2"
+      },
+      {
+        "name": "",
+        "track": "Clap 1",
+        "ppq": 960,
+        "lengthTicks": 3840,
+        "notes": 2,
+        "events": 0,
+        "content": "a353bf911c3a"
+      },
+      {
+        "name": "",
+        "track": "Clap 2",
+        "ppq": 960,
+        "lengthTicks": 3840,
+        "notes": 2,
+        "events": 0,
+        "content": "1625ec2b9f3f"
+      },
+      {
+        "name": "",
+        "track": "Percussion 1",
+        "ppq": 960,
+        "lengthTicks": 7680,
+        "notes": 1,
+        "events": 0,
+        "content": "b6fa77eefaf5"
+      },
+      {
+        "name": "",
+        "track": "Open Hats",
+        "ppq": 960,
+        "lengthTicks": 3840,
+        "notes": 4,
+        "events": 0,
+        "content": "d7a6db9fcdef"
+      },
+      {
+        "name": "",
+        "track": "Closed Hats",
+        "ppq": 960,
+        "lengthTicks": 3840,
+        "notes": 12,
+        "events": 0,
+        "content": "80584b4914b8"
+      },
+      {
+        "name": "",
+        "track": "Rides",
+        "ppq": 960,
+        "lengthTicks": 3840,
+        "notes": 4,
+        "events": 0,
+        "content": "f3f356c4ab8a"
+      },
+      {
+        "name": "",
+        "track": "Sidechain Ride",
+        "ppq": 960,
+        "lengthTicks": 3840,
+        "notes": 4,
+        "events": 0,
+        "content": "3b0a9b014b7a"
+      },
+      {
+        "name": "",
+        "track": "Snare Roll",
+        "ppq": 960,
+        "lengthTicks": 7680,
+        "notes": 3,
+        "events": 0,
+        "content": "6eb67ac8dee7"
+      },
+      {
+        "name": "",
+        "track": "Snare Roll",
+        "ppq": 960,
+        "lengthTicks": 29760,
+        "notes": 59,
+        "events": 0,
+        "content": "a334cc81de04"
+      },
+      {
+        "name": "",
+        "track": "Snare Roll",
+        "ppq": 960,
+        "lengthTicks": 7680,
+        "notes": 2,
+        "events": 0,
+        "content": "0637288e014f"
+      },
+      {
+        "name": "",
+        "track": "Snare Roll",
+        "ppq": 960,
+        "lengthTicks": 6720,
+        "notes": 20,
+        "events": 0,
+        "content": "7b145c250c4b"
+      },
+      {
+        "name": "",
+        "track": "Snare Roll",
+        "ppq": 960,
+        "lengthTicks": 26880,
+        "notes": 50,
+        "events": 0,
+        "content": "baefb3aa1756"
+      },
+      {
+        "name": "",
+        "track": "Snare Roll",
+        "ppq": 960,
+        "lengthTicks": 3840,
+        "notes": 12,
+        "events": 0,
+        "content": "85aa7ab394b3"
+      },
+      {
+        "name": "",
+        "track": "Crunchy",
+        "ppq": 960,
+        "lengthTicks": 15360,
+        "notes": 29,
+        "events": 0,
+        "content": "1a602d37ed5c"
+      },
+      {
+        "name": "",
+        "track": "Crunchy",
+        "ppq": 960,
+        "lengthTicks": 30720,
+        "notes": 58,
+        "events": 0,
+        "content": "c1fa15076fed"
+      },
+      {
+        "name": "",
+        "track": "Crunchy",
+        "ppq": 960,
+        "lengthTicks": 15360,
+        "notes": 14,
+        "events": 0,
+        "content": "87a8d2f54527"
+      },
+      {
+        "name": "",
+        "track": "Sub Bass",
+        "ppq": 960,
+        "lengthTicks": 30720,
+        "notes": 59,
+        "events": 0,
+        "content": "758701d97341"
+      },
+      {
+        "name": "",
+        "track": "Sub Bass",
+        "ppq": 960,
+        "lengthTicks": 26880,
+        "notes": 51,
+        "events": 0,
+        "content": "8011011b5b0a"
+      },
+      {
+        "name": "",
+        "track": "Sub Bass",
+        "ppq": 960,
+        "lengthTicks": 15360,
+        "notes": 30,
+        "events": 0,
+        "content": "c40400bf6c56"
+      },
+      {
+        "name": "",
+        "track": "SQ Bass",
+        "ppq": 960,
+        "lengthTicks": 3840,
+        "notes": 1,
+        "events": 0,
+        "content": "07780948932d"
+      },
+      {
+        "name": "",
+        "track": "Intro Square Pluck",
+        "ppq": 960,
+        "lengthTicks": 15360,
+        "notes": 27,
+        "events": 0,
+        "content": "3ed5d765829f"
+      },
+      {
+        "name": "",
+        "track": "Intro Square Pluck",
+        "ppq": 960,
+        "lengthTicks": 7680,
+        "notes": 21,
+        "events": 0,
+        "content": "4b1957f6c4d1"
+      },
+      {
+        "name": "",
+        "track": "Pad",
+        "ppq": 960,
+        "lengthTicks": 15360,
+        "notes": 7,
+        "events": 0,
+        "content": "94013390467a"
+      },
+      {
+        "name": "",
+        "track": "Pad",
+        "ppq": 960,
+        "lengthTicks": 30720,
+        "notes": 13,
+        "events": 0,
+        "content": "20e45eee99fc"
+      },
+      {
+        "name": "",
+        "track": "Break Pluck",
+        "ppq": 960,
+        "lengthTicks": 7680,
+        "notes": 6,
+        "events": 0,
+        "content": "52bb82463388"
+      },
+      {
+        "name": "",
+        "track": "Break Pluck",
+        "ppq": 960,
+        "lengthTicks": 7680,
+        "notes": 7,
+        "events": 0,
+        "content": "e3402d689fdc"
+      },
+      {
+        "name": "",
+        "track": "Break Pluck",
+        "ppq": 960,
+        "lengthTicks": 6720,
+        "notes": 8,
+        "events": 0,
+        "content": "a9d41be9725b"
+      },
+      {
+        "name": "",
+        "track": "High Lead",
+        "ppq": 960,
+        "lengthTicks": 3840,
+        "notes": 7,
+        "events": 0,
+        "content": "3d75ce9ef64e"
+      },
+      {
+        "name": "",
+        "track": "High Lead",
+        "ppq": 960,
+        "lengthTicks": 30720,
+        "notes": 65,
+        "events": 0,
+        "content": "428df77b1c02"
+      },
+      {
+        "name": "",
+        "track": "High Lead",
+        "ppq": 960,
+        "lengthTicks": 3840,
+        "notes": 8,
+        "events": 0,
+        "content": "d343e5a26fa1"
+      },
+      {
+        "name": "",
+        "track": "High Lead",
+        "ppq": 960,
+        "lengthTicks": 3840,
+        "notes": 8,
+        "events": 0,
+        "content": "af177107aa8b"
+      },
+      {
+        "name": "",
+        "track": "Sub",
+        "ppq": 960,
+        "lengthTicks": 30720,
+        "notes": 65,
+        "events": 0,
+        "content": "7cfe3112f26c"
+      },
+      {
+        "name": "",
+        "track": "Leads Sidechain",
+        "ppq": 960,
+        "lengthTicks": 3840,
+        "notes": 4,
+        "events": 0,
+        "content": "254f2921e143"
+      },
+      {
+        "name": "",
+        "track": "Leads Sidechain",
+        "ppq": 960,
+        "lengthTicks": 7680,
+        "notes": 9,
+        "events": 0,
+        "content": "ae7597a33588"
+      },
+      {
+        "name": "Groove",
+        "track": null,
+        "ppq": 960,
+        "lengthTicks": 7680,
+        "notes": 1,
+        "events": 0,
+        "content": "3cc09629835f"
+      }
+    ],
+    "sampleReferences": [
+      {
+        "file": "Kick 5.wav",
+        "use": "sampler",
+        "kind": "imported"
+      },
+      {
+        "file": "Kick 7.wav",
+        "use": "sampler",
+        "kind": "imported"
+      },
+      {
+        "file": "Kick.wav",
+        "use": "sampler",
+        "kind": "imported"
+      },
+      {
+        "file": "KIck 4.wav",
+        "use": "sampler",
+        "kind": "imported"
+      },
+      {
+        "file": "KIck 6.wav",
+        "use": "sampler",
+        "kind": "imported"
+      },
+      {
+        "file": "clap loop.wav",
+        "use": "audio",
+        "kind": "processed"
+      },
+      {
+        "file": "clap loop.wav",
+        "use": "audio",
+        "kind": "processed"
+      },
+      {
+        "file": "clap loop.wav",
+        "use": "audio",
+        "kind": "processed"
+      },
+      {
+        "file": "clap loop.wav",
+        "use": "audio",
+        "kind": "processed"
+      },
+      {
+        "file": "clap loop.wav",
+        "use": "audio",
+        "kind": "processed"
+      },
+      {
+        "file": "Clap 9.wav",
+        "use": "sampler",
+        "kind": "imported"
+      },
+      {
+        "file": "Clap 1.wav",
+        "use": "sampler",
+        "kind": "imported"
+      },
+      {
+        "file": "Clap 3.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "Clap 2.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "Clap 3.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "Clap 2.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "Clap 3.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "Clap 2.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "Clap 3.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "Clap 2.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "Clap 3.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "Clap 2.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "Clap 3.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "Clap 2.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "Clap 3.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "Clap 2.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "Clap 3.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "Clap 2.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "Clap 3.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "Clap 2.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "Clap 3.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "Clap 2.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "Clap 3.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "Clap 2.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "Clap 3.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "Clap 2.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "Clap 3.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "Clap 2.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "Clap 3.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "Clap 2.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "Clap 3.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "Clap 2.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "Clap 3.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "Clap 2.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "Clap 3.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "Clap 2.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "Clap 3.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "Clap 2.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "Clap 3.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "Clap 2.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "Clap 3.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "Clap 2.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "Clap 3.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "Clap 2.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "Clap 3.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "Clap 2.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "Clap 3.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "Clap 2.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "Clap 3.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "Clap 2.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "Clap 3.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "Clap 2.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "Clap 3.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "Clap 2.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "Clap 3.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "Clap 2.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "Clap 3.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "Clap 2.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "Clap 3.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "Clap 2.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "Clap 3.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "Clap 2.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "Clap 3.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "Clap 2.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "Clap 3.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "Clap 2.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "Clap 3.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "Clap 2.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "Clap 3.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "Clap 2.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "Clap 3.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "Clap 2.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "Clap 3.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "Clap 2.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "Clap 3.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "Clap 2.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "Clap 3.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "Clap 2.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "Clap 3.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "Clap 2.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "Clap 3.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "Clap 2.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "Clap 3.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "Clap 2.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "Clap 3.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "Clap 2.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "Clap 3.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "Clap 2.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "Clap 3.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "Clap 2.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "Clap 3.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "Clap 2.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "Clap 3.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "Clap 2.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "Clap 3.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "Clap 2.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "Clap 3.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "Clap 2.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "Clap 3.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "Clap 2.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "Clap 3.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "Clap 2.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "Clap 3.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "Clap 2.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "Clap 3.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "Clap 2.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "Clap 3.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "Clap 2.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "Clap 3.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "Clap 2.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "Clap 3.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "Clap 2.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "Clap 3.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "Clap 2.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "Clap 3.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "Clap 2.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "Clap 3.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "Clap 2.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "Clap 3.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "Clap 2.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "Clap 3.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "Clap 2.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "Clap 3.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "Clap 2.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "Clap 3.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "Clap 2.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "Clap 3.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "Clap 2.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "Clap 3.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "Clap 2.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "Clap 3.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "Clap 2.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "Clap 3.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "Clap 2.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "Clap 3.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "Clap 2.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "Clap 3.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "Clap 2.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "Clap 3.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "Clap 2.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "Clap 3.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "Clap 2.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "Clap 3.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "Clap 2.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "Clap 3.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "Clap 2.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "Clap 3.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "Clap 2.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "Clap 3.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "Clap 2.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "Clap 3.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "Clap 2.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "Clap 3.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "Clap 2.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "Clap 3.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "Clap 2.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "Clap 3.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "Clap 2.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "Clap 3.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "Clap 2.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "Clap 3.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "Clap 2.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "Clap 3.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "Clap 2.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "Clap 3.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "Clap 2.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "Clap 3.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "Clap 2.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "Clap 3.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "Clap 2.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "Clap 3.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "Clap 2.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "Clap 3.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "Clap 2.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "Clap 3.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "Clap 2.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "Clap 3.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "Clap 2.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "Clap 3.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "Clap 2.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "Clap 3.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "Clap 2.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "Clap 3.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "Clap 2.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "Clap 3.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "Clap 2.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "Clap 3.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "Clap 2.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "Clap 3.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "Clap 2.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "Clap 3.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "Clap 2.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "Clap 3.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "Clap 2.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "Clap 3.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "Clap 2.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "Clap 3.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "Clap 2.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "Clap 3.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "Clap 2.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "Clap 3.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "Clap 2.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "Clap 3.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "Clap 2.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "Clap 3.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "Clap 2.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "Clap 3.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "Clap 2.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "Clap 3.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "Clap 2.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "Clap 3.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "Clap 2.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "Clap 3.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "Clap 2.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "Clap 3.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "Clap 2.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "Clap 3.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "Clap 2.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "Clap 3.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "Clap 2.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "Clap 3.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "Clap 2.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "Clap 3.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "Clap 2.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "Clap 3.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "Clap 2.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "Clap 3.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "Clap 2.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "Clap 3.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "Clap 2.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "Clap 3.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "Clap 2.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "Clap 3.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "Clap 2.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "Clap 3.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "Clap 2.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "Clap 3.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "Clap 2.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "Loop2.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "Loop2.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "Loop2.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "Loop2.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "Loop2.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "Loop2.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "Loop2.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "Loop2.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "Loop2.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "Loop2.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "Loop2.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "Kick 8.wav",
+        "use": "sampler",
+        "kind": "imported"
+      },
+      {
+        "file": "rev clap .wav",
+        "use": "audio",
+        "kind": "processed"
+      },
+      {
+        "file": "rev clap .wav",
+        "use": "audio",
+        "kind": "processed"
+      },
+      {
+        "file": "rev clap .wav",
+        "use": "audio",
+        "kind": "processed"
+      },
+      {
+        "file": "rev clap .wav",
+        "use": "audio",
+        "kind": "processed"
+      },
+      {
+        "file": "rev clap .wav",
+        "use": "audio",
+        "kind": "processed"
+      },
+      {
+        "file": "rev clap .wav",
+        "use": "audio",
+        "kind": "processed"
+      },
+      {
+        "file": "rev clap .wav",
+        "use": "audio",
+        "kind": "processed"
+      },
+      {
+        "file": "rev clap .wav",
+        "use": "audio",
+        "kind": "processed"
+      },
+      {
+        "file": "rev clap .wav",
+        "use": "audio",
+        "kind": "processed"
+      },
+      {
+        "file": "rev clap .wav",
+        "use": "audio",
+        "kind": "processed"
+      },
+      {
+        "file": "rev clap .wav",
+        "use": "audio",
+        "kind": "processed"
+      },
+      {
+        "file": "rev clap .wav",
+        "use": "audio",
+        "kind": "processed"
+      },
+      {
+        "file": "rev clap .wav",
+        "use": "audio",
+        "kind": "processed"
+      },
+      {
+        "file": "rev clap .wav",
+        "use": "audio",
+        "kind": "processed"
+      },
+      {
+        "file": "rev clap .wav",
+        "use": "audio",
+        "kind": "processed"
+      },
+      {
+        "file": "rev clap .wav",
+        "use": "audio",
+        "kind": "processed"
+      },
+      {
+        "file": "rev clap .wav",
+        "use": "audio",
+        "kind": "processed"
+      },
+      {
+        "file": "rev clap .wav",
+        "use": "audio",
+        "kind": "processed"
+      },
+      {
+        "file": "rev clap .wav",
+        "use": "audio",
+        "kind": "processed"
+      },
+      {
+        "file": "rev clap .wav",
+        "use": "audio",
+        "kind": "processed"
+      },
+      {
+        "file": "rev clap .wav",
+        "use": "audio",
+        "kind": "processed"
+      },
+      {
+        "file": "rev clap .wav",
+        "use": "audio",
+        "kind": "processed"
+      },
+      {
+        "file": "rev clap .wav",
+        "use": "audio",
+        "kind": "processed"
+      },
+      {
+        "file": "rev clap .wav",
+        "use": "audio",
+        "kind": "processed"
+      },
+      {
+        "file": "rev clap .wav",
+        "use": "audio",
+        "kind": "processed"
+      },
+      {
+        "file": "rev clap .wav",
+        "use": "audio",
+        "kind": "processed"
+      },
+      {
+        "file": "rev clap .wav",
+        "use": "audio",
+        "kind": "processed"
+      },
+      {
+        "file": "rev clap .wav",
+        "use": "audio",
+        "kind": "processed"
+      },
+      {
+        "file": "rev clap .wav",
+        "use": "audio",
+        "kind": "processed"
+      },
+      {
+        "file": "rev clap .wav",
+        "use": "audio",
+        "kind": "processed"
+      },
+      {
+        "file": "rev clap .wav",
+        "use": "audio",
+        "kind": "processed"
+      },
+      {
+        "file": "rev clap .wav",
+        "use": "audio",
+        "kind": "processed"
+      },
+      {
+        "file": "rev clap .wav",
+        "use": "audio",
+        "kind": "processed"
+      },
+      {
+        "file": "rev clap .wav",
+        "use": "audio",
+        "kind": "processed"
+      },
+      {
+        "file": "rev clap .wav",
+        "use": "audio",
+        "kind": "processed"
+      },
+      {
+        "file": "rev clap .wav",
+        "use": "audio",
+        "kind": "processed"
+      },
+      {
+        "file": "rev clap .wav",
+        "use": "audio",
+        "kind": "processed"
+      },
+      {
+        "file": "rev clap .wav",
+        "use": "audio",
+        "kind": "processed"
+      },
+      {
+        "file": "rev clap .wav",
+        "use": "audio",
+        "kind": "processed"
+      },
+      {
+        "file": "rev clap .wav",
+        "use": "audio",
+        "kind": "processed"
+      },
+      {
+        "file": "rev clap .wav",
+        "use": "audio",
+        "kind": "processed"
+      },
+      {
+        "file": "rev clap .wav",
+        "use": "audio",
+        "kind": "processed"
+      },
+      {
+        "file": "rev clap .wav",
+        "use": "audio",
+        "kind": "processed"
+      },
+      {
+        "file": "rev clap .wav",
+        "use": "audio",
+        "kind": "processed"
+      },
+      {
+        "file": "rev clap .wav",
+        "use": "audio",
+        "kind": "processed"
+      },
+      {
+        "file": "rev clap .wav",
+        "use": "audio",
+        "kind": "processed"
+      },
+      {
+        "file": "rev clap .wav",
+        "use": "audio",
+        "kind": "processed"
+      },
+      {
+        "file": "rev clap .wav",
+        "use": "audio",
+        "kind": "processed"
+      },
+      {
+        "file": "hat1.wav",
+        "use": "audio",
+        "kind": "processed"
+      },
+      {
+        "file": "hat1.wav",
+        "use": "audio",
+        "kind": "processed"
+      },
+      {
+        "file": "hat1.wav",
+        "use": "audio",
+        "kind": "processed"
+      },
+      {
+        "file": "hat1.wav",
+        "use": "audio",
+        "kind": "processed"
+      },
+      {
+        "file": "hat1.wav",
+        "use": "audio",
+        "kind": "processed"
+      },
+      {
+        "file": "hat1.wav",
+        "use": "audio",
+        "kind": "processed"
+      },
+      {
+        "file": "hat1.wav",
+        "use": "audio",
+        "kind": "processed"
+      },
+      {
+        "file": "hat1.wav",
+        "use": "audio",
+        "kind": "processed"
+      },
+      {
+        "file": "hat1.wav",
+        "use": "audio",
+        "kind": "processed"
+      },
+      {
+        "file": "hat1.wav",
+        "use": "audio",
+        "kind": "processed"
+      },
+      {
+        "file": "hat1.wav",
+        "use": "audio",
+        "kind": "processed"
+      },
+      {
+        "file": "hat1.wav",
+        "use": "audio",
+        "kind": "processed"
+      },
+      {
+        "file": "hat1.wav",
+        "use": "audio",
+        "kind": "processed"
+      },
+      {
+        "file": "hat1.wav",
+        "use": "audio",
+        "kind": "processed"
+      },
+      {
+        "file": "hat1.wav",
+        "use": "audio",
+        "kind": "processed"
+      },
+      {
+        "file": "hat1.wav",
+        "use": "audio",
+        "kind": "processed"
+      },
+      {
+        "file": "hat1.wav",
+        "use": "audio",
+        "kind": "processed"
+      },
+      {
+        "file": "hat1.wav",
+        "use": "audio",
+        "kind": "processed"
+      },
+      {
+        "file": "hat1.wav",
+        "use": "audio",
+        "kind": "processed"
+      },
+      {
+        "file": "hat1.wav",
+        "use": "audio",
+        "kind": "processed"
+      },
+      {
+        "file": "hat1.wav",
+        "use": "audio",
+        "kind": "processed"
+      },
+      {
+        "file": "hat1.wav",
+        "use": "audio",
+        "kind": "processed"
+      },
+      {
+        "file": "hat1.wav",
+        "use": "audio",
+        "kind": "processed"
+      },
+      {
+        "file": "hat1.wav",
+        "use": "audio",
+        "kind": "processed"
+      },
+      {
+        "file": "hat1.wav",
+        "use": "audio",
+        "kind": "processed"
+      },
+      {
+        "file": "hat1.wav",
+        "use": "audio",
+        "kind": "processed"
+      },
+      {
+        "file": "hat1.wav",
+        "use": "audio",
+        "kind": "processed"
+      },
+      {
+        "file": "hat1.wav",
+        "use": "audio",
+        "kind": "processed"
+      },
+      {
+        "file": "hat1.wav",
+        "use": "audio",
+        "kind": "processed"
+      },
+      {
+        "file": "hat1.wav",
+        "use": "audio",
+        "kind": "processed"
+      },
+      {
+        "file": "hat1.wav",
+        "use": "audio",
+        "kind": "processed"
+      },
+      {
+        "file": "hat1.wav",
+        "use": "audio",
+        "kind": "processed"
+      },
+      {
+        "file": "hat1.wav",
+        "use": "audio",
+        "kind": "processed"
+      },
+      {
+        "file": "hat1.wav",
+        "use": "audio",
+        "kind": "processed"
+      },
+      {
+        "file": "hat1.wav",
+        "use": "audio",
+        "kind": "processed"
+      },
+      {
+        "file": "hat1.wav",
+        "use": "audio",
+        "kind": "processed"
+      },
+      {
+        "file": "hat1.wav",
+        "use": "audio",
+        "kind": "processed"
+      },
+      {
+        "file": "hat1.wav",
+        "use": "audio",
+        "kind": "processed"
+      },
+      {
+        "file": "hat1.wav",
+        "use": "audio",
+        "kind": "processed"
+      },
+      {
+        "file": "hat1.wav",
+        "use": "audio",
+        "kind": "processed"
+      },
+      {
+        "file": "hat1.wav",
+        "use": "audio",
+        "kind": "processed"
+      },
+      {
+        "file": "hat1.wav",
+        "use": "audio",
+        "kind": "processed"
+      },
+      {
+        "file": "hat1.wav",
+        "use": "audio",
+        "kind": "processed"
+      },
+      {
+        "file": "hat1.wav",
+        "use": "audio",
+        "kind": "processed"
+      },
+      {
+        "file": "hat1.wav",
+        "use": "audio",
+        "kind": "processed"
+      },
+      {
+        "file": "hat1.wav",
+        "use": "audio",
+        "kind": "processed"
+      },
+      {
+        "file": "hat1.wav",
+        "use": "audio",
+        "kind": "processed"
+      },
+      {
+        "file": "hat1.wav",
+        "use": "audio",
+        "kind": "processed"
+      },
+      {
+        "file": "hat1.wav",
+        "use": "audio",
+        "kind": "processed"
+      },
+      {
+        "file": "hat1.wav",
+        "use": "audio",
+        "kind": "processed"
+      },
+      {
+        "file": "hat1.wav",
+        "use": "audio",
+        "kind": "processed"
+      },
+      {
+        "file": "hat1.wav",
+        "use": "audio",
+        "kind": "processed"
+      },
+      {
+        "file": "hat1.wav",
+        "use": "audio",
+        "kind": "processed"
+      },
+      {
+        "file": "hat1.wav",
+        "use": "audio",
+        "kind": "processed"
+      },
+      {
+        "file": "hat1.wav",
+        "use": "audio",
+        "kind": "processed"
+      },
+      {
+        "file": "hat1.wav",
+        "use": "audio",
+        "kind": "processed"
+      },
+      {
+        "file": "OH.wav",
+        "use": "sampler",
+        "kind": "imported"
+      },
+      {
+        "file": "HH.wav",
+        "use": "sampler",
+        "kind": "imported"
+      },
+      {
+        "file": "SHAKER2.wav",
+        "use": "sampler",
+        "kind": "imported"
+      },
+      {
+        "file": "Loop 1.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "Loop 1.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "Loop 1.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "Loop 1.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "Loop 1.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "dl1.wav",
+        "use": "audio",
+        "kind": "processed"
+      },
+      {
+        "file": "dl1.wav",
+        "use": "audio",
+        "kind": "processed"
+      },
+      {
+        "file": "dl1.wav",
+        "use": "audio",
+        "kind": "processed"
+      },
+      {
+        "file": "dl1.wav",
+        "use": "audio",
+        "kind": "processed"
+      },
+      {
+        "file": "Ride 6.wav",
+        "use": "sampler",
+        "kind": "imported"
+      },
+      {
+        "file": "Ride 0.wav",
+        "use": "sampler",
+        "kind": "imported"
+      },
+      {
+        "file": "Ride 9.wav",
+        "use": "sampler",
+        "kind": "imported"
+      },
+      {
+        "file": "RIde 1.wav",
+        "use": "sampler",
+        "kind": "imported"
+      },
+      {
+        "file": "Ride 2.wav",
+        "use": "sampler",
+        "kind": "imported"
+      },
+      {
+        "file": "Snare 8.wav",
+        "use": "sampler",
+        "kind": "imported"
+      },
+      {
+        "file": "Rev vocal.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "Rev vocal.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "Rev vocal.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "Rev vocal.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "Rev vocal.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "Rev vocal.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "Rev vocal.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "Rev vocal.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "Rev vocal.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "Rev vocal.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "Rev vocal.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "Rev vocal.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "Rev vocal.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "Rev vocal.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "Rev vocal.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "Rev vocal.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "Rev vocal.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "Rev vocal.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "Rev vocal.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "Rev vocal.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "Rev vocal.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "Rev vocal.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "Rev vocal.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "Rev vocal.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "Rev vocal.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "Rev vocal.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "Rev vocal.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "Rev vocal.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "atmo2.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "Sweep Down.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "Sweep Down.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "Sweep Down.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "Sweep Down.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "Sweep Down.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "Sweep Down.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "Sweep Down.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "Impact 5.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "Impact 5.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "Impact 5.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "Impact 5.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "Impact 5.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "Impact 5.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "Impact 5.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "Impact 5.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "1 32-Audio R.wav",
+        "use": "audio",
+        "kind": "processed"
+      },
+      {
+        "file": "1 32-Audio R.wav",
+        "use": "audio",
+        "kind": "processed"
+      },
+      {
+        "file": "1 32-Audio R.wav",
+        "use": "audio",
+        "kind": "processed"
+      },
+      {
+        "file": "1 32-Audio R.wav",
+        "use": "audio",
+        "kind": "processed"
+      },
+      {
+        "file": "1 32-Audio R.wav",
+        "use": "audio",
+        "kind": "processed"
+      },
+      {
+        "file": "1 32-Audio R.wav",
+        "use": "audio",
+        "kind": "processed"
+      },
+      {
+        "file": "BIg Snare.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "BIg Snare.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "BIg Snare.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "BIg Snare.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "Perc 1.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "Imact.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "Imact.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "Imact.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "Imact.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "Imact.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "Imact.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "Imact.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "Imact.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "Imact.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "KIck 09.wav",
+        "use": "sampler",
+        "kind": "imported"
+      },
+      {
+        "file": "Impact Hat.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "1 47-Audio-1.wav",
+        "use": "audio",
+        "kind": "processed"
+      },
+      {
+        "file": "1 28-Audio R.wav",
+        "use": "audio",
+        "kind": "processed"
+      },
+      {
+        "file": "1 28-Audio R.wav",
+        "use": "audio",
+        "kind": "processed"
+      },
+      {
+        "file": "Sweep Up.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "Sweep Up.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "Sweep Up.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "Sweep Up.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "Sweep Up.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "Sweep Up.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "Sweep Up.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "Sweep Up.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "Sweep up 2.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "Sweep up 2.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "Sweep up 2.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "Boom.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "Boom.wav",
+        "use": "audio",
+        "kind": "imported"
+      }
+    ]
+  }
+}

@@ -1,0 +1,2642 @@
+{
+  "fuck the system rmx-01.cpr": {
+    "dawType": "Cubase",
+    "dawVersion": "4",
+    "bpm": 145.0,
+    "key": null,
+    "markers": [],
+    "stats": {
+      "audio": 12,
+      "midi": 8,
+      "instrument": 1,
+      "sampler": 0,
+      "bus": 0,
+      "folder": 1,
+      "plugins": [
+        "Battery2VST",
+        "Chorus",
+        "CronoX",
+        "Flanger",
+        "GEQ-30",
+        "Oxford Limiter Native",
+        "QuadraFuzz",
+        "RoomWorks",
+        "Sonalksis TBK Stereo"
+      ],
+      "midiClips": 19
+    },
+    "midiClips": [
+      {
+        "name": "Clap",
+        "track": "Clap",
+        "ppq": 480,
+        "lengthTicks": 1920,
+        "notes": 2,
+        "events": 0,
+        "content": "0b573535c529"
+      },
+      {
+        "name": "Clap",
+        "track": "Clap",
+        "ppq": 480,
+        "lengthTicks": 1920,
+        "notes": 4,
+        "events": 0,
+        "content": "f16b18675207"
+      },
+      {
+        "name": "Clap",
+        "track": "Clap",
+        "ppq": 480,
+        "lengthTicks": 1440,
+        "notes": 2,
+        "events": 0,
+        "content": "ce02b585cd65"
+      },
+      {
+        "name": "Clap",
+        "track": "Clap",
+        "ppq": 480,
+        "lengthTicks": 1440,
+        "notes": 1,
+        "events": 0,
+        "content": "2c2e03460f06"
+      },
+      {
+        "name": "MIDI 02",
+        "track": "MIDI 02",
+        "ppq": 480,
+        "lengthTicks": 1920,
+        "notes": 12,
+        "events": 0,
+        "content": "51f7431f5da1"
+      },
+      {
+        "name": "MIDI 02",
+        "track": "MIDI 02",
+        "ppq": 480,
+        "lengthTicks": 1440,
+        "notes": 9,
+        "events": 0,
+        "content": "72431c6862c7"
+      },
+      {
+        "name": "MIDI 03",
+        "track": "MIDI 03",
+        "ppq": 480,
+        "lengthTicks": 1920,
+        "notes": 16,
+        "events": 0,
+        "content": "ba0ca8315f74"
+      },
+      {
+        "name": "MIDI 03",
+        "track": "MIDI 03",
+        "ppq": 480,
+        "lengthTicks": 1440,
+        "notes": 12,
+        "events": 0,
+        "content": "1ccbb50ccf5d"
+      },
+      {
+        "name": "MIDI 04",
+        "track": "MIDI 04",
+        "ppq": 480,
+        "lengthTicks": 1920,
+        "notes": 6,
+        "events": 0,
+        "content": "ab53c26969bc"
+      },
+      {
+        "name": "MIDI 04",
+        "track": "MIDI 04",
+        "ppq": 480,
+        "lengthTicks": 1440,
+        "notes": 5,
+        "events": 0,
+        "content": "0eedbd9f7d54"
+      },
+      {
+        "name": "MIDI 05",
+        "track": "MIDI 05",
+        "ppq": 480,
+        "lengthTicks": 1920,
+        "notes": 12,
+        "events": 0,
+        "content": "c036a2df6517"
+      },
+      {
+        "name": "MIDI 05",
+        "track": "MIDI 05",
+        "ppq": 480,
+        "lengthTicks": 1920,
+        "notes": 14,
+        "events": 0,
+        "content": "18b4c531566e"
+      },
+      {
+        "name": "MIDI 05",
+        "track": "MIDI 05",
+        "ppq": 480,
+        "lengthTicks": 1440,
+        "notes": 11,
+        "events": 0,
+        "content": "4faf6772c8ea"
+      },
+      {
+        "name": "MIDI 05",
+        "track": "MIDI 05",
+        "ppq": 480,
+        "lengthTicks": 1440,
+        "notes": 10,
+        "events": 0,
+        "content": "68bc6c20279e"
+      },
+      {
+        "name": "Instrument Track",
+        "track": "CronoX 01",
+        "ppq": 480,
+        "lengthTicks": 7680,
+        "notes": 48,
+        "events": 0,
+        "content": "e02f522d884f"
+      },
+      {
+        "name": "Instrument Track",
+        "track": "CronoX 01",
+        "ppq": 480,
+        "lengthTicks": 1920,
+        "notes": 12,
+        "events": 0,
+        "content": "21d457acbb3f"
+      },
+      {
+        "name": "Instrument Track",
+        "track": "CronoX 01",
+        "ppq": 480,
+        "lengthTicks": 1440,
+        "notes": 9,
+        "events": 0,
+        "content": "1f536b64ff77"
+      },
+      {
+        "name": "Instrument Track",
+        "track": "CronoX 01",
+        "ppq": 480,
+        "lengthTicks": 960,
+        "notes": 5,
+        "events": 0,
+        "content": "9642085cd690"
+      },
+      {
+        "name": "Instrument Track",
+        "track": "CronoX 01",
+        "ppq": 480,
+        "lengthTicks": 480,
+        "notes": 2,
+        "events": 0,
+        "content": "12efeb15ec51"
+      }
+    ],
+    "sampleReferences": [
+      {
+        "file": "Kick-01.wav",
+        "use": "audio"
+      },
+      {
+        "file": "Kick-01.wav",
+        "use": "audio"
+      },
+      {
+        "file": "Kick-2.wav",
+        "use": "audio"
+      },
+      {
+        "file": "Kick-3.wav",
+        "use": "audio"
+      },
+      {
+        "file": "Kick-4.wav",
+        "use": "audio"
+      },
+      {
+        "file": "Crash 01.wav",
+        "use": "audio"
+      },
+      {
+        "file": "Crash 01.wav",
+        "use": "audio"
+      },
+      {
+        "file": "effect_01.wav",
+        "use": "audio"
+      },
+      {
+        "file": "effect_01.wav",
+        "use": "audio"
+      },
+      {
+        "file": "reverse-01.wav",
+        "use": "audio"
+      },
+      {
+        "file": "reverse-01.wav",
+        "use": "audio"
+      },
+      {
+        "file": "reverse-2.wav",
+        "use": "audio"
+      },
+      {
+        "file": "reverse-3.wav",
+        "use": "audio"
+      },
+      {
+        "file": "synth_01.wav",
+        "use": "audio"
+      },
+      {
+        "file": "synth_01.wav",
+        "use": "audio"
+      },
+      {
+        "file": "synth_02.wav",
+        "use": "audio"
+      },
+      {
+        "file": "synth_02.wav",
+        "use": "audio"
+      },
+      {
+        "file": "synth_03.wav",
+        "use": "audio"
+      },
+      {
+        "file": "synth_03.wav",
+        "use": "audio"
+      },
+      {
+        "file": "synth_04.wav",
+        "use": "audio"
+      },
+      {
+        "file": "synth_04.wav",
+        "use": "audio"
+      },
+      {
+        "file": "synth_05.wav",
+        "use": "audio"
+      },
+      {
+        "file": "synth_05.wav",
+        "use": "audio"
+      },
+      {
+        "file": "synth_06.wav",
+        "use": "audio"
+      },
+      {
+        "file": "vocal-foda_se_o_sistema.wav",
+        "use": "audio"
+      },
+      {
+        "file": "vocal-foda_se_o_sistema.wav",
+        "use": "audio"
+      },
+      {
+        "file": "vocal-fuck_the_system.wav",
+        "use": "audio"
+      },
+      {
+        "file": "vocal-fuck_the_system.wav",
+        "use": "audio"
+      }
+    ]
+  },
+  "fuck the system rmx-02.cpr": {
+    "dawType": "Cubase",
+    "dawVersion": "4",
+    "bpm": 145.0,
+    "key": null,
+    "markers": [],
+    "stats": {
+      "audio": 12,
+      "midi": 8,
+      "instrument": 1,
+      "sampler": 0,
+      "bus": 0,
+      "folder": 1,
+      "plugins": [
+        "Battery2VST",
+        "Chorus",
+        "CronoX",
+        "Flanger",
+        "GEQ-30",
+        "Oxford Limiter Native",
+        "QuadraFuzz",
+        "RoomWorks",
+        "Sonalksis TBK Stereo"
+      ],
+      "midiClips": 19
+    },
+    "midiClips": [
+      {
+        "name": "Clap",
+        "track": "Clap",
+        "ppq": 480,
+        "lengthTicks": 1920,
+        "notes": 2,
+        "events": 0,
+        "content": "0b573535c529"
+      },
+      {
+        "name": "Clap",
+        "track": "Clap",
+        "ppq": 480,
+        "lengthTicks": 1920,
+        "notes": 4,
+        "events": 0,
+        "content": "f16b18675207"
+      },
+      {
+        "name": "Clap",
+        "track": "Clap",
+        "ppq": 480,
+        "lengthTicks": 1440,
+        "notes": 2,
+        "events": 0,
+        "content": "ce02b585cd65"
+      },
+      {
+        "name": "Clap",
+        "track": "Clap",
+        "ppq": 480,
+        "lengthTicks": 1440,
+        "notes": 1,
+        "events": 0,
+        "content": "2c2e03460f06"
+      },
+      {
+        "name": "MIDI 02",
+        "track": "MIDI 02",
+        "ppq": 480,
+        "lengthTicks": 1920,
+        "notes": 12,
+        "events": 0,
+        "content": "51f7431f5da1"
+      },
+      {
+        "name": "MIDI 02",
+        "track": "MIDI 02",
+        "ppq": 480,
+        "lengthTicks": 1440,
+        "notes": 9,
+        "events": 0,
+        "content": "72431c6862c7"
+      },
+      {
+        "name": "MIDI 03",
+        "track": "MIDI 03",
+        "ppq": 480,
+        "lengthTicks": 1920,
+        "notes": 16,
+        "events": 0,
+        "content": "ba0ca8315f74"
+      },
+      {
+        "name": "MIDI 03",
+        "track": "MIDI 03",
+        "ppq": 480,
+        "lengthTicks": 1440,
+        "notes": 12,
+        "events": 0,
+        "content": "1ccbb50ccf5d"
+      },
+      {
+        "name": "MIDI 04",
+        "track": "MIDI 04",
+        "ppq": 480,
+        "lengthTicks": 1920,
+        "notes": 6,
+        "events": 0,
+        "content": "ab53c26969bc"
+      },
+      {
+        "name": "MIDI 04",
+        "track": "MIDI 04",
+        "ppq": 480,
+        "lengthTicks": 1440,
+        "notes": 5,
+        "events": 0,
+        "content": "0eedbd9f7d54"
+      },
+      {
+        "name": "MIDI 05",
+        "track": "MIDI 05",
+        "ppq": 480,
+        "lengthTicks": 1920,
+        "notes": 12,
+        "events": 0,
+        "content": "c036a2df6517"
+      },
+      {
+        "name": "MIDI 05",
+        "track": "MIDI 05",
+        "ppq": 480,
+        "lengthTicks": 1920,
+        "notes": 14,
+        "events": 0,
+        "content": "18b4c531566e"
+      },
+      {
+        "name": "MIDI 05",
+        "track": "MIDI 05",
+        "ppq": 480,
+        "lengthTicks": 1440,
+        "notes": 11,
+        "events": 0,
+        "content": "4faf6772c8ea"
+      },
+      {
+        "name": "MIDI 05",
+        "track": "MIDI 05",
+        "ppq": 480,
+        "lengthTicks": 1440,
+        "notes": 10,
+        "events": 0,
+        "content": "68bc6c20279e"
+      },
+      {
+        "name": "Instrument Track",
+        "track": "CronoX 01",
+        "ppq": 480,
+        "lengthTicks": 7680,
+        "notes": 48,
+        "events": 0,
+        "content": "e02f522d884f"
+      },
+      {
+        "name": "Instrument Track",
+        "track": "CronoX 01",
+        "ppq": 480,
+        "lengthTicks": 1920,
+        "notes": 12,
+        "events": 0,
+        "content": "21d457acbb3f"
+      },
+      {
+        "name": "Instrument Track",
+        "track": "CronoX 01",
+        "ppq": 480,
+        "lengthTicks": 1440,
+        "notes": 9,
+        "events": 0,
+        "content": "1f536b64ff77"
+      },
+      {
+        "name": "Instrument Track",
+        "track": "CronoX 01",
+        "ppq": 480,
+        "lengthTicks": 960,
+        "notes": 5,
+        "events": 0,
+        "content": "9642085cd690"
+      },
+      {
+        "name": "Instrument Track",
+        "track": "CronoX 01",
+        "ppq": 480,
+        "lengthTicks": 480,
+        "notes": 2,
+        "events": 0,
+        "content": "12efeb15ec51"
+      }
+    ],
+    "sampleReferences": [
+      {
+        "file": "Kick-01.wav",
+        "use": "audio"
+      },
+      {
+        "file": "Kick-01.wav",
+        "use": "audio"
+      },
+      {
+        "file": "Kick-2.wav",
+        "use": "audio"
+      },
+      {
+        "file": "Kick-3.wav",
+        "use": "audio"
+      },
+      {
+        "file": "Kick-4.wav",
+        "use": "audio"
+      },
+      {
+        "file": "Crash 01.wav",
+        "use": "audio"
+      },
+      {
+        "file": "Crash 01.wav",
+        "use": "audio"
+      },
+      {
+        "file": "effect_01.wav",
+        "use": "audio"
+      },
+      {
+        "file": "effect_01.wav",
+        "use": "audio"
+      },
+      {
+        "file": "reverse-01.wav",
+        "use": "audio"
+      },
+      {
+        "file": "reverse-01.wav",
+        "use": "audio"
+      },
+      {
+        "file": "reverse-2.wav",
+        "use": "audio"
+      },
+      {
+        "file": "reverse-3.wav",
+        "use": "audio"
+      },
+      {
+        "file": "synth_01.wav",
+        "use": "audio"
+      },
+      {
+        "file": "synth_01.wav",
+        "use": "audio"
+      },
+      {
+        "file": "synth_02.wav",
+        "use": "audio"
+      },
+      {
+        "file": "synth_02.wav",
+        "use": "audio"
+      },
+      {
+        "file": "synth_03.wav",
+        "use": "audio"
+      },
+      {
+        "file": "synth_03.wav",
+        "use": "audio"
+      },
+      {
+        "file": "synth_04.wav",
+        "use": "audio"
+      },
+      {
+        "file": "synth_04.wav",
+        "use": "audio"
+      },
+      {
+        "file": "synth_05.wav",
+        "use": "audio"
+      },
+      {
+        "file": "synth_05.wav",
+        "use": "audio"
+      },
+      {
+        "file": "synth_06.wav",
+        "use": "audio"
+      },
+      {
+        "file": "vocal-foda_se_o_sistema.wav",
+        "use": "audio"
+      },
+      {
+        "file": "vocal-foda_se_o_sistema.wav",
+        "use": "audio"
+      },
+      {
+        "file": "vocal-fuck_the_system.wav",
+        "use": "audio"
+      },
+      {
+        "file": "vocal-fuck_the_system.wav",
+        "use": "audio"
+      }
+    ]
+  },
+  "fuck the system rmx-03.cpr": {
+    "dawType": "Cubase",
+    "dawVersion": "4",
+    "bpm": 145.0,
+    "key": null,
+    "markers": [],
+    "stats": {
+      "audio": 13,
+      "midi": 5,
+      "instrument": 1,
+      "sampler": 0,
+      "bus": 0,
+      "folder": 6,
+      "plugins": [
+        "Battery2VST",
+        "Chorus",
+        "CronoX",
+        "Flanger",
+        "GEQ-10",
+        "GEQ-30",
+        "Oxford Limiter Native",
+        "QuadraFuzz",
+        "RoomWorks",
+        "Sonalksis TBK Stereo",
+        "UltraPitch 6-Voice"
+      ],
+      "midiClips": 20
+    },
+    "midiClips": [
+      {
+        "name": "Instrument Track",
+        "track": "CronoX 01",
+        "ppq": 480,
+        "lengthTicks": 7680,
+        "notes": 48,
+        "events": 0,
+        "content": "e02f522d884f"
+      },
+      {
+        "name": "Instrument Track",
+        "track": "CronoX 01",
+        "ppq": 480,
+        "lengthTicks": 1920,
+        "notes": 12,
+        "events": 0,
+        "content": "21d457acbb3f"
+      },
+      {
+        "name": "Instrument Track",
+        "track": "CronoX 01",
+        "ppq": 480,
+        "lengthTicks": 1440,
+        "notes": 9,
+        "events": 0,
+        "content": "1f536b64ff77"
+      },
+      {
+        "name": "Instrument Track",
+        "track": "CronoX 01",
+        "ppq": 480,
+        "lengthTicks": 960,
+        "notes": 5,
+        "events": 0,
+        "content": "9642085cd690"
+      },
+      {
+        "name": "Instrument Track",
+        "track": "CronoX 01",
+        "ppq": 480,
+        "lengthTicks": 3360,
+        "notes": 28,
+        "events": 0,
+        "content": "598fd940bbca"
+      },
+      {
+        "name": "Instrument Track",
+        "track": "CronoX 01",
+        "ppq": 480,
+        "lengthTicks": 5760,
+        "notes": 36,
+        "events": 0,
+        "content": "a554a3212d12"
+      },
+      {
+        "name": "Clap",
+        "track": "Clap-01",
+        "ppq": 480,
+        "lengthTicks": 1920,
+        "notes": 2,
+        "events": 0,
+        "content": "0b573535c529"
+      },
+      {
+        "name": "Clap",
+        "track": "Clap-01",
+        "ppq": 480,
+        "lengthTicks": 1920,
+        "notes": 4,
+        "events": 0,
+        "content": "f16b18675207"
+      },
+      {
+        "name": "Clap",
+        "track": "Clap-01",
+        "ppq": 480,
+        "lengthTicks": 1440,
+        "notes": 2,
+        "events": 0,
+        "content": "ce02b585cd65"
+      },
+      {
+        "name": "Clap",
+        "track": "Clap-01",
+        "ppq": 480,
+        "lengthTicks": 1440,
+        "notes": 1,
+        "events": 0,
+        "content": "2c2e03460f06"
+      },
+      {
+        "name": "MIDI 03",
+        "track": "Hat-01",
+        "ppq": 480,
+        "lengthTicks": 1920,
+        "notes": 16,
+        "events": 0,
+        "content": "ba0ca8315f74"
+      },
+      {
+        "name": "MIDI 03",
+        "track": "Hat-01",
+        "ppq": 480,
+        "lengthTicks": 1440,
+        "notes": 12,
+        "events": 0,
+        "content": "1ccbb50ccf5d"
+      },
+      {
+        "name": "MIDI 04",
+        "track": "Hat-02",
+        "ppq": 480,
+        "lengthTicks": 1920,
+        "notes": 6,
+        "events": 0,
+        "content": "ab53c26969bc"
+      },
+      {
+        "name": "MIDI 04",
+        "track": "Hat-02",
+        "ppq": 480,
+        "lengthTicks": 1440,
+        "notes": 5,
+        "events": 0,
+        "content": "0eedbd9f7d54"
+      },
+      {
+        "name": "MIDI 02",
+        "track": "OpenHat-01",
+        "ppq": 480,
+        "lengthTicks": 1920,
+        "notes": 12,
+        "events": 0,
+        "content": "51f7431f5da1"
+      },
+      {
+        "name": "MIDI 02",
+        "track": "OpenHat-01",
+        "ppq": 480,
+        "lengthTicks": 1440,
+        "notes": 9,
+        "events": 0,
+        "content": "72431c6862c7"
+      },
+      {
+        "name": "MIDI 05",
+        "track": "Percussion-01",
+        "ppq": 480,
+        "lengthTicks": 1920,
+        "notes": 12,
+        "events": 0,
+        "content": "c036a2df6517"
+      },
+      {
+        "name": "MIDI 05",
+        "track": "Percussion-01",
+        "ppq": 480,
+        "lengthTicks": 1920,
+        "notes": 14,
+        "events": 0,
+        "content": "18b4c531566e"
+      },
+      {
+        "name": "MIDI 05",
+        "track": "Percussion-01",
+        "ppq": 480,
+        "lengthTicks": 1440,
+        "notes": 11,
+        "events": 0,
+        "content": "4faf6772c8ea"
+      },
+      {
+        "name": "MIDI 05",
+        "track": "Percussion-01",
+        "ppq": 480,
+        "lengthTicks": 1440,
+        "notes": 10,
+        "events": 0,
+        "content": "68bc6c20279e"
+      }
+    ],
+    "sampleReferences": [
+      {
+        "file": "Kick-01.wav",
+        "use": "audio"
+      },
+      {
+        "file": "Kick-01.wav",
+        "use": "audio"
+      },
+      {
+        "file": "Kick-2.wav",
+        "use": "audio"
+      },
+      {
+        "file": "Kick-3.wav",
+        "use": "audio"
+      },
+      {
+        "file": "Kick-4.wav",
+        "use": "audio"
+      },
+      {
+        "file": "Crash 01.wav",
+        "use": "audio"
+      },
+      {
+        "file": "Crash 01.wav",
+        "use": "audio"
+      },
+      {
+        "file": "synth_01.wav",
+        "use": "audio"
+      },
+      {
+        "file": "synth_01.wav",
+        "use": "audio"
+      },
+      {
+        "file": "synth_02.wav",
+        "use": "audio"
+      },
+      {
+        "file": "synth_02.wav",
+        "use": "audio"
+      },
+      {
+        "file": "synth_03.wav",
+        "use": "audio"
+      },
+      {
+        "file": "synth_03.wav",
+        "use": "audio"
+      },
+      {
+        "file": "synth_04.wav",
+        "use": "audio"
+      },
+      {
+        "file": "synth_04.wav",
+        "use": "audio"
+      },
+      {
+        "file": "synth_05.wav",
+        "use": "audio"
+      },
+      {
+        "file": "synth_05.wav",
+        "use": "audio"
+      },
+      {
+        "file": "synth_06.wav",
+        "use": "audio"
+      },
+      {
+        "file": "vocal-foda_se_o_sistema.wav",
+        "use": "audio"
+      },
+      {
+        "file": "vocal-foda_se_o_sistema.wav",
+        "use": "audio"
+      },
+      {
+        "file": "vocal-foda_se_o_sistema1.wav",
+        "use": "audio"
+      },
+      {
+        "file": "vocal-fuck_the_system.wav",
+        "use": "audio"
+      },
+      {
+        "file": "vocal-fuck_the_system.wav",
+        "use": "audio"
+      },
+      {
+        "file": "vocal-fuck_the_system1.wav",
+        "use": "audio"
+      },
+      {
+        "file": "reverse-01.wav",
+        "use": "audio"
+      },
+      {
+        "file": "reverse-01.wav",
+        "use": "audio"
+      },
+      {
+        "file": "reverse-2.wav",
+        "use": "audio"
+      },
+      {
+        "file": "reverse-3.wav",
+        "use": "audio"
+      },
+      {
+        "file": "effect_01.wav",
+        "use": "audio"
+      },
+      {
+        "file": "effect_01.wav",
+        "use": "audio"
+      },
+      {
+        "file": "SNARE46.wav",
+        "use": "audio"
+      },
+      {
+        "file": "SNARE46.wav",
+        "use": "audio"
+      }
+    ]
+  },
+  "fuck the system rmx-034.cpr": {
+    "dawType": "Cubase",
+    "dawVersion": "4",
+    "bpm": 145.0,
+    "key": null,
+    "markers": [],
+    "stats": {
+      "audio": 13,
+      "midi": 5,
+      "instrument": 1,
+      "sampler": 0,
+      "bus": 0,
+      "folder": 6,
+      "plugins": [
+        "Battery2VST",
+        "Chorus",
+        "CronoX",
+        "DoubleDelay",
+        "Flanger",
+        "GEQ-10",
+        "GEQ-30",
+        "Oxford Limiter Native",
+        "QuadraFuzz",
+        "RoomWorks",
+        "Sonalksis TBK Stereo",
+        "UltraPitch 6-Voice"
+      ],
+      "midiClips": 20
+    },
+    "midiClips": [
+      {
+        "name": "Instrument Track",
+        "track": "CronoX 01",
+        "ppq": 480,
+        "lengthTicks": 7680,
+        "notes": 48,
+        "events": 0,
+        "content": "e02f522d884f"
+      },
+      {
+        "name": "Instrument Track",
+        "track": "CronoX 01",
+        "ppq": 480,
+        "lengthTicks": 1920,
+        "notes": 12,
+        "events": 0,
+        "content": "21d457acbb3f"
+      },
+      {
+        "name": "Instrument Track",
+        "track": "CronoX 01",
+        "ppq": 480,
+        "lengthTicks": 1440,
+        "notes": 9,
+        "events": 0,
+        "content": "1f536b64ff77"
+      },
+      {
+        "name": "Instrument Track",
+        "track": "CronoX 01",
+        "ppq": 480,
+        "lengthTicks": 960,
+        "notes": 5,
+        "events": 0,
+        "content": "9642085cd690"
+      },
+      {
+        "name": "Instrument Track",
+        "track": "CronoX 01",
+        "ppq": 480,
+        "lengthTicks": 3360,
+        "notes": 28,
+        "events": 0,
+        "content": "598fd940bbca"
+      },
+      {
+        "name": "Instrument Track",
+        "track": "CronoX 01",
+        "ppq": 480,
+        "lengthTicks": 5760,
+        "notes": 36,
+        "events": 0,
+        "content": "a554a3212d12"
+      },
+      {
+        "name": "Clap",
+        "track": "Clap-01",
+        "ppq": 480,
+        "lengthTicks": 1920,
+        "notes": 2,
+        "events": 0,
+        "content": "0b573535c529"
+      },
+      {
+        "name": "Clap",
+        "track": "Clap-01",
+        "ppq": 480,
+        "lengthTicks": 1920,
+        "notes": 4,
+        "events": 0,
+        "content": "f16b18675207"
+      },
+      {
+        "name": "Clap",
+        "track": "Clap-01",
+        "ppq": 480,
+        "lengthTicks": 1440,
+        "notes": 2,
+        "events": 0,
+        "content": "ce02b585cd65"
+      },
+      {
+        "name": "Clap",
+        "track": "Clap-01",
+        "ppq": 480,
+        "lengthTicks": 1440,
+        "notes": 1,
+        "events": 0,
+        "content": "2c2e03460f06"
+      },
+      {
+        "name": "MIDI 03",
+        "track": "Hat-01",
+        "ppq": 480,
+        "lengthTicks": 1920,
+        "notes": 16,
+        "events": 0,
+        "content": "ba0ca8315f74"
+      },
+      {
+        "name": "MIDI 03",
+        "track": "Hat-01",
+        "ppq": 480,
+        "lengthTicks": 1440,
+        "notes": 12,
+        "events": 0,
+        "content": "1ccbb50ccf5d"
+      },
+      {
+        "name": "MIDI 04",
+        "track": "Hat-02",
+        "ppq": 480,
+        "lengthTicks": 1920,
+        "notes": 6,
+        "events": 0,
+        "content": "ab53c26969bc"
+      },
+      {
+        "name": "MIDI 04",
+        "track": "Hat-02",
+        "ppq": 480,
+        "lengthTicks": 1440,
+        "notes": 5,
+        "events": 0,
+        "content": "0eedbd9f7d54"
+      },
+      {
+        "name": "MIDI 02",
+        "track": "OpenHat-01",
+        "ppq": 480,
+        "lengthTicks": 1920,
+        "notes": 12,
+        "events": 0,
+        "content": "51f7431f5da1"
+      },
+      {
+        "name": "MIDI 02",
+        "track": "OpenHat-01",
+        "ppq": 480,
+        "lengthTicks": 1440,
+        "notes": 9,
+        "events": 0,
+        "content": "72431c6862c7"
+      },
+      {
+        "name": "MIDI 05",
+        "track": "Percussion-01",
+        "ppq": 480,
+        "lengthTicks": 1920,
+        "notes": 12,
+        "events": 0,
+        "content": "c036a2df6517"
+      },
+      {
+        "name": "MIDI 05",
+        "track": "Percussion-01",
+        "ppq": 480,
+        "lengthTicks": 1920,
+        "notes": 14,
+        "events": 0,
+        "content": "18b4c531566e"
+      },
+      {
+        "name": "MIDI 05",
+        "track": "Percussion-01",
+        "ppq": 480,
+        "lengthTicks": 1440,
+        "notes": 11,
+        "events": 0,
+        "content": "4faf6772c8ea"
+      },
+      {
+        "name": "MIDI 05",
+        "track": "Percussion-01",
+        "ppq": 480,
+        "lengthTicks": 1440,
+        "notes": 10,
+        "events": 0,
+        "content": "68bc6c20279e"
+      }
+    ],
+    "sampleReferences": [
+      {
+        "file": "Kick-01.wav",
+        "use": "audio"
+      },
+      {
+        "file": "Kick-01.wav",
+        "use": "audio"
+      },
+      {
+        "file": "Kick-2.wav",
+        "use": "audio"
+      },
+      {
+        "file": "Kick-3.wav",
+        "use": "audio"
+      },
+      {
+        "file": "Kick-4.wav",
+        "use": "audio"
+      },
+      {
+        "file": "Crash 01.wav",
+        "use": "audio"
+      },
+      {
+        "file": "Crash 01.wav",
+        "use": "audio"
+      },
+      {
+        "file": "synth_01.wav",
+        "use": "audio"
+      },
+      {
+        "file": "synth_01.wav",
+        "use": "audio"
+      },
+      {
+        "file": "synth_02.wav",
+        "use": "audio"
+      },
+      {
+        "file": "synth_02.wav",
+        "use": "audio"
+      },
+      {
+        "file": "synth_03.wav",
+        "use": "audio"
+      },
+      {
+        "file": "synth_03.wav",
+        "use": "audio"
+      },
+      {
+        "file": "synth_04.wav",
+        "use": "audio"
+      },
+      {
+        "file": "synth_04.wav",
+        "use": "audio"
+      },
+      {
+        "file": "synth_05.wav",
+        "use": "audio"
+      },
+      {
+        "file": "synth_05.wav",
+        "use": "audio"
+      },
+      {
+        "file": "synth_06.wav",
+        "use": "audio"
+      },
+      {
+        "file": "vocal-foda_se_o_sistema.wav",
+        "use": "audio"
+      },
+      {
+        "file": "vocal-foda_se_o_sistema.wav",
+        "use": "audio"
+      },
+      {
+        "file": "vocal-foda_se_o_sistema1.wav",
+        "use": "audio"
+      },
+      {
+        "file": "vocal-fuck_the_system.wav",
+        "use": "audio"
+      },
+      {
+        "file": "vocal-fuck_the_system.wav",
+        "use": "audio"
+      },
+      {
+        "file": "vocal-fuck_the_system1.wav",
+        "use": "audio"
+      },
+      {
+        "file": "reverse-01.wav",
+        "use": "audio"
+      },
+      {
+        "file": "reverse-01.wav",
+        "use": "audio"
+      },
+      {
+        "file": "reverse-2.wav",
+        "use": "audio"
+      },
+      {
+        "file": "reverse-3.wav",
+        "use": "audio"
+      },
+      {
+        "file": "effect_01.wav",
+        "use": "audio"
+      },
+      {
+        "file": "effect_01.wav",
+        "use": "audio"
+      },
+      {
+        "file": "SNARE46.wav",
+        "use": "audio"
+      },
+      {
+        "file": "SNARE46.wav",
+        "use": "audio"
+      }
+    ]
+  },
+  "fuck the system rmx-04.cpr": {
+    "dawType": "Cubase",
+    "dawVersion": "5",
+    "bpm": 145.0,
+    "key": null,
+    "markers": [],
+    "stats": {
+      "audio": 13,
+      "midi": 5,
+      "instrument": 1,
+      "sampler": 0,
+      "bus": 0,
+      "folder": 6,
+      "plugins": [
+        "Battery2VST",
+        "Chorus",
+        "CronoX",
+        "DoubleDelay",
+        "Flanger",
+        "GEQ-10",
+        "GEQ-30",
+        "Oxford Limiter Native",
+        "QuadraFuzz",
+        "RoomWorks",
+        "Sonalksis TBK Stereo",
+        "UltraPitch 6-Voice"
+      ],
+      "midiClips": 20
+    },
+    "midiClips": [
+      {
+        "name": "Instrument Track",
+        "track": "CronoX 01",
+        "ppq": 480,
+        "lengthTicks": 7680,
+        "notes": 48,
+        "events": 0,
+        "content": "e02f522d884f"
+      },
+      {
+        "name": "Instrument Track",
+        "track": "CronoX 01",
+        "ppq": 480,
+        "lengthTicks": 1920,
+        "notes": 12,
+        "events": 0,
+        "content": "21d457acbb3f"
+      },
+      {
+        "name": "Instrument Track",
+        "track": "CronoX 01",
+        "ppq": 480,
+        "lengthTicks": 1440,
+        "notes": 9,
+        "events": 0,
+        "content": "1f536b64ff77"
+      },
+      {
+        "name": "Instrument Track",
+        "track": "CronoX 01",
+        "ppq": 480,
+        "lengthTicks": 960,
+        "notes": 5,
+        "events": 0,
+        "content": "9642085cd690"
+      },
+      {
+        "name": "Instrument Track",
+        "track": "CronoX 01",
+        "ppq": 480,
+        "lengthTicks": 3360,
+        "notes": 28,
+        "events": 0,
+        "content": "598fd940bbca"
+      },
+      {
+        "name": "Instrument Track",
+        "track": "CronoX 01",
+        "ppq": 480,
+        "lengthTicks": 5760,
+        "notes": 36,
+        "events": 0,
+        "content": "a554a3212d12"
+      },
+      {
+        "name": "Clap",
+        "track": "Clap-01",
+        "ppq": 480,
+        "lengthTicks": 1920,
+        "notes": 2,
+        "events": 0,
+        "content": "0b573535c529"
+      },
+      {
+        "name": "Clap",
+        "track": "Clap-01",
+        "ppq": 480,
+        "lengthTicks": 1920,
+        "notes": 4,
+        "events": 0,
+        "content": "f16b18675207"
+      },
+      {
+        "name": "Clap",
+        "track": "Clap-01",
+        "ppq": 480,
+        "lengthTicks": 1440,
+        "notes": 2,
+        "events": 0,
+        "content": "ce02b585cd65"
+      },
+      {
+        "name": "Clap",
+        "track": "Clap-01",
+        "ppq": 480,
+        "lengthTicks": 1440,
+        "notes": 1,
+        "events": 0,
+        "content": "2c2e03460f06"
+      },
+      {
+        "name": "MIDI 03",
+        "track": "Hat-01",
+        "ppq": 480,
+        "lengthTicks": 1920,
+        "notes": 16,
+        "events": 0,
+        "content": "ba0ca8315f74"
+      },
+      {
+        "name": "MIDI 03",
+        "track": "Hat-01",
+        "ppq": 480,
+        "lengthTicks": 1440,
+        "notes": 12,
+        "events": 0,
+        "content": "1ccbb50ccf5d"
+      },
+      {
+        "name": "MIDI 04",
+        "track": "Hat-02",
+        "ppq": 480,
+        "lengthTicks": 1920,
+        "notes": 6,
+        "events": 0,
+        "content": "ab53c26969bc"
+      },
+      {
+        "name": "MIDI 04",
+        "track": "Hat-02",
+        "ppq": 480,
+        "lengthTicks": 1440,
+        "notes": 5,
+        "events": 0,
+        "content": "0eedbd9f7d54"
+      },
+      {
+        "name": "MIDI 02",
+        "track": "OpenHat-01",
+        "ppq": 480,
+        "lengthTicks": 1920,
+        "notes": 12,
+        "events": 0,
+        "content": "51f7431f5da1"
+      },
+      {
+        "name": "MIDI 02",
+        "track": "OpenHat-01",
+        "ppq": 480,
+        "lengthTicks": 1440,
+        "notes": 9,
+        "events": 0,
+        "content": "72431c6862c7"
+      },
+      {
+        "name": "MIDI 05",
+        "track": "Percussion-01",
+        "ppq": 480,
+        "lengthTicks": 1920,
+        "notes": 12,
+        "events": 0,
+        "content": "c036a2df6517"
+      },
+      {
+        "name": "MIDI 05",
+        "track": "Percussion-01",
+        "ppq": 480,
+        "lengthTicks": 1920,
+        "notes": 14,
+        "events": 0,
+        "content": "18b4c531566e"
+      },
+      {
+        "name": "MIDI 05",
+        "track": "Percussion-01",
+        "ppq": 480,
+        "lengthTicks": 1440,
+        "notes": 11,
+        "events": 0,
+        "content": "4faf6772c8ea"
+      },
+      {
+        "name": "MIDI 05",
+        "track": "Percussion-01",
+        "ppq": 480,
+        "lengthTicks": 1440,
+        "notes": 10,
+        "events": 0,
+        "content": "68bc6c20279e"
+      }
+    ],
+    "sampleReferences": [
+      {
+        "file": "Kick-01.wav",
+        "use": "audio"
+      },
+      {
+        "file": "Kick-01.wav",
+        "use": "audio"
+      },
+      {
+        "file": "Kick-2.wav",
+        "use": "audio"
+      },
+      {
+        "file": "Kick-3.wav",
+        "use": "audio"
+      },
+      {
+        "file": "Kick-4.wav",
+        "use": "audio"
+      },
+      {
+        "file": "Crash 01.wav",
+        "use": "audio"
+      },
+      {
+        "file": "Crash 01.wav",
+        "use": "audio"
+      },
+      {
+        "file": "synth_01.wav",
+        "use": "audio"
+      },
+      {
+        "file": "synth_01.wav",
+        "use": "audio"
+      },
+      {
+        "file": "synth_02.wav",
+        "use": "audio"
+      },
+      {
+        "file": "synth_02.wav",
+        "use": "audio"
+      },
+      {
+        "file": "synth_03.wav",
+        "use": "audio"
+      },
+      {
+        "file": "synth_03.wav",
+        "use": "audio"
+      },
+      {
+        "file": "synth_04.wav",
+        "use": "audio"
+      },
+      {
+        "file": "synth_04.wav",
+        "use": "audio"
+      },
+      {
+        "file": "synth_05.wav",
+        "use": "audio"
+      },
+      {
+        "file": "synth_05.wav",
+        "use": "audio"
+      },
+      {
+        "file": "synth_06.wav",
+        "use": "audio"
+      },
+      {
+        "file": "vocal-foda_se_o_sistema.wav",
+        "use": "audio"
+      },
+      {
+        "file": "vocal-foda_se_o_sistema.wav",
+        "use": "audio"
+      },
+      {
+        "file": "vocal-foda_se_o_sistema1.wav",
+        "use": "audio"
+      },
+      {
+        "file": "vocal-fuck_the_system.wav",
+        "use": "audio"
+      },
+      {
+        "file": "vocal-fuck_the_system.wav",
+        "use": "audio"
+      },
+      {
+        "file": "vocal-fuck_the_system1.wav",
+        "use": "audio"
+      },
+      {
+        "file": "reverse-01.wav",
+        "use": "audio"
+      },
+      {
+        "file": "reverse-01.wav",
+        "use": "audio"
+      },
+      {
+        "file": "reverse-2.wav",
+        "use": "audio"
+      },
+      {
+        "file": "reverse-3.wav",
+        "use": "audio"
+      },
+      {
+        "file": "effect_01.wav",
+        "use": "audio"
+      },
+      {
+        "file": "effect_01.wav",
+        "use": "audio"
+      },
+      {
+        "file": "SNARE46.wav",
+        "use": "audio"
+      },
+      {
+        "file": "SNARE46.wav",
+        "use": "audio"
+      }
+    ]
+  },
+  "fuck the system rmx-35.cpr": {
+    "dawType": "Cubase",
+    "dawVersion": "5",
+    "bpm": 145.0,
+    "key": null,
+    "markers": [],
+    "stats": {
+      "audio": 13,
+      "midi": 5,
+      "instrument": 3,
+      "sampler": 0,
+      "bus": 0,
+      "folder": 6,
+      "plugins": [
+        "Battery2VST",
+        "BitCrusher",
+        "Chorus",
+        "CronoX",
+        "DoubleDelay",
+        "Flanger",
+        "GEQ-10",
+        "GEQ-30",
+        "Oxford Limiter Native",
+        "QuadraFuzz",
+        "RBass",
+        "RoomWorks",
+        "Sonalksis TBK Stereo",
+        "UltraPitch 6-Voice",
+        "z3ta+"
+      ],
+      "midiClips": 25
+    },
+    "midiClips": [
+      {
+        "name": "Instrument Track",
+        "track": "CronoX 01",
+        "ppq": 480,
+        "lengthTicks": 1920,
+        "notes": 12,
+        "events": 0,
+        "content": "21d457acbb3f"
+      },
+      {
+        "name": "Instrument Track",
+        "track": "CronoX 01",
+        "ppq": 480,
+        "lengthTicks": 7680,
+        "notes": 48,
+        "events": 0,
+        "content": "e02f522d884f"
+      },
+      {
+        "name": "Instrument Track",
+        "track": "CronoX 01",
+        "ppq": 480,
+        "lengthTicks": 1440,
+        "notes": 9,
+        "events": 0,
+        "content": "1f536b64ff77"
+      },
+      {
+        "name": "Instrument Track",
+        "track": "CronoX 01",
+        "ppq": 480,
+        "lengthTicks": 960,
+        "notes": 5,
+        "events": 0,
+        "content": "9642085cd690"
+      },
+      {
+        "name": "Instrument Track",
+        "track": "CronoX 01",
+        "ppq": 480,
+        "lengthTicks": 3360,
+        "notes": 28,
+        "events": 0,
+        "content": "598fd940bbca"
+      },
+      {
+        "name": "Instrument Track",
+        "track": "CronoX 01",
+        "ppq": 480,
+        "lengthTicks": 5760,
+        "notes": 36,
+        "events": 0,
+        "content": "a554a3212d12"
+      },
+      {
+        "name": "Clap",
+        "track": "Clap-01",
+        "ppq": 480,
+        "lengthTicks": 1920,
+        "notes": 2,
+        "events": 0,
+        "content": "0b573535c529"
+      },
+      {
+        "name": "Clap",
+        "track": "Clap-01",
+        "ppq": 480,
+        "lengthTicks": 1920,
+        "notes": 4,
+        "events": 0,
+        "content": "f16b18675207"
+      },
+      {
+        "name": "Clap",
+        "track": "Clap-01",
+        "ppq": 480,
+        "lengthTicks": 1440,
+        "notes": 2,
+        "events": 0,
+        "content": "ce02b585cd65"
+      },
+      {
+        "name": "Clap",
+        "track": "Clap-01",
+        "ppq": 480,
+        "lengthTicks": 1440,
+        "notes": 1,
+        "events": 0,
+        "content": "2c2e03460f06"
+      },
+      {
+        "name": "MIDI 03",
+        "track": "Hat-01",
+        "ppq": 480,
+        "lengthTicks": 1920,
+        "notes": 8,
+        "events": 0,
+        "content": "1c480aef44a3"
+      },
+      {
+        "name": "MIDI 03",
+        "track": "Hat-01",
+        "ppq": 480,
+        "lengthTicks": 1920,
+        "notes": 16,
+        "events": 0,
+        "content": "ba0ca8315f74"
+      },
+      {
+        "name": "MIDI 03",
+        "track": "Hat-01",
+        "ppq": 480,
+        "lengthTicks": 1440,
+        "notes": 12,
+        "events": 0,
+        "content": "1ccbb50ccf5d"
+      },
+      {
+        "name": "MIDI 04",
+        "track": "Hat-02",
+        "ppq": 480,
+        "lengthTicks": 1920,
+        "notes": 6,
+        "events": 0,
+        "content": "ab53c26969bc"
+      },
+      {
+        "name": "MIDI 04",
+        "track": "Hat-02",
+        "ppq": 480,
+        "lengthTicks": 1440,
+        "notes": 5,
+        "events": 0,
+        "content": "0eedbd9f7d54"
+      },
+      {
+        "name": "MIDI 02",
+        "track": "OpenHat-01",
+        "ppq": 480,
+        "lengthTicks": 1920,
+        "notes": 12,
+        "events": 0,
+        "content": "51f7431f5da1"
+      },
+      {
+        "name": "MIDI 02",
+        "track": "OpenHat-01",
+        "ppq": 480,
+        "lengthTicks": 1440,
+        "notes": 9,
+        "events": 0,
+        "content": "72431c6862c7"
+      },
+      {
+        "name": "MIDI 05",
+        "track": "Percussion-01",
+        "ppq": 480,
+        "lengthTicks": 1920,
+        "notes": 12,
+        "events": 0,
+        "content": "c036a2df6517"
+      },
+      {
+        "name": "MIDI 05",
+        "track": "Percussion-01",
+        "ppq": 480,
+        "lengthTicks": 1920,
+        "notes": 14,
+        "events": 0,
+        "content": "18b4c531566e"
+      },
+      {
+        "name": "MIDI 05",
+        "track": "Percussion-01",
+        "ppq": 480,
+        "lengthTicks": 1440,
+        "notes": 11,
+        "events": 0,
+        "content": "4faf6772c8ea"
+      },
+      {
+        "name": "MIDI 05",
+        "track": "Percussion-01",
+        "ppq": 480,
+        "lengthTicks": 1440,
+        "notes": 10,
+        "events": 0,
+        "content": "68bc6c20279e"
+      },
+      {
+        "name": "z3ta+ 02",
+        "track": "Lead",
+        "ppq": 480,
+        "lengthTicks": 7680,
+        "notes": 36,
+        "events": 0,
+        "content": "fbc869b927f3"
+      },
+      {
+        "name": "z3ta+ 02",
+        "track": "Lead",
+        "ppq": 480,
+        "lengthTicks": 7200,
+        "notes": 33,
+        "events": 0,
+        "content": "408de8f1dd85"
+      },
+      {
+        "name": "z3ta+ 02",
+        "track": "Bass",
+        "ppq": 480,
+        "lengthTicks": 7680,
+        "notes": 12,
+        "events": 0,
+        "content": "382448efa908"
+      },
+      {
+        "name": "z3ta+ 02",
+        "track": "Bass",
+        "ppq": 480,
+        "lengthTicks": 7200,
+        "notes": 10,
+        "events": 0,
+        "content": "d071e06b931d"
+      }
+    ],
+    "sampleReferences": [
+      {
+        "file": "Kick-01.wav",
+        "use": "audio"
+      },
+      {
+        "file": "Kick-01.wav",
+        "use": "audio"
+      },
+      {
+        "file": "Kick-2.wav",
+        "use": "audio"
+      },
+      {
+        "file": "Kick-3.wav",
+        "use": "audio"
+      },
+      {
+        "file": "Kick-4.wav",
+        "use": "audio"
+      },
+      {
+        "file": "Crash 01.wav",
+        "use": "audio"
+      },
+      {
+        "file": "Crash 01.wav",
+        "use": "audio"
+      },
+      {
+        "file": "synth_01.wav",
+        "use": "audio"
+      },
+      {
+        "file": "synth_01.wav",
+        "use": "audio"
+      },
+      {
+        "file": "synth_02.wav",
+        "use": "audio"
+      },
+      {
+        "file": "synth_02.wav",
+        "use": "audio"
+      },
+      {
+        "file": "synth_03.wav",
+        "use": "audio"
+      },
+      {
+        "file": "synth_03.wav",
+        "use": "audio"
+      },
+      {
+        "file": "synth_04.wav",
+        "use": "audio"
+      },
+      {
+        "file": "synth_04.wav",
+        "use": "audio"
+      },
+      {
+        "file": "synth_05.wav",
+        "use": "audio"
+      },
+      {
+        "file": "synth_05.wav",
+        "use": "audio"
+      },
+      {
+        "file": "synth_06.wav",
+        "use": "audio"
+      },
+      {
+        "file": "vocal-foda_se_o_sistema.wav",
+        "use": "audio"
+      },
+      {
+        "file": "vocal-foda_se_o_sistema.wav",
+        "use": "audio"
+      },
+      {
+        "file": "vocal-foda_se_o_sistema1.wav",
+        "use": "audio"
+      },
+      {
+        "file": "vocal-fuck_the_system.wav",
+        "use": "audio"
+      },
+      {
+        "file": "vocal-fuck_the_system.wav",
+        "use": "audio"
+      },
+      {
+        "file": "vocal-fuck_the_system1.wav",
+        "use": "audio"
+      },
+      {
+        "file": "reverse-01.wav",
+        "use": "audio"
+      },
+      {
+        "file": "reverse-01.wav",
+        "use": "audio"
+      },
+      {
+        "file": "reverse-2.wav",
+        "use": "audio"
+      },
+      {
+        "file": "reverse-3.wav",
+        "use": "audio"
+      },
+      {
+        "file": "effect_01.wav",
+        "use": "audio"
+      },
+      {
+        "file": "effect_01.wav",
+        "use": "audio"
+      },
+      {
+        "file": "SNARE46.wav",
+        "use": "audio"
+      },
+      {
+        "file": "SNARE46.wav",
+        "use": "audio"
+      }
+    ]
+  },
+  "fuck the system rmx-6.cpr": {
+    "dawType": "Cubase",
+    "dawVersion": "11",
+    "bpm": 145.0,
+    "key": null,
+    "markers": [],
+    "stats": {
+      "audio": 13,
+      "midi": 5,
+      "instrument": 3,
+      "sampler": 1,
+      "bus": 0,
+      "folder": 7,
+      "plugins": [
+        "Bitcrusher",
+        "Chorus",
+        "DoubleDelay",
+        "Flanger",
+        "GEQ-10",
+        "GEQ-30",
+        "LFOTool",
+        "Oxford Limiter Native",
+        "PingPongDelay",
+        "QuadraFuzz",
+        "RBass Stereo",
+        "RoomWorks",
+        "Sonalksis TBK Stereo",
+        "Sylenth1",
+        "UltraPitch 6-Voice",
+        "z3ta+"
+      ],
+      "midiClips": 25
+    },
+    "midiClips": [
+      {
+        "name": "Instrument Track",
+        "track": "CronoX 01",
+        "ppq": 480,
+        "lengthTicks": 1920,
+        "notes": 12,
+        "events": 0,
+        "content": "f120b57dc805"
+      },
+      {
+        "name": "Instrument Track",
+        "track": "CronoX 01",
+        "ppq": 480,
+        "lengthTicks": 7680,
+        "notes": 48,
+        "events": 0,
+        "content": "379ee57cb340"
+      },
+      {
+        "name": "Instrument Track",
+        "track": "CronoX 01",
+        "ppq": 480,
+        "lengthTicks": 1440,
+        "notes": 9,
+        "events": 0,
+        "content": "8fbbfcf303c6"
+      },
+      {
+        "name": "Instrument Track",
+        "track": "CronoX 01",
+        "ppq": 480,
+        "lengthTicks": 960,
+        "notes": 5,
+        "events": 0,
+        "content": "52dc666d0ca4"
+      },
+      {
+        "name": "Instrument Track",
+        "track": "CronoX 01",
+        "ppq": 480,
+        "lengthTicks": 3360,
+        "notes": 28,
+        "events": 0,
+        "content": "72df102490d8"
+      },
+      {
+        "name": "Instrument Track",
+        "track": "CronoX 01",
+        "ppq": 480,
+        "lengthTicks": 5760,
+        "notes": 36,
+        "events": 0,
+        "content": "24f763d335fd"
+      },
+      {
+        "name": "MIDI 03",
+        "track": "Hat-01",
+        "ppq": 480,
+        "lengthTicks": 1920,
+        "notes": 8,
+        "events": 0,
+        "content": "1c480aef44a3"
+      },
+      {
+        "name": "MIDI 03",
+        "track": "Hat-01",
+        "ppq": 480,
+        "lengthTicks": 1920,
+        "notes": 16,
+        "events": 0,
+        "content": "ba0ca8315f74"
+      },
+      {
+        "name": "MIDI 03",
+        "track": "Hat-01",
+        "ppq": 480,
+        "lengthTicks": 1440,
+        "notes": 12,
+        "events": 0,
+        "content": "1ccbb50ccf5d"
+      },
+      {
+        "name": "MIDI 03",
+        "track": "Hat-01",
+        "ppq": 480,
+        "lengthTicks": 1800,
+        "notes": 15,
+        "events": 0,
+        "content": "adf86783bf67"
+      },
+      {
+        "name": "MIDI 03",
+        "track": "Hat-01",
+        "ppq": 480,
+        "lengthTicks": 2040,
+        "notes": 16,
+        "events": 0,
+        "content": "ba0ca8315f74"
+      },
+      {
+        "name": "MIDI 04",
+        "track": "Hat-02",
+        "ppq": 480,
+        "lengthTicks": 1920,
+        "notes": 6,
+        "events": 0,
+        "content": "ab53c26969bc"
+      },
+      {
+        "name": "MIDI 04",
+        "track": "Hat-02",
+        "ppq": 480,
+        "lengthTicks": 1440,
+        "notes": 5,
+        "events": 0,
+        "content": "0eedbd9f7d54"
+      },
+      {
+        "name": "MIDI 02",
+        "track": "OpenHat-01",
+        "ppq": 480,
+        "lengthTicks": 1920,
+        "notes": 12,
+        "events": 0,
+        "content": "51f7431f5da1"
+      },
+      {
+        "name": "MIDI 02",
+        "track": "OpenHat-01",
+        "ppq": 480,
+        "lengthTicks": 1440,
+        "notes": 9,
+        "events": 0,
+        "content": "72431c6862c7"
+      },
+      {
+        "name": "MIDI 05",
+        "track": "Percussion-01",
+        "ppq": 480,
+        "lengthTicks": 1920,
+        "notes": 12,
+        "events": 0,
+        "content": "c036a2df6517"
+      },
+      {
+        "name": "MIDI 05",
+        "track": "Percussion-01",
+        "ppq": 480,
+        "lengthTicks": 1920,
+        "notes": 14,
+        "events": 0,
+        "content": "18b4c531566e"
+      },
+      {
+        "name": "MIDI 05",
+        "track": "Percussion-01",
+        "ppq": 480,
+        "lengthTicks": 1440,
+        "notes": 11,
+        "events": 0,
+        "content": "4faf6772c8ea"
+      },
+      {
+        "name": "MIDI 05",
+        "track": "Percussion-01",
+        "ppq": 480,
+        "lengthTicks": 2160,
+        "notes": 14,
+        "events": 0,
+        "content": "18b4c531566e"
+      },
+      {
+        "name": "MIDI 05",
+        "track": "Percussion-01",
+        "ppq": 480,
+        "lengthTicks": 1680,
+        "notes": 11,
+        "events": 0,
+        "content": "ad10bc6a7c64"
+      },
+      {
+        "name": "MIDI 05",
+        "track": "Percussion-01",
+        "ppq": 480,
+        "lengthTicks": 1440,
+        "notes": 10,
+        "events": 0,
+        "content": "68bc6c20279e"
+      },
+      {
+        "name": "z3ta+ 02",
+        "track": "Lead",
+        "ppq": 480,
+        "lengthTicks": 7680,
+        "notes": 36,
+        "events": 0,
+        "content": "fbc869b927f3"
+      },
+      {
+        "name": "z3ta+ 02",
+        "track": "Lead",
+        "ppq": 480,
+        "lengthTicks": 7200,
+        "notes": 33,
+        "events": 0,
+        "content": "408de8f1dd85"
+      },
+      {
+        "name": "z3ta+ 02",
+        "track": "Bass",
+        "ppq": 480,
+        "lengthTicks": 7680,
+        "notes": 12,
+        "events": 0,
+        "content": "382448efa908"
+      },
+      {
+        "name": "z3ta+ 02",
+        "track": "Bass",
+        "ppq": 480,
+        "lengthTicks": 7200,
+        "notes": 10,
+        "events": 0,
+        "content": "d071e06b931d"
+      }
+    ],
+    "sampleReferences": [
+      {
+        "file": "Kick-01.wav",
+        "use": "audio"
+      },
+      {
+        "file": "Kick-01.wav",
+        "use": "audio"
+      },
+      {
+        "file": "Kick-2.wav",
+        "use": "audio"
+      },
+      {
+        "file": "Kick-3.wav",
+        "use": "audio"
+      },
+      {
+        "file": "Kick-4.wav",
+        "use": "audio"
+      },
+      {
+        "file": "Crash 01.wav",
+        "use": "audio"
+      },
+      {
+        "file": "Crash 01.wav",
+        "use": "audio"
+      },
+      {
+        "file": "synth_01.wav",
+        "use": "audio"
+      },
+      {
+        "file": "synth_01.wav",
+        "use": "audio"
+      },
+      {
+        "file": "synth_02.wav",
+        "use": "audio"
+      },
+      {
+        "file": "synth_02.wav",
+        "use": "audio"
+      },
+      {
+        "file": "synth_03.wav",
+        "use": "audio"
+      },
+      {
+        "file": "synth_03.wav",
+        "use": "audio"
+      },
+      {
+        "file": "synth_04.wav",
+        "use": "audio"
+      },
+      {
+        "file": "synth_04.wav",
+        "use": "audio"
+      },
+      {
+        "file": "synth_05.wav",
+        "use": "audio"
+      },
+      {
+        "file": "synth_05.wav",
+        "use": "audio"
+      },
+      {
+        "file": "synth_06.wav",
+        "use": "audio"
+      },
+      {
+        "file": "vocal-foda_se_o_sistema.wav",
+        "use": "audio"
+      },
+      {
+        "file": "vocal-foda_se_o_sistema.wav",
+        "use": "audio"
+      },
+      {
+        "file": "vocal-foda_se_o_sistema1.wav",
+        "use": "audio"
+      },
+      {
+        "file": "vocal-fuck_the_system.wav",
+        "use": "audio"
+      },
+      {
+        "file": "vocal-fuck_the_system.wav",
+        "use": "audio"
+      },
+      {
+        "file": "vocal-fuck_the_system1.wav",
+        "use": "audio"
+      },
+      {
+        "file": "reverse-01.wav",
+        "use": "audio"
+      },
+      {
+        "file": "reverse-01.wav",
+        "use": "audio"
+      },
+      {
+        "file": "reverse-2.wav",
+        "use": "audio"
+      },
+      {
+        "file": "reverse-3.wav",
+        "use": "audio"
+      },
+      {
+        "file": "effect_01.wav",
+        "use": "audio"
+      },
+      {
+        "file": "effect_01.wav",
+        "use": "audio"
+      },
+      {
+        "file": "SNARE46.wav",
+        "use": "audio"
+      },
+      {
+        "file": "SNARE46.wav",
+        "use": "audio"
+      },
+      {
+        "file": "VEE Snare 002-01.wav",
+        "use": "sampler"
+      },
+      {
+        "file": "VEE Snare 002.wav",
+        "use": "sampler"
+      }
+    ]
+  },
+  "fuck the system rmx.cpr": {
+    "dawType": "Cubase",
+    "dawVersion": "4",
+    "bpm": 145.0,
+    "key": null,
+    "markers": [],
+    "stats": {
+      "audio": 11,
+      "midi": 8,
+      "instrument": 1,
+      "sampler": 0,
+      "bus": 0,
+      "folder": 1,
+      "plugins": [
+        "Battery2VST",
+        "Chorus",
+        "CronoX",
+        "Flanger",
+        "GEQ-30",
+        "Oxford Limiter Native",
+        "QuadraFuzz",
+        "Sonalksis TBK Stereo"
+      ],
+      "midiClips": 8
+    },
+    "midiClips": [
+      {
+        "name": "Clap",
+        "track": "Clap",
+        "ppq": 480,
+        "lengthTicks": 1920,
+        "notes": 2,
+        "events": 0,
+        "content": "0b573535c529"
+      },
+      {
+        "name": "Clap",
+        "track": "Clap",
+        "ppq": 480,
+        "lengthTicks": 1920,
+        "notes": 4,
+        "events": 0,
+        "content": "f16b18675207"
+      },
+      {
+        "name": "MIDI 02",
+        "track": "MIDI 02",
+        "ppq": 480,
+        "lengthTicks": 1920,
+        "notes": 12,
+        "events": 0,
+        "content": "51f7431f5da1"
+      },
+      {
+        "name": "MIDI 03",
+        "track": "MIDI 03",
+        "ppq": 480,
+        "lengthTicks": 1920,
+        "notes": 16,
+        "events": 0,
+        "content": "ba0ca8315f74"
+      },
+      {
+        "name": "MIDI 04",
+        "track": "MIDI 04",
+        "ppq": 480,
+        "lengthTicks": 1920,
+        "notes": 6,
+        "events": 0,
+        "content": "ab53c26969bc"
+      },
+      {
+        "name": "MIDI 05",
+        "track": "MIDI 05",
+        "ppq": 480,
+        "lengthTicks": 1920,
+        "notes": 12,
+        "events": 0,
+        "content": "c036a2df6517"
+      },
+      {
+        "name": "MIDI 05",
+        "track": "MIDI 05",
+        "ppq": 480,
+        "lengthTicks": 1920,
+        "notes": 14,
+        "events": 0,
+        "content": "18b4c531566e"
+      },
+      {
+        "name": "Instrument Track",
+        "track": "CronoX 01",
+        "ppq": 480,
+        "lengthTicks": 7680,
+        "notes": 48,
+        "events": 0,
+        "content": "e02f522d884f"
+      }
+    ],
+    "sampleReferences": [
+      {
+        "file": "Kick-01.wav",
+        "use": "audio"
+      },
+      {
+        "file": "Kick-01.wav",
+        "use": "audio"
+      },
+      {
+        "file": "Kick-2.wav",
+        "use": "audio"
+      },
+      {
+        "file": "Kick-3.wav",
+        "use": "audio"
+      },
+      {
+        "file": "Crash 01.wav",
+        "use": "audio"
+      },
+      {
+        "file": "Crash 01.wav",
+        "use": "audio"
+      },
+      {
+        "file": "effect_01.wav",
+        "use": "audio"
+      },
+      {
+        "file": "effect_01.wav",
+        "use": "audio"
+      },
+      {
+        "file": "reverse-01.wav",
+        "use": "audio"
+      },
+      {
+        "file": "reverse-01.wav",
+        "use": "audio"
+      },
+      {
+        "file": "synth_01.wav",
+        "use": "audio"
+      },
+      {
+        "file": "synth_01.wav",
+        "use": "audio"
+      },
+      {
+        "file": "synth_02.wav",
+        "use": "audio"
+      },
+      {
+        "file": "synth_02.wav",
+        "use": "audio"
+      },
+      {
+        "file": "synth_03.wav",
+        "use": "audio"
+      },
+      {
+        "file": "synth_03.wav",
+        "use": "audio"
+      },
+      {
+        "file": "synth_04.wav",
+        "use": "audio"
+      },
+      {
+        "file": "synth_04.wav",
+        "use": "audio"
+      },
+      {
+        "file": "synth_05.wav",
+        "use": "audio"
+      },
+      {
+        "file": "synth_05.wav",
+        "use": "audio"
+      },
+      {
+        "file": "vocal-foda_se_o_sistema.wav",
+        "use": "audio"
+      },
+      {
+        "file": "vocal-foda_se_o_sistema.wav",
+        "use": "audio"
+      },
+      {
+        "file": "vocal-fuck_the_system.wav",
+        "use": "audio"
+      },
+      {
+        "file": "vocal-fuck_the_system.wav",
+        "use": "audio"
+      }
+    ]
+  }
+}
