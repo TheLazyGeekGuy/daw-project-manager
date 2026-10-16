@@ -411,6 +411,46 @@ void main() {
     });
   });
 
+  group('plug-ins of older versions', () {
+    test('Cubase 4 writes a value with no NUL — its plug-ins still read', () {
+      final a = _Archive();
+      a.begin('MTrackList');
+      for (final name in ['QuadraFuzz', 'GEQ-30']) {
+        a.raw([0, 0, 0, 12, ...ascii.encode('Plugin Name'), 0, 0, 8]);
+        a.raw([0, 0, 0, name.length, ...ascii.encode(name)]);
+        a.raw([0, 0, 0, 18, ...ascii.encode('Audio Input Count'), 0, 0, 1]);
+        a.zeros(8);
+      }
+      a.end();
+      expect(CubaseProjectParser(a.toCpr(version: '4.1.3')).readStats().plugins,
+          ['GEQ-30', 'QuadraFuzz']);
+    });
+
+    test('Cubase SX 3 names them only in its device paths', () {
+      // As a real SX 3 project writes them: a CONT string per step.
+      void path(_Archive a, List<String> steps) {
+        for (final step in steps) {
+          a.raw(ascii.encode('CONT'));
+          a.string(step);
+        }
+      }
+
+      final a = _Archive();
+      a.begin('MTrackList');
+      path(a, ['Device Root', 'VST Mixer', 'VST Instruments', 'Slot', 'Vanguard']);
+      path(a, ['Device Root', 'VST Mixer', 'VST Instruments', 'Slot 2', 'Vanguard 2']);
+      path(a, ['Device Root', 'VST Mixer', 'Channels', 'Synth', 'Inserts', 'Slot 2', 'Sonalksis TBK Stereo 4']);
+      path(a, ['Device Root', 'VST Mixer', 'Channels', 'Synth 2', 'Inserts', 'Slot', 'Sonalksis TBK Stereo 9']);
+      path(a, ['Device Root', 'VST Mixer', 'Channels', 'Synth 3', 'Inserts', 'Slot', 'Pro-Q 3']);
+      path(a, ['Device Root', 'VST Mixer', 'Channels', 'Audio 1']);
+      a.end();
+      expect(CubaseProjectParser(a.toCpr(version: '3.1.1')).readStats().plugins,
+          ['Pro-Q 3', 'Sonalksis TBK Stereo', 'Vanguard'],
+          reason: 'instance numbers dropped where a name comes numbered more than once; '
+              'a lone "Pro-Q 3" keeps its 3');
+    });
+  });
+
   group('readSampleReferences', () {
     const projectAudio = r'C:\Music\Song\Audio\';
     const library = r'D:\Samples\Re-Twin\RTW_PERCS\';

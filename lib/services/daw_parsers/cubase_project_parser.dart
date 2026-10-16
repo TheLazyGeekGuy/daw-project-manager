@@ -226,7 +226,7 @@ class CubaseProjectParser {
       from = at + key.length;
       // Type 0x0008 = string.
       if (!_has(from, 6) || _data.getUint16(from) != 8) continue;
-      final value = _readString(from + 2);
+      final value = _readValueString(from + 2);
       if (value == null) continue;
       var name = value.text;
       // A renamed instrument stores the user's label here and the real
@@ -234,14 +234,69 @@ class CubaseProjectParser {
       if (_matchesAt(original, value.end) &&
           _has(value.end + original.length, 6) &&
           _data.getUint16(value.end + original.length) == 8) {
-        final orig = _readString(value.end + original.length + 2);
+        final orig = _readValueString(value.end + original.length + 2);
         if (orig != null && orig.text.isNotEmpty) name = orig.text;
       }
       if (_internalPlugins.contains(name.trim())) continue;
       names.add(name);
     }
-    return names;
+    return names.isEmpty ? _devicePathPlugins() : names;
   }
+
+  /// An attribute's string value: as [_readString] reads it, or as Cubase 4
+  /// writes it — the length, then exactly that many bytes, no NUL. Read the
+  /// other way, every Cubase 4 plug-in was rejected.
+  ({String text, int end})? _readValueString(int offset) {
+    final terminated = _readString(offset);
+    if (terminated != null) return terminated;
+    if (!_has(offset, 4)) return null;
+    final len = _data.getUint32(offset);
+    if (len < 1 || len > 256 || !_has(offset + 4, len)) return null;
+    final raw = bytes.sublist(offset + 4, offset + 4 + len);
+    if (raw.any((b) => b < 0x20)) return null;
+    return (text: utf8.decode(raw, allowMalformed: true), end: offset + 4 + len);
+  }
+
+  /// Plug-ins as Cubase SX 3 names them, with no `Plugin Name` attributes:
+  /// the devices' paths, a `CONT` string per step — "VST Instruments",
+  /// "Slot 3", "Vanguard 2"; "Inserts", "Slot 2", "Sonalksis TBK Stereo 4".
+  /// The step after a slot is the plug-in, numbered after its first
+  /// instance; the number is dropped when the name also appears without it
+  /// or with another — "Pro-Q 3" alone keeps its 3.
+  List<String> _devicePathPlugins() {
+    final steps = <String>[];
+    final tag = ascii.encode('CONT');
+    var from = 0;
+    while (true) {
+      final at = _indexOf(tag, from);
+      if (at < 0) break;
+      from = at + tag.length;
+      final step = _readString(from);
+      if (step != null && step.text.isNotEmpty) steps.add(step.text);
+    }
+    final raw = <String>[];
+    for (var i = 1; i + 1 < steps.length; i++) {
+      if (_slot.hasMatch(steps[i]) &&
+          (steps[i - 1] == 'VST Instruments' || steps[i - 1] == 'Inserts')) {
+        raw.add(steps[i + 1]);
+      }
+    }
+    final numbers = <String, Set<String>>{};
+    for (final name in raw) {
+      final m = _instance.firstMatch(name);
+      (numbers[m == null ? name : m[1]!] ??= {}).add(m == null ? '' : m[2]!);
+    }
+    return [
+      for (final name in raw)
+        switch (_instance.firstMatch(name)) {
+          final m? when numbers[m[1]!]!.length > 1 => m[1]!,
+          _ => name,
+        },
+    ].where((n) => !_internalPlugins.contains(n.trim())).toList();
+  }
+
+  static final _slot = RegExp(r'^Slot( \d+)?$');
+  static final _instance = RegExp(r'^(.+?) (\d+)$');
 
   /// Every distinct MIDI part in the project, trimmed to what it plays.
   List<MidiClip> readMidiClips() {

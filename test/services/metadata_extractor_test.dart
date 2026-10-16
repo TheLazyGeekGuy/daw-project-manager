@@ -556,6 +556,27 @@ TEMPO 120 4 4 0
       expect((await MetadataExtractor.extractMetadata(path)).dawVersion, '12');
     });
 
+    // The scale assistant's attributes as Cubase 11-13 write them: the
+    // name, then type and padding, then the value as a little-endian int32.
+    List<int> scaleHelper(int root, int scale) => [
+          ...utf8.encode('ScaleHelper Root Key'),
+          0, 0, 1, 0, 0, 0, 0, 0, 0, 0, root, 0, 0, 0,
+          ...utf8.encode('ScaleHelper Scale Type'),
+          0, 0, 1, 0, 0, 0, 0, 0, 0, 0, scale, 0, 0, 0,
+        ];
+
+    test('a key set in the scale assistant is read', () async {
+      final path = await writeCprFixture(scaleHelper(7, 24)); // G Phrygian
+      expect((await MetadataExtractor.extractMetadata(path)).key, 'G Phrygian');
+      final fMinor = await writeCprFixture(scaleHelper(5, 1), ext: '.npr');
+      expect((await MetadataExtractor.extractMetadata(fMinor)).key, 'F Minor');
+    });
+
+    test('its default, C major, is no key — it is what every project starts with', () async {
+      final path = await writeCprFixture(scaleHelper(0, 0));
+      expect((await MetadataExtractor.extractMetadata(path)).key, isNull);
+    });
+
     // Cubase SX/4/5's tempo track: class name, version u16, size u32, then a
     // u32 event count and the first event — its tempo a float32 at +26.
     List<int> tempoTrack(double bpm) {

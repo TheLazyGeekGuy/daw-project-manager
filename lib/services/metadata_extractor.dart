@@ -1841,6 +1841,13 @@ class MetadataExtractor {
       final scaleTypeValue = ByteData.sublistView(Uint8List.fromList(scaleTypeBytes))
           .getInt32(0, Endian.little);
       
+      // Root 0 and scale 0 — C major — is the scale assistant as every
+      // project starts out, set or not: 58 of 63 real Cubase 11 projects
+      // read "C Major", mastering sessions and an empty template among
+      // them. Nothing in the file tells a chosen C major apart, so it
+      // reads as no key (and the file names get their say below).
+      if (rootKeyValue == 0 && scaleTypeValue == 0) return null;
+
       // Map root key to note name (chromatic scale from C)
       final rootNote = _getCubaseRootNote(rootKeyValue);
       final scaleName = _getCubaseScaleName(scaleTypeValue);
