@@ -5,7 +5,6 @@ import 'dart:math';
 
 import 'package:audioplayers/audioplayers.dart';
 import 'package:just_audio/just_audio.dart' as ja;
-import 'package:audio_service/audio_service.dart' show MediaItem;
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -24,6 +23,7 @@ import '../utils/phase_colors.dart';
 import '../utils/todo_due_utils.dart';
 import '../utils/project_visuals.dart';
 import '../utils/library_projects.dart';
+import '../utils/media_notification.dart';
 
 import '../generated/l10n/app_localizations.dart';
 import '../models/music_project.dart';
@@ -4392,10 +4392,10 @@ class MobilePlayerNotifier extends Notifier<MobilePlayerState> {
     final cover = existingCoverArtPath(project);
     return ja.AudioSource.uri(
       Uri.file(trackPath),
-      tag: MediaItem(
-        id: trackPath,
-        title: project.displayName,
-        artist: '',
+      tag: mediaItemFor(
+        project,
+        trackPath,
+        profileName: ref.read(currentProfileProvider).value?.name,
         artUri: cover != null ? Uri.file(cover) : _artUri,
       ),
     );
