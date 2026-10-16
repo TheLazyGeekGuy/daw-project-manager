@@ -115,6 +115,7 @@ import 'widgets/custom_field_column.dart';
 import '../models/custom_field.dart';
 import 'package:uuid/uuid.dart';
 import 'app_snack_bar.dart';
+import 'dialogs/root_overlap_dialog.dart';
 
 /// App version embedded at build-time (CI passes `--dart-define=APP_VERSION=x.y.z`).
 /// For PR/local builds, we fall back to a dummy version.
@@ -774,7 +775,8 @@ class _DashboardPageState extends ConsumerState<DashboardPage>
     final picked = await FilePicker.getDirectoryPath(
       dialogTitle: l10n.selectProjectsFolder,
     );
-    if (picked == null) return;
+    if (picked == null || !mounted) return;
+    if (!await confirmScanFolderOverlap(context, ref, picked)) return;
 
     final repo = await ref.read(repositoryProvider.future);
     await repo.addRoot(picked);
@@ -1505,7 +1507,7 @@ class _DashboardPageState extends ConsumerState<DashboardPage>
   /// missing (file gone from disk) — projects still present on disk are left
   /// untouched even if selected alongside missing ones. Scans no longer
   /// auto-delete anything on their own (see
-  /// ProjectRepository.deleteProjectsPermanently's doc comment); this is now
+  /// ProjectRepository.deleteProjects's doc comment); this is now
   /// the only way to actually remove a project's entry.
   ///
   /// Missing projects still referenced by a release are excluded by default,
@@ -1596,7 +1598,7 @@ class _DashboardPageState extends ConsumerState<DashboardPage>
 
     try {
       final repo = await ref.read(repositoryProvider.future);
-      await repo.deleteProjectsPermanently(idsToDelete);
+      await repo.deleteProjects(idsToDelete);
 
       if (alsoDeleteReleaseTracked) {
         final deleted = idsToDelete.toSet();
@@ -1609,6 +1611,7 @@ class _DashboardPageState extends ConsumerState<DashboardPage>
       }
 
       ref.invalidate(allProjectsStreamProvider);
+      ref.invalidate(recentlyDeletedProvider);
       if (mounted) {
         final plural = idsToDelete.length == 1 ? '' : 's';
         ScaffoldMessenger.of(context).showAppSnackBar(
@@ -1982,11 +1985,7 @@ class _DashboardPageState extends ConsumerState<DashboardPage>
                                     // GoogleDriveSyncService.isSupported.
                                     if (!isLeftRail &&
                                         GoogleDriveSyncService.isSupported)
-                                      IconButton(
-                                        icon: const Icon(Icons.cloud_outlined),
-                                        tooltip: AppLocalizations.of(
-                                          context,
-                                        )!.syncWithGoogleDrive,
+                                      DriveSyncStatusButton(
                                         onPressed: () =>
                                             Navigator.of(context).push(
                                               MaterialPageRoute(
@@ -3362,26 +3361,18 @@ class _DashboardPageState extends ConsumerState<DashboardPage>
                                         if (!MobileUtils.isMobile() &&
                                             !isLeftRail &&
                                             GoogleDriveSyncService.isSupported)
-                                          Tooltip(
-                                            message: AppLocalizations.of(
-                                              context,
-                                            )!.syncWithGoogleDrive,
-                                            child: IconButton(
-                                              icon: const Icon(
-                                                Icons.cloud_outlined,
-                                              ),
-                                              onPressed: () =>
-                                                  Navigator.of(context).push(
-                                                    MaterialPageRoute(
-                                                      builder: (_) =>
-                                                          const SettingsPage(
-                                                            initialSection:
-                                                                SettingsSection
-                                                                    .backup,
-                                                          ),
-                                                    ),
+                                          DriveSyncStatusButton(
+                                            onPressed: () =>
+                                                Navigator.of(context).push(
+                                                  MaterialPageRoute(
+                                                    builder: (_) =>
+                                                        const SettingsPage(
+                                                          initialSection:
+                                                              SettingsSection
+                                                                  .backup,
+                                                        ),
                                                   ),
-                                            ),
+                                                ),
                                           ),
                                         if (!MobileUtils.isMobile() &&
                                             !isLeftRail)
@@ -4206,12 +4197,22 @@ class _DashboardPageState extends ConsumerState<DashboardPage>
                                         // GoogleDriveSyncService.isSupported.
                                         if (GoogleDriveSyncService.isSupported)
                                           RailAction(
-                                            icon: const Icon(
-                                              Icons.cloud_outlined,
-                                            ),
-                                            label: AppLocalizations.of(
-                                              context,
-                                            )!.googleDrive,
+                                            icon:
+                                                const DriveSyncStatusRailIcon(),
+                                            // "Syncing…" while it runs, as
+                                            // Rescan says "Scanning…".
+                                            label:
+                                                ref
+                                                    .watch(
+                                                      driveSyncStatusProvider,
+                                                    )
+                                                    .syncing
+                                                ? AppLocalizations.of(
+                                                    context,
+                                                  )!.driveSyncing
+                                                : AppLocalizations.of(
+                                                    context,
+                                                  )!.googleDrive,
                                             showLabel: !railCollapsed,
                                             onPressed: () =>
                                                 Navigator.of(context).push(

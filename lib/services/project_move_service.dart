@@ -199,9 +199,41 @@ Future<void> copyEntityThenDelete(
 }) async {
   if (isDirectory) {
     await copyDirectoryRecursive(Directory(sourcePath), Directory(destPath));
-    await Directory(sourcePath).delete(recursive: true);
   } else {
     await File(sourcePath).copy(destPath);
+  }
+  // Checked before anything is deleted: a copy across drives — between two
+  // cloud folders, say — can come out short without throwing, and deleting
+  // the original then would lose the difference.
+  final mismatch = await firstCopyMismatch(sourcePath, destPath);
+  if (mismatch != null) {
+    throw FileSystemException('Copy did not match the original', mismatch);
+  }
+  if (isDirectory) {
+    await Directory(sourcePath).delete(recursive: true);
+  } else {
     await File(sourcePath).delete();
   }
+}
+
+/// The first file under [sourcePath] whose copy under [destPath] is missing
+/// or a different size, or null when every one matches. Sizes come from
+/// file metadata, so nothing is read twice.
+Future<String?> firstCopyMismatch(String sourcePath, String destPath) async {
+  final sourceFile = File(sourcePath);
+  if (await sourceFile.exists()) {
+    final copy = File(destPath);
+    if (!await copy.exists() || await copy.length() != await sourceFile.length()) {
+      return sourcePath;
+    }
+    return null;
+  }
+  await for (final e in Directory(sourcePath).list(recursive: true, followLinks: false)) {
+    if (e is! File) continue;
+    final copy = File(p.join(destPath, p.relative(e.path, from: sourcePath)));
+    if (!await copy.exists() || await copy.length() != await e.length()) {
+      return e.path;
+    }
+  }
+  return null;
 }

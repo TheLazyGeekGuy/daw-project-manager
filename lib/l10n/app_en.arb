@@ -327,7 +327,7 @@
   },
   "deleteMissingProjects": "Delete Missing",
   "deleteMissingProjectsTitle": "Delete missing projects?",
-  "deleteMissingProjectsConfirm": "{count} project{plural} whose file could not be found on this machine will be permanently deleted, along with all notes, deadlines, and session history. This can't be undone.",
+  "deleteMissingProjectsConfirm": "{count} project{plural} whose file could not be found on this machine will move to Recently deleted (Settings > Project folders), where you can restore them with their notes, deadlines and session history for 30 days.",
   "@deleteMissingProjectsConfirm": {
     "placeholders": {
       "count": {
@@ -338,7 +338,7 @@
       }
     }
   },
-  "deleteMissingProjectsConfirmButton": "Delete Permanently",
+  "deleteMissingProjectsConfirmButton": "Delete",
   "missingProjectsDeleted": "{count} missing project{plural} deleted.",
   "@missingProjectsDeleted": {
     "placeholders": {
@@ -2720,7 +2720,7 @@
     }
   },
   "trayNeverBackedUp": "Never backed up",
-  "trayBackupNow": "Back Up Now",
+  "trayBackupNow": "Sync Now",
   "trayPauseSession": "Pause Session",
   "trayResumeSession": "Resume Session",
   "closeToTray": "Close to tray",
@@ -7350,6 +7350,509 @@
   "samplePackRenameExample": "Example: {name}",
   "@samplePackRenameExample": {
     "description": "Shows what a file comes out named as",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "driveAgoJustNow": "just now",
+  "driveAgoMinutes": "{count, plural, =1{1 minute ago} other{{count} minutes ago}}",
+  "@driveAgoMinutes": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "driveAgoHours": "{count, plural, =1{1 hour ago} other{{count} hours ago}}",
+  "@driveAgoHours": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "driveSyncIntro": "Keep your projects, notes and releases the same on all your devices. Everything goes into a folder in your own Google Drive.",
+  "driveWaitingForBrowser": "Finish signing in in your browser…",
+  "driveThisDevice": "this device",
+  "driveThisDeviceSynced": "This device synced {when}",
+  "@driveThisDeviceSynced": {
+    "placeholders": {
+      "when": {
+        "type": "String"
+      }
+    }
+  },
+  "driveThisDeviceNeverSynced": "This device hasn't synced yet",
+  "driveUpdatedFrom": "Drive updated {when} from {device}",
+  "@driveUpdatedFrom": {
+    "placeholders": {
+      "when": {
+        "type": "String"
+      },
+      "device": {
+        "type": "String"
+      }
+    }
+  },
+  "driveUpdatedAt": "Drive updated {when}",
+  "@driveUpdatedAt": {
+    "placeholders": {
+      "when": {
+        "type": "String"
+      }
+    }
+  },
+  "driveNoBackupYet": "Nothing on Google Drive yet",
+  "driveNewerBanner": "{device} has changes on Drive that aren't on this device yet. Sync to bring them in.",
+  "@driveNewerBanner": {
+    "placeholders": {
+      "device": {
+        "type": "String"
+      }
+    }
+  },
+  "driveNewerBannerNoDevice": "Drive has changes that aren't on this device yet. Sync to bring them in.",
+  "driveSyncNow": "Sync now",
+  "driveSyncNowHint": "Sync brings in what's on Drive, then uploads this device's changes. Nothing is removed unless it was deleted on purpose on one of your devices.",
+  "driveSyncing": "Syncing…",
+  "driveSyncingTitle": "Syncing with Google Drive",
+  "driveSyncedSummary": "Synced: {added} new, {updated} updated, {removed} removed.",
+  "@driveSyncedSummary": {
+    "placeholders": {
+      "added": {
+        "type": "int"
+      },
+      "updated": {
+        "type": "int"
+      },
+      "removed": {
+        "type": "int"
+      }
+    }
+  },
+  "driveSyncedNothingNew": "Synced. Everything was already up to date.",
+  "driveOperationCancelled": "Cancelled.",
+  "driveFilesFailedToUpload": "{count, plural, =1{1 file couldn't be uploaded:} other{{count} files couldn't be uploaded:}}",
+  "@driveFilesFailedToUpload": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "driveLastSyncFailed": "Last sync failed {when}",
+  "@driveLastSyncFailed": {
+    "placeholders": {
+      "when": {
+        "type": "String"
+      }
+    }
+  },
+  "driveErrorOffline": "Couldn't reach Google Drive. Check your internet connection and try again.",
+  "driveErrorSignInExpired": "Google Drive needs you to sign in again.",
+  "driveErrorDriveFull": "Your Google Drive is full. Free up some space to keep syncing.",
+  "driveErrorNoBackup": "There's no backup on Google Drive yet.",
+  "driveErrorOther": "The sync didn't finish.",
+  "driveSignInPortInUse": "Couldn't start signing in: another program is using port {port}. Close any other copy of DAW Project Manager and try again.",
+  "@driveSignInPortInUse": {
+    "placeholders": {
+      "port": {
+        "type": "String"
+      }
+    }
+  },
+  "driveSignInTimedOut": "Signing in took too long. Try again.",
+  "driveSignInNoBrowser": "Couldn't open your web browser to sign in.",
+  "driveBrowserSignedInTitle": "Signed in",
+  "driveBrowserSignedInBody": "You can close this tab and go back to DAW Project Manager.",
+  "driveBrowserCancelledTitle": "Sign-in cancelled",
+  "driveBrowserCancelledBody": "You can close this tab and try again from DAW Project Manager.",
+  "driveBrowserErrorTitle": "Something went wrong",
+  "driveBrowserErrorBody": "Close this tab and try signing in again from DAW Project Manager.",
+  "driveAutoSyncTitle": "Automatic sync",
+  "driveAutoSyncDescription": "While the app is open, syncs with Google Drive at the interval you choose.",
+  "driveAutoSyncIntervalLabel": "Sync automatically",
+  "driveNextSync": "Next sync {when}",
+  "@driveNextSync": {
+    "placeholders": {
+      "when": {
+        "type": "String"
+      }
+    }
+  },
+  "driveMoreOptions": "Restore and other options",
+  "driveRestoreFromDrive": "Get Drive's changes only",
+  "driveRestoreFromDriveHint": "Brings this device up to date without uploading anything.",
+  "driveRecoverEarlier": "Recover from an earlier backup",
+  "driveRecoverEarlierHint": "Drive keeps the last {count} backups. Bringing one back adds anything that's missing; it doesn't undo later edits.",
+  "@driveRecoverEarlierHint": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "driveOverwrite": "Replace Drive's copy with this device",
+  "driveOverwriteHint": "Drive ends up with exactly what this device has. The copy it replaces is kept as an earlier backup.",
+  "driveDeleteData": "Delete my data from Google Drive",
+  "driveDeleteDataHint": "Removes the backup, preview songs, images and earlier backups from Drive. This device keeps everything.",
+  "driveMergeTitle": "Get Drive's changes?",
+  "driveMergeConfirm": "Get changes",
+  "driveMergeNothing": "Nothing on Drive is new to this device.",
+  "driveMergeKeepsLocal": "Nothing else on this device changes, and edits newer than Drive's are kept.",
+  "driveMergeAdds": "{count, plural, =1{1 new project} other{{count} new projects}}",
+  "@driveMergeAdds": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "driveMergeUpdates": "{count, plural, =1{1 project updated} other{{count} projects updated}}",
+  "@driveMergeUpdates": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "driveMergeRemoves": "{count, plural, =1{1 project removed (deleted on another device)} other{{count} projects removed (deleted on another device)}}",
+  "@driveMergeRemoves": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "driveMergeReleases": "{count, plural, =1{1 new release} other{{count} new releases}}",
+  "@driveMergeReleases": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "driveMergeReleasesRemoved": "{count, plural, =1{1 release removed (deleted on another device)} other{{count} releases removed (deleted on another device)}}",
+  "@driveMergeReleasesRemoved": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "driveRecoverTitle": "Earlier backups",
+  "driveNoSnapshots": "No earlier backups yet. One is kept each time a sync replaces the backup on Drive.",
+  "driveSnapshotItem": "{when} · {device}",
+  "@driveSnapshotItem": {
+    "placeholders": {
+      "when": {
+        "type": "String"
+      },
+      "device": {
+        "type": "String"
+      }
+    }
+  },
+  "driveRecoverConfirmTitle": "Bring this backup back?",
+  "driveRecoverConfirm": "Bring back",
+  "driveOverwriteTitle": "Replace Drive's copy?",
+  "driveOverwriteBody": "Anything on Drive that isn't on this device, like projects added on another device, will be gone from Drive. The current copy is kept as an earlier backup, so you can still recover it.",
+  "driveOverwriteConfirm": "Replace Drive's copy",
+  "driveDeleteTitle": "Delete your data from Google Drive?",
+  "driveDeleteBody": "This permanently deletes the DAW Project Manager folder from your Google Drive, including the backup, preview songs, images and earlier backups. This device keeps its own data. Automatic sync will be turned off.",
+  "driveDeleteConfirm": "Delete from Drive",
+  "driveDeleted": "Your data was deleted from Google Drive. Automatic sync is now off.",
+  "driveSignOutTitle": "Sign out of Google Drive?",
+  "driveSignOutBody": "Your data stays on Google Drive and on this device. Automatic sync stops until you sign in again.",
+  "driveFoundBackupTitle": "Found a backup on Google Drive",
+  "driveFoundBackupBody": "Sync now to bring it onto this device and add what's here to it.",
+  "driveFirstUploadTitle": "Nothing on Google Drive yet",
+  "driveFirstUploadBody": "Sync now to upload this device's library and start keeping your devices in step.",
+  "driveUploadEstimate": "{count, plural, =1{About 1 file ({size}) goes up with it.} other{About {count} files ({size}) go up with it.}}",
+  "@driveUploadEstimate": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      },
+      "size": {
+        "type": "String"
+      }
+    }
+  },
+  "driveKeepInSyncAutomatically": "Keep this device in sync automatically (every hour)",
+  "driveLater": "Later",
+  "driveStatusSyncing": "Syncing with Google Drive…",
+  "driveStatusFailed": "The last Google Drive sync failed",
+  "driveStatusNewer": "New changes on Google Drive",
+  "driveStatusUpToDate": "Google Drive: up to date",
+  "trayLastSyncFailed": "Last sync failed: {when}",
+  "@trayLastSyncFailed": {
+    "placeholders": {
+      "when": {
+        "type": "String"
+      }
+    }
+  },
+  "driveSyncOnStartup": "Sync when the app starts",
+  "driveSyncOnStartupHint": "Brings in what your other devices changed each time you open the app.",
+  "driveAlreadyInSync": "This device and Google Drive already match. There is nothing to sync.",
+  "driveFromDrive": "From Google Drive",
+  "driveFromThisDevice": "From this device",
+  "driveUploadProjects": "{count, plural, =1{1 project added or changed here} other{{count} projects added or changed here}}",
+  "@driveUploadProjects": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "driveUploadReleases": "{count, plural, =1{1 release added here} other{{count} releases added here}}",
+  "@driveUploadReleases": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "drivePreviewLineWithNames": "{line}: {names}",
+  "@drivePreviewLineWithNames": {
+    "placeholders": {
+      "line": {
+        "type": "String"
+      },
+      "names": {
+        "type": "String"
+      }
+    }
+  },
+  "driveNamesAndMore": "{names} and {count} more",
+  "@driveNamesAndMore": {
+    "placeholders": {
+      "names": {
+        "type": "String"
+      },
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "deleteProjectMenu": "Delete…",
+  "deleteProjectTitle": "Delete \"{name}\"?",
+  "@deleteProjectTitle": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "deleteProjectBody": "It moves to Recently deleted (Settings > Project folders), where you can restore it with its notes, to-dos and work time for 30 days. Its files on disk aren't touched.",
+  "deleteProjectStillScanned": "Its file is inside one of this profile's project folders, so the next scan would add it back as a new, empty project.",
+  "deleteProjectStopScanningFolder": "Also stop scanning its folder",
+  "deleteProjectStopScanningFile": "Also stop scanning this file",
+  "projectMovedToRecentlyDeleted": "\"{name}\" moved to Recently deleted.",
+  "@projectMovedToRecentlyDeleted": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "recentlyDeletedTitle": "Recently deleted",
+  "recentlyDeletedSubtitle": "Projects deleted from this profile stay here for 30 days, with their notes, to-dos and work time. Their files on disk are never touched.",
+  "recentlyDeletedNothing": "Nothing here.",
+  "recentlyDeletedWhen": "Deleted {when}",
+  "@recentlyDeletedWhen": {
+    "placeholders": {
+      "when": {
+        "type": "String"
+      }
+    }
+  },
+  "recentlyDeletedExpires": "{count, plural, =1{gone for good in 1 day} other{gone for good in {count} days}}",
+  "@recentlyDeletedExpires": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "recentlyDeletedRestore": "Restore",
+  "recentlyDeletedDeleteForever": "Delete forever",
+  "recentlyDeletedEmptyAll": "Empty",
+  "emptyRecentlyDeletedTitle": "Empty Recently deleted?",
+  "emptyRecentlyDeletedBody": "{count, plural, =1{1 project will be deleted for good, with its notes, to-dos and work time. Its files on disk aren't touched.} other{{count} projects will be deleted for good, with their notes, to-dos and work time. Their files on disk aren't touched.}}",
+  "@emptyRecentlyDeletedBody": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "deleteForeverTitle": "Delete \"{name}\" for good?",
+  "@deleteForeverTitle": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "deleteForeverBody": "Its notes, to-dos and work time will be gone. Its files on disk aren't touched.",
+  "projectRestored": "\"{name}\" restored.",
+  "@projectRestored": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "projectRestoredReplacingRescan": "\"{name}\" restored, in place of the empty copy a scan had added since.",
+  "@projectRestoredReplacingRescan": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "scanFolderOverlapTitle": "Another profile already scans this",
+  "scanFolderOverlapSame": "{profile} scans this very folder.",
+  "@scanFolderOverlapSame": {
+    "placeholders": {
+      "profile": {
+        "type": "String"
+      }
+    }
+  },
+  "scanFolderOverlapInside": "{profile} scans {path}, which holds this folder.",
+  "@scanFolderOverlapInside": {
+    "placeholders": {
+      "profile": {
+        "type": "String"
+      },
+      "path": {
+        "type": "String"
+      }
+    }
+  },
+  "scanFolderOverlapContains": "{profile} scans {path}, inside this folder.",
+  "@scanFolderOverlapContains": {
+    "placeholders": {
+      "profile": {
+        "type": "String"
+      },
+      "path": {
+        "type": "String"
+      }
+    }
+  },
+  "scanFolderOverlapBody": "Each profile keeps its own copy of every project it finds, so these would appear in both, with separate notes, to-dos and work time. To give a song to another profile, use \"Move to profile…\" on it instead.",
+  "scanFolderOverlapAddAnyway": "Add anyway",
+  "moveToProfileMenu": "Move to profile…",
+  "moveToProfileTitle": "Move \"{name}\" to another profile",
+  "@moveToProfileTitle": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "moveToProfileVersions": "{count, plural, =1{Its version moves with it, as one song.} other{All {count} versions move together, as one song.}}",
+  "@moveToProfileVersions": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "moveToProfileTarget": "Profile",
+  "moveToProfileKeepFiles": "Keep its files where they are",
+  "moveToProfileKeepFilesHint": "{profile} stops scanning {path}, so it doesn't come back there.",
+  "@moveToProfileKeepFilesHint": {
+    "placeholders": {
+      "profile": {
+        "type": "String"
+      },
+      "path": {
+        "type": "String"
+      }
+    }
+  },
+  "moveToProfileKeepFilesHintUnscanned": "Nothing on disk changes.",
+  "moveToProfileMoveFiles": "Move its files too",
+  "moveToProfileInto": "Into:",
+  "moveToProfileOtherFolder": "Other folder…",
+  "moveToProfileNoFolder": "This profile has no project folders yet: pick a folder.",
+  "moveToProfileSize": "{count, plural, =1{About 1 file ({size}) is copied, checked, then removed from where it is now.} other{About {count} files ({size}) are copied, checked, then removed from where they are now.}}",
+  "@moveToProfileSize": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      },
+      "size": {
+        "type": "String"
+      }
+    }
+  },
+  "moveToProfileCantMoveFiles": "Its versions are in several folders, so their files can't move as one.",
+  "moveToProfileReleases": "It comes off {releases} in {profile}.",
+  "@moveToProfileReleases": {
+    "placeholders": {
+      "profile": {
+        "type": "String"
+      },
+      "releases": {
+        "type": "String"
+      }
+    }
+  },
+  "moveToProfileConfirm": "Move",
+  "moveToProfileNoOtherProfiles": "There's no other profile to move it to.",
+  "moveToProfileInSession": "End the work session on it first.",
+  "moveToProfileMoving": "Moving files…",
+  "moveToProfileDone": "Moved \"{name}\" to {profile}.",
+  "@moveToProfileDone": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      },
+      "profile": {
+        "type": "String"
+      }
+    }
+  },
+  "moveToProfileBlockedArchived": "It is archived: restore it from its archive first.",
+  "moveToProfileBlockedTargetCopy": "{profile} already has this song, with notes or to-dos of its own. Nothing was moved.",
+  "@moveToProfileBlockedTargetCopy": {
+    "placeholders": {
+      "profile": {
+        "type": "String"
+      }
+    }
+  },
+  "moveToProfileBlockedSourceMissing": "Its files aren't on this computer.",
+  "moveToProfileBlockedOccupied": "Something with that name is already in {path}. Nothing was moved.",
+  "@moveToProfileBlockedOccupied": {
+    "placeholders": {
+      "path": {
+        "type": "String"
+      }
+    }
+  },
+  "moveToProfileBlockedInsideSource": "That folder is inside the song's own folder.",
+  "moveToProfileBlockedSameLocation": "Its files are already there.",
+  "moveToProfileCopyFailed": "The copy didn't match the original, so nothing was removed or moved:",
+  "foldersProfilePickerLabel": "Profile",
+  "foldersProfileActive": "{name} (active)",
+  "@foldersProfileActive": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "foldersEditingOtherProfile": "You're editing {name}'s folders, not the active profile's. New files in them show up the next time you switch to {name}.",
+  "@foldersEditingOtherProfile": {
     "placeholders": {
       "name": {
         "type": "String"

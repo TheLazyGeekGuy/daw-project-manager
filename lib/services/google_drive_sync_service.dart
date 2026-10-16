@@ -33,9 +33,11 @@ import '../repository/profile_repository.dart';
 import '../repository/project_repository.dart';
 import '../repository/midi_clip_store.dart';
 import '../repository/midi_collection_store.dart';
+import '../repository/sync_tombstones.dart';
 import '../models/midi_collection.dart';
 import 'custom_theme_merge.dart';
 import 'custom_field_merge.dart';
+import 'drive_sync_errors.dart';
 import '../utils/app_paths.dart'
     show
         appDataDirName,
@@ -148,9 +150,56 @@ class GoogleDriveSyncService {
   List<String> _lastUploadWarnings = [];
   List<String> get lastUploadWarnings => List.unmodifiable(_lastUploadWarnings);
   
-  // Cancel current upload operation
+  // Cancel the running upload, download or merge.
   void cancelUpload() {
     _isCancelled = true;
+  }
+
+  /// The one instance the app uses — the sync page, the tray, the automatic
+  /// sync timer and the project menu all go through it. Separate instances
+  /// each held their own sign-in, so the timer never saw a phone's sign-in
+  /// (automatic sync never ran there) and two of them could upload at once.
+  static final GoogleDriveSyncService shared = GoogleDriveSyncService();
+
+  /// How many earlier backups are kept on Drive (see [listSnapshots]).
+  static const int snapshotsKept = 10;
+  static const String _historyFolderName = 'history';
+
+  /// What this device calls itself in a backup ("Drive updated from …").
+  static String get deviceName {
+    if (MobileUtils.isMobile()) {
+      return Platform.isIOS ? 'iPhone' : 'Android';
+    }
+    try {
+      final host = Platform.localHostname.trim();
+      if (host.isNotEmpty) return host;
+    } catch (_) {}
+    return Platform.operatingSystem;
+  }
+
+  Future<void>? _operation;
+
+  /// Whether a sync, restore or upload started through [exclusive] is running.
+  bool get isBusy => _operation != null;
+
+  /// Runs [action] once nothing else started through here is running, so a
+  /// "Sync now" pressed during an automatic sync waits for it instead of
+  /// uploading over it.
+  Future<T> exclusive<T>(Future<T> Function() action) async {
+    while (_operation != null) {
+      try {
+        await _operation;
+      } catch (_) {}
+    }
+    final completer = Completer<void>();
+    _operation = completer.future;
+    _isCancelled = false;
+    try {
+      return await action();
+    } finally {
+      _operation = null;
+      completer.complete();
+    }
   }
   
   // Public getters for user state (following official example)
@@ -456,161 +505,170 @@ class GoogleDriveSyncService {
     }
   }
 
-  /// Get the most recent local backup timestamp (either upload or download)
-  Future<DateTime?> getLastLocalBackupTimestamp() async {
-    final lastDownload = await getLastBackupDownloadTimestamp();
-    final lastUpload = await getLastBackupUploadTimestamp();
-    
-    if (lastDownload == null && lastUpload == null) {
+  static const String _lastSyncedKey = 'lastSyncedAt';
+  // Drive's modifiedTime for the backup this device last merged or wrote.
+  // `lastDownload` held the same idea in the uploader's clock; it is still
+  // read, with some slack, until a sync writes this one.
+  static const String _lastSeenRemoteKey = 'lastSeenRemoteModified';
+  static const String _lastFailureKey = 'lastFailureAt';
+  static const String _lastFailureMessageKey = 'lastFailureMessage';
+  static const String _lastFailureKindKey = 'lastFailureKind';
+
+  Future<void> _putTimestamp(String key, DateTime? value) async {
+    try {
+      await _initializeBackupTimestampStorage();
+      final box = _backupTimestampBox;
+      if (box == null) return;
+      if (value == null) {
+        await box.delete(key);
+      } else {
+        await box.put(key, value.toIso8601String());
+      }
+    } catch (e) {
+      if (kDebugMode) print('Error saving $key: $e');
+    }
+  }
+
+  Future<DateTime?> _getTimestamp(String key) async {
+    try {
+      await _initializeBackupTimestampStorage();
+      final raw = _backupTimestampBox?.get(key);
+      return raw == null ? null : DateTime.tryParse(raw);
+    } catch (_) {
       return null;
-    } else if (lastDownload == null) {
-      return lastUpload;
-    } else if (lastUpload == null) {
-      return lastDownload;
-    } else {
-      // Return the most recent one
-      return lastDownload.isAfter(lastUpload) ? lastDownload : lastUpload;
     }
   }
 
-  /// Check if remote backup is newer than local
-  /// Returns true if remote backup should be downloaded
-  Future<bool> isRemoteBackupNewer() async {
-    final remoteTimestamp = await getRemoteBackupTimestamp();
-    if (remoteTimestamp == null) {
-      return false; // No remote backup exists
-    }
-    
-    final localTimestamp = await getLastLocalBackupTimestamp();
-    if (localTimestamp == null) {
-      return true; // No local backup, so remote is "newer"
-    }
-    
-    // Remote is newer if its timestamp is after local
-    return remoteTimestamp.isAfter(localTimestamp);
+  /// When this device last finished a sync, upload or restore (its own clock).
+  Future<DateTime?> getLastSyncedAt() => _getTimestamp(_lastSyncedKey);
+
+  /// The last failed sync on this device, cleared by the next success — kept
+  /// on disk so an automatic sync that has been failing for days still shows
+  /// after a restart.
+  Future<SyncFailure?> getLastFailure() async {
+    final at = await _getTimestamp(_lastFailureKey);
+    if (at == null) return null;
+    await _initializeBackupTimestampStorage();
+    return SyncFailure(
+      at: at,
+      kind: syncErrorKindFromName(_backupTimestampBox?.get(_lastFailureKindKey)),
+      message: _backupTimestampBox?.get(_lastFailureMessageKey) ?? '',
+    );
   }
 
-  /// Get all backup timestamps for display in UI
-  Future<Map<String, DateTime?>> getAllBackupTimestamps() async {
-    return {
-      'lastDownload': await getLastBackupDownloadTimestamp(),
-      'lastUpload': await getLastBackupUploadTimestamp(),
-      'remote': await getRemoteBackupTimestamp(),
-    };
+  Future<void> recordFailure(Object error) async {
+    await _putTimestamp(_lastFailureKey, DateTime.now());
+    try {
+      await _backupTimestampBox?.put(_lastFailureMessageKey, '$error');
+      await _backupTimestampBox?.put(
+        _lastFailureKindKey,
+        classifySyncError(error).name,
+      );
+    } catch (_) {}
   }
 
-  /// Get remote backup timestamp from Drive
+  Future<void> _recordSuccess() async {
+    await _putTimestamp(_lastSyncedKey, DateTime.now());
+    await _putTimestamp(_lastFailureKey, null);
+    try {
+      await _backupTimestampBox?.delete(_lastFailureMessageKey);
+      await _backupTimestampBox?.delete(_lastFailureKindKey);
+    } catch (_) {}
+  }
+
+  /// What is on Drive right now: when the backup was last written and by
+  /// which device. Null when there is no backup (or no connection to ask).
+  Future<RemoteBackupInfo?> getRemoteBackupInfo() async {
+    if (_driveApi == null || _appDataFolderId == null) return null;
+    final file = await _findBackupFile();
+    if (file == null) return null;
+    var modified = file.modifiedTime;
+    if (modified == null && file.id != null) {
+      try {
+        final full = await _driveApi!.files.get(
+          file.id!,
+          $fields: 'modifiedTime',
+        );
+        if (full is drive.File) modified = full.modifiedTime;
+      } catch (_) {}
+    }
+    if (modified == null) return null;
+    return RemoteBackupInfo(
+      fileId: file.id!,
+      modifiedTime: modified.toUtc(),
+      device: _nonEmpty(file.description),
+      sizeBytes: int.tryParse(file.size ?? ''),
+    );
+  }
+
+  static String? _nonEmpty(String? s) =>
+      s == null || s.trim().isEmpty ? null : s.trim();
+
+  Future<drive.File?> _findBackupFile() async {
+    final response = await _driveApi!.files.list(
+      q: "name='$_databaseFileName' and parents in '$_appDataFolderId' and trashed=false",
+      spaces: 'drive',
+      $fields: 'files(id,name,modifiedTime,description,size)',
+    );
+    final files = response.files;
+    return files == null || files.isEmpty ? null : files.first;
+  }
+
+  /// When the backup on Drive was last written. Kept for callers that only
+  /// want the time; see [getRemoteBackupInfo].
   Future<DateTime?> getRemoteBackupTimestamp() async {
     try {
-      if (_driveApi == null || _appDataFolderId == null) {
-        return null;
-      }
-
-      final response = await _driveApi!.files.list(
-        q: "name='$_databaseFileName' and parents in '$_appDataFolderId' and trashed=false",
-        spaces: 'drive',
-      );
-
-      if (response.files == null || response.files!.isEmpty) {
-        return null; // No backup file found
-      }
-
-      // Get file metadata to check modified time
-      // Use modifiedTime from the file in the list response (already available)
-      final fileInList = response.files!.first;
-      if (fileInList.modifiedTime != null) {
-        // modifiedTime comes from Google Drive in UTC, convert to local timezone
-        return fileInList.modifiedTime!.toLocal();
-      }
-
-      // If modifiedTime not in list response, try to get it explicitly
-      try {
-        final fileId = fileInList.id!;
-        final fileResult = await _driveApi!.files.get(fileId, $fields: 'modifiedTime');
-        if (fileResult is drive.File && fileResult.modifiedTime != null) {
-          // modifiedTime comes from Google Drive in UTC, convert to local timezone
-          return fileResult.modifiedTime!.toLocal();
-        }
-      } catch (_) {
-        // If getting file fails, continue to fallback
-      }
-
-      // Fallback: try to download and parse the backup JSON to get timestamp
-      try {
-        final backupData = await downloadDatabase();
-        if (backupData['timestamp'] != null) {
-          // Parse and convert to local timezone
-          return DateTime.parse(backupData['timestamp'] as String).toLocal();
-        }
-      } catch (_) {
-        // If download fails, return null
-      }
-
-      return null;
+      return (await getRemoteBackupInfo())?.modifiedTime.toLocal();
     } catch (e) {
       if (kDebugMode) print('Error getting remote backup timestamp: $e');
       return null;
     }
   }
 
-  /// Check if a newer backup is available on Drive
-  /// Returns true if remote backup is newer than last download time
-  Future<bool> isNewerBackupAvailable() async {
-    try {
-      final lastDownload = await getLastBackupDownloadTimestamp();
-      final remoteTimestamp = await getRemoteBackupTimestamp();
-
-      if (remoteTimestamp == null) {
-        return false; // No backup available on Drive
-      }
-
-      if (lastDownload == null) {
-        return true; // Never downloaded, so remote backup should be downloaded
-      }
-
-      // Remote is newer if it was modified after our last download
-      // Add a small buffer (5 seconds) to avoid false positives from clock differences
-      final isNewer = remoteTimestamp.isAfter(lastDownload.add(const Duration(seconds: 5)));
-      
-      if (kDebugMode) {
-        print('Backup comparison:');
-        print('  Last download: $lastDownload');
-        print('  Remote backup: $remoteTimestamp');
-        print('  Is newer: $isNewer');
-      }
-      
-      return isNewer;
-    } catch (e) {
-      if (kDebugMode) print('Error checking if newer backup is available: $e');
-      return false;
-    }
+  /// Whether Drive holds something this device hasn't merged.
+  ///
+  /// Compared against the Drive copy this device last merged or wrote
+  /// ([saveLastBackupDownloadTimestamp] stores *Drive's* `modifiedTime`), so
+  /// both sides are the server's clock. The backup's own JSON timestamp is
+  /// the uploading device's clock, and comparing the two raised "newer
+  /// backup" on any device whose clock ran a few seconds behind.
+  static bool isRemoteNewer({
+    required DateTime? remoteModified,
+    required DateTime? lastSeen,
+    bool lastSeenIsDriveTime = true,
+  }) {
+    if (remoteModified == null) return false;
+    if (lastSeen == null) return true;
+    if (lastSeenIsDriveTime) return remoteModified.isAfter(lastSeen);
+    // Older builds stored the uploader's clock: a little slack keeps that
+    // from reading as "newer" until the next sync stores Drive's time.
+    return remoteModified.isAfter(lastSeen.add(const Duration(seconds: 5)));
   }
-  
+
+  Future<void> _rememberRemote(DateTime driveModified) async {
+    await _putTimestamp(_lastSeenRemoteKey, driveModified.toUtc());
+    await saveLastBackupDownloadTimestamp(driveModified.toUtc());
+  }
+
   /// Get backup information for display
   Future<Map<String, dynamic>> getBackupInfo() async {
     try {
-      final remoteTimestamp = await getRemoteBackupTimestamp();
+      final remote = await getRemoteBackupInfo();
       final lastDownload = await getLastBackupDownloadTimestamp();
       final lastUpload = await getLastBackupUploadTimestamp();
-      
-      // Determine if remote is newer than local download
-      bool isNewer = false;
-      if (remoteTimestamp != null) {
-        if (lastDownload == null) {
-          // Never downloaded, so remote backup should be downloaded
-          isNewer = true;
-        } else {
-          // Remote is newer if it was modified after our last download
-          isNewer = remoteTimestamp.isAfter(lastDownload.add(const Duration(seconds: 5)));
-        }
-      }
-      
+      final lastSeen = await _getTimestamp(_lastSeenRemoteKey);
       return {
-        'remoteTimestamp': remoteTimestamp,
+        'remoteTimestamp': remote?.modifiedTime.toLocal(),
+        'remoteDevice': remote?.device,
+        'remoteIsThisDevice': remote?.device == deviceName,
         'lastDownload': lastDownload,
         'lastUpload': lastUpload,
-        'hasRemote': remoteTimestamp != null,
-        'isNewer': isNewer,
+        'hasRemote': remote != null,
+        'isNewer': isRemoteNewer(
+          remoteModified: remote?.modifiedTime,
+          lastSeen: lastSeen ?? lastDownload,
+          lastSeenIsDriveTime: lastSeen != null,
+        ),
       };
     } catch (e) {
       if (kDebugMode) print('Error getting backup info: $e');
@@ -791,16 +849,45 @@ class GoogleDriveSyncService {
   static Uri get _desktopRedirectUri =>
       Uri.parse('http://127.0.0.1:$_desktopLoopbackPort/');
 
-  /// xcodebuild -showBuildSettings -project ios/Runner.xcodeproj | grep PRODUCT_BUNDLE_IDENTIFIERon desktop using OAuth2 loopback flow (no manual code entry).
-  /// Opens browser; after user consents, Google redirects to a local server and we exchange the code.
-  /// Migrated from deprecated OOB flow (urn:ietf:wg:oauth:2.0:oob) per Google's migration guide.
-  Future<auth_io.AutoRefreshingAuthClient?> signInDesktopWithLoopback() async {
+  Completer<String?>? _pendingDesktopCode;
+
+  /// Gives up on a desktop sign-in waiting for the browser, as if the user
+  /// had refused in it ([signInDesktopWithLoopback] returns null).
+  void cancelDesktopSignIn() {
+    final pending = _pendingDesktopCode;
+    if (pending != null && !pending.isCompleted) pending.complete(null);
+  }
+
+  /// Whether a desktop sign-in is waiting for the browser.
+  bool get isWaitingForBrowser =>
+      _pendingDesktopCode != null && !_pendingDesktopCode!.isCompleted;
+
+  /// Signs in on a desktop: opens the browser on Google's consent page and
+  /// waits for it to redirect back to a server on [_desktopLoopbackPort]
+  /// (the OAuth2 loopback flow, which replaced the deprecated OOB one).
+  ///
+  /// Returns null when the user refuses, or cancels with
+  /// [cancelDesktopSignIn]; throws [DesktopSignInException] when it cannot
+  /// work (the port is taken, no browser, nothing back within [timeout]).
+  /// Without the timeout a closed browser tab left the app waiting — every
+  /// button disabled — until the page was left.
+  Future<auth_io.AutoRefreshingAuthClient?> signInDesktopWithLoopback({
+    Duration timeout = const Duration(minutes: 5),
+    LoopbackPageTexts pageTexts = LoopbackPageTexts.english,
+    @visibleForTesting Future<bool> Function(Uri authUrl)? openBrowser,
+  }) async {
     final state = _generateState();
     HttpServer? server;
     final codeCompleter = Completer<String?>();
+    _pendingDesktopCode = codeCompleter;
 
     try {
-      server = await HttpServer.bind(InternetAddress.loopbackIPv4, _desktopLoopbackPort);
+      try {
+        server = await HttpServer.bind(InternetAddress.loopbackIPv4, _desktopLoopbackPort);
+      } on SocketException catch (e) {
+        if (kDebugMode) print('Loopback server bind failed (port in use?): $e');
+        throw const DesktopSignInException(DesktopSignInFailure.portInUse);
+      }
       if (kDebugMode) print('Loopback server listening on http://127.0.0.1:$_desktopLoopbackPort/');
 
       server.listen((request) async {
@@ -815,35 +902,39 @@ class GoogleDriveSyncService {
               ..statusCode = 400
               ..headers.contentType = ContentType.html
               ..write(_loopbackResponsePage(
-                heading: 'Something went wrong',
-                message: 'Invalid sign-in state. Please close this window and try again from DAW Project Manager.',
+                heading: pageTexts.errorHeading,
+                message: pageTexts.errorMessage,
                 isError: true,
               ));
             await request.response.close();
-            codeCompleter.complete(null);
+            if (!codeCompleter.isCompleted) codeCompleter.complete(null);
             return;
           }
           request.response
             ..statusCode = 200
             ..headers.contentType = ContentType.html
             ..write(_loopbackResponsePage(
-              heading: 'Sign-in successful',
-              message: 'You can close this window and return to DAW Project Manager.',
+              heading: pageTexts.successHeading,
+              message: pageTexts.successMessage,
             ));
           await request.response.close();
-          codeCompleter.complete(code);
+          if (!codeCompleter.isCompleted) codeCompleter.complete(code);
         } else if (uri.queryParameters.containsKey('error')) {
           if (kDebugMode) print('OAuth error: ${uri.queryParameters['error']}');
           request.response
             ..statusCode = 200
             ..headers.contentType = ContentType.html
             ..write(_loopbackResponsePage(
-              heading: 'Sign-in cancelled',
-              message: 'Sign-in was denied or failed. You can close this window and return to DAW Project Manager to try again.',
+              heading: pageTexts.cancelledHeading,
+              message: pageTexts.cancelledMessage,
               isError: true,
             ));
           await request.response.close();
-          codeCompleter.complete(null);
+          if (!codeCompleter.isCompleted) codeCompleter.complete(null);
+        } else {
+          // A favicon or any other stray request: answer and keep waiting.
+          request.response.statusCode = 404;
+          await request.response.close();
         }
       });
 
@@ -864,22 +955,28 @@ class GoogleDriveSyncService {
         print('Redirect URI: $_desktopRedirectUri');
       }
 
-      final launched = await launchUrl(authUrl, mode: LaunchMode.externalApplication);
+      final launched = await (openBrowser ??
+          (url) => launchUrl(url, mode: LaunchMode.externalApplication))(authUrl);
       if (!launched) {
-        codeCompleter.complete(null);
-        return null;
+        throw const DesktopSignInException(DesktopSignInFailure.browserUnavailable);
       }
 
-      final code = await codeCompleter.future;
+      final code = await codeCompleter.future.timeout(
+        timeout,
+        onTimeout: () =>
+            throw const DesktopSignInException(DesktopSignInFailure.timedOut),
+      );
       if (code == null || code.isEmpty) return null;
       return _exchangeDesktopCode(code);
-    } on SocketException catch (e) {
-      if (kDebugMode) print('Loopback server bind failed (port in use?): $e');
-      return null;
     } finally {
+      if (identical(_pendingDesktopCode, codeCompleter)) _pendingDesktopCode = null;
       await server?.close(force: true);
     }
   }
+
+  /// The port the browser redirects back to (named in the "port in use"
+  /// message, and used by tests standing in for the browser).
+  static int get loopbackPort => _desktopLoopbackPort;
 
   /// HTML page shown in the system browser tab the loopback redirect lands
   /// on — the only feedback the user gets there, since control then returns
@@ -1095,6 +1192,19 @@ class GoogleDriveSyncService {
       _isAuthenticated = false;
       _driveApi = null;
       _authStateController.add(false);
+    }
+  }
+
+  /// Whether a sign-in is stored for [restoreSession] to bring back. On a
+  /// phone that is up to Google's own sign-in, which keeps its own.
+  Future<bool> hasSavedCredentials() async {
+    if (MobileUtils.isMobile()) return false;
+    try {
+      if (Platform.isMacOS) return await (await _credentialsFile()).exists();
+      const secureStorage = FlutterSecureStorage();
+      return await secureStorage.read(key: _credentialsStorageKey) != null;
+    } catch (_) {
+      return false;
     }
   }
 
@@ -2552,8 +2662,13 @@ class GoogleDriveSyncService {
       
       // Collect projects, releases, and roots from ALL profiles
       // IMPORTANT: We need to track which profile each project/release/root belongs to
-      final allProjects = <MusicProject>[];
-      final allReleases = <Release>[];
+      // One entry per profile and row, each naming its profile: an id can
+      // sit in two profiles (old restores copied projects into every one),
+      // and the id→profile maps below can only name one. Deduplicating by id
+      // here kept the first profile's copy while the map named the last —
+      // a stray hidden copy went up labelled as the real project.
+      final allProjects = <(String, MusicProject)>[];
+      final allReleases = <(String, Release)>[];
       final allRoots = <ScanRoot>[];
 
       // Shared box for global/per-profile preferences (app_settings)
@@ -2734,10 +2849,9 @@ class GoogleDriveSyncService {
               totalItems: profileProjectsList.length,
               progress: ((profileIndex - 1) + projectFraction) / allProfiles.length * 0.2,
             ));
-            if (!allProjects.any((p) => p.id == project.id)) {
-              allProjects.add(project);
-            }
-            // Track that this project belongs to this profile
+            allProjects.add((profile.id, project));
+            // Track that this project belongs to this profile (kept for
+            // older builds; entries carry their own profileId)
             projectToProfileMap[project.id] = profile.id;
 
             // Check project cover art status (#110). Unlike preview songs and
@@ -2924,10 +3038,9 @@ class GoogleDriveSyncService {
           
           // Collect releases and track which profile they belong to
           for (final release in profileReleasesBox.values) {
-            if (!allReleases.any((r) => r.id == release.id)) {
-              allReleases.add(release);
-            }
-            // Track that this release belongs to this profile
+            allReleases.add((profile.id, release));
+            // Track that this release belongs to this profile (kept for
+            // older builds; entries carry their own profileId)
             releaseToProfileMap[release.id] = profile.id;
             
             // Check release artwork status (only on desktop - mobile doesn't upload artwork)
@@ -3453,16 +3566,30 @@ class GoogleDriveSyncService {
         }
       }
 
+      // Deletions made on any device, so the merge on the others drops the
+      // rows instead of keeping them (see SyncTombstone).
+      final tombstones = await SyncTombstoneStore.all();
+
       final data = {
         'timestamp': DateTime.now().toIso8601String(),
         'version': '1.7', // Incremented to include custom themes
+        // Which device wrote this ("Drive updated from …"). Also on the
+        // Drive file's description, so it can be read without downloading.
+        'device': deviceName,
+        'deletedRecords': [for (final t in tombstones.values) t.toJson()],
         'profiles': allProfiles.map((p) => _serializeProfile(p)).toList(),
-        'projects': allProjects.map((p) => _serializeProject(p)).toList(),
+        'projects': [
+          for (final (profileId, p) in allProjects)
+            {..._serializeProject(p), 'profileId': profileId},
+        ],
         // project id -> StoredMidiClips.toJson(). Absent on older backups.
         'midiClips': midiClipsByProject,
         // profile id -> [MidiCollection.toJson()]. Absent on older backups.
         'midiCollectionsByProfile': midiCollectionsByProfile,
-        'releases': allReleases.map((r) => _serializeRelease(r)).toList(),
+        'releases': [
+          for (final (profileId, r) in allReleases)
+            {..._serializeRelease(r), 'profileId': profileId},
+        ],
         'roots': allRoots.map((r) => _serializeRoot(r)).toList(),
         'templates': allTemplates.map((t) => _serializeTemplate(t)).toList(),
         'partTemplates': allPartTemplates.map((t) => t.toJson()).toList(),
@@ -3540,28 +3667,32 @@ class GoogleDriveSyncService {
         print('Project templates included: ${(data['projectTemplates'] as List).length}');
         print('Template roots included: ${(data['templateRoots'] as List).length}');
       }
-      final response = await _driveApi!.files.list(
-        q: "name='$fileName' and parents in '$_appDataFolderId' and trashed=false",
-        spaces: 'drive',
-      );
+      final existing = await _findBackupFile();
 
-      if (response.files != null && response.files!.isNotEmpty) {
-        // Update existing file
-        final fileId = response.files!.first.id!;
-        await _withRetry(() => _driveApi!.files.update(
-          drive.File()..name = fileName,
-          fileId,
+      drive.File written;
+      if (existing != null) {
+        // Keep what is being replaced: an upload overwrites the one backup
+        // file, and without a copy a bad overwrite could not be undone.
+        await _snapshotBeforeOverwrite(existing);
+        written = await _withRetry(() => _driveApi!.files.update(
+          drive.File()
+            ..name = fileName
+            ..description = deviceName,
+          existing.id!,
           uploadMedia: drive.Media(Stream.value(bytes), bytes.length, contentType: 'application/json'),
+          $fields: 'id,modifiedTime',
         ));
         if (kDebugMode) print('✓ Updated existing backup file');
       } else {
         // Create new file
         final driveFile = drive.File()
           ..name = fileName
+          ..description = deviceName
           ..parents = [_appDataFolderId!];
-        await _withRetry(() => _driveApi!.files.create(
+        written = await _withRetry(() => _driveApi!.files.create(
           driveFile,
           uploadMedia: drive.Media(Stream.value(bytes), bytes.length, contentType: 'application/json'),
+          $fields: 'id,modifiedTime',
         ));
         if (kDebugMode) print('✓ Created new backup file');
       }
@@ -3573,9 +3704,10 @@ class GoogleDriveSyncService {
       // Save local timestamp for this device's last upload
       await saveLastBackupUploadTimestamp(uploadTimestamp);
       
-      // After uploading, this device has the most recent version
-      // Update last download timestamp to reflect that we're in sync
-      await saveLastBackupDownloadTimestamp(uploadTimestamp);
+      // After uploading, this device has the most recent version. Stored as
+      // Drive's time for the file, which is what isRemoteNewer compares.
+      await _rememberRemote(written.modifiedTime ?? uploadTimestamp);
+      await _recordSuccess();
       
       // Emit progress: completed (include any non-fatal warnings)
       _progressController.add(BackupProgress(
@@ -3596,129 +3728,360 @@ class GoogleDriveSyncService {
 
   /// Download database from Google Drive
   /// Downloads the complete application backup (all profiles, projects, releases, etc.)
-  /// Mobile will use this to mirror the desktop app
-  Future<Map<String, dynamic>> downloadDatabase() async {
+  ///
+  /// Reading it marks nothing as merged — the upload reads it for its media
+  /// hashes, and a restore can be cancelled after the download. Only
+  /// [markMerged], after a merge, says this device has caught up.
+  Future<Map<String, dynamic>> downloadDatabase() async =>
+      (await fetchBackup()).data;
+
+  /// The backup on Drive and the file it came from.
+  Future<FetchedBackup> fetchBackup() async {
     if (_driveApi == null || _appDataFolderId == null) {
       throw Exception('Not signed in to Google Drive');
     }
-
-    try {
-      // Use a single filename for the entire application backup
-      // No profileId in filename - this is the complete app backup
-      final fileName = _databaseFileName;
-      if (kDebugMode) {
-        print('=== Download Complete Application Backup ===');
-        print('Platform: ${Platform.operatingSystem}');
-        print('File name searched: $fileName');
-        print('Shared folder ID: $_appDataFolderId');
-        print('Shared folder name: $_appDataFolderName');
-        print('Spaces: drive (shared folder)');
-      }
-      final response = await _driveApi!.files.list(
-        q: "name='$fileName' and parents in '$_appDataFolderId' and trashed=false",
-        spaces: 'drive',
-      );
-
-      if (response.files == null || response.files!.isEmpty) {
-        if (kDebugMode) {
-          print('❌ Database file not found in Google Drive');
-          print('File name searched: $fileName');
-          print('Shared folder ID: $_appDataFolderId');
-          print('Shared folder name: $_appDataFolderName');
-          print('');
-          print('🔍 DEBUG: Listing all files in shared folder...');
-          // List all files in shared folder to help debug
-          try {
-            final allFiles = await _driveApi!.files.list(
-              q: "parents in '$_appDataFolderId' and trashed=false",
-              spaces: 'drive',
-            );
-            if (allFiles.files != null && allFiles.files!.isNotEmpty) {
-              print('✅ Files found in shared folder (${allFiles.files!.length} files):');
-              for (final file in allFiles.files!) {
-                print('  - ${file.name} (ID: ${file.id})');
-                // Check if this file matches the pattern we're looking for
-                if (file.name?.contains('database_backup.json') == true) {
-                  print('    ⚠️ This is a backup file but with a different name?');
-                  print('    Expected: $fileName');
-                  print('    Found: ${file.name}');
-                }
-              }
-              print('');
-              print('💡 TIP: The backup file should be named exactly: $fileName');
-              print('   This is the complete application backup (all profiles included).');
-            } else {
-              print('❌ No files found in shared folder');
-              print('   The folder exists but is empty.');
-            }
-          } catch (e) {
-            print('❌ Error listing files: $e');
-          }
-          
-          // Also try to find the folder by name to verify it exists
-          print('');
-          print('🔍 DEBUG: Verifying folder exists...');
-          try {
-            final folderCheck = await _driveApi!.files.list(
-              q: "name='$_appDataFolderName' and mimeType='application/vnd.google-apps.folder' and trashed=false",
-              spaces: 'drive',
-            );
-            if (folderCheck.files != null && folderCheck.files!.isNotEmpty) {
-              print('✅ Folder found: ${folderCheck.files!.first.name} (ID: ${folderCheck.files!.first.id})');
-              if (folderCheck.files!.first.id != _appDataFolderId) {
-                print('⚠️ WARNING: Folder ID mismatch!');
-                print('   Expected: $_appDataFolderId');
-                print('   Found: ${folderCheck.files!.first.id}');
-              }
-            } else {
-              print('❌ Folder not found!');
-            }
-          } catch (e) {
-            print('❌ Error checking folder: $e');
-          }
-        }
-        throw Exception('Database file not found in Google Drive');
-      }
-
-      final fileId = response.files!.first.id!;
-      final media = await _withRetry(() async => (await _driveApi!.files.get(
-        fileId,
-        downloadOptions: drive.DownloadOptions.fullMedia,
-      )) as drive.Media);
-
-      // Read file content
-      final bytes = <int>[];
-      await for (final chunk in media.stream) {
-        bytes.addAll(chunk);
-      }
-
-      final jsonString = utf8.decode(bytes);
-      final backupData = jsonDecode(jsonString) as Map<String, dynamic>;
-      
-      // Save timestamp of this download
-      // Use timestamp from backup JSON if available, otherwise use current time
-      DateTime downloadTimestamp = DateTime.now();
-      if (backupData['timestamp'] != null) {
-        try {
-          downloadTimestamp = DateTime.parse(backupData['timestamp'] as String);
-        } catch (_) {
-          // If parsing fails, use current time
-        }
-      }
-      await saveLastBackupDownloadTimestamp(downloadTimestamp);
-      
-      return backupData;
-    } catch (e) {
-      if (kDebugMode) {
-        if (e.toString().contains('Database file not found')) {
-          print('No backup file found (this is normal for first-time setup)');
-          print('You can create an initial backup by syncing or uploading your data');
-        } else {
-          print('Error downloading database: $e');
-        }
-      }
-      rethrow;
+    final file = await _findBackupFile();
+    if (file == null) {
+      if (kDebugMode) print('No backup file found (normal for first-time setup)');
+      throw const NoBackupOnDriveException();
     }
+    final data = await _downloadJson(file.id!);
+    return FetchedBackup(
+      data: data,
+      info: RemoteBackupInfo(
+        fileId: file.id!,
+        modifiedTime: (file.modifiedTime ?? DateTime.now()).toUtc(),
+        device: _nonEmpty(file.description) ?? _nonEmpty(data['device'] as String?),
+        sizeBytes: int.tryParse(file.size ?? ''),
+      ),
+    );
+  }
+
+  Future<Map<String, dynamic>> _downloadJson(String fileId) async {
+    final media = await _withRetry(() async => (await _driveApi!.files.get(
+      fileId,
+      downloadOptions: drive.DownloadOptions.fullMedia,
+    )) as drive.Media);
+    final bytes = <int>[];
+    await for (final chunk in media.stream) {
+      bytes.addAll(chunk);
+    }
+    return jsonDecode(utf8.decode(bytes)) as Map<String, dynamic>;
+  }
+
+  /// Records that [backup] has been merged into this device: Drive holds
+  /// nothing newer until another device writes.
+  Future<void> markMerged(FetchedBackup backup) async {
+    await _rememberRemote(backup.info.modifiedTime);
+    await _recordSuccess();
+  }
+
+  // ---------------------------------------------------------------------
+  // Earlier backups ("history"), counting a restore, and leaving Drive.
+  // ---------------------------------------------------------------------
+
+  static final _snapshotNameRe = RegExp(r'^backup_(\d{8})T(\d{6})Z\.json$');
+
+  /// The snapshot file name for a backup Drive last wrote at [modified].
+  @visibleForTesting
+  static String snapshotFileName(DateTime modified) {
+    final u = modified.toUtc();
+    String two(int n) => n.toString().padLeft(2, '0');
+    return 'backup_${u.year.toString().padLeft(4, '0')}${two(u.month)}${two(u.day)}'
+        'T${two(u.hour)}${two(u.minute)}${two(u.second)}Z.json';
+  }
+
+  /// When the backup a snapshot preserves was written; null for a file that
+  /// isn't one.
+  @visibleForTesting
+  static DateTime? snapshotTakenAt(String fileName) {
+    final m = _snapshotNameRe.firstMatch(fileName);
+    if (m == null) return null;
+    final d = m.group(1)!, t = m.group(2)!;
+    return DateTime.utc(
+      int.parse(d.substring(0, 4)),
+      int.parse(d.substring(4, 6)),
+      int.parse(d.substring(6, 8)),
+      int.parse(t.substring(0, 2)),
+      int.parse(t.substring(2, 4)),
+      int.parse(t.substring(4, 6)),
+    );
+  }
+
+  Future<String> _ensureSubfolder(String name) async {
+    final response = await _driveApi!.files.list(
+      q: "name='$name' and mimeType='application/vnd.google-apps.folder' and parents in '$_appDataFolderId' and trashed=false",
+      spaces: 'drive',
+    );
+    final found = response.files;
+    if (found != null && found.isNotEmpty) return found.first.id!;
+    final created = await _driveApi!.files.create(drive.File()
+      ..name = name
+      ..mimeType = 'application/vnd.google-apps.folder'
+      ..parents = [_appDataFolderId!]);
+    return created.id!;
+  }
+
+  /// Copies the backup about to be overwritten into `history` (on Drive's
+  /// side — nothing is downloaded), keeping the newest [snapshotsKept].
+  /// Never fails the upload: losing the snapshot is better than losing the
+  /// backup it was meant to protect.
+  Future<void> _snapshotBeforeOverwrite(drive.File current) async {
+    try {
+      final modified = current.modifiedTime ?? DateTime.now();
+      final historyId = await _ensureSubfolder(_historyFolderName);
+      await _driveApi!.files.copy(
+        drive.File()
+          ..name = snapshotFileName(modified)
+          ..description = current.description
+          ..parents = [historyId],
+        current.id!,
+      );
+      final all = await _listSnapshotFiles(historyId);
+      for (final stale in all.skip(snapshotsKept)) {
+        await _driveApi!.files.delete(stale.id!);
+      }
+    } catch (e) {
+      if (kDebugMode) print('Could not keep a copy of the previous backup: $e');
+    }
+  }
+
+  Future<List<drive.File>> _listSnapshotFiles(String historyId) async {
+    final response = await _driveApi!.files.list(
+      q: "parents in '$historyId' and trashed=false",
+      spaces: 'drive',
+      orderBy: 'name desc',
+      $fields: 'files(id,name,description,size)',
+    );
+    final files = [
+      for (final f in response.files ?? <drive.File>[])
+        if (snapshotTakenAt(f.name ?? '') != null) f,
+    ];
+    // The name order is the time order.
+    files.sort((a, b) => b.name!.compareTo(a.name!));
+    return files;
+  }
+
+  /// The earlier backups kept on Drive, newest first.
+  Future<List<BackupSnapshot>> listSnapshots() async {
+    if (_driveApi == null || _appDataFolderId == null) return const [];
+    final historyId = await _ensureSubfolder(_historyFolderName);
+    return [
+      for (final f in await _listSnapshotFiles(historyId))
+        BackupSnapshot(
+          fileId: f.id!,
+          takenAt: snapshotTakenAt(f.name!)!,
+          device: _nonEmpty(f.description),
+          sizeBytes: int.tryParse(f.size ?? ''),
+        ),
+    ];
+  }
+
+  /// One earlier backup's data, to merge like any other backup.
+  Future<Map<String, dynamic>> downloadSnapshot(BackupSnapshot snapshot) =>
+      _downloadJson(snapshot.fileId);
+
+  /// Deletes the whole backup folder from Drive — the database, every
+  /// preview song, image and earlier backup. This device keeps its data and
+  /// stays signed in; the next sync starts a new backup.
+  Future<void> deleteAllDriveData() async {
+    if (_driveApi == null) throw Exception('Not signed in to Google Drive');
+    if (_appDataFolderId == null) await ensureAppDataFolder();
+    await _driveApi!.files.delete(_appDataFolderId!);
+    _appDataFolderId = null;
+    await _putTimestamp('lastDownload', null);
+    await _putTimestamp(_lastSeenRemoteKey, null);
+    await _putTimestamp('lastUpload', null);
+    await _putTimestamp(_lastSyncedKey, null);
+    // Recreated empty, so anything still holding this instance can carry on.
+    await ensureAppDataFolder();
+  }
+
+  /// Counts what syncing with [remoteData] would do, without writing
+  /// anything: what the merge brings here — the same rules as [mergeData]:
+  /// new rows are added, a row whose remote copy is newer and different is
+  /// updated, and only a deletion made on some device removes anything — and
+  /// what the upload after it would add to Drive.
+  ///
+  /// Rows are matched by profile and id, as the merge places them: one id
+  /// can sit in two profiles, and matching by id alone paired one profile's
+  /// copy with the other's — a project that read as "changed here" forever.
+  Future<MergePreview> previewMerge(
+    Map<String, dynamic> remoteData,
+    ProfileRepository profileRepo,
+  ) async {
+    final tombstones = mergeTombstones(
+      await SyncTombstoneStore.all(),
+      tombstonesFromJson(remoteData['deletedRecords']),
+    );
+    String key(String? profileId, String id) => '${profileId ?? '*'}/$id';
+    final localProjects = <String, (String, MusicProject)>{};
+    final localProjectsById = <String, MusicProject>{};
+    final localReleases = <String, (String, String)>{};
+    for (final profile in profileRepo.getAllProfiles()) {
+      try {
+        final projects = await Hive.openBox<MusicProject>('${profile.id}_projects');
+        for (final p in projects.values) {
+          localProjects[key(profile.id, p.id)] = (profile.id, p);
+          localProjectsById.putIfAbsent(p.id, () => p);
+        }
+        final releases = await Hive.openBox<Release>('${profile.id}_releases');
+        for (final id in releases.keys.cast<String>()) {
+          localReleases[key(profile.id, id)] = (profile.id, id);
+        }
+      } catch (_) {}
+    }
+
+    final projectToProfile = remoteData['projectToProfile'] as Map<String, dynamic>?;
+    final releaseToProfile = remoteData['releaseToProfile'] as Map<String, dynamic>?;
+
+    var added = 0, updated = 0;
+    final updatedNames = <String>[], uploadNames = <String>[];
+    final remoteKeys = <String>{};
+    final remoteProjects = <String, MusicProject>{};
+    for (final raw in (remoteData['projects'] as List?) ?? const []) {
+      final MusicProject remote;
+      try {
+        remote = _deserializeProject(raw as Map<String, dynamic>);
+      } catch (_) {
+        continue;
+      }
+      final profileId = remoteEntryProfile(raw, projectToProfile);
+      remoteKeys.add(key(profileId, remote.id));
+      remoteProjects[key(profileId, remote.id)] = remote;
+      if (tombstoneFor(tombstones, remote.id, profileId)?.beats(remote.updatedAt) ?? false) {
+        continue;
+      }
+      final local = profileId == null
+          ? localProjectsById[remote.id]
+          : localProjects[key(profileId, remote.id)]?.$2;
+      if (local == null) {
+        added++;
+      } else if (_changedAfter(remote.updatedAt, local.updatedAt) &&
+          _hasMetadataChanged(remote, local)) {
+        updated++;
+        updatedNames.add(local.displayName);
+        if (kDebugMode) {
+          print('Drive has newer ${local.displayName}: '
+              '${_metadataDifferences(remote, local).join(', ')}');
+        }
+      }
+    }
+    var deleted = 0, toUpload = 0;
+    for (final entry in localProjects.values) {
+      final (profileId, local) = entry;
+      final t = tombstoneFor(tombstones, local.id, profileId);
+      if (t != null && t.kind == TombstoneKind.project && t.beats(local.updatedAt)) {
+        deleted++;
+        continue;
+      }
+      final remote = remoteProjects[key(profileId, local.id)] ??
+          remoteProjects[key(null, local.id)];
+      if (remote == null ||
+          (_changedAfter(local.updatedAt, remote.updatedAt) &&
+              _hasMetadataChanged(remote, local))) {
+        toUpload++;
+        uploadNames.add(local.displayName);
+        if (kDebugMode) {
+          print(remote == null
+              ? 'Only here, not on Drive: ${local.displayName} (profile $profileId)'
+              : 'Changed here since Drive: ${local.displayName}: '
+                  '${_metadataDifferences(remote, local).join(', ')}');
+        }
+      }
+    }
+
+    var releasesAdded = 0;
+    final remoteReleaseKeys = <String>{};
+    for (final raw in (remoteData['releases'] as List?) ?? const []) {
+      final id = raw is Map ? raw['id'] : null;
+      if (id is! String) continue;
+      final profileId = remoteEntryProfile(raw, releaseToProfile);
+      remoteReleaseKeys
+        ..add(key(profileId, id))
+        ..add(key(null, id));
+      final here = profileId == null
+          ? localReleases.values.any((r) => r.$2 == id)
+          : localReleases.containsKey(key(profileId, id));
+      if (here) continue;
+      if (tombstoneFor(tombstones, id, profileId)?.kind == TombstoneKind.release) continue;
+      releasesAdded++;
+    }
+    var releasesDeleted = 0, releasesToUpload = 0;
+    for (final (profileId, id) in localReleases.values) {
+      if (tombstoneFor(tombstones, id, profileId)?.kind == TombstoneKind.release) {
+        releasesDeleted++;
+      } else if (!remoteReleaseKeys.contains(key(profileId, id)) &&
+          !remoteReleaseKeys.contains(key(null, id))) {
+        releasesToUpload++;
+      }
+    }
+
+    return MergePreview(
+      projectsAdded: added,
+      projectsUpdated: updated,
+      projectsDeleted: deleted,
+      releasesAdded: releasesAdded,
+      releasesDeleted: releasesDeleted,
+      projectsToUpload: toUpload,
+      releasesToUpload: releasesToUpload,
+      updatedNames: updatedNames,
+      uploadNames: uploadNames,
+    );
+  }
+
+  /// The profile a backup entry belongs to: its own `profileId` (written
+  /// since one id can sit in two profiles), else the backup's id→profile
+  /// map, else null (an old backup with neither: every profile).
+  @visibleForTesting
+  static String? remoteEntryProfile(Object? raw, Map<String, dynamic>? idToProfile) {
+    if (raw is! Map) return null;
+    final own = raw['profileId'];
+    if (own is String) return own;
+    final mapped = idToProfile?[raw['id']];
+    return mapped?.toString();
+  }
+
+  /// Roughly what a first upload sends besides the database: every preview
+  /// song (auto-detected ones only with [includeAutoDetected], as the upload
+  /// does), cover art, release artwork and profile photo that exists here.
+  /// Sizes come from file metadata; nothing is read.
+  Future<UploadEstimate> estimateUpload({
+    required ProfileRepository profileRepo,
+    bool includeAutoDetected = false,
+  }) async {
+    var files = 0, bytes = 0;
+    Future<void> count(String? filePath) async {
+      if (filePath == null || filePath.isEmpty || _isDriveFileReference(filePath)) return;
+      try {
+        final file = File(filePath);
+        if (await file.exists()) {
+          files++;
+          bytes += await file.length();
+        }
+      } catch (_) {}
+    }
+
+    for (final profile in profileRepo.getAllProfiles()) {
+      await count(profile.photoPath);
+      try {
+        final projects = await Hive.openBox<MusicProject>('${profile.id}_projects');
+        for (final p in projects.values) {
+          final manual = p.previewSongPath;
+          if (manual != null && manual.isNotEmpty) {
+            await count(manual);
+          } else if (includeAutoDetected) {
+            await count(p.previewSongAutoPath);
+          }
+          await count(p.thumbnailPath);
+        }
+        final releases = await Hive.openBox<Release>('${profile.id}_releases');
+        for (final r in releases.values) {
+          await count(r.artworkImagePath);
+        }
+      } catch (_) {}
+    }
+    return UploadEstimate(files: files, bytes: bytes);
   }
 
   /// Get last sync time for the application (global, not per-profile)
@@ -3830,95 +4193,43 @@ class GoogleDriveSyncService {
     }
   }
 
-  /// Sync database (merge local and remote) with conflict detection
-  /// Syncs the ENTIRE application (all profiles, projects, releases, etc.)
-  /// Mobile will mirror the desktop app
+  /// Brings this device and Drive level: merges what Drive has into this
+  /// device, then uploads the result.
+  ///
+  /// The one way "back up" works everywhere — the sync page's Sync now, the
+  /// tray and the automatic timer. A plain [uploadDatabase] replaces Drive's
+  /// copy wholesale, so the tray's old "Backup now" could wipe out what a
+  /// phone had pushed an hour earlier.
   Future<SyncResult> syncDatabase({
     required ProjectRepository projectRepo,
     required ProfileRepository profileRepo,
     String? profileId, // Optional - kept for compatibility but not used
     bool uploadAutoDetectedSongs = false,
+    bool downloadPreviewSongs = true,
   }) async {
     try {
-      if (kDebugMode) print('Starting complete application sync...');
-      
-      // Get last sync times (global, not per-profile)
-      final localLastModified = await _getLocalLastModified(profileRepo);
-      final remoteLastSync = await getLastSyncTime();
-      
-      if (kDebugMode) {
-        print('Local last modified: $localLastModified');
-        print('Remote last sync: $remoteLastSync');
-      }
-
-      // Check if remote backup exists
-      bool remoteExists = false;
+      FetchedBackup? remote;
       try {
-        await downloadDatabase();
-        remoteExists = true;
-      } catch (_) {
-        // Remote doesn't exist yet
-        remoteExists = false;
+        remote = await fetchBackup();
+      } on NoBackupOnDriveException {
+        remote = null; // First sync from anywhere: just upload.
       }
 
-      // If no remote backup exists, just upload
-      if (!remoteExists) {
-        if (kDebugMode) print('No remote backup found, uploading complete local data...');
-        await uploadDatabase(
+      var result = SyncResult(
+        projectsAdded: 0,
+        projectsUpdated: 0,
+        releasesAdded: 0,
+        releasesUpdated: 0,
+      );
+      if (remote != null) {
+        result = await mergeData(
+          remoteData: remote.data,
           projectRepo: projectRepo,
           profileRepo: profileRepo,
-          uploadAutoDetectedSongs: uploadAutoDetectedSongs,
-        );
-        return SyncResult(
-          projectsAdded: 0,
-          projectsUpdated: 0,
-          releasesAdded: 0,
-          releasesUpdated: 0,
+          downloadPreviewSongs: downloadPreviewSongs,
         );
       }
 
-      // Download remote data to check for conflicts
-      final remoteData = await downloadDatabase();
-      final remoteTimestamp = remoteData['timestamp'] != null 
-          ? DateTime.parse(remoteData['timestamp'] as String)
-          : null;
-
-      // Conflict detection: if both local and remote were modified since last sync
-      bool hasConflict = false;
-      if (localLastModified != null && remoteLastSync != null && remoteTimestamp != null) {
-        // Check if local was modified after last sync
-        final localModifiedAfterSync = localLastModified.isAfter(remoteLastSync);
-        // Check if remote was modified after last sync
-        final remoteModifiedAfterSync = remoteTimestamp.isAfter(remoteLastSync);
-        
-        // Conflict: both were modified
-        hasConflict = localModifiedAfterSync && remoteModifiedAfterSync;
-        
-        if (kDebugMode) {
-          print('Conflict detection:');
-          print('  Local modified after sync: $localModifiedAfterSync');
-          print('  Remote modified after sync: $remoteModifiedAfterSync');
-          print('  Has conflict: $hasConflict');
-        }
-      }
-
-      if (hasConflict) {
-        if (kDebugMode) print('Conflict detected! Both local and remote were modified.');
-        // For conflicts, we'll merge intelligently (prefer newer data)
-        // This could be improved with user interaction to choose which version to keep
-      }
-
-      // Merge data (handles conflicts by preferring newer timestamps)
-      // This merges ALL profiles, projects, and releases
-      // For sync operations, always download preview songs (default behavior)
-      final result = await mergeData(
-        remoteData: remoteData,
-        projectRepo: projectRepo,
-        profileRepo: profileRepo,
-        downloadPreviewSongs: true, // Always download during sync
-      );
-
-      // Upload merged data (complete application backup)
       await uploadDatabase(
         projectRepo: projectRepo,
         profileRepo: profileRepo,
@@ -3927,52 +4238,14 @@ class GoogleDriveSyncService {
 
       if (kDebugMode) {
         print('Sync completed:');
-        print('  Projects: +${result.projectsAdded} ~${result.projectsUpdated}');
-        print('  Releases: +${result.releasesAdded} ~${result.releasesUpdated}');
-        if (hasConflict) print('  ⚠️ Conflict was resolved by merging');
+        print('  Projects: +${result.projectsAdded} ~${result.projectsUpdated} -${result.projectsDeleted}');
+        print('  Releases: +${result.releasesAdded} ~${result.releasesUpdated} -${result.releasesDeleted}');
       }
-
       return result;
     } catch (e) {
       if (kDebugMode) print('Error syncing database: $e');
+      if (e is! UploadCancelledException) await recordFailure(e);
       rethrow;
-    }
-  }
-
-  /// Get local last modified time (checks ALL profiles)
-  Future<DateTime?> _getLocalLastModified(ProfileRepository profileRepo) async {
-    try {
-      DateTime? lastModified;
-      
-      // Check all profiles
-      for (final profile in profileRepo.getAllProfiles()) {
-        try {
-          final projectsBox = await Hive.openBox<MusicProject>('${profile.id}_projects');
-          final releasesBox = await Hive.openBox<Release>('${profile.id}_releases');
-          
-          for (final project in projectsBox.values) {
-            if (lastModified == null || project.updatedAt.isAfter(lastModified)) {
-              lastModified = project.updatedAt;
-            }
-          }
-          
-          // Releases don't have updatedAt: any release counts as just now.
-          if (releasesBox.isNotEmpty) {
-            final releaseTime = DateTime.now();
-            if (lastModified == null || releaseTime.isAfter(lastModified)) {
-              lastModified = releaseTime;
-            }
-          }
-        } catch (e) {
-          // Skip if box doesn't exist for this profile
-          if (kDebugMode) print('Skipping profile ${profile.id}: $e');
-        }
-      }
-      
-      return lastModified;
-    } catch (e) {
-      if (kDebugMode) print('Error getting local last modified: $e');
-      return null;
     }
   }
 
@@ -4011,29 +4284,66 @@ class GoogleDriveSyncService {
   /// Check if metadata fields changed (user-editable fields, not file system fields)
   /// Android only modifies metadata (todos, notes, bpm, key, status, etc.)
   /// We don't use updatedAt because it can change when file is modified on disk
-  bool _hasMetadataChanged(MusicProject remote, MusicProject local) {
+  bool _hasMetadataChanged(MusicProject remote, MusicProject local) =>
+      _metadataDifferences(remote, local).isNotEmpty;
+
+  /// The fields [_hasMetadataChanged] finds different, by name — logged by
+  /// [previewMerge] so a "changed" project can be explained.
+  ///
+  /// Both sides are compared at Hive's precision (milliseconds): a row saved
+  /// this session — the startup scan re-saves every project with its file's
+  /// date, which Windows gives to the microsecond — still holds microseconds
+  /// in memory, while one read back from disk or from a backup does not.
+  List<String> _metadataDifferences(MusicProject remote, MusicProject local) {
+    remote = _atHivePrecision(remote);
+    local = _atHivePrecision(local);
     // Compare metadata fields (user-editable) AND date fields from the DAW file.
     // lastModifiedAt and fileCreatedAt come from the desktop filesystem via the backup
     // and must be propagated to mobile — they are NOT derived from the Android filesystem.
-    return remote.notes != local.notes ||
-        !_todosEqual(remote.todos, local.todos) ||
-        !_listEquals(remote.parts, local.parts) ||
-        !_listEquals(remote.attachments, local.attachments) ||
-        !_listEquals(remote.tags, local.tags) ||
-        // Read out of the file on a desktop; a phone only ever gets it here.
-        (remote.stats != null && remote.stats != local.stats) ||
-        !_mapEquals(remote.customFields, local.customFields) ||
-        remote.bpm != local.bpm ||
-        remote.musicalKey != local.musicalKey ||
-        remote.status != local.status ||
-        remote.customDisplayName != local.customDisplayName ||
-        remote.hidden != local.hidden ||
-        remote.deadline != local.deadline ||
-        remote.ignoredNewerSongPath != local.ignoredNewerSongPath ||
-        remote.lastModifiedAt != local.lastModifiedAt ||
-        remote.fileCreatedAt != local.fileCreatedAt ||
-        remote.accentColor != local.accentColor ||
-        remote.iconKey != local.iconKey;
+    return [
+      if (remote.notes != local.notes) 'notes',
+      if (!_todosEqual(remote.todos, local.todos)) 'todos',
+      if (!_listEquals(remote.parts, local.parts)) 'parts',
+      if (!_listEquals(remote.attachments, local.attachments)) 'attachments',
+      if (!_listEquals(remote.tags, local.tags)) 'tags',
+      // Read out of the file on a desktop; a phone only ever gets it here.
+      if (remote.stats != null && remote.stats != local.stats) 'stats',
+      if (!_mapEquals(remote.customFields, local.customFields)) 'customFields',
+      if (remote.bpm != local.bpm) 'bpm',
+      if (remote.musicalKey != local.musicalKey) 'musicalKey',
+      if (remote.status != local.status) 'status',
+      if (remote.customDisplayName != local.customDisplayName) 'customDisplayName',
+      if (remote.hidden != local.hidden) 'hidden',
+      if (remote.deadline != local.deadline) 'deadline',
+      if (remote.ignoredNewerSongPath != local.ignoredNewerSongPath) 'ignoredNewerSongPath',
+      if (remote.lastModifiedAt != local.lastModifiedAt) 'lastModifiedAt',
+      if (remote.fileCreatedAt != local.fileCreatedAt) 'fileCreatedAt',
+      if (remote.accentColor != local.accentColor) 'accentColor',
+      if (remote.iconKey != local.iconKey) 'iconKey',
+    ];
+  }
+
+  /// Whether [a] was changed after [b], at Hive's precision.
+  static bool _changedAfter(DateTime a, DateTime b) =>
+      a.millisecondsSinceEpoch > b.millisecondsSinceEpoch;
+
+  /// [p] with the dates sync compares cut to milliseconds, as Hive stores
+  /// them. For comparing only — never saved.
+  static MusicProject _atHivePrecision(MusicProject p) {
+    DateTime? cut(DateTime? d) => d == null ? null : _toHivePrecision(d);
+    return p.copyWith(
+      updatedAt: cut(p.updatedAt),
+      lastModifiedAt: cut(p.lastModifiedAt),
+      fileCreatedAt: cut(p.fileCreatedAt),
+      deadline: cut(p.deadline),
+      todos: [
+        for (final t in p.todos)
+          t.dueAt == null ? t : t.copyWith(dueAt: cut(t.dueAt)),
+      ],
+      attachments: [
+        for (final a in p.attachments) a.copyWith(addedAt: cut(a.addedAt)),
+      ],
+    );
   }
 
   /// Merge remote data with local data
@@ -4204,23 +4514,9 @@ class GoogleDriveSyncService {
 
     int coverArtIndex = 0;
     
-    // Create reverse lookup: profileId -> list of project/release/root IDs
-    final profileToProjects = <String, List<String>>{};
-    final profileToReleases = <String, List<String>>{};
+    // Reverse lookup for roots (projects and releases go by each entry's
+    // own profile; see remoteEntryProfile).
     final profileToRoots = <String, List<String>>{};
-    
-    if (projectToProfileMap != null) {
-      // New format (v1.1+): Use profile mappings
-      projectToProfileMap.forEach((projectId, profileId) {
-        profileToProjects.putIfAbsent(profileId.toString(), () => []).add(projectId);
-      });
-    }
-    
-    if (releaseToProfileMap != null) {
-      releaseToProfileMap.forEach((releaseId, profileId) {
-        profileToReleases.putIfAbsent(profileId.toString(), () => []).add(releaseId);
-      });
-    }
     
     if (rootToProfileMap != null) {
       rootToProfileMap.forEach((rootId, profileId) {
@@ -4247,15 +4543,43 @@ class GoogleDriveSyncService {
       }
     }
     
+    // Deletions from every device, this one's included (see SyncTombstone).
+    // Applied first, to rows already here; below, a remote copy older than
+    // its tombstone is skipped instead of being added back.
+    final tombstones = await SyncTombstoneStore.putAll(
+      tombstonesFromJson(remoteData['deletedRecords']),
+    );
+    final projectsDeleted = await _applyTombstones(
+      tombstones,
+      allProfiles,
+      projectRepo,
+      TombstoneKind.project,
+    );
+    final releasesDeleted = await _applyTombstones(
+      tombstones,
+      allProfiles,
+      projectRepo,
+      TombstoneKind.release,
+    );
+
     // Merge projects - distribute to CORRECT profiles (or ALL if no mappings)
     if (remoteData['projects'] != null) {
-      final remoteProjects = (remoteData['projects'] as List)
+      final rawProjects = remoteData['projects'] as List;
+      final remoteProjects = rawProjects
           .map((p) => _deserializeProject(p as Map<String, dynamic>))
           .toList();
+      // Each entry's profile (see remoteEntryProfile); null on an old backup
+      // with no mapping at all, which goes to every profile.
+      final remoteProjectProfiles = [
+        for (final raw in rawProjects) remoteEntryProfile(raw, projectToProfileMap),
+      ];
+      final anyProjectProfile = remoteProjectProfiles.any((p) => p != null);
+      bool projectBelongs(int i, Profile profile) =>
+          !anyProjectProfile || remoteProjectProfiles[i] == profile.id;
       
       // If we have profile mappings, use them; otherwise distribute to all profiles (backward compatibility)
-      final targetProfiles = projectToProfileMap != null 
-          ? allProfiles.where((p) => profileToProjects.containsKey(p.id)).toList()
+      final targetProfiles = anyProjectProfile
+          ? allProfiles.where((p) => remoteProjectProfiles.contains(p.id)).toList()
           : allProfiles;
       
       for (final profile in targetProfiles) {
@@ -4265,14 +4589,21 @@ class GoogleDriveSyncService {
           int profileProjectsUpdated = 0;
           
           // Get projects that belong to this profile
-          final profileProjectIds = projectToProfileMap != null
-              ? (profileToProjects[profile.id] ?? [])
-              : remoteProjects.map((p) => p.id).toList(); // All projects if no mapping
+          final profileProjectIds = [
+            for (var i = 0; i < remoteProjects.length; i++)
+              if (projectBelongs(i, profile)) remoteProjects[i].id,
+          ];
           
-          for (final remoteProject in remoteProjects) {
+          for (var i = 0; i < remoteProjects.length; i++) {
+            final remoteProject = remoteProjects[i];
             if (_isCancelled) throw UploadCancelledException('Download cancelled by user');
-            // Only process if this project belongs to this profile (or all if no mapping)
-            if (profileProjectIds.contains(remoteProject.id)) {
+            // Only process if this entry belongs to this profile (or all if no mapping)
+            if (projectBelongs(i, profile)) {
+              if (tombstoneFor(tombstones, remoteProject.id, profile.id)
+                      ?.beats(remoteProject.updatedAt) ??
+                  false) {
+                continue; // Deleted somewhere after this copy was last changed.
+              }
               final localProject = profileProjectsBox.get(remoteProject.id);
               
               if (localProject == null) {
@@ -4371,7 +4702,7 @@ class GoogleDriveSyncService {
                 // (but before this merge runs) would have those fresh local edits
                 // silently discarded in favor of a stale remote copy — the opposite
                 // of the "prefer newer data" conflict resolution this is meant to do.
-                final remoteIsNewer = remoteProject.updatedAt.isAfter(localProject.updatedAt);
+                final remoteIsNewer = _changedAfter(remoteProject.updatedAt, localProject.updatedAt);
 
                 if (metadataChanged && remoteIsNewer) {
                   // Metadata changed - merge intelligently
@@ -4988,13 +5319,20 @@ class GoogleDriveSyncService {
 
     // Merge releases - distribute to CORRECT profiles (or ALL if no mappings)
     if (remoteData['releases'] != null) {
-      final remoteReleases = (remoteData['releases'] as List)
+      final rawReleases = remoteData['releases'] as List;
+      final remoteReleases = rawReleases
           .map((r) => _deserializeRelease(r as Map<String, dynamic>))
           .toList();
+      final remoteReleaseProfiles = [
+        for (final raw in rawReleases) remoteEntryProfile(raw, releaseToProfileMap),
+      ];
+      final anyReleaseProfile = remoteReleaseProfiles.any((p) => p != null);
+      bool releaseBelongs(int i, Profile profile) =>
+          !anyReleaseProfile || remoteReleaseProfiles[i] == profile.id;
       
       // If we have profile mappings, use them; otherwise distribute to all profiles (backward compatibility)
-      final targetProfiles = releaseToProfileMap != null 
-          ? allProfiles.where((p) => profileToReleases.containsKey(p.id)).toList()
+      final targetProfiles = anyReleaseProfile
+          ? allProfiles.where((p) => remoteReleaseProfiles.contains(p.id)).toList()
           : allProfiles;
       
       for (final profile in targetProfiles) {
@@ -5003,15 +5341,15 @@ class GoogleDriveSyncService {
           int profileReleasesAdded = 0;
           int profileReleasesUpdated = 0;
           
-          // Get releases that belong to this profile
-          final profileReleaseIds = releaseToProfileMap != null
-              ? (profileToReleases[profile.id] ?? [])
-              : remoteReleases.map((r) => r.id).toList(); // All releases if no mapping
-          
-          for (final remoteRelease in remoteReleases) {
+          for (var i = 0; i < remoteReleases.length; i++) {
+            final remoteRelease = remoteReleases[i];
             if (_isCancelled) throw UploadCancelledException('Download cancelled by user');
-            // Only process if this release belongs to this profile (or all if no mapping)
-            if (profileReleaseIds.contains(remoteRelease.id)) {
+            // Only process if this entry belongs to this profile (or all if no mapping)
+            if (releaseBelongs(i, profile)) {
+              if (tombstoneFor(tombstones, remoteRelease.id, profile.id)?.kind ==
+                  TombstoneKind.release) {
+                continue; // Deleted on some device; a release never returns.
+              }
               final localRelease = profileReleasesBox.get(remoteRelease.id);
               
               // Download release artwork if available
@@ -5438,11 +5776,64 @@ class GoogleDriveSyncService {
     return SyncResult(
       projectsAdded: projectsAdded,
       projectsUpdated: projectsUpdated,
+      projectsDeleted: projectsDeleted,
       releasesAdded: releasesAdded,
       releasesUpdated: releasesUpdated,
+      releasesDeleted: releasesDeleted,
       previewSongsDownloaded: previewSongsDownloaded,
       previewSongsUpdated: previewSongsUpdated,
     );
+  }
+
+  /// Deletes the rows of [kind] that a tombstone beats — in the profile it
+  /// names, or in every profile for one that names none. Returns how many
+  /// went.
+  Future<int> _applyTombstones(
+    Map<String, SyncTombstone> tombstones,
+    List<Profile> profiles,
+    ProjectRepository projectRepo,
+    TombstoneKind kind,
+  ) async {
+    final relevant = [
+      for (final t in tombstones.values)
+        if (t.kind == kind) t,
+    ];
+    if (relevant.isEmpty) return 0;
+    var deleted = 0;
+    for (final profile in profiles) {
+      final here = [
+        for (final t in relevant)
+          if (t.profileId == null || t.profileId == profile.id) t,
+      ];
+      if (here.isEmpty) continue;
+      try {
+        if (kind == TombstoneKind.project) {
+          final box = await Hive.openBox<MusicProject>('${profile.id}_projects');
+          final doomed = {
+            for (final t in here)
+              if (box.get(t.id) case final p? when t.beats(p.updatedAt)) t.id,
+          };
+          if (doomed.isEmpty) continue;
+          await box.deleteAll(doomed);
+          await MidiClipStore(profile.id).deleteAll(doomed);
+          deleted += doomed.length;
+          if (projectRepo.profileId == profile.id) {
+            await projectRepo.cleanUpDanglingStackLinks();
+          }
+        } else {
+          final box = await Hive.openBox<Release>('${profile.id}_releases');
+          final doomed = {
+            for (final t in here)
+              if (box.containsKey(t.id)) t.id,
+          };
+          await box.deleteAll(doomed);
+          deleted += doomed.length;
+        }
+      } catch (e) {
+        if (kDebugMode) print('Error applying deletions to ${profile.id}: $e');
+      }
+    }
+    return deleted;
   }
 
   /// After a restore, if the currently active profile is empty but a restored
@@ -5515,13 +5906,26 @@ class GoogleDriveSyncService {
     };
   }
 
+  /// A date from a backup, at the precision Hive keeps: milliseconds.
+  ///
+  /// The JSON carries microseconds — an edit made in this session still holds
+  /// them in memory when it is uploaded — but the same project read back from
+  /// disk after a restart has lost them. Compared as they were, every Drive
+  /// copy looked a fraction of a millisecond newer than the row it came from,
+  /// and changed: a synced library previewed as "N projects updated" and the
+  /// next sync rewrote them all.
+  static DateTime _storedDate(String raw) => _toHivePrecision(DateTime.parse(raw));
+
+  static DateTime _toHivePrecision(DateTime d) =>
+      DateTime.fromMillisecondsSinceEpoch(d.millisecondsSinceEpoch, isUtc: d.isUtc);
+
   Profile _deserializeProfile(Map<String, dynamic> data) {
     return Profile(
       id: data['id'] as String,
       name: data['name'] as String,
-      createdAt: DateTime.parse(data['createdAt'] as String),
+      createdAt: _storedDate(data['createdAt'] as String),
       lastUsedAt: data['lastUsedAt'] != null 
-          ? DateTime.parse(data['lastUsedAt'] as String)
+          ? _storedDate(data['lastUsedAt'] as String)
           : null,
       photoPath: data['photoPath'] as String?,
       bio: data['bio'] as String?,
@@ -5626,13 +6030,13 @@ class GoogleDriveSyncService {
       filePath: data['filePath'] as String,
       fileName: data['fileName'] as String,
       fileSizeBytes: data['fileSizeBytes'] as int,
-      lastModifiedAt: DateTime.parse(data['lastModifiedAt'] as String),
+      lastModifiedAt: _storedDate(data['lastModifiedAt'] as String),
       customDisplayName: data['customDisplayName'] as String?,
       thumbnailPath: data['thumbnailPath'] as String?,
       status: data['status'] as String,
       fileExtension: data['fileExtension'] as String,
-      createdAt: DateTime.parse(data['createdAt'] as String),
-      updatedAt: DateTime.parse(data['updatedAt'] as String),
+      createdAt: _storedDate(data['createdAt'] as String),
+      updatedAt: _storedDate(data['updatedAt'] as String),
       bpm: (data['bpm'] as num?)?.toDouble(),
       musicalKey: data['musicalKey'] as String?,
       notes: data['notes'] as String?,
@@ -5642,8 +6046,8 @@ class GoogleDriveSyncService {
         id: t['id'] as String,
         text: t['text'] as String,
         completed: t['completed'] as bool? ?? false,
-        createdAt: DateTime.parse(t['createdAt'] as String),
-        dueAt: t['dueAt'] != null ? DateTime.parse(t['dueAt'] as String) : null,
+        createdAt: _storedDate(t['createdAt'] as String),
+        dueAt: t['dueAt'] != null ? _storedDate(t['dueAt'] as String) : null,
       )).toList() ?? const [],
       parts: (data['parts'] as List?)
               ?.map((p) => ProjectPart.fromJson(p as Map<dynamic, dynamic>))
@@ -5654,13 +6058,13 @@ class GoogleDriveSyncService {
       previewSongFileName: data['previewSongFileName'] as String?,
       uploadedPreviewSongHash: data['previewSongHash'] as String?, // Keep 'previewSongHash' key in JSON for backward compatibility
       fileCreatedAt: data['fileCreatedAt'] != null
-          ? DateTime.parse(data['fileCreatedAt'] as String)
+          ? _storedDate(data['fileCreatedAt'] as String)
           : null,
       statusChangedAt: data['statusChangedAt'] != null
-          ? DateTime.parse(data['statusChangedAt'] as String)
+          ? _storedDate(data['statusChangedAt'] as String)
           : null,
       deadline: data['deadline'] != null
-          ? DateTime.parse(data['deadline'] as String)
+          ? _storedDate(data['deadline'] as String)
           : null,
       totalWorkSeconds: data['totalWorkSeconds'] as int? ?? 0,
       sessions: (data['sessions'] as List?)
@@ -5685,7 +6089,10 @@ class GoogleDriveSyncService {
           const [],
       stats: ProjectStats.tryFromMap(data['stats']),
       attachments: (data['attachments'] as List?)
-              ?.map((e) => ProjectAttachment.fromMap(e as Map))
+              ?.map((e) {
+                final a = ProjectAttachment.fromMap(e as Map);
+                return a.copyWith(addedAt: _toHivePrecision(a.addedAt));
+              })
               .toList() ??
           const [],
       accentColor: (data['accentColor'] as num?)?.toInt(),
@@ -5693,7 +6100,7 @@ class GoogleDriveSyncService {
       cardInitials: data['cardInitials'] as String?,
       archivePath: data['archivePath'] as String?,
       archivedAt: data['archivedAt'] != null
-          ? DateTime.parse(data['archivedAt'] as String)
+          ? _storedDate(data['archivedAt'] as String)
           : null,
       archiveEntryPath: data['archiveEntryPath'] as String?,
       durationMs: (data['durationMs'] as num?)?.toInt(),
@@ -5812,7 +6219,7 @@ class GoogleDriveSyncService {
       id: data['id'] as String,
       title: data['title'] as String,
       releaseDate: data['releaseDate'] != null
-          ? DateTime.parse(data['releaseDate'] as String)
+          ? _storedDate(data['releaseDate'] as String)
           : null,
       artworkImagePath: data['artworkImagePath'] as String?,
       description: data['description'] as String?,
@@ -5823,15 +6230,15 @@ class GoogleDriveSyncService {
         filePath: f['filePath'] as String,
         fileType: f['fileType'] as String,
         fileSizeBytes: f['fileSizeBytes'] as int,
-        addedAt: DateTime.parse(f['addedAt'] as String),
+        addedAt: _storedDate(f['addedAt'] as String),
         description: f['description'] as String?,
       )).toList() ?? const [],
       todos: (data['todos'] as List?)?.map((t) => TodoItem(
         id: t['id'] as String,
         text: t['text'] as String,
         completed: t['completed'] as bool,
-        createdAt: DateTime.parse(t['createdAt'] as String),
-        dueAt: t['dueAt'] != null ? DateTime.parse(t['dueAt'] as String) : null,
+        createdAt: _storedDate(t['createdAt'] as String),
+        dueAt: t['dueAt'] != null ? _storedDate(t['dueAt'] as String) : null,
       )).toList() ?? const [],
     );
   }
@@ -5865,9 +6272,9 @@ class GoogleDriveSyncService {
     return ScanRoot(
       id: data['id'] as String,
       path: data['path'] as String,
-      addedAt: DateTime.parse(data['addedAt'] as String),
+      addedAt: _storedDate(data['addedAt'] as String),
       lastScanAt: data['lastScanAt'] != null
-          ? DateTime.parse(data['lastScanAt'] as String)
+          ? _storedDate(data['lastScanAt'] as String)
           : null,
       // Null in an older snapshot, which ScanRoot already reads as "fall back
       // to the folder's own name" (see effectiveDisplayName).
@@ -5895,8 +6302,8 @@ class GoogleDriveSyncService {
       id: data['id'] as String,
       name: data['name'] as String,
       items: (data['items'] as List<dynamic>).cast<String>(),
-      createdAt: DateTime.parse(data['createdAt'] as String),
-      updatedAt: DateTime.parse(data['updatedAt'] as String),
+      createdAt: _storedDate(data['createdAt'] as String),
+      updatedAt: _storedDate(data['updatedAt'] as String),
     );
   }
 
@@ -5922,8 +6329,8 @@ class GoogleDriveSyncService {
       name: data['name'] as String,
       sourceFolderPath: data['sourceFolderPath'] as String,
       mainFileRelativePath: data['mainFileRelativePath'] as String,
-      createdAt: DateTime.parse(data['createdAt'] as String),
-      updatedAt: DateTime.parse(data['updatedAt'] as String),
+      createdAt: _storedDate(data['createdAt'] as String),
+      updatedAt: _storedDate(data['updatedAt'] as String),
       bpm: (data['bpm'] as num?)?.toDouble(),
       musicalKey: data['musicalKey'] as String?,
       dawVersion: data['dawVersion'] as String?,
@@ -5945,9 +6352,9 @@ class GoogleDriveSyncService {
     return TemplateRoot(
       id: data['id'] as String,
       path: data['path'] as String,
-      addedAt: DateTime.parse(data['addedAt'] as String),
+      addedAt: _storedDate(data['addedAt'] as String),
       lastRefreshedAt: data['lastRefreshedAt'] != null
-          ? DateTime.parse(data['lastRefreshedAt'] as String)
+          ? _storedDate(data['lastRefreshedAt'] as String)
           : null,
     );
   }
@@ -6208,3 +6615,177 @@ class SyncResult {
   });
 }
 
+
+/// The backup file on Drive as of the last look.
+class RemoteBackupInfo {
+  const RemoteBackupInfo({
+    required this.fileId,
+    required this.modifiedTime,
+    this.device,
+    this.sizeBytes,
+  });
+
+  final String fileId;
+
+  /// Drive's clock, UTC.
+  final DateTime modifiedTime;
+
+  /// The device that wrote it ([GoogleDriveSyncService.deviceName]); null on
+  /// backups written before devices were named.
+  final String? device;
+  final int? sizeBytes;
+}
+
+/// The last sync that failed on this device.
+class SyncFailure {
+  const SyncFailure({
+    required this.at,
+    required this.message,
+    this.kind = SyncErrorKind.other,
+  });
+  final DateTime at;
+  final SyncErrorKind kind;
+
+  /// The raw error, for the details under the explanation.
+  final String message;
+}
+
+/// An earlier backup kept in the backup folder's `history` (see
+/// [GoogleDriveSyncService.listSnapshots]).
+class BackupSnapshot {
+  const BackupSnapshot({
+    required this.fileId,
+    required this.takenAt,
+    this.device,
+    this.sizeBytes,
+  });
+
+  final String fileId;
+
+  /// When the backup it preserves was written.
+  final DateTime takenAt;
+  final String? device;
+  final int? sizeBytes;
+}
+
+/// What merging a backup would do here, counted before anything is written.
+class MergePreview {
+  const MergePreview({
+    this.projectsAdded = 0,
+    this.projectsUpdated = 0,
+    this.projectsDeleted = 0,
+    this.releasesAdded = 0,
+    this.releasesDeleted = 0,
+    this.projectsToUpload = 0,
+    this.releasesToUpload = 0,
+    this.updatedNames = const [],
+    this.uploadNames = const [],
+  });
+
+  // What the merge brings onto this device.
+  final int projectsAdded;
+  final int projectsUpdated;
+  final int projectsDeleted;
+  final int releasesAdded;
+  final int releasesDeleted;
+
+  // What the upload after it would add to Drive: projects only here, or
+  // changed here since Drive's copy; releases only here. (A release has no
+  // `updatedAt`, so one edited here is not counted.)
+  final int projectsToUpload;
+  final int releasesToUpload;
+
+  /// Which projects those are, so a surprising "1 project changed" can be
+  /// checked by name.
+  final List<String> updatedNames;
+  final List<String> uploadNames;
+
+  /// Merging changes nothing on this device.
+  bool get changesNothing =>
+      projectsAdded == 0 &&
+      projectsUpdated == 0 &&
+      projectsDeleted == 0 &&
+      releasesAdded == 0 &&
+      releasesDeleted == 0;
+
+  /// Nothing to bring in and nothing to send: this device and Drive match.
+  bool get inSync => changesNothing && projectsToUpload == 0 && releasesToUpload == 0;
+}
+
+/// Roughly what a first upload sends: the media files that go up with the
+/// database (preview songs, cover art, artwork, profile photos).
+class UploadEstimate {
+  const UploadEstimate({required this.files, required this.bytes});
+  final int files;
+  final int bytes;
+}
+
+/// Why a desktop sign-in did not finish. A sign-in the user cancelled or
+/// refused returns null instead — that is not an error to show.
+enum DesktopSignInFailure {
+  /// Another program (often a second copy of this app) holds the port the
+  /// browser redirects back to.
+  portInUse,
+
+  /// Nothing came back from the browser in time.
+  timedOut,
+
+  /// No browser could be opened.
+  browserUnavailable,
+}
+
+class DesktopSignInException implements Exception {
+  const DesktopSignInException(this.failure);
+  final DesktopSignInFailure failure;
+
+  @override
+  String toString() => 'DesktopSignInException(${failure.name})';
+}
+
+/// The text of the page the browser shows once sign-in hands back to the
+/// app. Passed in from the UI so it is in the user's language.
+class LoopbackPageTexts {
+  const LoopbackPageTexts({
+    required this.successHeading,
+    required this.successMessage,
+    required this.cancelledHeading,
+    required this.cancelledMessage,
+    required this.errorHeading,
+    required this.errorMessage,
+  });
+
+  final String successHeading;
+  final String successMessage;
+  final String cancelledHeading;
+  final String cancelledMessage;
+  final String errorHeading;
+  final String errorMessage;
+
+  static const english = LoopbackPageTexts(
+    successHeading: 'Sign-in successful',
+    successMessage:
+        'You can close this window and return to DAW Project Manager.',
+    cancelledHeading: 'Sign-in cancelled',
+    cancelledMessage:
+        'Sign-in was denied or failed. You can close this window and return to DAW Project Manager to try again.',
+    errorHeading: 'Something went wrong',
+    errorMessage:
+        'Invalid sign-in state. Please close this window and try again from DAW Project Manager.',
+  );
+}
+
+/// A backup read from Drive, with the file it came from.
+class FetchedBackup {
+  const FetchedBackup({required this.data, required this.info});
+  final Map<String, dynamic> data;
+  final RemoteBackupInfo info;
+}
+
+/// There is no backup on Drive yet.
+class NoBackupOnDriveException implements Exception {
+  const NoBackupOnDriveException();
+
+  // Matched by text in older callers.
+  @override
+  String toString() => 'Database file not found in Google Drive';
+}

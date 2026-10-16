@@ -26,4 +26,28 @@ enum AutoBackupInterval {
       orElse: () => AutoBackupInterval.off,
     );
   }
+
+  /// Whether the interval says to sync now: never when off, otherwise once
+  /// it has passed since [lastSync].
+  bool isDue({required DateTime? lastSync, required DateTime now}) {
+    final every = duration;
+    if (every == null) return false;
+    if (lastSync == null) return true;
+    return now.difference(lastSync) >= every;
+  }
+
+  /// Whether automatic sync should run now. At launch, "sync when the app
+  /// starts" decides on its own — it is independent of the interval — and a
+  /// due interval still counts, as it would on the timer's first tick.
+  bool shouldSyncNow({
+    required DateTime? lastSync,
+    required DateTime now,
+    required bool syncOnStartup,
+    bool atLaunch = false,
+  }) =>
+      (atLaunch && syncOnStartup) || isDue(lastSync: lastSync, now: now);
+
+  /// Whether this device syncs on its own at all.
+  bool syncsAutomatically({required bool syncOnStartup}) =>
+      syncOnStartup || duration != null;
 }

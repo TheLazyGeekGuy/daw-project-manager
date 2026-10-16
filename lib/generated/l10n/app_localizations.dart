@@ -1057,13 +1057,13 @@ abstract class AppLocalizations {
   /// No description provided for @deleteMissingProjectsConfirm.
   ///
   /// In en, this message translates to:
-  /// **'{count} project{plural} whose file could not be found on this machine will be permanently deleted, along with all notes, deadlines, and session history. This can\'t be undone.'**
+  /// **'{count} project{plural} whose file could not be found on this machine will move to Recently deleted (Settings > Project folders), where you can restore them with their notes, deadlines and session history for 30 days.'**
   String deleteMissingProjectsConfirm(int count, String plural);
 
   /// No description provided for @deleteMissingProjectsConfirmButton.
   ///
   /// In en, this message translates to:
-  /// **'Delete Permanently'**
+  /// **'Delete'**
   String get deleteMissingProjectsConfirmButton;
 
   /// No description provided for @missingProjectsDeleted.
@@ -4514,7 +4514,7 @@ abstract class AppLocalizations {
   /// No description provided for @trayBackupNow.
   ///
   /// In en, this message translates to:
-  /// **'Back Up Now'**
+  /// **'Sync Now'**
   String get trayBackupNow;
 
   /// No description provided for @trayPauseSession.
@@ -12112,6 +12112,900 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Example: {name}'**
   String samplePackRenameExample(String name);
+
+  /// No description provided for @driveAgoJustNow.
+  ///
+  /// In en, this message translates to:
+  /// **'just now'**
+  String get driveAgoJustNow;
+
+  /// No description provided for @driveAgoMinutes.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =1{1 minute ago} other{{count} minutes ago}}'**
+  String driveAgoMinutes(int count);
+
+  /// No description provided for @driveAgoHours.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =1{1 hour ago} other{{count} hours ago}}'**
+  String driveAgoHours(int count);
+
+  /// No description provided for @driveSyncIntro.
+  ///
+  /// In en, this message translates to:
+  /// **'Keep your projects, notes and releases the same on all your devices. Everything goes into a folder in your own Google Drive.'**
+  String get driveSyncIntro;
+
+  /// No description provided for @driveWaitingForBrowser.
+  ///
+  /// In en, this message translates to:
+  /// **'Finish signing in in your browser…'**
+  String get driveWaitingForBrowser;
+
+  /// No description provided for @driveThisDevice.
+  ///
+  /// In en, this message translates to:
+  /// **'this device'**
+  String get driveThisDevice;
+
+  /// No description provided for @driveThisDeviceSynced.
+  ///
+  /// In en, this message translates to:
+  /// **'This device synced {when}'**
+  String driveThisDeviceSynced(String when);
+
+  /// No description provided for @driveThisDeviceNeverSynced.
+  ///
+  /// In en, this message translates to:
+  /// **'This device hasn\'t synced yet'**
+  String get driveThisDeviceNeverSynced;
+
+  /// No description provided for @driveUpdatedFrom.
+  ///
+  /// In en, this message translates to:
+  /// **'Drive updated {when} from {device}'**
+  String driveUpdatedFrom(String when, String device);
+
+  /// No description provided for @driveUpdatedAt.
+  ///
+  /// In en, this message translates to:
+  /// **'Drive updated {when}'**
+  String driveUpdatedAt(String when);
+
+  /// No description provided for @driveNoBackupYet.
+  ///
+  /// In en, this message translates to:
+  /// **'Nothing on Google Drive yet'**
+  String get driveNoBackupYet;
+
+  /// No description provided for @driveNewerBanner.
+  ///
+  /// In en, this message translates to:
+  /// **'{device} has changes on Drive that aren\'t on this device yet. Sync to bring them in.'**
+  String driveNewerBanner(String device);
+
+  /// No description provided for @driveNewerBannerNoDevice.
+  ///
+  /// In en, this message translates to:
+  /// **'Drive has changes that aren\'t on this device yet. Sync to bring them in.'**
+  String get driveNewerBannerNoDevice;
+
+  /// No description provided for @driveSyncNow.
+  ///
+  /// In en, this message translates to:
+  /// **'Sync now'**
+  String get driveSyncNow;
+
+  /// No description provided for @driveSyncNowHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Sync brings in what\'s on Drive, then uploads this device\'s changes. Nothing is removed unless it was deleted on purpose on one of your devices.'**
+  String get driveSyncNowHint;
+
+  /// No description provided for @driveSyncing.
+  ///
+  /// In en, this message translates to:
+  /// **'Syncing…'**
+  String get driveSyncing;
+
+  /// No description provided for @driveSyncingTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Syncing with Google Drive'**
+  String get driveSyncingTitle;
+
+  /// No description provided for @driveSyncedSummary.
+  ///
+  /// In en, this message translates to:
+  /// **'Synced: {added} new, {updated} updated, {removed} removed.'**
+  String driveSyncedSummary(int added, int updated, int removed);
+
+  /// No description provided for @driveSyncedNothingNew.
+  ///
+  /// In en, this message translates to:
+  /// **'Synced. Everything was already up to date.'**
+  String get driveSyncedNothingNew;
+
+  /// No description provided for @driveOperationCancelled.
+  ///
+  /// In en, this message translates to:
+  /// **'Cancelled.'**
+  String get driveOperationCancelled;
+
+  /// No description provided for @driveFilesFailedToUpload.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =1{1 file couldn\'t be uploaded:} other{{count} files couldn\'t be uploaded:}}'**
+  String driveFilesFailedToUpload(int count);
+
+  /// No description provided for @driveLastSyncFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Last sync failed {when}'**
+  String driveLastSyncFailed(String when);
+
+  /// No description provided for @driveErrorOffline.
+  ///
+  /// In en, this message translates to:
+  /// **'Couldn\'t reach Google Drive. Check your internet connection and try again.'**
+  String get driveErrorOffline;
+
+  /// No description provided for @driveErrorSignInExpired.
+  ///
+  /// In en, this message translates to:
+  /// **'Google Drive needs you to sign in again.'**
+  String get driveErrorSignInExpired;
+
+  /// No description provided for @driveErrorDriveFull.
+  ///
+  /// In en, this message translates to:
+  /// **'Your Google Drive is full. Free up some space to keep syncing.'**
+  String get driveErrorDriveFull;
+
+  /// No description provided for @driveErrorNoBackup.
+  ///
+  /// In en, this message translates to:
+  /// **'There\'s no backup on Google Drive yet.'**
+  String get driveErrorNoBackup;
+
+  /// No description provided for @driveErrorOther.
+  ///
+  /// In en, this message translates to:
+  /// **'The sync didn\'t finish.'**
+  String get driveErrorOther;
+
+  /// No description provided for @driveSignInPortInUse.
+  ///
+  /// In en, this message translates to:
+  /// **'Couldn\'t start signing in: another program is using port {port}. Close any other copy of DAW Project Manager and try again.'**
+  String driveSignInPortInUse(String port);
+
+  /// No description provided for @driveSignInTimedOut.
+  ///
+  /// In en, this message translates to:
+  /// **'Signing in took too long. Try again.'**
+  String get driveSignInTimedOut;
+
+  /// No description provided for @driveSignInNoBrowser.
+  ///
+  /// In en, this message translates to:
+  /// **'Couldn\'t open your web browser to sign in.'**
+  String get driveSignInNoBrowser;
+
+  /// No description provided for @driveBrowserSignedInTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Signed in'**
+  String get driveBrowserSignedInTitle;
+
+  /// No description provided for @driveBrowserSignedInBody.
+  ///
+  /// In en, this message translates to:
+  /// **'You can close this tab and go back to DAW Project Manager.'**
+  String get driveBrowserSignedInBody;
+
+  /// No description provided for @driveBrowserCancelledTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Sign-in cancelled'**
+  String get driveBrowserCancelledTitle;
+
+  /// No description provided for @driveBrowserCancelledBody.
+  ///
+  /// In en, this message translates to:
+  /// **'You can close this tab and try again from DAW Project Manager.'**
+  String get driveBrowserCancelledBody;
+
+  /// No description provided for @driveBrowserErrorTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Something went wrong'**
+  String get driveBrowserErrorTitle;
+
+  /// No description provided for @driveBrowserErrorBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Close this tab and try signing in again from DAW Project Manager.'**
+  String get driveBrowserErrorBody;
+
+  /// No description provided for @driveAutoSyncTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Automatic sync'**
+  String get driveAutoSyncTitle;
+
+  /// No description provided for @driveAutoSyncDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'While the app is open, syncs with Google Drive at the interval you choose.'**
+  String get driveAutoSyncDescription;
+
+  /// No description provided for @driveAutoSyncIntervalLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Sync automatically'**
+  String get driveAutoSyncIntervalLabel;
+
+  /// No description provided for @driveNextSync.
+  ///
+  /// In en, this message translates to:
+  /// **'Next sync {when}'**
+  String driveNextSync(String when);
+
+  /// No description provided for @driveMoreOptions.
+  ///
+  /// In en, this message translates to:
+  /// **'Restore and other options'**
+  String get driveMoreOptions;
+
+  /// No description provided for @driveRestoreFromDrive.
+  ///
+  /// In en, this message translates to:
+  /// **'Get Drive\'s changes only'**
+  String get driveRestoreFromDrive;
+
+  /// No description provided for @driveRestoreFromDriveHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Brings this device up to date without uploading anything.'**
+  String get driveRestoreFromDriveHint;
+
+  /// No description provided for @driveRecoverEarlier.
+  ///
+  /// In en, this message translates to:
+  /// **'Recover from an earlier backup'**
+  String get driveRecoverEarlier;
+
+  /// No description provided for @driveRecoverEarlierHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Drive keeps the last {count} backups. Bringing one back adds anything that\'s missing; it doesn\'t undo later edits.'**
+  String driveRecoverEarlierHint(int count);
+
+  /// No description provided for @driveOverwrite.
+  ///
+  /// In en, this message translates to:
+  /// **'Replace Drive\'s copy with this device'**
+  String get driveOverwrite;
+
+  /// No description provided for @driveOverwriteHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Drive ends up with exactly what this device has. The copy it replaces is kept as an earlier backup.'**
+  String get driveOverwriteHint;
+
+  /// No description provided for @driveDeleteData.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete my data from Google Drive'**
+  String get driveDeleteData;
+
+  /// No description provided for @driveDeleteDataHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Removes the backup, preview songs, images and earlier backups from Drive. This device keeps everything.'**
+  String get driveDeleteDataHint;
+
+  /// No description provided for @driveMergeTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Get Drive\'s changes?'**
+  String get driveMergeTitle;
+
+  /// No description provided for @driveMergeConfirm.
+  ///
+  /// In en, this message translates to:
+  /// **'Get changes'**
+  String get driveMergeConfirm;
+
+  /// No description provided for @driveMergeNothing.
+  ///
+  /// In en, this message translates to:
+  /// **'Nothing on Drive is new to this device.'**
+  String get driveMergeNothing;
+
+  /// No description provided for @driveMergeKeepsLocal.
+  ///
+  /// In en, this message translates to:
+  /// **'Nothing else on this device changes, and edits newer than Drive\'s are kept.'**
+  String get driveMergeKeepsLocal;
+
+  /// No description provided for @driveMergeAdds.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =1{1 new project} other{{count} new projects}}'**
+  String driveMergeAdds(int count);
+
+  /// No description provided for @driveMergeUpdates.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =1{1 project updated} other{{count} projects updated}}'**
+  String driveMergeUpdates(int count);
+
+  /// No description provided for @driveMergeRemoves.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =1{1 project removed (deleted on another device)} other{{count} projects removed (deleted on another device)}}'**
+  String driveMergeRemoves(int count);
+
+  /// No description provided for @driveMergeReleases.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =1{1 new release} other{{count} new releases}}'**
+  String driveMergeReleases(int count);
+
+  /// No description provided for @driveMergeReleasesRemoved.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =1{1 release removed (deleted on another device)} other{{count} releases removed (deleted on another device)}}'**
+  String driveMergeReleasesRemoved(int count);
+
+  /// No description provided for @driveRecoverTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Earlier backups'**
+  String get driveRecoverTitle;
+
+  /// No description provided for @driveNoSnapshots.
+  ///
+  /// In en, this message translates to:
+  /// **'No earlier backups yet. One is kept each time a sync replaces the backup on Drive.'**
+  String get driveNoSnapshots;
+
+  /// No description provided for @driveSnapshotItem.
+  ///
+  /// In en, this message translates to:
+  /// **'{when} · {device}'**
+  String driveSnapshotItem(String when, String device);
+
+  /// No description provided for @driveRecoverConfirmTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Bring this backup back?'**
+  String get driveRecoverConfirmTitle;
+
+  /// No description provided for @driveRecoverConfirm.
+  ///
+  /// In en, this message translates to:
+  /// **'Bring back'**
+  String get driveRecoverConfirm;
+
+  /// No description provided for @driveOverwriteTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Replace Drive\'s copy?'**
+  String get driveOverwriteTitle;
+
+  /// No description provided for @driveOverwriteBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Anything on Drive that isn\'t on this device, like projects added on another device, will be gone from Drive. The current copy is kept as an earlier backup, so you can still recover it.'**
+  String get driveOverwriteBody;
+
+  /// No description provided for @driveOverwriteConfirm.
+  ///
+  /// In en, this message translates to:
+  /// **'Replace Drive\'s copy'**
+  String get driveOverwriteConfirm;
+
+  /// No description provided for @driveDeleteTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete your data from Google Drive?'**
+  String get driveDeleteTitle;
+
+  /// No description provided for @driveDeleteBody.
+  ///
+  /// In en, this message translates to:
+  /// **'This permanently deletes the DAW Project Manager folder from your Google Drive, including the backup, preview songs, images and earlier backups. This device keeps its own data. Automatic sync will be turned off.'**
+  String get driveDeleteBody;
+
+  /// No description provided for @driveDeleteConfirm.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete from Drive'**
+  String get driveDeleteConfirm;
+
+  /// No description provided for @driveDeleted.
+  ///
+  /// In en, this message translates to:
+  /// **'Your data was deleted from Google Drive. Automatic sync is now off.'**
+  String get driveDeleted;
+
+  /// No description provided for @driveSignOutTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Sign out of Google Drive?'**
+  String get driveSignOutTitle;
+
+  /// No description provided for @driveSignOutBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Your data stays on Google Drive and on this device. Automatic sync stops until you sign in again.'**
+  String get driveSignOutBody;
+
+  /// No description provided for @driveFoundBackupTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Found a backup on Google Drive'**
+  String get driveFoundBackupTitle;
+
+  /// No description provided for @driveFoundBackupBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Sync now to bring it onto this device and add what\'s here to it.'**
+  String get driveFoundBackupBody;
+
+  /// No description provided for @driveFirstUploadTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Nothing on Google Drive yet'**
+  String get driveFirstUploadTitle;
+
+  /// No description provided for @driveFirstUploadBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Sync now to upload this device\'s library and start keeping your devices in step.'**
+  String get driveFirstUploadBody;
+
+  /// No description provided for @driveUploadEstimate.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =1{About 1 file ({size}) goes up with it.} other{About {count} files ({size}) go up with it.}}'**
+  String driveUploadEstimate(int count, String size);
+
+  /// No description provided for @driveKeepInSyncAutomatically.
+  ///
+  /// In en, this message translates to:
+  /// **'Keep this device in sync automatically (every hour)'**
+  String get driveKeepInSyncAutomatically;
+
+  /// No description provided for @driveLater.
+  ///
+  /// In en, this message translates to:
+  /// **'Later'**
+  String get driveLater;
+
+  /// No description provided for @driveStatusSyncing.
+  ///
+  /// In en, this message translates to:
+  /// **'Syncing with Google Drive…'**
+  String get driveStatusSyncing;
+
+  /// No description provided for @driveStatusFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'The last Google Drive sync failed'**
+  String get driveStatusFailed;
+
+  /// No description provided for @driveStatusNewer.
+  ///
+  /// In en, this message translates to:
+  /// **'New changes on Google Drive'**
+  String get driveStatusNewer;
+
+  /// No description provided for @driveStatusUpToDate.
+  ///
+  /// In en, this message translates to:
+  /// **'Google Drive: up to date'**
+  String get driveStatusUpToDate;
+
+  /// No description provided for @trayLastSyncFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Last sync failed: {when}'**
+  String trayLastSyncFailed(String when);
+
+  /// No description provided for @driveSyncOnStartup.
+  ///
+  /// In en, this message translates to:
+  /// **'Sync when the app starts'**
+  String get driveSyncOnStartup;
+
+  /// No description provided for @driveSyncOnStartupHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Brings in what your other devices changed each time you open the app.'**
+  String get driveSyncOnStartupHint;
+
+  /// No description provided for @driveAlreadyInSync.
+  ///
+  /// In en, this message translates to:
+  /// **'This device and Google Drive already match. There is nothing to sync.'**
+  String get driveAlreadyInSync;
+
+  /// No description provided for @driveFromDrive.
+  ///
+  /// In en, this message translates to:
+  /// **'From Google Drive'**
+  String get driveFromDrive;
+
+  /// No description provided for @driveFromThisDevice.
+  ///
+  /// In en, this message translates to:
+  /// **'From this device'**
+  String get driveFromThisDevice;
+
+  /// No description provided for @driveUploadProjects.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =1{1 project added or changed here} other{{count} projects added or changed here}}'**
+  String driveUploadProjects(int count);
+
+  /// No description provided for @driveUploadReleases.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =1{1 release added here} other{{count} releases added here}}'**
+  String driveUploadReleases(int count);
+
+  /// No description provided for @drivePreviewLineWithNames.
+  ///
+  /// In en, this message translates to:
+  /// **'{line}: {names}'**
+  String drivePreviewLineWithNames(String line, String names);
+
+  /// No description provided for @driveNamesAndMore.
+  ///
+  /// In en, this message translates to:
+  /// **'{names} and {count} more'**
+  String driveNamesAndMore(String names, int count);
+
+  /// No description provided for @deleteProjectMenu.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete…'**
+  String get deleteProjectMenu;
+
+  /// No description provided for @deleteProjectTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete \"{name}\"?'**
+  String deleteProjectTitle(String name);
+
+  /// No description provided for @deleteProjectBody.
+  ///
+  /// In en, this message translates to:
+  /// **'It moves to Recently deleted (Settings > Project folders), where you can restore it with its notes, to-dos and work time for 30 days. Its files on disk aren\'t touched.'**
+  String get deleteProjectBody;
+
+  /// No description provided for @deleteProjectStillScanned.
+  ///
+  /// In en, this message translates to:
+  /// **'Its file is inside one of this profile\'s project folders, so the next scan would add it back as a new, empty project.'**
+  String get deleteProjectStillScanned;
+
+  /// No description provided for @deleteProjectStopScanningFolder.
+  ///
+  /// In en, this message translates to:
+  /// **'Also stop scanning its folder'**
+  String get deleteProjectStopScanningFolder;
+
+  /// No description provided for @deleteProjectStopScanningFile.
+  ///
+  /// In en, this message translates to:
+  /// **'Also stop scanning this file'**
+  String get deleteProjectStopScanningFile;
+
+  /// No description provided for @projectMovedToRecentlyDeleted.
+  ///
+  /// In en, this message translates to:
+  /// **'\"{name}\" moved to Recently deleted.'**
+  String projectMovedToRecentlyDeleted(String name);
+
+  /// No description provided for @recentlyDeletedTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Recently deleted'**
+  String get recentlyDeletedTitle;
+
+  /// No description provided for @recentlyDeletedSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Projects deleted from this profile stay here for 30 days, with their notes, to-dos and work time. Their files on disk are never touched.'**
+  String get recentlyDeletedSubtitle;
+
+  /// No description provided for @recentlyDeletedNothing.
+  ///
+  /// In en, this message translates to:
+  /// **'Nothing here.'**
+  String get recentlyDeletedNothing;
+
+  /// No description provided for @recentlyDeletedWhen.
+  ///
+  /// In en, this message translates to:
+  /// **'Deleted {when}'**
+  String recentlyDeletedWhen(String when);
+
+  /// No description provided for @recentlyDeletedExpires.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =1{gone for good in 1 day} other{gone for good in {count} days}}'**
+  String recentlyDeletedExpires(int count);
+
+  /// No description provided for @recentlyDeletedRestore.
+  ///
+  /// In en, this message translates to:
+  /// **'Restore'**
+  String get recentlyDeletedRestore;
+
+  /// No description provided for @recentlyDeletedDeleteForever.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete forever'**
+  String get recentlyDeletedDeleteForever;
+
+  /// No description provided for @recentlyDeletedEmptyAll.
+  ///
+  /// In en, this message translates to:
+  /// **'Empty'**
+  String get recentlyDeletedEmptyAll;
+
+  /// No description provided for @emptyRecentlyDeletedTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Empty Recently deleted?'**
+  String get emptyRecentlyDeletedTitle;
+
+  /// No description provided for @emptyRecentlyDeletedBody.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =1{1 project will be deleted for good, with its notes, to-dos and work time. Its files on disk aren\'t touched.} other{{count} projects will be deleted for good, with their notes, to-dos and work time. Their files on disk aren\'t touched.}}'**
+  String emptyRecentlyDeletedBody(int count);
+
+  /// No description provided for @deleteForeverTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete \"{name}\" for good?'**
+  String deleteForeverTitle(String name);
+
+  /// No description provided for @deleteForeverBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Its notes, to-dos and work time will be gone. Its files on disk aren\'t touched.'**
+  String get deleteForeverBody;
+
+  /// No description provided for @projectRestored.
+  ///
+  /// In en, this message translates to:
+  /// **'\"{name}\" restored.'**
+  String projectRestored(String name);
+
+  /// No description provided for @projectRestoredReplacingRescan.
+  ///
+  /// In en, this message translates to:
+  /// **'\"{name}\" restored, in place of the empty copy a scan had added since.'**
+  String projectRestoredReplacingRescan(String name);
+
+  /// No description provided for @scanFolderOverlapTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Another profile already scans this'**
+  String get scanFolderOverlapTitle;
+
+  /// No description provided for @scanFolderOverlapSame.
+  ///
+  /// In en, this message translates to:
+  /// **'{profile} scans this very folder.'**
+  String scanFolderOverlapSame(String profile);
+
+  /// No description provided for @scanFolderOverlapInside.
+  ///
+  /// In en, this message translates to:
+  /// **'{profile} scans {path}, which holds this folder.'**
+  String scanFolderOverlapInside(String profile, String path);
+
+  /// No description provided for @scanFolderOverlapContains.
+  ///
+  /// In en, this message translates to:
+  /// **'{profile} scans {path}, inside this folder.'**
+  String scanFolderOverlapContains(String profile, String path);
+
+  /// No description provided for @scanFolderOverlapBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Each profile keeps its own copy of every project it finds, so these would appear in both, with separate notes, to-dos and work time. To give a song to another profile, use \"Move to profile…\" on it instead.'**
+  String get scanFolderOverlapBody;
+
+  /// No description provided for @scanFolderOverlapAddAnyway.
+  ///
+  /// In en, this message translates to:
+  /// **'Add anyway'**
+  String get scanFolderOverlapAddAnyway;
+
+  /// No description provided for @moveToProfileMenu.
+  ///
+  /// In en, this message translates to:
+  /// **'Move to profile…'**
+  String get moveToProfileMenu;
+
+  /// No description provided for @moveToProfileTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Move \"{name}\" to another profile'**
+  String moveToProfileTitle(String name);
+
+  /// No description provided for @moveToProfileVersions.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =1{Its version moves with it, as one song.} other{All {count} versions move together, as one song.}}'**
+  String moveToProfileVersions(int count);
+
+  /// No description provided for @moveToProfileTarget.
+  ///
+  /// In en, this message translates to:
+  /// **'Profile'**
+  String get moveToProfileTarget;
+
+  /// No description provided for @moveToProfileKeepFiles.
+  ///
+  /// In en, this message translates to:
+  /// **'Keep its files where they are'**
+  String get moveToProfileKeepFiles;
+
+  /// No description provided for @moveToProfileKeepFilesHint.
+  ///
+  /// In en, this message translates to:
+  /// **'{profile} stops scanning {path}, so it doesn\'t come back there.'**
+  String moveToProfileKeepFilesHint(String profile, String path);
+
+  /// No description provided for @moveToProfileKeepFilesHintUnscanned.
+  ///
+  /// In en, this message translates to:
+  /// **'Nothing on disk changes.'**
+  String get moveToProfileKeepFilesHintUnscanned;
+
+  /// No description provided for @moveToProfileMoveFiles.
+  ///
+  /// In en, this message translates to:
+  /// **'Move its files too'**
+  String get moveToProfileMoveFiles;
+
+  /// No description provided for @moveToProfileInto.
+  ///
+  /// In en, this message translates to:
+  /// **'Into:'**
+  String get moveToProfileInto;
+
+  /// No description provided for @moveToProfileOtherFolder.
+  ///
+  /// In en, this message translates to:
+  /// **'Other folder…'**
+  String get moveToProfileOtherFolder;
+
+  /// No description provided for @moveToProfileNoFolder.
+  ///
+  /// In en, this message translates to:
+  /// **'This profile has no project folders yet: pick a folder.'**
+  String get moveToProfileNoFolder;
+
+  /// No description provided for @moveToProfileSize.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =1{About 1 file ({size}) is copied, checked, then removed from where it is now.} other{About {count} files ({size}) are copied, checked, then removed from where they are now.}}'**
+  String moveToProfileSize(int count, String size);
+
+  /// No description provided for @moveToProfileCantMoveFiles.
+  ///
+  /// In en, this message translates to:
+  /// **'Its versions are in several folders, so their files can\'t move as one.'**
+  String get moveToProfileCantMoveFiles;
+
+  /// No description provided for @moveToProfileReleases.
+  ///
+  /// In en, this message translates to:
+  /// **'It comes off {releases} in {profile}.'**
+  String moveToProfileReleases(String profile, String releases);
+
+  /// No description provided for @moveToProfileConfirm.
+  ///
+  /// In en, this message translates to:
+  /// **'Move'**
+  String get moveToProfileConfirm;
+
+  /// No description provided for @moveToProfileNoOtherProfiles.
+  ///
+  /// In en, this message translates to:
+  /// **'There\'s no other profile to move it to.'**
+  String get moveToProfileNoOtherProfiles;
+
+  /// No description provided for @moveToProfileInSession.
+  ///
+  /// In en, this message translates to:
+  /// **'End the work session on it first.'**
+  String get moveToProfileInSession;
+
+  /// No description provided for @moveToProfileMoving.
+  ///
+  /// In en, this message translates to:
+  /// **'Moving files…'**
+  String get moveToProfileMoving;
+
+  /// No description provided for @moveToProfileDone.
+  ///
+  /// In en, this message translates to:
+  /// **'Moved \"{name}\" to {profile}.'**
+  String moveToProfileDone(String name, String profile);
+
+  /// No description provided for @moveToProfileBlockedArchived.
+  ///
+  /// In en, this message translates to:
+  /// **'It is archived: restore it from its archive first.'**
+  String get moveToProfileBlockedArchived;
+
+  /// No description provided for @moveToProfileBlockedTargetCopy.
+  ///
+  /// In en, this message translates to:
+  /// **'{profile} already has this song, with notes or to-dos of its own. Nothing was moved.'**
+  String moveToProfileBlockedTargetCopy(String profile);
+
+  /// No description provided for @moveToProfileBlockedSourceMissing.
+  ///
+  /// In en, this message translates to:
+  /// **'Its files aren\'t on this computer.'**
+  String get moveToProfileBlockedSourceMissing;
+
+  /// No description provided for @moveToProfileBlockedOccupied.
+  ///
+  /// In en, this message translates to:
+  /// **'Something with that name is already in {path}. Nothing was moved.'**
+  String moveToProfileBlockedOccupied(String path);
+
+  /// No description provided for @moveToProfileBlockedInsideSource.
+  ///
+  /// In en, this message translates to:
+  /// **'That folder is inside the song\'s own folder.'**
+  String get moveToProfileBlockedInsideSource;
+
+  /// No description provided for @moveToProfileBlockedSameLocation.
+  ///
+  /// In en, this message translates to:
+  /// **'Its files are already there.'**
+  String get moveToProfileBlockedSameLocation;
+
+  /// No description provided for @moveToProfileCopyFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'The copy didn\'t match the original, so nothing was removed or moved:'**
+  String get moveToProfileCopyFailed;
+
+  /// No description provided for @foldersProfilePickerLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Profile'**
+  String get foldersProfilePickerLabel;
+
+  /// No description provided for @foldersProfileActive.
+  ///
+  /// In en, this message translates to:
+  /// **'{name} (active)'**
+  String foldersProfileActive(String name);
+
+  /// No description provided for @foldersEditingOtherProfile.
+  ///
+  /// In en, this message translates to:
+  /// **'You\'re editing {name}\'s folders, not the active profile\'s. New files in them show up the next time you switch to {name}.'**
+  String foldersEditingOtherProfile(String name);
 }
 
 class _AppLocalizationsDelegate

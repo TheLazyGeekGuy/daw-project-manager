@@ -533,11 +533,11 @@ class AppLocalizationsJa extends AppLocalizations {
 
   @override
   String deleteMissingProjectsConfirm(int count, String plural) {
-    return 'このマシンでファイルが見つからなかった$count件のプロジェクト$pluralは、すべてのメモ、締切、セッション履歴とともに完全に削除されます。この操作は元に戻せません。';
+    return 'このマシンでファイルが見つからなかった$count件のプロジェクト$pluralは「最近削除した項目」（設定 > プロジェクトフォルダ）に移動し、30日間はメモ、締切、セッション履歴ごと復元できます。';
   }
 
   @override
-  String get deleteMissingProjectsConfirmButton => '完全に削除';
+  String get deleteMissingProjectsConfirmButton => '削除';
 
   @override
   String missingProjectsDeleted(int count, String plural) {
@@ -2632,7 +2632,7 @@ class AppLocalizationsJa extends AppLocalizations {
   String get trayNeverBackedUp => 'バックアップはまだありません';
 
   @override
-  String get trayBackupNow => '今すぐバックアップ';
+  String get trayBackupNow => '今すぐ同期';
 
   @override
   String get trayPauseSession => 'セッションを一時停止';
@@ -7093,5 +7093,638 @@ class AppLocalizationsJa extends AppLocalizations {
   @override
   String samplePackRenameExample(String name) {
     return '例: $name';
+  }
+
+  @override
+  String get driveAgoJustNow => 'たった今';
+
+  @override
+  String driveAgoMinutes(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count分前',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String driveAgoHours(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count時間前',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get driveSyncIntro =>
+      'プロジェクト、メモ、リリースをすべてのデバイスで同じ状態に保ちます。データはあなた自身のGoogleドライブ内のフォルダに保存されます。';
+
+  @override
+  String get driveWaitingForBrowser => 'ブラウザでサインインを完了してください…';
+
+  @override
+  String get driveThisDevice => 'このデバイス';
+
+  @override
+  String driveThisDeviceSynced(String when) {
+    return 'このデバイスの同期: $when';
+  }
+
+  @override
+  String get driveThisDeviceNeverSynced => 'このデバイスはまだ同期されていません';
+
+  @override
+  String driveUpdatedFrom(String when, String device) {
+    return 'ドライブの更新: $when（$device）';
+  }
+
+  @override
+  String driveUpdatedAt(String when) {
+    return 'ドライブの更新: $when';
+  }
+
+  @override
+  String get driveNoBackupYet => 'Googleドライブにはまだ何もありません';
+
+  @override
+  String driveNewerBanner(String device) {
+    return '$device にはこのデバイスにまだない変更がドライブにあります。同期して取り込みましょう。';
+  }
+
+  @override
+  String get driveNewerBannerNoDevice =>
+      'ドライブにこのデバイスにまだない変更があります。同期して取り込みましょう。';
+
+  @override
+  String get driveSyncNow => '今すぐ同期';
+
+  @override
+  String get driveSyncNowHint =>
+      '同期すると、ドライブの内容を取り込んでから、このデバイスの変更をアップロードします。いずれかのデバイスで意図的に削除したもの以外は削除されません。';
+
+  @override
+  String get driveSyncing => '同期中…';
+
+  @override
+  String get driveSyncingTitle => 'Googleドライブと同期中';
+
+  @override
+  String driveSyncedSummary(int added, int updated, int removed) {
+    return '同期しました: 新規 $added、更新 $updated、削除 $removed。';
+  }
+
+  @override
+  String get driveSyncedNothingNew => '同期しました。すべて最新の状態でした。';
+
+  @override
+  String get driveOperationCancelled => 'キャンセルしました。';
+
+  @override
+  String driveFilesFailedToUpload(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count 件のファイルをアップロードできませんでした:',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String driveLastSyncFailed(String when) {
+    return '前回の同期に失敗しました（$when）';
+  }
+
+  @override
+  String get driveErrorOffline =>
+      'Googleドライブに接続できませんでした。インターネット接続を確認して、もう一度お試しください。';
+
+  @override
+  String get driveErrorSignInExpired => 'Googleドライブに再度サインインする必要があります。';
+
+  @override
+  String get driveErrorDriveFull =>
+      'Googleドライブの容量がいっぱいです。同期を続けるには空き容量を確保してください。';
+
+  @override
+  String get driveErrorNoBackup => 'Googleドライブにはまだバックアップがありません。';
+
+  @override
+  String get driveErrorOther => '同期が完了しませんでした。';
+
+  @override
+  String driveSignInPortInUse(String port) {
+    return 'サインインを開始できません: 別のプログラムがポート $port を使用しています。他の DAW Project Manager を閉じてから、もう一度お試しください。';
+  }
+
+  @override
+  String get driveSignInTimedOut => 'サインインに時間がかかりすぎました。もう一度お試しください。';
+
+  @override
+  String get driveSignInNoBrowser => 'サインイン用のブラウザを開けませんでした。';
+
+  @override
+  String get driveBrowserSignedInTitle => 'サインインしました';
+
+  @override
+  String get driveBrowserSignedInBody =>
+      'このタブを閉じて DAW Project Manager に戻ってください。';
+
+  @override
+  String get driveBrowserCancelledTitle => 'サインインがキャンセルされました';
+
+  @override
+  String get driveBrowserCancelledBody =>
+      'このタブを閉じて、DAW Project Manager からもう一度お試しください。';
+
+  @override
+  String get driveBrowserErrorTitle => '問題が発生しました';
+
+  @override
+  String get driveBrowserErrorBody =>
+      'このタブを閉じて、DAW Project Manager から再度サインインしてください。';
+
+  @override
+  String get driveAutoSyncTitle => '自動同期';
+
+  @override
+  String get driveAutoSyncDescription => 'アプリを開いている間、選んだ間隔でGoogleドライブと同期します。';
+
+  @override
+  String get driveAutoSyncIntervalLabel => '自動同期';
+
+  @override
+  String driveNextSync(String when) {
+    return '次回の同期: $when';
+  }
+
+  @override
+  String get driveMoreOptions => '復元とその他のオプション';
+
+  @override
+  String get driveRestoreFromDrive => 'ドライブの変更だけを取り込む';
+
+  @override
+  String get driveRestoreFromDriveHint => '何もアップロードせずに、このデバイスを最新の状態にします。';
+
+  @override
+  String get driveRecoverEarlier => '以前のバックアップから復元';
+
+  @override
+  String driveRecoverEarlierHint(int count) {
+    return 'ドライブには直近 $count 件のバックアップが保存されます。復元すると不足分が追加されますが、その後の編集は元に戻りません。';
+  }
+
+  @override
+  String get driveOverwrite => 'ドライブのコピーをこのデバイスの内容で置き換える';
+
+  @override
+  String get driveOverwriteHint =>
+      'ドライブはこのデバイスとまったく同じ内容になります。置き換えられたコピーは以前のバックアップとして保存されます。';
+
+  @override
+  String get driveDeleteData => 'Googleドライブからデータを削除';
+
+  @override
+  String get driveDeleteDataHint =>
+      'ドライブからバックアップ、プレビュー曲、画像、以前のバックアップを削除します。このデバイスのデータはすべて残ります。';
+
+  @override
+  String get driveMergeTitle => 'ドライブの変更を取り込みますか？';
+
+  @override
+  String get driveMergeConfirm => '取り込む';
+
+  @override
+  String get driveMergeNothing => 'このデバイスにとって新しい内容はドライブにありません。';
+
+  @override
+  String get driveMergeKeepsLocal => 'このデバイスのそれ以外の内容は変わらず、ドライブより新しい編集は保持されます。';
+
+  @override
+  String driveMergeAdds(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '新しいプロジェクト $count 件',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String driveMergeUpdates(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '更新されるプロジェクト $count 件',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String driveMergeRemoves(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '削除されるプロジェクト $count 件（別のデバイスで削除済み）',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String driveMergeReleases(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '新しいリリース $count 件',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String driveMergeReleasesRemoved(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '削除されるリリース $count 件（別のデバイスで削除済み）',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get driveRecoverTitle => '以前のバックアップ';
+
+  @override
+  String get driveNoSnapshots =>
+      '以前のバックアップはまだありません。同期でドライブのバックアップが置き換えられるたびに1つ保存されます。';
+
+  @override
+  String driveSnapshotItem(String when, String device) {
+    return '$when · $device';
+  }
+
+  @override
+  String get driveRecoverConfirmTitle => 'このバックアップを復元しますか？';
+
+  @override
+  String get driveRecoverConfirm => '復元';
+
+  @override
+  String get driveOverwriteTitle => 'ドライブのコピーを置き換えますか？';
+
+  @override
+  String get driveOverwriteBody =>
+      '別のデバイスで追加したプロジェクトなど、このデバイスにないドライブ上の内容はドライブから消えます。現在のコピーは以前のバックアップとして保存されるので、後から復元できます。';
+
+  @override
+  String get driveOverwriteConfirm => '置き換える';
+
+  @override
+  String get driveDeleteTitle => 'Googleドライブからデータを削除しますか？';
+
+  @override
+  String get driveDeleteBody =>
+      'GoogleドライブからDAW Project Managerのフォルダを完全に削除します（バックアップ、プレビュー曲、画像、以前のバックアップを含む）。このデバイスのデータは残ります。自動同期はオフになります。';
+
+  @override
+  String get driveDeleteConfirm => 'ドライブから削除';
+
+  @override
+  String get driveDeleted => 'Googleドライブからデータを削除しました。自動同期はオフになっています。';
+
+  @override
+  String get driveSignOutTitle => 'Googleドライブからサインアウトしますか？';
+
+  @override
+  String get driveSignOutBody =>
+      'データはGoogleドライブとこのデバイスに残ります。再度サインインするまで自動同期は停止します。';
+
+  @override
+  String get driveFoundBackupTitle => 'Googleドライブにバックアップが見つかりました';
+
+  @override
+  String get driveFoundBackupBody => '今すぐ同期すると、このデバイスに取り込み、ここにある内容も追加します。';
+
+  @override
+  String get driveFirstUploadTitle => 'Googleドライブにはまだ何もありません';
+
+  @override
+  String get driveFirstUploadBody =>
+      '今すぐ同期すると、このデバイスのライブラリをアップロードし、デバイス間で揃えられるようになります。';
+
+  @override
+  String driveUploadEstimate(int count, String size) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '約 $count 件のファイル（$size）がアップロードされます。',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get driveKeepInSyncAutomatically => 'このデバイスを自動的に同期する（1時間ごと）';
+
+  @override
+  String get driveLater => '後で';
+
+  @override
+  String get driveStatusSyncing => 'Googleドライブと同期中…';
+
+  @override
+  String get driveStatusFailed => '前回のGoogleドライブ同期に失敗しました';
+
+  @override
+  String get driveStatusNewer => 'Googleドライブに新しい変更があります';
+
+  @override
+  String get driveStatusUpToDate => 'Googleドライブ: 最新';
+
+  @override
+  String trayLastSyncFailed(String when) {
+    return '前回の同期に失敗: $when';
+  }
+
+  @override
+  String get driveSyncOnStartup => 'アプリ起動時に同期';
+
+  @override
+  String get driveSyncOnStartupHint => 'アプリを開くたびに、他のデバイスでの変更を取り込みます。';
+
+  @override
+  String get driveAlreadyInSync => 'このデバイスとGoogleドライブはすでに一致しています。同期するものはありません。';
+
+  @override
+  String get driveFromDrive => 'Googleドライブから';
+
+  @override
+  String get driveFromThisDevice => 'このデバイスから';
+
+  @override
+  String driveUploadProjects(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'ここで追加・変更されたプロジェクト $count 件',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String driveUploadReleases(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'ここで追加されたリリース $count 件',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String drivePreviewLineWithNames(String line, String names) {
+    return '$line：$names';
+  }
+
+  @override
+  String driveNamesAndMore(String names, int count) {
+    return '$names ほか $count 件';
+  }
+
+  @override
+  String get deleteProjectMenu => '削除…';
+
+  @override
+  String deleteProjectTitle(String name) {
+    return '「$name」を削除しますか？';
+  }
+
+  @override
+  String get deleteProjectBody =>
+      '「最近削除した項目」（設定 > プロジェクトフォルダ）に移動し、30日間はメモ、ToDo、作業時間ごと復元できます。ディスク上のファイルには触れません。';
+
+  @override
+  String get deleteProjectStillScanned =>
+      'このファイルはこのプロファイルのプロジェクトフォルダ内にあるため、次回のスキャンで新しい空のプロジェクトとして再び追加されます。';
+
+  @override
+  String get deleteProjectStopScanningFolder => 'このフォルダのスキャンも停止する';
+
+  @override
+  String get deleteProjectStopScanningFile => 'このファイルのスキャンも停止する';
+
+  @override
+  String projectMovedToRecentlyDeleted(String name) {
+    return '「$name」を「最近削除した項目」に移動しました。';
+  }
+
+  @override
+  String get recentlyDeletedTitle => '最近削除した項目';
+
+  @override
+  String get recentlyDeletedSubtitle =>
+      'このプロファイルから削除したプロジェクトは、メモ、ToDo、作業時間ごと30日間ここに残ります。ディスク上のファイルには一切触れません。';
+
+  @override
+  String get recentlyDeletedNothing => 'ここには何もありません。';
+
+  @override
+  String recentlyDeletedWhen(String when) {
+    return '削除: $when';
+  }
+
+  @override
+  String recentlyDeletedExpires(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'あと$count日で完全に削除',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get recentlyDeletedRestore => '復元';
+
+  @override
+  String get recentlyDeletedDeleteForever => '完全に削除';
+
+  @override
+  String get recentlyDeletedEmptyAll => '空にする';
+
+  @override
+  String get emptyRecentlyDeletedTitle => '「最近削除した項目」を空にしますか？';
+
+  @override
+  String emptyRecentlyDeletedBody(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count件のプロジェクトが、メモ、ToDo、作業時間ごと完全に削除されます。ディスク上のファイルには触れません。',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String deleteForeverTitle(String name) {
+    return '「$name」を完全に削除しますか？';
+  }
+
+  @override
+  String get deleteForeverBody => 'メモ、ToDo、作業時間は失われます。ディスク上のファイルには触れません。';
+
+  @override
+  String projectRestored(String name) {
+    return '「$name」を復元しました。';
+  }
+
+  @override
+  String projectRestoredReplacingRescan(String name) {
+    return '「$name」を復元しました（その後スキャンで追加された空のコピーと置き換えました）。';
+  }
+
+  @override
+  String get scanFolderOverlapTitle => '別のプロファイルがすでにスキャンしています';
+
+  @override
+  String scanFolderOverlapSame(String profile) {
+    return '$profile がまさにこのフォルダをスキャンしています。';
+  }
+
+  @override
+  String scanFolderOverlapInside(String profile, String path) {
+    return '$profile はこのフォルダを含む $path をスキャンしています。';
+  }
+
+  @override
+  String scanFolderOverlapContains(String profile, String path) {
+    return '$profile はこのフォルダ内の $path をスキャンしています。';
+  }
+
+  @override
+  String get scanFolderOverlapBody =>
+      'プロファイルごとに見つけたプロジェクトのコピーを別々に持つため、これらは両方に表示され、メモ、ToDo、作業時間も別々になります。曲を別のプロファイルに渡すには、代わりに「プロファイルへ移動…」を使ってください。';
+
+  @override
+  String get scanFolderOverlapAddAnyway => 'それでも追加';
+
+  @override
+  String get moveToProfileMenu => 'プロファイルへ移動…';
+
+  @override
+  String moveToProfileTitle(String name) {
+    return '「$name」を別のプロファイルへ移動';
+  }
+
+  @override
+  String moveToProfileVersions(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count 個のバージョンすべてが1曲としてまとめて移動します。',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get moveToProfileTarget => 'プロファイル';
+
+  @override
+  String get moveToProfileKeepFiles => 'ファイルは今の場所のまま';
+
+  @override
+  String moveToProfileKeepFilesHint(String profile, String path) {
+    return '$profile は $path のスキャンをやめるので、そちらに戻ってきません。';
+  }
+
+  @override
+  String get moveToProfileKeepFilesHintUnscanned => 'ディスク上は何も変わりません。';
+
+  @override
+  String get moveToProfileMoveFiles => 'ファイルも移動する';
+
+  @override
+  String get moveToProfileInto => '移動先:';
+
+  @override
+  String get moveToProfileOtherFolder => '別のフォルダ…';
+
+  @override
+  String get moveToProfileNoFolder =>
+      'このプロファイルにはまだプロジェクトフォルダがありません。フォルダを選んでください。';
+
+  @override
+  String moveToProfileSize(int count, String size) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '約 $count 件のファイル（$size）をコピーして確認してから、元の場所から削除します。',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get moveToProfileCantMoveFiles =>
+      'バージョンが複数のフォルダにあるため、ファイルをまとめて移動できません。';
+
+  @override
+  String moveToProfileReleases(String profile, String releases) {
+    return '$profile の $releases から外れます。';
+  }
+
+  @override
+  String get moveToProfileConfirm => '移動';
+
+  @override
+  String get moveToProfileNoOtherProfiles => '移動先となる他のプロファイルがありません。';
+
+  @override
+  String get moveToProfileInSession => '先にこのプロジェクトの作業セッションを終了してください。';
+
+  @override
+  String get moveToProfileMoving => 'ファイルを移動しています…';
+
+  @override
+  String moveToProfileDone(String name, String profile) {
+    return '「$name」を $profile に移動しました。';
+  }
+
+  @override
+  String get moveToProfileBlockedArchived => 'アーカイブ済みです。先にアーカイブから復元してください。';
+
+  @override
+  String moveToProfileBlockedTargetCopy(String profile) {
+    return '$profile にはすでにこの曲があり、独自のメモや ToDo があります。何も移動していません。';
+  }
+
+  @override
+  String get moveToProfileBlockedSourceMissing => 'ファイルがこのコンピュータにありません。';
+
+  @override
+  String moveToProfileBlockedOccupied(String path) {
+    return '$path に同じ名前のものがすでにあります。何も移動していません。';
+  }
+
+  @override
+  String get moveToProfileBlockedInsideSource => 'そのフォルダは曲自身のフォルダの中にあります。';
+
+  @override
+  String get moveToProfileBlockedSameLocation => 'ファイルはすでにそこにあります。';
+
+  @override
+  String get moveToProfileCopyFailed => 'コピーが元のファイルと一致しなかったため、何も削除・移動していません:';
+
+  @override
+  String get foldersProfilePickerLabel => 'プロファイル';
+
+  @override
+  String foldersProfileActive(String name) {
+    return '$name（使用中）';
+  }
+
+  @override
+  String foldersEditingOtherProfile(String name) {
+    return '有効なプロファイルではなく、$name のフォルダを編集しています。その中の新しいファイルは、次に $name に切り替えたときに表示されます。';
   }
 }

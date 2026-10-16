@@ -145,12 +145,12 @@ void main() {
       expect(calls.single.releases, isEmpty);
     });
 
-    test('deleteProjectsPermanently reschedules without the deleted project',
+    test('deleteProjects reschedules without the deleted project',
         () async {
       final repo = await recordingRepository();
       await repo.projectsBox.put('p1', TestFactories.makeProject(id: 'p1'));
 
-      await repo.deleteProjectsPermanently(['p1']);
+      await repo.deleteProjects(['p1']);
 
       expect(calls.single.projects, isEmpty);
     });
@@ -1093,7 +1093,7 @@ void main() {
     });
   });
 
-  group('ProjectRepository.deleteProjectsPermanently', () {
+  group('ProjectRepository.deleteProjects', () {
     // Scans used to auto-prune a project the moment its file went missing
     // (removeOrphanedProjectsFromRoot / clearMissingFiles) — including, in
     // clearMissingFiles's case, projects still referenced by a Release, with
@@ -1107,7 +1107,7 @@ void main() {
       await repo.updateProject(TestFactories.makeProject(id: 'a'));
       await repo.updateProject(TestFactories.makeProject(id: 'b'));
 
-      await repo.deleteProjectsPermanently(['a']);
+      await repo.deleteProjects(['a']);
 
       expect(repo.getById('a'), isNull);
       expect(repo.getById('b'), isNotNull);
@@ -1125,7 +1125,7 @@ void main() {
           Release(id: 'r1', title: 'EP', trackIds: ['tracked']),
         );
 
-        await repo.deleteProjectsPermanently(['tracked']);
+        await repo.deleteProjects(['tracked']);
 
         expect(repo.getById('tracked'), isNull);
       },
@@ -1135,7 +1135,7 @@ void main() {
       final repo = await HiveTestHelper.createRepository();
       await repo.updateProject(TestFactories.makeProject(id: 'a'));
 
-      await repo.deleteProjectsPermanently([]);
+      await repo.deleteProjects([]);
 
       expect(repo.getById('a'), isNotNull);
     });
@@ -1144,7 +1144,7 @@ void main() {
       final repo = await HiveTestHelper.createRepository();
       await repo.updateProject(TestFactories.makeProject(id: 'a'));
 
-      await repo.deleteProjectsPermanently(['a', 'does-not-exist']);
+      await repo.deleteProjects(['a', 'does-not-exist']);
 
       expect(repo.getById('a'), isNull);
     });

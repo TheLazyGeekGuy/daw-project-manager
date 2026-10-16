@@ -75,10 +75,13 @@ class TrayService with TrayListener {
     final project = _container.read(activeProjectProvider);
     final paused = _container.read(workTimerPausedProvider);
 
-    DateTime? lastUpload;
+    DateTime? lastSynced;
+    SyncFailure? failure;
     if (GoogleDriveSyncService.isSupported) {
       try {
-        lastUpload = await _syncService.getLastBackupUploadTimestamp();
+        lastSynced = await _syncService.getLastSyncedAt() ??
+            await _syncService.getLastBackupUploadTimestamp();
+        failure = await _syncService.getLastFailure();
       } catch (_) {}
     }
 
@@ -92,9 +95,11 @@ class TrayService with TrayListener {
         MenuItem.separator(),
         MenuItem(
           key: 'backup_status',
-          label: lastUpload != null
-              ? l10n.trayLastBackup(formatLastBackupLabel(lastUpload))
-              : l10n.trayNeverBackedUp,
+          label: failure != null
+              ? l10n.trayLastSyncFailed(formatLastBackupLabel(failure.at))
+              : lastSynced != null
+                  ? l10n.trayLastBackup(formatLastBackupLabel(lastSynced))
+                  : l10n.trayNeverBackedUp,
           disabled: true,
         ),
         MenuItem(
@@ -124,17 +129,17 @@ class TrayService with TrayListener {
     await windowManager.focus();
   }
 
+  /// The tray's "Sync now": the same merge-then-upload as everywhere else
+  /// (it used to overwrite Drive outright, ignoring the auto-detected
+  /// preview songs setting), reported on [driveSyncStatusProvider] so a
+  /// failure shows on the dashboard and in this menu's status line.
   Future<void> _runManualBackup() async {
     try {
-      final profileRepo = await _container.read(profileRepositoryProvider.future);
-      final projectRepo = await _container.read(repositoryProvider.future);
-      await _syncService.uploadDatabase(
-        projectRepo: projectRepo,
-        profileRepo: profileRepo,
-        uploadAutoDetectedSongs: false,
-      );
+      await _container.read(driveSyncStatusProvider.notifier).syncNow();
     } catch (e) {
-      if (kDebugMode) print('[TrayService] Manual backup failed: $e');
+      if (kDebugMode) print('[TrayService] Sync failed: $e');
+    } finally {
+      await _rebuildMenu();
     }
   }
 

@@ -291,7 +291,7 @@ void main() {
       await addProject(id: 'v3', filePath: path(['Music', 'A v3.als']));
       final stack = await repo.stackProjects(memberIds: ['v1', 'v2', 'v3']);
 
-      await repo.deleteProjectsPermanently(['v3']);
+      await repo.deleteProjects(['v3']);
 
       expect(repo.projectsBox.get(stack.id)!.memberProjectIds, ['v1', 'v2']);
     });
@@ -301,7 +301,7 @@ void main() {
       await addProject(id: 'v2', filePath: path(['Music', 'A v2.als']));
       final stack = await repo.stackProjects(memberIds: ['v1', 'v2']);
 
-      await repo.deleteProjectsPermanently(['v2']);
+      await repo.deleteProjects(['v2']);
 
       expect(repo.projectsBox.get(stack.id), isNull);
       expect(repo.projectsBox.get('v1')!.stackId, isNull);
@@ -312,7 +312,7 @@ void main() {
       await addProject(id: 'v2', filePath: path(['Music', 'A v2.als']));
       final stack = await repo.stackProjects(memberIds: ['v1', 'v2']);
 
-      await repo.deleteProjectsPermanently([stack.id]);
+      await repo.deleteProjects([stack.id]);
 
       expect(repo.projectsBox.get('v1')!.stackId, isNull);
       expect(repo.projectsBox.get('v2')!.stackId, isNull);

@@ -529,11 +529,11 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String deleteMissingProjectsConfirm(int count, String plural) {
-    return '在此设备上找不到文件的$count个项目$plural将被永久删除，包括所有备注、截止日期和会话历史。此操作无法撤销。';
+    return '在此设备上找不到文件的$count个项目$plural将移到“最近删除”（设置 > 项目文件夹），30 天内可连同备注、截止日期和会话历史一起恢复。';
   }
 
   @override
-  String get deleteMissingProjectsConfirmButton => '永久删除';
+  String get deleteMissingProjectsConfirmButton => '删除';
 
   @override
   String missingProjectsDeleted(int count, String plural) {
@@ -2606,7 +2606,7 @@ class AppLocalizationsZh extends AppLocalizations {
   String get trayNeverBackedUp => '尚未备份';
 
   @override
-  String get trayBackupNow => '立即备份';
+  String get trayBackupNow => '立即同步';
 
   @override
   String get trayPauseSession => '暂停会话';
@@ -7016,5 +7016,626 @@ class AppLocalizationsZh extends AppLocalizations {
   @override
   String samplePackRenameExample(String name) {
     return '示例：$name';
+  }
+
+  @override
+  String get driveAgoJustNow => '刚刚';
+
+  @override
+  String driveAgoMinutes(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count 分钟前',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String driveAgoHours(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count 小时前',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get driveSyncIntro =>
+      '让你的项目、笔记和发行在所有设备上保持一致。所有内容都保存在你自己的 Google 云端硬盘中的一个文件夹里。';
+
+  @override
+  String get driveWaitingForBrowser => '请在浏览器中完成登录…';
+
+  @override
+  String get driveThisDevice => '此设备';
+
+  @override
+  String driveThisDeviceSynced(String when) {
+    return '此设备上次同步：$when';
+  }
+
+  @override
+  String get driveThisDeviceNeverSynced => '此设备尚未同步';
+
+  @override
+  String driveUpdatedFrom(String when, String device) {
+    return '云端硬盘上次更新：$when（$device）';
+  }
+
+  @override
+  String driveUpdatedAt(String when) {
+    return '云端硬盘上次更新：$when';
+  }
+
+  @override
+  String get driveNoBackupYet => 'Google 云端硬盘中还没有内容';
+
+  @override
+  String driveNewerBanner(String device) {
+    return '$device 在云端硬盘上有此设备尚未包含的更改。同步即可获取。';
+  }
+
+  @override
+  String get driveNewerBannerNoDevice => '云端硬盘上有此设备尚未包含的更改。同步即可获取。';
+
+  @override
+  String get driveSyncNow => '立即同步';
+
+  @override
+  String get driveSyncNowHint =>
+      '同步会先获取云端硬盘上的内容，再上传此设备的更改。除了在某台设备上有意删除的内容外，不会删除任何东西。';
+
+  @override
+  String get driveSyncing => '正在同步…';
+
+  @override
+  String get driveSyncingTitle => '正在与 Google 云端硬盘同步';
+
+  @override
+  String driveSyncedSummary(int added, int updated, int removed) {
+    return '已同步：新增 $added，更新 $updated，移除 $removed。';
+  }
+
+  @override
+  String get driveSyncedNothingNew => '已同步。所有内容都已是最新。';
+
+  @override
+  String get driveOperationCancelled => '已取消。';
+
+  @override
+  String driveFilesFailedToUpload(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count 个文件无法上传：',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String driveLastSyncFailed(String when) {
+    return '上次同步失败（$when）';
+  }
+
+  @override
+  String get driveErrorOffline => '无法连接 Google 云端硬盘。请检查网络连接后重试。';
+
+  @override
+  String get driveErrorSignInExpired => 'Google 云端硬盘需要你重新登录。';
+
+  @override
+  String get driveErrorDriveFull => '你的 Google 云端硬盘已满。请释放空间以继续同步。';
+
+  @override
+  String get driveErrorNoBackup => 'Google 云端硬盘中还没有备份。';
+
+  @override
+  String get driveErrorOther => '同步未完成。';
+
+  @override
+  String driveSignInPortInUse(String port) {
+    return '无法开始登录：另一个程序正在使用端口 $port。请关闭其他 DAW Project Manager 窗口后重试。';
+  }
+
+  @override
+  String get driveSignInTimedOut => '登录超时。请重试。';
+
+  @override
+  String get driveSignInNoBrowser => '无法打开浏览器进行登录。';
+
+  @override
+  String get driveBrowserSignedInTitle => '已登录';
+
+  @override
+  String get driveBrowserSignedInBody => '你可以关闭此标签页并返回 DAW Project Manager。';
+
+  @override
+  String get driveBrowserCancelledTitle => '登录已取消';
+
+  @override
+  String get driveBrowserCancelledBody =>
+      '你可以关闭此标签页，然后在 DAW Project Manager 中重试。';
+
+  @override
+  String get driveBrowserErrorTitle => '出了点问题';
+
+  @override
+  String get driveBrowserErrorBody => '请关闭此标签页，然后在 DAW Project Manager 中重新登录。';
+
+  @override
+  String get driveAutoSyncTitle => '自动同步';
+
+  @override
+  String get driveAutoSyncDescription => '应用打开期间，按你选择的间隔与 Google 云端硬盘同步。';
+
+  @override
+  String get driveAutoSyncIntervalLabel => '自动同步';
+
+  @override
+  String driveNextSync(String when) {
+    return '下次同步：$when';
+  }
+
+  @override
+  String get driveMoreOptions => '恢复和其他选项';
+
+  @override
+  String get driveRestoreFromDrive => '仅获取云端硬盘的更改';
+
+  @override
+  String get driveRestoreFromDriveHint => '在不上传任何内容的情况下更新此设备。';
+
+  @override
+  String get driveRecoverEarlier => '从较早的备份恢复';
+
+  @override
+  String driveRecoverEarlierHint(int count) {
+    return '云端硬盘会保留最近 $count 个备份。恢复其中一个会补回缺少的内容，但不会撤销之后的编辑。';
+  }
+
+  @override
+  String get driveOverwrite => '用此设备替换云端硬盘上的副本';
+
+  @override
+  String get driveOverwriteHint => '云端硬盘将与此设备完全一致。被替换的副本会作为较早的备份保留。';
+
+  @override
+  String get driveDeleteData => '从 Google 云端硬盘删除我的数据';
+
+  @override
+  String get driveDeleteDataHint => '从云端硬盘中删除备份、预览歌曲、图片和较早的备份。此设备上的内容全部保留。';
+
+  @override
+  String get driveMergeTitle => '获取云端硬盘的更改？';
+
+  @override
+  String get driveMergeConfirm => '获取更改';
+
+  @override
+  String get driveMergeNothing => '云端硬盘上没有此设备没有的新内容。';
+
+  @override
+  String get driveMergeKeepsLocal => '此设备上的其他内容不会改变，比云端硬盘更新的编辑也会保留。';
+
+  @override
+  String driveMergeAdds(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count 个新项目',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String driveMergeUpdates(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count 个项目已更新',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String driveMergeRemoves(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '移除 $count 个项目（已在其他设备上删除）',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String driveMergeReleases(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count 个新发行',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String driveMergeReleasesRemoved(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '移除 $count 个发行（已在其他设备上删除）',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get driveRecoverTitle => '较早的备份';
+
+  @override
+  String get driveNoSnapshots => '还没有较早的备份。每次同步替换云端硬盘上的备份时都会保留一个。';
+
+  @override
+  String driveSnapshotItem(String when, String device) {
+    return '$when · $device';
+  }
+
+  @override
+  String get driveRecoverConfirmTitle => '恢复此备份？';
+
+  @override
+  String get driveRecoverConfirm => '恢复';
+
+  @override
+  String get driveOverwriteTitle => '替换云端硬盘上的副本？';
+
+  @override
+  String get driveOverwriteBody =>
+      '云端硬盘上有但此设备上没有的内容（例如在其他设备上添加的项目）将从云端硬盘中消失。当前副本会作为较早的备份保留，你仍可恢复。';
+
+  @override
+  String get driveOverwriteConfirm => '替换副本';
+
+  @override
+  String get driveDeleteTitle => '从 Google 云端硬盘删除你的数据？';
+
+  @override
+  String get driveDeleteBody =>
+      '这会从你的 Google 云端硬盘中永久删除 DAW Project Manager 文件夹，包括备份、预览歌曲、图片和较早的备份。此设备会保留自己的数据。自动同步将被关闭。';
+
+  @override
+  String get driveDeleteConfirm => '从云端硬盘删除';
+
+  @override
+  String get driveDeleted => '你的数据已从 Google 云端硬盘删除。自动同步现已关闭。';
+
+  @override
+  String get driveSignOutTitle => '退出 Google 云端硬盘？';
+
+  @override
+  String get driveSignOutBody => '你的数据会保留在 Google 云端硬盘和此设备上。在你重新登录之前，自动同步会停止。';
+
+  @override
+  String get driveFoundBackupTitle => '在 Google 云端硬盘上找到了备份';
+
+  @override
+  String get driveFoundBackupBody => '立即同步，将其导入此设备，并把此设备上的内容加入其中。';
+
+  @override
+  String get driveFirstUploadTitle => 'Google 云端硬盘中还没有内容';
+
+  @override
+  String get driveFirstUploadBody => '立即同步，上传此设备的资料库，让你的设备保持一致。';
+
+  @override
+  String driveUploadEstimate(int count, String size) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '大约会上传 $count 个文件（$size）。',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get driveKeepInSyncAutomatically => '自动保持此设备同步（每小时）';
+
+  @override
+  String get driveLater => '稍后';
+
+  @override
+  String get driveStatusSyncing => '正在与 Google 云端硬盘同步…';
+
+  @override
+  String get driveStatusFailed => '上次 Google 云端硬盘同步失败';
+
+  @override
+  String get driveStatusNewer => 'Google 云端硬盘上有新更改';
+
+  @override
+  String get driveStatusUpToDate => 'Google 云端硬盘：已是最新';
+
+  @override
+  String trayLastSyncFailed(String when) {
+    return '上次同步失败：$when';
+  }
+
+  @override
+  String get driveSyncOnStartup => '启动应用时同步';
+
+  @override
+  String get driveSyncOnStartupHint => '每次打开应用时，获取你在其他设备上所做的更改。';
+
+  @override
+  String get driveAlreadyInSync => '此设备与 Google 云端硬盘已经一致，没有需要同步的内容。';
+
+  @override
+  String get driveFromDrive => '来自 Google 云端硬盘';
+
+  @override
+  String get driveFromThisDevice => '来自此设备';
+
+  @override
+  String driveUploadProjects(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '在此添加或更改的项目 $count 个',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String driveUploadReleases(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '在此添加的发行 $count 个',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String drivePreviewLineWithNames(String line, String names) {
+    return '$line：$names';
+  }
+
+  @override
+  String driveNamesAndMore(String names, int count) {
+    return '$names 等另外 $count 个';
+  }
+
+  @override
+  String get deleteProjectMenu => '删除…';
+
+  @override
+  String deleteProjectTitle(String name) {
+    return '删除“$name”？';
+  }
+
+  @override
+  String get deleteProjectBody =>
+      '它会移到“最近删除”（设置 > 项目文件夹），30 天内可连同备注、待办和工作时间一起恢复。磁盘上的文件不会被改动。';
+
+  @override
+  String get deleteProjectStillScanned =>
+      '它的文件位于此配置文件的某个项目文件夹中，下次扫描会把它作为一个新的空项目重新添加。';
+
+  @override
+  String get deleteProjectStopScanningFolder => '同时停止扫描它的文件夹';
+
+  @override
+  String get deleteProjectStopScanningFile => '同时停止扫描此文件';
+
+  @override
+  String projectMovedToRecentlyDeleted(String name) {
+    return '“$name”已移到“最近删除”。';
+  }
+
+  @override
+  String get recentlyDeletedTitle => '最近删除';
+
+  @override
+  String get recentlyDeletedSubtitle =>
+      '从此配置文件删除的项目会连同备注、待办和工作时间在这里保留 30 天。磁盘上的文件永远不会被改动。';
+
+  @override
+  String get recentlyDeletedNothing => '这里没有内容。';
+
+  @override
+  String recentlyDeletedWhen(String when) {
+    return '删除于$when';
+  }
+
+  @override
+  String recentlyDeletedExpires(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count 天后永久删除',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get recentlyDeletedRestore => '恢复';
+
+  @override
+  String get recentlyDeletedDeleteForever => '永久删除';
+
+  @override
+  String get recentlyDeletedEmptyAll => '清空';
+
+  @override
+  String get emptyRecentlyDeletedTitle => '清空“最近删除”？';
+
+  @override
+  String emptyRecentlyDeletedBody(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count 个项目将连同备注、待办和工作时间被永久删除。磁盘上的文件不会被改动。',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String deleteForeverTitle(String name) {
+    return '永久删除“$name”？';
+  }
+
+  @override
+  String get deleteForeverBody => '它的备注、待办和工作时间将会消失。磁盘上的文件不会被改动。';
+
+  @override
+  String projectRestored(String name) {
+    return '已恢复“$name”。';
+  }
+
+  @override
+  String projectRestoredReplacingRescan(String name) {
+    return '已恢复“$name”，替换了之后扫描添加的空副本。';
+  }
+
+  @override
+  String get scanFolderOverlapTitle => '另一个配置文件已经在扫描这里';
+
+  @override
+  String scanFolderOverlapSame(String profile) {
+    return '$profile 正在扫描这个文件夹。';
+  }
+
+  @override
+  String scanFolderOverlapInside(String profile, String path) {
+    return '$profile 正在扫描包含此文件夹的 $path。';
+  }
+
+  @override
+  String scanFolderOverlapContains(String profile, String path) {
+    return '$profile 正在扫描此文件夹内的 $path。';
+  }
+
+  @override
+  String get scanFolderOverlapBody =>
+      '每个配置文件都会为找到的项目各保留一份副本，所以它们会同时出现在两边，备注、待办和工作时间各自独立。要把一首歌交给另一个配置文件，请改用“移动到配置文件…”。';
+
+  @override
+  String get scanFolderOverlapAddAnyway => '仍然添加';
+
+  @override
+  String get moveToProfileMenu => '移动到配置文件…';
+
+  @override
+  String moveToProfileTitle(String name) {
+    return '将“$name”移动到另一个配置文件';
+  }
+
+  @override
+  String moveToProfileVersions(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '全部 $count 个版本会作为一首歌一起移动。',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get moveToProfileTarget => '配置文件';
+
+  @override
+  String get moveToProfileKeepFiles => '文件保留在原处';
+
+  @override
+  String moveToProfileKeepFilesHint(String profile, String path) {
+    return '$profile 将停止扫描 $path，这样它不会再回到那里。';
+  }
+
+  @override
+  String get moveToProfileKeepFilesHintUnscanned => '磁盘上不会有任何改动。';
+
+  @override
+  String get moveToProfileMoveFiles => '同时移动文件';
+
+  @override
+  String get moveToProfileInto => '移到：';
+
+  @override
+  String get moveToProfileOtherFolder => '其他文件夹…';
+
+  @override
+  String get moveToProfileNoFolder => '此配置文件还没有项目文件夹：请选择一个文件夹。';
+
+  @override
+  String moveToProfileSize(int count, String size) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '大约 $count 个文件（$size）会先复制并校验，再从原位置删除。',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get moveToProfileCantMoveFiles => '它的版本分布在多个文件夹中，因此文件无法一起移动。';
+
+  @override
+  String moveToProfileReleases(String profile, String releases) {
+    return '它会从 $profile 的 $releases 中移除。';
+  }
+
+  @override
+  String get moveToProfileConfirm => '移动';
+
+  @override
+  String get moveToProfileNoOtherProfiles => '没有其他可以移动到的配置文件。';
+
+  @override
+  String get moveToProfileInSession => '请先结束它的工作会话。';
+
+  @override
+  String get moveToProfileMoving => '正在移动文件…';
+
+  @override
+  String moveToProfileDone(String name, String profile) {
+    return '已将“$name”移动到 $profile。';
+  }
+
+  @override
+  String get moveToProfileBlockedArchived => '它已归档：请先从归档中恢复。';
+
+  @override
+  String moveToProfileBlockedTargetCopy(String profile) {
+    return '$profile 已经有这首歌，并带有自己的备注或待办。没有移动任何内容。';
+  }
+
+  @override
+  String get moveToProfileBlockedSourceMissing => '它的文件不在这台电脑上。';
+
+  @override
+  String moveToProfileBlockedOccupied(String path) {
+    return '$path 中已有同名内容。没有移动任何内容。';
+  }
+
+  @override
+  String get moveToProfileBlockedInsideSource => '该文件夹位于这首歌自己的文件夹内。';
+
+  @override
+  String get moveToProfileBlockedSameLocation => '它的文件已经在那里了。';
+
+  @override
+  String get moveToProfileCopyFailed => '副本与原文件不一致，因此没有删除或移动任何内容：';
+
+  @override
+  String get foldersProfilePickerLabel => '配置文件';
+
+  @override
+  String foldersProfileActive(String name) {
+    return '$name（当前）';
+  }
+
+  @override
+  String foldersEditingOtherProfile(String name) {
+    return '你正在编辑 $name 的文件夹，而不是当前配置文件的。其中的新文件会在你下次切换到 $name 时出现。';
   }
 }

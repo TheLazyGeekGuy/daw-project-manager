@@ -31,6 +31,8 @@ import '../utils/version_stacks.dart';
 import 'midi_clip_store.dart';
 import 'midi_collection_store.dart';
 import 'profile_repository.dart';
+import 'project_trash.dart';
+import 'sync_tombstones.dart';
 import '../models/profile.dart';
 
 /// Replaces every pending deadline notification with the set planned from
@@ -71,6 +73,9 @@ class ProjectRepository {
   /// This profile's stored MIDI clips (see [MidiClipStore]). Written by every
   /// full-metadata extraction; deleted along with the project.
   late final MidiClipStore midiClips = MidiClipStore(profileId);
+
+  /// This profile's "Recently deleted" (see [deleteProjects]).
+  late final ProjectTrash trash = ProjectTrash(profileId);
 
   /// This profile's MIDI collections (see [MidiCollectionStore]). Copies, so
   /// deleting a project never touches them.
@@ -585,8 +590,7 @@ class ProjectRepository {
 
     // Delete all projects from this root (except those in releases)
     if (projectsToDelete.isNotEmpty) {
-      await projectsBox.deleteAll(projectsToDelete);
-      await midiClips.deleteAll(projectsToDelete);
+      await _trashAndDelete(projectsToDelete);
     }
 
     // Remove the root after deleting projects
@@ -628,18 +632,78 @@ class ProjectRepository {
     );
   }
 
-  /// Permanently deletes [projectIds] and all their data (notes, deadlines,
-  /// session/timer history, etc.) — irreversible. Scans never call this on
-  /// their own (see `upsertFromFileSystemEntity`): a project whose file goes
-  /// missing just stays in the list flagged missing (a live filesystem
-  /// check, done in the UI) until the user explicitly deletes it, e.g. via
-  /// the "Delete Missing" bulk action.
-  Future<void> deleteProjectsPermanently(Iterable<String> projectIds) async {
-    await projectsBox.deleteAll(projectIds);
-    await midiClips.deleteAll(projectIds);
+  /// Deletes [projectIds] from the library into "Recently deleted"
+  /// ([trash]), whole — notes, deadlines, to-dos, work time and MIDI clips —
+  /// where [restoreFromTrash] can put them back for [ProjectTrash.keepFor].
+  /// Scans never call this on their own (see `upsertFromFileSystemEntity`):
+  /// a project whose file goes missing just stays in the list flagged
+  /// missing until the user deletes it, e.g. via "Delete Missing".
+  Future<void> deleteProjects(Iterable<String> projectIds) async {
+    await _trashAndDelete(projectIds.toList());
     await cleanUpDanglingStackLinks();
     await rescheduleDeadlines();
   }
+
+  /// Every deletion of projects goes through here: kept in the trash, then
+  /// removed, then recorded so Drive sync carries the deletion instead of
+  /// restoring the rows.
+  Future<void> _trashAndDelete(List<String> ids) async {
+    if (ids.isEmpty) return;
+    final projects = [
+      for (final id in ids)
+        if (projectsBox.get(id) case final p?) p,
+    ];
+    final clips = <String, StoredMidiClips>{};
+    for (final project in projects) {
+      final c = await midiClips.get(project.id);
+      if (c != null) clips[project.id] = c;
+    }
+    await trash.add(projects, clips: clips);
+    await projectsBox.deleteAll(ids);
+    await midiClips.deleteAll(ids);
+    await SyncTombstoneStore.record(
+      TombstoneKind.project,
+      ids,
+      profileId: profileId,
+    );
+  }
+
+  /// Puts a project from "Recently deleted" back as it was, MIDI clips
+  /// included. It comes back as just changed, so it beats its own deletion
+  /// on every synced device too.
+  ///
+  /// A scan may have found its file again meanwhile and added a fresh row
+  /// for it, with nothing of the user's on it; that row gives way. Returns
+  /// whether one did.
+  Future<bool> restoreFromTrash(String id) async {
+    final trashed = await trash.get(id);
+    if (trashed == null) return false;
+    final project = trashed.project;
+    final target = p.normalize(project.filePath);
+    final rescanned = [
+      for (final other in projectsBox.values)
+        if (other.id != id && !other.isVirtual && p.normalize(other.filePath) == target)
+          other.id,
+    ];
+    if (rescanned.isNotEmpty) {
+      await projectsBox.deleteAll(rescanned);
+      await midiClips.deleteAll(rescanned);
+      await SyncTombstoneStore.record(
+        TombstoneKind.project,
+        rescanned,
+        profileId: profileId,
+      );
+    }
+    final clips = await trash.clipsOf(id);
+    await projectsBox.put(id, project.copyWith(updatedAt: DateTime.now()));
+    if (clips != null) await midiClips.put(id, clips);
+    await trash.remove([id]);
+    await rescheduleDeadlines();
+    return rescanned.isNotEmpty;
+  }
+
+  /// Removes projects from "Recently deleted" for good.
+  Future<void> deleteFromTrash(Iterable<String> ids) => trash.remove(ids);
 
   List<ScanRoot> getRoots() => rootsBox.values.toList(growable: false);
 
@@ -765,7 +829,10 @@ class ProjectRepository {
     for (final project in projectsBox.values) {
       try {
         final projectPath = p.normalize(project.filePath);
-        if (projectPath.startsWith(rootPathNormalized) ||
+        // The path itself counts too: an excluded file (not a folder) is
+        // the project it names.
+        if (projectPath == rootPath ||
+            projectPath.startsWith(rootPathNormalized) ||
             projectPath.startsWith(rootPath + p.separator)) {
           if (!protectedProjectIds.contains(project.id)) {
             projectsToDelete.add(project.id);
@@ -777,8 +844,7 @@ class ProjectRepository {
     }
 
     if (projectsToDelete.isNotEmpty) {
-      await projectsBox.deleteAll(projectsToDelete);
-      await midiClips.deleteAll(projectsToDelete);
+      await _trashAndDelete(projectsToDelete);
       await cleanUpDanglingStackLinks();
     }
   }
@@ -963,6 +1029,32 @@ class ProjectRepository {
     return failedPaths;
   }
 
+  static DateTime _toStoredPrecision(DateTime d) =>
+      DateTime.fromMillisecondsSinceEpoch(d.millisecondsSinceEpoch, isUtc: d.isUtc);
+
+  /// Whether a scan's [after] differs from [before] in anything a scan
+  /// writes. Dates compare at millisecond precision, as Hive keeps them.
+  @visibleForTesting
+  static bool scanChangedProject(MusicProject before, MusicProject after) {
+    bool sameTime(DateTime? a, DateTime? b) =>
+        a?.millisecondsSinceEpoch == b?.millisecondsSinceEpoch;
+    return before.filePath != after.filePath ||
+        before.fileName != after.fileName ||
+        before.fileSizeBytes != after.fileSizeBytes ||
+        !sameTime(before.lastModifiedAt, after.lastModifiedAt) ||
+        before.fileExtension != after.fileExtension ||
+        before.bpm != after.bpm ||
+        before.musicalKey != after.musicalKey ||
+        before.dawVersion != after.dawVersion ||
+        before.projectNotes != after.projectNotes ||
+        !listEquals(before.markers, after.markers) ||
+        before.stats != after.stats ||
+        before.dawType != after.dawType ||
+        !sameTime(before.fileCreatedAt, after.fileCreatedAt) ||
+        before.parentProjectId != after.parentProjectId ||
+        before.metadataScanned != after.metadataScanned;
+  }
+
   Future<({MusicProject project, ProjectEvent? event, StoredMidiClips? clips})>
       _buildProjectAndEvent(
     FileSystemEntity entity, {
@@ -977,7 +1069,11 @@ class ProjectRepository {
     // doesn't care whether the path is a file or a directory.
     final ext = p.extension(filePath).toLowerCase();
     final size = stat.size;
-    final lastModified = stat.modified;
+    // At the precision Hive stores (milliseconds). Windows gives file times
+    // to the microsecond; kept as they are, a row saved this session never
+    // equalled itself read back from disk, so every scan after a restart
+    // logged the file as changed and Drive sync saw a difference that wasn't.
+    final lastModified = _toStoredPrecision(stat.modified);
 
     final existing = getByPath(filePath);
 
@@ -1035,6 +1131,7 @@ class ProjectRepository {
             ? stat.changed
             : stat.modified;
       }
+      fileCreatedAt = _toStoredPrecision(fileCreatedAt);
     }
 
     // Preserve-by-default. An earlier version of this built a fresh
@@ -1047,14 +1144,19 @@ class ProjectRepository {
     // inverts that: a new field is kept unless it is deliberately updated.
     //
     // Only fields listed below are touched; everything else survives a scan.
-    final projectToSave = existing != null
-        ? existing.copyWith(
+    //
+    // `updatedAt` moves only when this actually changed something. It is what
+    // Drive sync's "newer copy wins" goes by, and every launch's scan used to
+    // bump it on every project: an untouched desktop copy then beat a note
+    // edited on a phone, and the next sync dropped the note. (Statistics'
+    // "finished per month" reads it too, and moved every finished project
+    // into the current month.)
+    final rescanned = existing?.copyWith(
             filePath: filePath,
             fileName: fileName,
             fileSizeBytes: size,
             lastModifiedAt: lastModified,
             fileExtension: ext,
-            updatedAt: DateTime.now(),
             // Null from extraction means "didn't find it", so the stored
             // value stands — copyWith already treats null as "leave alone".
             bpm: extractedMetadata?.bpm,
@@ -1073,7 +1175,11 @@ class ProjectRepository {
             fileCreatedAt: fileCreatedAt,
             parentProjectId: parentProjectId,
             metadataScanned: fullMetadata ? true : existing.metadataScanned,
-          )
+          );
+    final projectToSave = existing != null
+        ? (scanChangedProject(existing, rescanned!)
+            ? rescanned.copyWith(updatedAt: DateTime.now())
+            : rescanned)
         : MusicProject(
             id: _uuid.v4(),
             filePath: filePath,
@@ -1098,9 +1204,11 @@ class ProjectRepository {
 
     // Record a file_changed event if an existing project had its file mutated
     ProjectEvent? event;
+    final modifiedChanged = existing != null &&
+        existing.lastModifiedAt.millisecondsSinceEpoch !=
+            lastModified.millisecondsSinceEpoch;
     if (existing != null &&
-        (existing.fileSizeBytes != size ||
-            existing.lastModifiedAt != lastModified)) {
+        (existing.fileSizeBytes != size || modifiedChanged)) {
       event = ProjectEvent(
         id: _uuid.v4(),
         projectId: projectToSave.id,
@@ -1108,7 +1216,7 @@ class ProjectRepository {
         occurredAt: DateTime.now(),
         payload: jsonEncode({
           'sizeChanged': existing.fileSizeBytes != size,
-          'lastModifiedChanged': existing.lastModifiedAt != lastModified,
+          'lastModifiedChanged': modifiedChanged,
           'newSizeBytes': size,
         }),
       );
@@ -1326,6 +1434,11 @@ class ProjectRepository {
       await projectsBox.put(member.id, member.copyWith(clearStackId: true));
     }
     await projectsBox.delete(stackId);
+    await SyncTombstoneStore.record(
+      TombstoneKind.project,
+      [stackId],
+      profileId: profileId,
+    );
   }
 
   /// Attaches [projectId] to [stackId] — used when a scan finds a new version
@@ -1752,6 +1865,11 @@ class ProjectRepository {
 
   Future<void> deleteRelease(String releaseId) async {
     await releasesBox.delete(releaseId);
+    await SyncTombstoneStore.record(
+      TombstoneKind.release,
+      [releaseId],
+      profileId: profileId,
+    );
     await rescheduleDeadlines();
   }
 
