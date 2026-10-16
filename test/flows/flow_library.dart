@@ -21,7 +21,7 @@ import '../helpers/hive_test_helper.dart';
 class FlowLibrary {
   FlowLibrary._(this._hiveDir, this.scratch, this.projectsDir, this.fixtures, this.profileId);
 
-  final Directory _hiveDir;
+  Directory _hiveDir;
 
   /// Somewhere of the flow's own for anything it writes (exports, archives,
   /// backups), deleted with the library.
@@ -88,6 +88,14 @@ class FlowLibrary {
     await Hive.close();
     repo = await HiveTestHelper.createRepository(profileId: profileId);
     root = repo.getRoots().single;
+  }
+
+  /// Throws the database away and starts an empty one — a new machine, the
+  /// project files where they were. [root] is gone with it.
+  Future<void> wipeDatabase() async {
+    await HiveTestHelper.tearDown(_hiveDir);
+    _hiveDir = await HiveTestHelper.setUp();
+    repo = await HiveTestHelper.createRepository(profileId: profileId);
   }
 
   Future<void> close() async {
