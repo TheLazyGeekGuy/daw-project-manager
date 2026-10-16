@@ -113,9 +113,6 @@ dependencies:
 dev_dependencies:
   flutter_test:
     sdk: flutter
-  # End-to-end tests that drive the real app window (integration_test/).
-  integration_test:
-    sdk: flutter
   flutter_lints: ^6.0.0
   msix: ^3.16.12
   build_runner: ^2.4.0
