@@ -73,7 +73,12 @@ Future<void> _seed() async {
   // An empty folder of its own: Settings shows a scan folder, and the
   // startup scan adds nothing (the demo files folder holds every demo
   // profile's placeholders and templates).
-  final scanFolder = Directory(p.join(await getLocalAppDataPath(), 'Music Projects'));
+  // Under the machine's shared Music folder where there is one: the path
+  // shows in Settings, and a path under the user's profile names them.
+  final shared = Platform.isWindows ? r'C:\Users\Public\Music' : null;
+  final scanFolder = Directory(shared != null && Directory(shared).existsSync()
+      ? p.join(shared, 'Music Projects')
+      : p.join(await getLocalAppDataPath(), 'Music Projects'));
   await scanFolder.create(recursive: true);
   await repo.addRoot(scanFolder.path);
   await repo.deleteProjects([projects.values.firstWhere((x) => x.displayName == 'Ghost Town').id]);
