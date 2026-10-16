@@ -221,10 +221,6 @@ List<CatalogEntry> selectMelodicClips(
 String roleLabel(MidiClipRole role) =>
     role.name[0].toUpperCase() + role.name.substring(1);
 
-String _bpmText(double bpm) => bpm == bpm.roundToDouble()
-    ? bpm.round().toString()
-    : bpm.toStringAsFixed(2).replaceFirst(RegExp(r'0+$'), '');
-
 /// Gives every entry its place in the export: a folder per project, named
 /// after it (made unique), and a numbered file name that says role, tempo,
 /// key and length — "01 Lead - 140BPM - A minor - 4 bars.mid".
@@ -266,7 +262,7 @@ void planMelodicFiles(List<CatalogEntry> entries) {
       {
         MidiNameField.name: e.clip.label,
         MidiNameField.role: roleLabel(e.role),
-        MidiNameField.bpm: bpm == null || bpm <= 0 ? null : '${_bpmText(bpm)}BPM',
+        MidiNameField.bpm: bpm == null || bpm <= 0 ? null : '${midiBpmText(bpm)}BPM',
         MidiNameField.key: key == null || key.isEmpty ? null : key,
         MidiNameField.bars: '${e.stats.bars} bar${e.stats.bars == 1 ? '' : 's'}',
       },
@@ -397,7 +393,7 @@ String melodicCatalogMarkdown(
     final project = group.first.project;
     final facts = [
       if (project.dawType != null) project.dawType!,
-      if (project.bpm != null) '${_bpmText(project.bpm!)} BPM',
+      if (project.bpm != null) '${midiBpmText(project.bpm!)} BPM',
       if (project.musicalKey != null && project.musicalKey!.trim().isNotEmpty)
         project.musicalKey!.trim(),
       project.lastModifiedAt.toIso8601String().substring(0, 10),
