@@ -1,5 +1,10 @@
-final _masterWord =
-    RegExp(r'\b(master|mastering|mastered)\)?(\s*[-_]\d+)?$', caseSensitive: false);
+// Not `\b`: an underscore is a word character, and "22_06_2015_B_138_Master"
+// — a real Ableton master set — read as no master at all. "master project"
+// at the end counts too, whatever folder it is in.
+final _masterWord = RegExp(
+  r'(^|[^a-z0-9])(master|mastering|mastered)( ?projects?)?\)?(\s*[-_]\d+)?$',
+  caseSensitive: false,
+);
 
 /// A capital "M" on its own at the end: "Song (M)", "Song M", "Song M-1",
 /// "(AC RMX 2025 M)". Case-sensitive: a lower-case "m" ends many words.

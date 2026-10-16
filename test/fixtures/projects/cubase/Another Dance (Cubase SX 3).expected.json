@@ -1,0 +1,222 @@
+{
+  "Another Dance.cpr": {
+    "dawType": "Cubase",
+    "dawVersion": "3",
+    "bpm": 145.0,
+    "key": null,
+    "markers": [],
+    "stats": {
+      "audio": 15,
+      "midi": 2,
+      "instrument": 0,
+      "sampler": 0,
+      "bus": 0,
+      "folder": 2,
+      "plugins": [
+        "CronoX",
+        "RoomWorks",
+        "Sonalksis TBK Stereo",
+        "UltraPitch 6-Voice",
+        "Vanguard"
+      ],
+      "midiClips": 5
+    },
+    "midiClips": [
+      {
+        "name": "Bass Principal",
+        "track": "Bass Principal",
+        "ppq": 480,
+        "lengthTicks": 1920,
+        "notes": 12,
+        "events": 0,
+        "content": "4648c946e6e8"
+      },
+      {
+        "name": "Bass Principal",
+        "track": "Bass Principal",
+        "ppq": 480,
+        "lengthTicks": 7680,
+        "notes": 36,
+        "events": 0,
+        "content": "c293c8f91076"
+      },
+      {
+        "name": "Bass Principal",
+        "track": "Bass Principal",
+        "ppq": 480,
+        "lengthTicks": 1920,
+        "notes": 4,
+        "events": 0,
+        "content": "167341613527"
+      },
+      {
+        "name": "vanguard",
+        "track": "vanguard",
+        "ppq": 480,
+        "lengthTicks": 7680,
+        "notes": 44,
+        "events": 0,
+        "content": "d9336f9c2873"
+      },
+      {
+        "name": "vanguard",
+        "track": "vanguard",
+        "ppq": 480,
+        "lengthTicks": 5760,
+        "notes": 33,
+        "events": 0,
+        "content": "5ac1cdebfe02"
+      }
+    ],
+    "sampleReferences": [
+      {
+        "file": "C�pia de goblinkick.wav",
+        "use": "audio"
+      },
+      {
+        "file": "C�pia de goblinkick.wav",
+        "use": "audio"
+      },
+      {
+        "file": "VEE Snare 137.wav",
+        "use": "audio"
+      },
+      {
+        "file": "VEE Open Hihat 20.wav",
+        "use": "audio"
+      },
+      {
+        "file": "HIHAT6(OPEN).wav",
+        "use": "audio"
+      },
+      {
+        "file": "HIHAT6(OPEN).wav",
+        "use": "audio"
+      },
+      {
+        "file": "CRASH5.wav",
+        "use": "audio"
+      },
+      {
+        "file": "voxTTE72026special-A.wav",
+        "use": "audio"
+      },
+      {
+        "file": "VEE FX 133.wav",
+        "use": "audio"
+      },
+      {
+        "file": "ambTTE08025atmo-A.wav",
+        "use": "audio"
+      },
+      {
+        "file": "sdr130TTE02006drumbreak.wav",
+        "use": "audio"
+      },
+      {
+        "file": "sdr130TTE02006drumbreak1.wav",
+        "use": "audio"
+      },
+      {
+        "file": "fxrTTE07013reverse.wav",
+        "use": "audio"
+      },
+      {
+        "file": "vox130TTE93021bam3-A.wav",
+        "use": "audio"
+      },
+      {
+        "file": "SNARE14.wav",
+        "use": "audio"
+      },
+      {
+        "file": "ohhTTE42011openhihat.wav",
+        "use": "audio"
+      },
+      {
+        "file": "ohhTTE42011openhihat.wav",
+        "use": "audio"
+      },
+      {
+        "file": "HIHAT382(OPEN).wav",
+        "use": "audio"
+      },
+      {
+        "file": "ANP_(proc)kick58.wav",
+        "use": "audio"
+      },
+      {
+        "file": "ANP_(proc)kick59.wav",
+        "use": "audio"
+      },
+      {
+        "file": "vox130TTE88020fab4-A.wav",
+        "use": "audio"
+      },
+      {
+        "file": "vox130TTE77021amy5-A.wav",
+        "use": "audio"
+      },
+      {
+        "file": "VEE Synth Sound 083.wav",
+        "use": "audio"
+      },
+      {
+        "file": "VEE Open Hihat 76.wav",
+        "use": "audio"
+      },
+      {
+        "file": "VEE Clap 141.wav",
+        "use": "audio"
+      },
+      {
+        "file": "VEE Clap 109.wav",
+        "use": "audio"
+      },
+      {
+        "file": "SNARE246.wav",
+        "use": "audio"
+      },
+      {
+        "file": "sdeTTE38013snare1.wav",
+        "use": "audio"
+      },
+      {
+        "file": "sdeTTE38013snare1.wav",
+        "use": "audio"
+      },
+      {
+        "file": "HIHAT575(OPEN).wav",
+        "use": "audio"
+      },
+      {
+        "file": "HIHAT575(OPEN).wav",
+        "use": "audio"
+      },
+      {
+        "file": "HIHAT485(OPEN).wav",
+        "use": "audio"
+      },
+      {
+        "file": "HIHAT355(OPEN).wav",
+        "use": "audio"
+      },
+      {
+        "file": "HIHAT355(OPEN).wav",
+        "use": "audio"
+      },
+      {
+        "file": "fxhTTE04012hit.wav",
+        "use": "audio"
+      },
+      {
+        "file": "C�pia de swithkick2.wav",
+        "use": "audio"
+      },
+      {
+        "file": "C�pia de mj bd.WAV",
+        "use": "audio"
+      }
+    ]
+  }
+}

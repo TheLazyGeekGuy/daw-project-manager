@@ -77,6 +77,31 @@ void main() {
     });
   });
 
+  group('GoogleDriveSyncService.credentialsStorageKeyFor', () {
+    // The bug: every library shared one credential-store entry on Windows
+    // and Linux, so a PR build, a dev run or the UI tests signed in as the
+    // user and synced with their real account.
+    test('the stable library keeps the name it always had', () {
+      expect(
+        GoogleDriveSyncService.credentialsStorageKeyFor('daw_project_manager', isolated: false),
+        'google_drive_credentials_json',
+      );
+    });
+
+    test('an isolated library keeps a sign-in of its own', () {
+      final uitest = GoogleDriveSyncService.credentialsStorageKeyFor(
+        'daw_project_manager_uitest',
+        isolated: true,
+      );
+      final dev = GoogleDriveSyncService.credentialsStorageKeyFor(
+        'daw_project_manager_dev',
+        isolated: true,
+      );
+      expect(uitest, isNot('google_drive_credentials_json'));
+      expect(uitest, isNot(dev));
+    });
+  });
+
   group('GoogleDriveSyncService.isSupported', () {
     // isSupported is now false only inside an actual Flatpak sandbox (see
     // isFlatpakSandboxFor below for that logic in isolation). No runner in

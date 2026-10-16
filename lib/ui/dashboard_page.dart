@@ -4150,7 +4150,13 @@ class _DashboardPageState extends ConsumerState<DashboardPage>
                               trailing: Expanded(
                                 child: Align(
                                   alignment: Alignment.bottomCenter,
-                                  child: Padding(
+                                  // Scrolls when the window is too short for
+                                  // every action: on a 768-pixel-high screen
+                                  // they overflowed by 161 px, and the ones
+                                  // past the edge (Deep Scan, Settings) could
+                                  // not be clicked at all.
+                                  child: SingleChildScrollView(
+                                    child: Padding(
                                     padding: const EdgeInsets.only(bottom: 12),
                                     child: Column(
                                       mainAxisSize: MainAxisSize.min,
@@ -4458,6 +4464,7 @@ class _DashboardPageState extends ConsumerState<DashboardPage>
                                         ),
                                       ],
                                     ),
+                                  ),
                                   ),
                                 ),
                               ),

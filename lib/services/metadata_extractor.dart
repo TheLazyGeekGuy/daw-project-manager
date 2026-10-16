@@ -409,6 +409,23 @@ class MetadataExtractor {
             bpm = double.tryParse(tempoValue);
           }
         }
+        // Live 8 keeps no Manual value: the tempo is its automation's first
+        // event, the one "before the song" (Time -63072000).
+        if (bpm == null) {
+          double? earliestTime;
+          for (final event in tempoElement
+              .findElements('ArrangerAutomation')
+              .expand((a) => a.findElements('Events'))
+              .expand((e) => e.findElements('FloatEvent'))) {
+            final time = double.tryParse(event.getAttribute('Time') ?? '');
+            final value = double.tryParse(event.getAttribute('Value') ?? '');
+            if (time == null || value == null) continue;
+            if (earliestTime == null || time < earliestTime) {
+              earliestTime = time;
+              bpm = value;
+            }
+          }
+        }
       }
 
       // Also try ManualTimeSignature element which might have BPM
@@ -1554,70 +1571,15 @@ class MetadataExtractor {
       // Read file as bytes
       final bytes = await file.readAsBytes();
       
-      String? dawVersion;
       double? bpm;
-      
+
       // === Extract DAW Version ===
-      // Hex pattern: 00 10 56 65 72 73 69 6F 6E (which is "00 10 Version" in ASCII)
-      final versionPattern = [0x00, 0x10, 0x56, 0x65, 0x72, 0x73, 0x69, 0x6F, 0x6E];
-      
-      // Find the pattern in the file
-      int? patternIndex;
-      for (int i = 0; i <= bytes.length - versionPattern.length; i++) {
-        bool found = true;
-        for (int j = 0; j < versionPattern.length; j++) {
-          if (bytes[i + j] != versionPattern[j]) {
-            found = false;
-            break;
-          }
-        }
-        if (found) {
-          patternIndex = i;
-          break;
-        }
-      }
-      
-      if (patternIndex != null) {
-        // Skip the pattern (9 bytes) and look for version string
-        // Version typically starts with a space (0x20) followed by digits and dots
-        int versionStart = patternIndex + versionPattern.length;
-        
-        // Find the start of the version (skip whitespace if any)
-        while (versionStart < bytes.length && bytes[versionStart] == 0x20) {
-          versionStart++;
-        }
-        
-        // Extract version string until we hit a null byte or non-printable character
-        final versionBytes = <int>[];
-        for (int i = versionStart; i < bytes.length; i++) {
-          final byte = bytes[i];
-          // Stop at null byte or non-printable characters (except space, dot, digits)
-          if (byte == 0x00 || (byte < 0x20 && byte != 0x09 && byte != 0x0A && byte != 0x0D)) {
-            break;
-          }
-          // Include space, dot, digits, and letters
-          if ((byte >= 0x20 && byte <= 0x7E) || byte == 0x09 || byte == 0x0A || byte == 0x0D) {
-            versionBytes.add(byte);
-          } else {
-            break;
-          }
-        }
-        
-        if (versionBytes.isNotEmpty) {
-          // Convert to string and extract major version
-          final versionString = utf8.decode(versionBytes).trim();
-          // Extract major version (e.g., "13.0.4" -> "13")
-          final parts = versionString.split('.');
-          if (parts.isNotEmpty) {
-            dawVersion = parts[0].trim();
-          }
-        }
-      }
-      
+      final dawVersion = _extractCubaseVersion(bytes);
+
       // === Extract BPM from MusicalTempo metadata ===
       // Cubase stores tempo as a 64-bit double-precision float (IEEE 754, big-endian)
       // The format is: "MusicalTempo" ... "Float" ... [8 bytes of tempo value]
-      bpm = _extractCubaseBpm(bytes);
+      bpm = _extractCubaseBpm(bytes) ?? _extractCubaseTempoTrackBpm(bytes);
       
       // === Extract Key/Scale from ScaleHelper fields ===
       // Uses "ScaleHelper Root Key" and "ScaleHelper Scale Type" fields
@@ -1735,6 +1697,37 @@ class MetadataExtractor {
 
   /// Extracts BPM from Cubase file by searching for MusicalTempo metadata
   /// The tempo is stored as IEEE 754 64-bit double (big-endian) after the "Float" type indicator
+  /// The major version Cubase/Nuendo saved the project with ("11"). Matching
+  /// a fixed length byte before "Version" only ever found versions whose
+  /// text happened to be 15 characters long, and never Cubase SX/4/5's.
+  static String? _extractCubaseVersion(Uint8List bytes) =>
+      CubaseProjectParser.appVersion(bytes)?.split('.').first;
+
+  /// Tempo as Cubase SX, 4 and 5 store it, with no `MusicalTempo`: the
+  /// tempo track's object (`MTempoTrackEvent`: version u16, size u32, then a
+  /// u32 event count and 22 bytes before the first event's tempo, a
+  /// big-endian float32). The first one is the song's — under the
+  /// arrangement; a later one, under the devices, is a default.
+  static double? _extractCubaseTempoTrackBpm(Uint8List bytes) {
+    final tag = utf8.encode('MTempoTrackEvent');
+    final data = ByteData.sublistView(bytes);
+    outer:
+    for (var i = 0; i + tag.length + 1 < bytes.length; i++) {
+      for (var j = 0; j < tag.length; j++) {
+        if (bytes[i + j] != tag[j]) continue outer;
+      }
+      final payload = i + tag.length + 1 + 6;
+      if (bytes[i + tag.length] != 0 || payload + 30 > bytes.length) return null;
+      final size = data.getUint32(payload - 4, Endian.big);
+      final count = data.getUint32(payload, Endian.big);
+      if (size < 30 || count < 1) return null;
+      final tempo = data.getFloat32(payload + 26, Endian.big);
+      if (tempo >= 20.0 && tempo <= 999.0) return double.parse(tempo.toStringAsFixed(2));
+      return null;
+    }
+    return null;
+  }
+
   static double? _extractCubaseBpm(Uint8List bytes) {
     try {
       // Search for "MusicalTempo" string in the binary file
@@ -1848,6 +1841,13 @@ class MetadataExtractor {
       final scaleTypeValue = ByteData.sublistView(Uint8List.fromList(scaleTypeBytes))
           .getInt32(0, Endian.little);
       
+      // Root 0 and scale 0 — C major — is the scale assistant as every
+      // project starts out, set or not: 58 of 63 real Cubase 11 projects
+      // read "C Major", mastering sessions and an empty template among
+      // them. Nothing in the file tells a chosen C major apart, so it
+      // reads as no key (and the file names get their say below).
+      if (rootKeyValue == 0 && scaleTypeValue == 0) return null;
+
       // Map root key to note name (chromatic scale from C)
       final rootNote = _getCubaseRootNote(rootKeyValue);
       final scaleName = _getCubaseScaleName(scaleTypeValue);

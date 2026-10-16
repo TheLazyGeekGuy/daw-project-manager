@@ -1,0 +1,1053 @@
+{
+  "MegaBeat - Save the Bass.flp": {
+    "dawType": "FL Studio",
+    "dawVersion": "10.0",
+    "bpm": 145.0,
+    "key": null,
+    "markers": [],
+    "stats": {
+      "audio": 27,
+      "midi": 0,
+      "instrument": 13,
+      "sampler": 6,
+      "bus": 0,
+      "folder": 0,
+      "plugins": [
+        "AVOX CHOIR",
+        "Fruity Delay Bank",
+        "Fruity Flangus",
+        "Fruity Limiter",
+        "Fruity Parametric EQ",
+        "Fruity Reeverb 2",
+        "Gross Beat",
+        "Sylenth1",
+        "VPS philta"
+      ],
+      "midiClips": 20
+    },
+    "midiClips": [
+      {
+        "name": "Pattern 1",
+        "track": "Sylenth1",
+        "ppq": 96,
+        "lengthTicks": 768,
+        "notes": 8,
+        "events": 0,
+        "content": "4dda9d4e7a36"
+      },
+      {
+        "name": "Pattern 2",
+        "track": "Sylenth1 #3",
+        "ppq": 96,
+        "lengthTicks": 768,
+        "notes": 16,
+        "events": 0,
+        "content": "4ff411da4635"
+      },
+      {
+        "name": "Pattern 2",
+        "track": "Sylenth1 #2",
+        "ppq": 96,
+        "lengthTicks": 768,
+        "notes": 8,
+        "events": 0,
+        "content": "22c4d4c4ca51"
+      },
+      {
+        "name": "Pattern 3",
+        "track": "Sylenth1 #3",
+        "ppq": 96,
+        "lengthTicks": 384,
+        "notes": 8,
+        "events": 0,
+        "content": "eee771c01d8b"
+      },
+      {
+        "name": "Pattern 3",
+        "track": "Sylenth1 #2",
+        "ppq": 96,
+        "lengthTicks": 384,
+        "notes": 4,
+        "events": 0,
+        "content": "94fcaf4724a2"
+      },
+      {
+        "name": "Pattern 4",
+        "track": "LD Menu Special",
+        "ppq": 96,
+        "lengthTicks": 768,
+        "notes": 9,
+        "events": 0,
+        "content": "be53e608299a"
+      },
+      {
+        "name": "Pattern 4",
+        "track": "Sylenth1 #5",
+        "ppq": 96,
+        "lengthTicks": 768,
+        "notes": 9,
+        "events": 0,
+        "content": "a3316cbaa853"
+      },
+      {
+        "name": "Pattern 5",
+        "track": "LD Menu Special",
+        "ppq": 96,
+        "lengthTicks": 384,
+        "notes": 3,
+        "events": 0,
+        "content": "375c37712271"
+      },
+      {
+        "name": "Pattern 5",
+        "track": "Sylenth1 #5",
+        "ppq": 96,
+        "lengthTicks": 384,
+        "notes": 3,
+        "events": 0,
+        "content": "160a667fe961"
+      },
+      {
+        "name": "Pattern 6",
+        "track": "ARP Foo Fighter #2",
+        "ppq": 96,
+        "lengthTicks": 768,
+        "notes": 9,
+        "events": 0,
+        "content": "7087a30a7320"
+      },
+      {
+        "name": "Pattern 7",
+        "track": "BAS Draps",
+        "ppq": 96,
+        "lengthTicks": 384,
+        "notes": 1,
+        "events": 0,
+        "content": "e1713443943b"
+      },
+      {
+        "name": "Pattern 7",
+        "track": "BAS Deeper Bass #2",
+        "ppq": 96,
+        "lengthTicks": 384,
+        "notes": 1,
+        "events": 0,
+        "content": "bccbed83ac18"
+      },
+      {
+        "name": "Pattern 8",
+        "track": "BAS Deeper Bass",
+        "ppq": 96,
+        "lengthTicks": 384,
+        "notes": 1,
+        "events": 0,
+        "content": "7704dc9970c6"
+      },
+      {
+        "name": "Pattern 9",
+        "track": "Bass 303",
+        "ppq": 96,
+        "lengthTicks": 768,
+        "notes": 20,
+        "events": 0,
+        "content": "ba0e5828a812"
+      },
+      {
+        "name": "Pattern 10",
+        "track": "ARP Fractis",
+        "ppq": 96,
+        "lengthTicks": 384,
+        "notes": 5,
+        "events": 0,
+        "content": "243373478560"
+      },
+      {
+        "name": "Pattern 10",
+        "track": "GL - Saw Lead",
+        "ppq": 96,
+        "lengthTicks": 384,
+        "notes": 8,
+        "events": 0,
+        "content": "b175137d774f"
+      },
+      {
+        "name": "Pattern 12",
+        "track": "Sylenth1 #5",
+        "ppq": 96,
+        "lengthTicks": 1152,
+        "notes": 33,
+        "events": 0,
+        "content": "490c1cc143d6"
+      },
+      {
+        "name": "Pattern 13",
+        "track": "Sounds (82)",
+        "ppq": 96,
+        "lengthTicks": 768,
+        "notes": 8,
+        "events": 0,
+        "content": "485f53232d98"
+      },
+      {
+        "name": "Pattern 13",
+        "track": "Sounds  Acid (6)",
+        "ppq": 96,
+        "lengthTicks": 384,
+        "notes": 2,
+        "events": 0,
+        "content": "ec58c5ead153"
+      },
+      {
+        "name": "Pattern 13",
+        "track": "Sounds  Acid (74)",
+        "ppq": 96,
+        "lengthTicks": 384,
+        "notes": 1,
+        "events": 0,
+        "content": "b74292c616a0"
+      }
+    ],
+    "sampleReferences": [
+      {
+        "file": "Sounds (82).wav",
+        "use": "sampler"
+      },
+      {
+        "file": "Sounds  Acid (6).wav",
+        "use": "sampler"
+      },
+      {
+        "file": "Sounds  Acid (74).wav",
+        "use": "sampler"
+      },
+      {
+        "file": "Clap Basic.wav",
+        "use": "sampler"
+      },
+      {
+        "file": "Percussion (148).wav",
+        "use": "sampler"
+      },
+      {
+        "file": "Percussion (142).wav",
+        "use": "sampler"
+      },
+      {
+        "file": "Kick 2013.wav",
+        "use": "audio"
+      },
+      {
+        "file": "Clap Loop OK !.wav",
+        "use": "audio"
+      },
+      {
+        "file": "MegaBeat - Save the Bass(BASS).wav",
+        "use": "audio"
+      },
+      {
+        "file": "MegaBeat - Save the Bass(BASS).wav",
+        "use": "audio"
+      },
+      {
+        "file": "MegaBeat - Save the Bass(BASS).wav",
+        "use": "audio"
+      },
+      {
+        "file": "Lazer & Clap Loop OK.wav",
+        "use": "audio"
+      },
+      {
+        "file": "Chorus FX.wav",
+        "use": "audio"
+      },
+      {
+        "file": "MegaBeat - Save the Bass(BASS 2).wav",
+        "use": "audio"
+      },
+      {
+        "file": "Percus Loop OK !.wav",
+        "use": "audio"
+      },
+      {
+        "file": "Prataria sem open ok.wav",
+        "use": "audio"
+      },
+      {
+        "file": "Sweep Con Crash.wav",
+        "use": "audio"
+      },
+      {
+        "file": "Sweep Con Crash.wav",
+        "use": "audio"
+      },
+      {
+        "file": "Sweeep Delirium.wav",
+        "use": "audio"
+      },
+      {
+        "file": "Snares (54).wav",
+        "use": "audio"
+      },
+      {
+        "file": "Chorus VOCODER FX.wav",
+        "use": "audio"
+      },
+      {
+        "file": "Clubby (11).wav",
+        "use": "audio"
+      },
+      {
+        "file": "Verse FX.wav",
+        "use": "audio"
+      },
+      {
+        "file": "Platillos Full OK !.wav",
+        "use": "audio"
+      },
+      {
+        "file": "Fill 140 BPM (36).wav",
+        "use": "audio"
+      },
+      {
+        "file": "Fill 140 BPM (41).wav",
+        "use": "audio"
+      },
+      {
+        "file": "FX (83).wav",
+        "use": "audio"
+      },
+      {
+        "file": "Fillin140BPM (5).wav",
+        "use": "audio"
+      },
+      {
+        "file": "String (warm).wav",
+        "use": "audio"
+      },
+      {
+        "file": "Chorus RETUNE FX.wav",
+        "use": "audio"
+      },
+      {
+        "file": "GRHHHHHH.wav",
+        "use": "audio"
+      },
+      {
+        "file": "Up snare vol.wav",
+        "use": "audio"
+      },
+      {
+        "file": "VTDS2 Phrase Male Rap  028.wav",
+        "use": "audio"
+      }
+    ]
+  },
+  "MegaBeat - Save the Bass_2.flp": {
+    "dawType": "FL Studio",
+    "dawVersion": "20.9",
+    "bpm": 145.0,
+    "key": null,
+    "markers": [],
+    "stats": {
+      "audio": 27,
+      "midi": 0,
+      "instrument": 14,
+      "sampler": 6,
+      "bus": 0,
+      "folder": 0,
+      "plugins": [
+        "AVOX CHOIR",
+        "Fruity Delay Bank",
+        "Fruity Flangus",
+        "Fruity Limiter",
+        "Fruity Parametric EQ",
+        "Fruity Reeverb 2",
+        "Gross Beat",
+        "PoiZone",
+        "Sawer",
+        "Sylenth1",
+        "VPS philta"
+      ],
+      "midiClips": 21
+    },
+    "midiClips": [
+      {
+        "name": "Pattern 1",
+        "track": "Sylenth1",
+        "ppq": 96,
+        "lengthTicks": 768,
+        "notes": 8,
+        "events": 0,
+        "content": "4dda9d4e7a36"
+      },
+      {
+        "name": "Pattern 2",
+        "track": "Sawer",
+        "ppq": 96,
+        "lengthTicks": 768,
+        "notes": 16,
+        "events": 0,
+        "content": "4ff411da4635"
+      },
+      {
+        "name": "Pattern 2",
+        "track": "Sawer #2",
+        "ppq": 96,
+        "lengthTicks": 768,
+        "notes": 8,
+        "events": 0,
+        "content": "22c4d4c4ca51"
+      },
+      {
+        "name": "Pattern 3",
+        "track": "Sawer",
+        "ppq": 96,
+        "lengthTicks": 384,
+        "notes": 8,
+        "events": 0,
+        "content": "eee771c01d8b"
+      },
+      {
+        "name": "Pattern 3",
+        "track": "Sawer #2",
+        "ppq": 96,
+        "lengthTicks": 384,
+        "notes": 4,
+        "events": 0,
+        "content": "94fcaf4724a2"
+      },
+      {
+        "name": "Pattern 4",
+        "track": "LD Menu Special",
+        "ppq": 96,
+        "lengthTicks": 768,
+        "notes": 9,
+        "events": 0,
+        "content": "be53e608299a"
+      },
+      {
+        "name": "Pattern 4",
+        "track": "Sylenth1 #5",
+        "ppq": 96,
+        "lengthTicks": 768,
+        "notes": 9,
+        "events": 0,
+        "content": "a3316cbaa853"
+      },
+      {
+        "name": "Pattern 5",
+        "track": "LD Menu Special",
+        "ppq": 96,
+        "lengthTicks": 384,
+        "notes": 3,
+        "events": 0,
+        "content": "375c37712271"
+      },
+      {
+        "name": "Pattern 5",
+        "track": "Sylenth1 #5",
+        "ppq": 96,
+        "lengthTicks": 384,
+        "notes": 3,
+        "events": 0,
+        "content": "160a667fe961"
+      },
+      {
+        "name": "Pattern 6",
+        "track": "PoiZone #2",
+        "ppq": 96,
+        "lengthTicks": 768,
+        "notes": 9,
+        "events": 0,
+        "content": "7087a30a7320"
+      },
+      {
+        "name": "Pattern 7",
+        "track": "BAS Draps",
+        "ppq": 96,
+        "lengthTicks": 384,
+        "notes": 1,
+        "events": 0,
+        "content": "e1713443943b"
+      },
+      {
+        "name": "Pattern 7",
+        "track": "BAS Deeper Bass #2",
+        "ppq": 96,
+        "lengthTicks": 384,
+        "notes": 1,
+        "events": 0,
+        "content": "bccbed83ac18"
+      },
+      {
+        "name": "Pattern 7",
+        "track": "Percussion (148)",
+        "ppq": 96,
+        "lengthTicks": 384,
+        "notes": 4,
+        "events": 0,
+        "content": "208d396a88ab"
+      },
+      {
+        "name": "Pattern 8",
+        "track": "BAS Deeper Bass",
+        "ppq": 96,
+        "lengthTicks": 384,
+        "notes": 1,
+        "events": 0,
+        "content": "7704dc9970c6"
+      },
+      {
+        "name": "Pattern 9",
+        "track": "Bass 303",
+        "ppq": 96,
+        "lengthTicks": 768,
+        "notes": 20,
+        "events": 0,
+        "content": "ba0e5828a812"
+      },
+      {
+        "name": "Pattern 10",
+        "track": "ARP Fractis",
+        "ppq": 96,
+        "lengthTicks": 384,
+        "notes": 5,
+        "events": 0,
+        "content": "243373478560"
+      },
+      {
+        "name": "Pattern 10",
+        "track": "GL - Saw Lead",
+        "ppq": 96,
+        "lengthTicks": 384,
+        "notes": 8,
+        "events": 0,
+        "content": "b175137d774f"
+      },
+      {
+        "name": "Pattern 12",
+        "track": "Sylenth1 #5",
+        "ppq": 96,
+        "lengthTicks": 1152,
+        "notes": 33,
+        "events": 0,
+        "content": "490c1cc143d6"
+      },
+      {
+        "name": "Pattern 13",
+        "track": "Sounds (82)",
+        "ppq": 96,
+        "lengthTicks": 768,
+        "notes": 8,
+        "events": 0,
+        "content": "485f53232d98"
+      },
+      {
+        "name": "Pattern 13",
+        "track": "Sounds  Acid (6)",
+        "ppq": 96,
+        "lengthTicks": 384,
+        "notes": 2,
+        "events": 0,
+        "content": "ec58c5ead153"
+      },
+      {
+        "name": "Pattern 13",
+        "track": "Sounds  Acid (74)",
+        "ppq": 96,
+        "lengthTicks": 384,
+        "notes": 1,
+        "events": 0,
+        "content": "b74292c616a0"
+      }
+    ],
+    "sampleReferences": [
+      {
+        "file": "Sounds (82).wav",
+        "use": "sampler"
+      },
+      {
+        "file": "Sounds  Acid (6).wav",
+        "use": "sampler"
+      },
+      {
+        "file": "Sounds  Acid (74).wav",
+        "use": "sampler"
+      },
+      {
+        "file": "Clap Basic.wav",
+        "use": "sampler"
+      },
+      {
+        "file": "Percussion (148).wav",
+        "use": "sampler"
+      },
+      {
+        "file": "Percussion (142).wav",
+        "use": "sampler"
+      },
+      {
+        "file": "Kick 2013.wav",
+        "use": "audio"
+      },
+      {
+        "file": "Clap Loop OK !.wav",
+        "use": "audio"
+      },
+      {
+        "file": "MegaBeat - Save the Bass(BASS).wav",
+        "use": "audio"
+      },
+      {
+        "file": "MegaBeat - Save the Bass(BASS).wav",
+        "use": "audio"
+      },
+      {
+        "file": "MegaBeat - Save the Bass(BASS).wav",
+        "use": "audio"
+      },
+      {
+        "file": "Lazer & Clap Loop OK.wav",
+        "use": "audio"
+      },
+      {
+        "file": "Chorus FX.wav",
+        "use": "audio"
+      },
+      {
+        "file": "MegaBeat - Save the Bass(BASS 2).wav",
+        "use": "audio"
+      },
+      {
+        "file": "Percus Loop OK !.wav",
+        "use": "audio"
+      },
+      {
+        "file": "Prataria sem open ok.wav",
+        "use": "audio"
+      },
+      {
+        "file": "Sweep Con Crash.wav",
+        "use": "audio"
+      },
+      {
+        "file": "Sweep Con Crash.wav",
+        "use": "audio"
+      },
+      {
+        "file": "Sweeep Delirium.wav",
+        "use": "audio"
+      },
+      {
+        "file": "Snares (54).wav",
+        "use": "audio"
+      },
+      {
+        "file": "Chorus VOCODER FX.wav",
+        "use": "audio"
+      },
+      {
+        "file": "Clubby (11).wav",
+        "use": "audio"
+      },
+      {
+        "file": "Verse FX.wav",
+        "use": "audio"
+      },
+      {
+        "file": "Platillos Full OK !.wav",
+        "use": "audio"
+      },
+      {
+        "file": "Fill 140 BPM (36).wav",
+        "use": "audio"
+      },
+      {
+        "file": "Fill 140 BPM (41).wav",
+        "use": "audio"
+      },
+      {
+        "file": "FX (83).wav",
+        "use": "audio"
+      },
+      {
+        "file": "Fillin140BPM (5).wav",
+        "use": "audio"
+      },
+      {
+        "file": "String (warm).wav",
+        "use": "audio"
+      },
+      {
+        "file": "Chorus RETUNE FX.wav",
+        "use": "audio"
+      },
+      {
+        "file": "GRHHHHHH.wav",
+        "use": "audio"
+      },
+      {
+        "file": "Up snare vol.wav",
+        "use": "audio"
+      },
+      {
+        "file": "VTDS2 Phrase Male Rap  028.wav",
+        "use": "audio"
+      }
+    ]
+  },
+  "MegaBeat - Save the Bass_3.flp": {
+    "dawType": "FL Studio",
+    "dawVersion": "20.9",
+    "bpm": 145.0,
+    "key": null,
+    "markers": [],
+    "stats": {
+      "audio": 27,
+      "midi": 0,
+      "instrument": 14,
+      "sampler": 6,
+      "bus": 0,
+      "folder": 0,
+      "plugins": [
+        "AVOX CHOIR",
+        "Fruity Delay Bank",
+        "Fruity Flangus",
+        "Fruity Limiter",
+        "Fruity Parametric EQ",
+        "Fruity Reeverb 2",
+        "Gross Beat",
+        "PoiZone",
+        "Sawer",
+        "Sylenth1",
+        "VPS philta"
+      ],
+      "midiClips": 21
+    },
+    "midiClips": [
+      {
+        "name": "Pattern 1",
+        "track": "Sylenth1",
+        "ppq": 96,
+        "lengthTicks": 768,
+        "notes": 8,
+        "events": 0,
+        "content": "4dda9d4e7a36"
+      },
+      {
+        "name": "Pattern 2",
+        "track": "Sawer",
+        "ppq": 96,
+        "lengthTicks": 768,
+        "notes": 16,
+        "events": 0,
+        "content": "4ff411da4635"
+      },
+      {
+        "name": "Pattern 2",
+        "track": "Sawer #2",
+        "ppq": 96,
+        "lengthTicks": 768,
+        "notes": 8,
+        "events": 0,
+        "content": "22c4d4c4ca51"
+      },
+      {
+        "name": "Pattern 3",
+        "track": "Sawer",
+        "ppq": 96,
+        "lengthTicks": 384,
+        "notes": 8,
+        "events": 0,
+        "content": "eee771c01d8b"
+      },
+      {
+        "name": "Pattern 3",
+        "track": "Sawer #2",
+        "ppq": 96,
+        "lengthTicks": 384,
+        "notes": 4,
+        "events": 0,
+        "content": "94fcaf4724a2"
+      },
+      {
+        "name": "Pattern 4",
+        "track": "LD Menu Special",
+        "ppq": 96,
+        "lengthTicks": 768,
+        "notes": 9,
+        "events": 0,
+        "content": "be53e608299a"
+      },
+      {
+        "name": "Pattern 4",
+        "track": "Sylenth1 #5",
+        "ppq": 96,
+        "lengthTicks": 768,
+        "notes": 9,
+        "events": 0,
+        "content": "a3316cbaa853"
+      },
+      {
+        "name": "Pattern 5",
+        "track": "LD Menu Special",
+        "ppq": 96,
+        "lengthTicks": 384,
+        "notes": 3,
+        "events": 0,
+        "content": "375c37712271"
+      },
+      {
+        "name": "Pattern 5",
+        "track": "Sylenth1 #5",
+        "ppq": 96,
+        "lengthTicks": 384,
+        "notes": 3,
+        "events": 0,
+        "content": "160a667fe961"
+      },
+      {
+        "name": "Pattern 6",
+        "track": "PoiZone #2",
+        "ppq": 96,
+        "lengthTicks": 768,
+        "notes": 9,
+        "events": 0,
+        "content": "7087a30a7320"
+      },
+      {
+        "name": "Pattern 7",
+        "track": "BAS Draps",
+        "ppq": 96,
+        "lengthTicks": 384,
+        "notes": 1,
+        "events": 0,
+        "content": "e1713443943b"
+      },
+      {
+        "name": "Pattern 7",
+        "track": "BAS Deeper Bass #2",
+        "ppq": 96,
+        "lengthTicks": 384,
+        "notes": 1,
+        "events": 0,
+        "content": "bccbed83ac18"
+      },
+      {
+        "name": "Pattern 7",
+        "track": "Percussion (148)",
+        "ppq": 96,
+        "lengthTicks": 384,
+        "notes": 4,
+        "events": 0,
+        "content": "208d396a88ab"
+      },
+      {
+        "name": "Pattern 8",
+        "track": "BAS Deeper Bass",
+        "ppq": 96,
+        "lengthTicks": 384,
+        "notes": 1,
+        "events": 0,
+        "content": "7704dc9970c6"
+      },
+      {
+        "name": "Pattern 9",
+        "track": "Bass 303",
+        "ppq": 96,
+        "lengthTicks": 768,
+        "notes": 20,
+        "events": 0,
+        "content": "ba0e5828a812"
+      },
+      {
+        "name": "Pattern 10",
+        "track": "ARP Fractis",
+        "ppq": 96,
+        "lengthTicks": 384,
+        "notes": 5,
+        "events": 0,
+        "content": "243373478560"
+      },
+      {
+        "name": "Pattern 10",
+        "track": "GL - Saw Lead",
+        "ppq": 96,
+        "lengthTicks": 384,
+        "notes": 8,
+        "events": 0,
+        "content": "b175137d774f"
+      },
+      {
+        "name": "Pattern 12",
+        "track": "Sylenth1 #5",
+        "ppq": 96,
+        "lengthTicks": 1152,
+        "notes": 33,
+        "events": 0,
+        "content": "490c1cc143d6"
+      },
+      {
+        "name": "Pattern 13",
+        "track": "Sounds (82)",
+        "ppq": 96,
+        "lengthTicks": 768,
+        "notes": 8,
+        "events": 0,
+        "content": "485f53232d98"
+      },
+      {
+        "name": "Pattern 13",
+        "track": "Sounds  Acid (6)",
+        "ppq": 96,
+        "lengthTicks": 384,
+        "notes": 2,
+        "events": 0,
+        "content": "ec58c5ead153"
+      },
+      {
+        "name": "Pattern 13",
+        "track": "Sounds  Acid (74)",
+        "ppq": 96,
+        "lengthTicks": 384,
+        "notes": 1,
+        "events": 0,
+        "content": "b74292c616a0"
+      }
+    ],
+    "sampleReferences": [
+      {
+        "file": "Sounds (82).wav",
+        "use": "sampler"
+      },
+      {
+        "file": "Sounds  Acid (6).wav",
+        "use": "sampler"
+      },
+      {
+        "file": "Sounds  Acid (74).wav",
+        "use": "sampler"
+      },
+      {
+        "file": "Clap Basic.wav",
+        "use": "sampler"
+      },
+      {
+        "file": "Percussion (148).wav",
+        "use": "sampler"
+      },
+      {
+        "file": "Percussion (142).wav",
+        "use": "sampler"
+      },
+      {
+        "file": "Kick 2013.wav",
+        "use": "audio"
+      },
+      {
+        "file": "Clap Loop OK !.wav",
+        "use": "audio"
+      },
+      {
+        "file": "MegaBeat - Save the Bass(BASS).wav",
+        "use": "audio"
+      },
+      {
+        "file": "MegaBeat - Save the Bass(BASS).wav",
+        "use": "audio"
+      },
+      {
+        "file": "MegaBeat - Save the Bass(BASS).wav",
+        "use": "audio"
+      },
+      {
+        "file": "Lazer & Clap Loop OK.wav",
+        "use": "audio"
+      },
+      {
+        "file": "Chorus FX.wav",
+        "use": "audio"
+      },
+      {
+        "file": "MegaBeat - Save the Bass(BASS 2).wav",
+        "use": "audio"
+      },
+      {
+        "file": "Percus Loop OK !.wav",
+        "use": "audio"
+      },
+      {
+        "file": "Prataria sem open ok.wav",
+        "use": "audio"
+      },
+      {
+        "file": "Sweep Con Crash.wav",
+        "use": "audio"
+      },
+      {
+        "file": "Sweep Con Crash.wav",
+        "use": "audio"
+      },
+      {
+        "file": "Sweeep Delirium.wav",
+        "use": "audio"
+      },
+      {
+        "file": "Snares (54).wav",
+        "use": "audio"
+      },
+      {
+        "file": "Chorus VOCODER FX.wav",
+        "use": "audio"
+      },
+      {
+        "file": "Clubby (11).wav",
+        "use": "audio"
+      },
+      {
+        "file": "Verse FX.wav",
+        "use": "audio"
+      },
+      {
+        "file": "Platillos Full OK !.wav",
+        "use": "audio"
+      },
+      {
+        "file": "Fill 140 BPM (36).wav",
+        "use": "audio"
+      },
+      {
+        "file": "Fill 140 BPM (41).wav",
+        "use": "audio"
+      },
+      {
+        "file": "FX (83).wav",
+        "use": "audio"
+      },
+      {
+        "file": "Fillin140BPM (5).wav",
+        "use": "audio"
+      },
+      {
+        "file": "String (warm).wav",
+        "use": "audio"
+      },
+      {
+        "file": "Chorus RETUNE FX.wav",
+        "use": "audio"
+      },
+      {
+        "file": "GRHHHHHH.wav",
+        "use": "audio"
+      },
+      {
+        "file": "Up snare vol.wav",
+        "use": "audio"
+      },
+      {
+        "file": "VTDS2 Phrase Male Rap  028.wav",
+        "use": "audio"
+      }
+    ]
+  }
+}

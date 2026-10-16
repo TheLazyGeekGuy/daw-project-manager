@@ -1,0 +1,108 @@
+{
+  "NN.cpr": {
+    "dawType": "Cubase",
+    "dawVersion": "3",
+    "bpm": 130.0,
+    "key": null,
+    "markers": [],
+    "stats": {
+      "audio": 6,
+      "midi": 1,
+      "instrument": 0,
+      "sampler": 0,
+      "bus": 0,
+      "folder": 1,
+      "plugins": [
+        "Vanguard"
+      ],
+      "midiClips": 3
+    },
+    "midiClips": [
+      {
+        "name": "MIDI 01",
+        "track": "MIDI 01",
+        "ppq": 480,
+        "lengthTicks": 1920,
+        "notes": 6,
+        "events": 0,
+        "content": "0faae6273adf"
+      },
+      {
+        "name": "MIDI 01",
+        "track": "MIDI 01",
+        "ppq": 480,
+        "lengthTicks": 1920,
+        "notes": 6,
+        "events": 0,
+        "content": "d4f3417042b8"
+      },
+      {
+        "name": "MIDI 01",
+        "track": "MIDI 01",
+        "ppq": 480,
+        "lengthTicks": 3840,
+        "notes": 16,
+        "events": 0,
+        "content": "862c9651e475"
+      }
+    ],
+    "sampleReferences": [
+      {
+        "file": "KICK6.wav",
+        "use": "audio"
+      },
+      {
+        "file": "KICK6.wav",
+        "use": "audio"
+      },
+      {
+        "file": "RIM7.wav",
+        "use": "audio"
+      },
+      {
+        "file": "RIM7.wav",
+        "use": "audio"
+      },
+      {
+        "file": "SNARE134.wav",
+        "use": "audio"
+      },
+      {
+        "file": "SNARE134.wav",
+        "use": "audio"
+      },
+      {
+        "file": "RIM19.wav",
+        "use": "audio"
+      },
+      {
+        "file": "RIM19.wav",
+        "use": "audio"
+      },
+      {
+        "file": "CLAP148.wav",
+        "use": "audio"
+      },
+      {
+        "file": "CLAP148.wav",
+        "use": "audio"
+      },
+      {
+        "file": "HIHAT37(CLSD).wav",
+        "use": "audio"
+      },
+      {
+        "file": "HIHAT37(CLSD).wav",
+        "use": "audio"
+      },
+      {
+        "file": "HIHAT322(CLSD).wav",
+        "use": "audio"
+      },
+      {
+        "file": "HIHAT322(CLSD).wav",
+        "use": "audio"
+      }
+    ]
+  }
+}

@@ -60,6 +60,17 @@ final _labels = MidiNamingLabels(
 );
 
 void main() {
+  test('midiBpmText writes a tempo whole, or to two places, never with a bare dot', () {
+    // A .mid imported from a real library: 410958 µs per beat is
+    // 146.00032 BPM. The melodic export once named it "146. BPM".
+    expect(midiBpmText(146.00032120070665), '146');
+    expect(midiBpmText(145.00003625000906), '145');
+    expect(midiBpmText(140), '140');
+    expect(midiBpmText(128.5), '128.5');
+    expect(midiBpmText(174.25), '174.25');
+    expect(midiBpmText(99.999), '100');
+  });
+
   group('suggestMidiClipRole', () {
     test('names say it first, drums before bass', () {
       expect(suggestMidiClipRole(_clip(name: 'Bass drum')), MidiClipRole.drums);

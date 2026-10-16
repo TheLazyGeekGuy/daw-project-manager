@@ -1,0 +1,418 @@
+{
+  "NN.cpr": {
+    "dawType": "Cubase",
+    "dawVersion": "5",
+    "bpm": 142.0,
+    "key": null,
+    "markers": [],
+    "stats": {
+      "audio": 20,
+      "midi": 5,
+      "instrument": 0,
+      "sampler": 0,
+      "bus": 0,
+      "folder": 5,
+      "plugins": [
+        "Absynth4",
+        "Ambience",
+        "C4",
+        "CronoX",
+        "MixConvert",
+        "Oxford Limiter Native",
+        "Renegade",
+        "Sonalksis TBK Stereo",
+        "UltraPitch 6-Voice",
+        "Vanguard",
+        "z3ta+"
+      ],
+      "midiClips": 19
+    },
+    "midiClips": [
+      {
+        "name": "Nord rack",
+        "track": "Nord rack",
+        "ppq": 480,
+        "lengthTicks": 3840,
+        "notes": 32,
+        "events": 0,
+        "content": "37df4ab7b20d"
+      },
+      {
+        "name": "Nord rack",
+        "track": "Nord rack",
+        "ppq": 480,
+        "lengthTicks": 3360,
+        "notes": 28,
+        "events": 0,
+        "content": "72be51f047ef"
+      },
+      {
+        "name": "MIDI 04",
+        "track": "MIDI 04",
+        "ppq": 480,
+        "lengthTicks": 3840,
+        "notes": 32,
+        "events": 0,
+        "content": "7c918ce3bbf4"
+      },
+      {
+        "name": "MIDI 04",
+        "track": "MIDI 04",
+        "ppq": 480,
+        "lengthTicks": 1920,
+        "notes": 16,
+        "events": 0,
+        "content": "930ff0e2d5c9"
+      },
+      {
+        "name": "MIDI 04",
+        "track": "MIDI 04",
+        "ppq": 480,
+        "lengthTicks": 1920,
+        "notes": 12,
+        "events": 0,
+        "content": "01df7ea9a63e"
+      },
+      {
+        "name": "MIDI 04",
+        "track": "MIDI 04",
+        "ppq": 480,
+        "lengthTicks": 3840,
+        "notes": 25,
+        "events": 0,
+        "content": "7171014c50d8"
+      },
+      {
+        "name": "MIDI 04",
+        "track": "MIDI 04",
+        "ppq": 480,
+        "lengthTicks": 1920,
+        "notes": 13,
+        "events": 0,
+        "content": "7e55827addea"
+      },
+      {
+        "name": "MIDI 04",
+        "track": "MIDI 04",
+        "ppq": 480,
+        "lengthTicks": 1920,
+        "notes": 8,
+        "events": 0,
+        "content": "f814d7b395dd"
+      },
+      {
+        "name": "MIDI 04",
+        "track": "MIDI 04",
+        "ppq": 480,
+        "lengthTicks": 3840,
+        "notes": 16,
+        "events": 0,
+        "content": "8102e3e72b4b"
+      },
+      {
+        "name": "MIDI 04",
+        "track": "MIDI 04",
+        "ppq": 480,
+        "lengthTicks": 3360,
+        "notes": 14,
+        "events": 0,
+        "content": "075ce58bf6c4"
+      },
+      {
+        "name": "Bassline",
+        "track": "Bassline",
+        "ppq": 480,
+        "lengthTicks": 3840,
+        "notes": 24,
+        "events": 0,
+        "content": "17c5a48fe161"
+      },
+      {
+        "name": "Bassline",
+        "track": "Bassline",
+        "ppq": 480,
+        "lengthTicks": 1920,
+        "notes": 12,
+        "events": 0,
+        "content": "d3c0c8bc9133"
+      },
+      {
+        "name": "Bassline",
+        "track": "Bassline",
+        "ppq": 480,
+        "lengthTicks": 3840,
+        "notes": 24,
+        "events": 0,
+        "content": "af99cae56d93"
+      },
+      {
+        "name": "Bassline",
+        "track": "Bassline",
+        "ppq": 480,
+        "lengthTicks": 3840,
+        "notes": 24,
+        "events": 0,
+        "content": "89978bde5cc0"
+      },
+      {
+        "name": "Bassline",
+        "track": "Bassline",
+        "ppq": 480,
+        "lengthTicks": 1920,
+        "notes": 12,
+        "events": 0,
+        "content": "26da9010ba01"
+      },
+      {
+        "name": "Bassline",
+        "track": "Bassline",
+        "ppq": 480,
+        "lengthTicks": 2880,
+        "notes": 18,
+        "events": 0,
+        "content": "952875679841"
+      },
+      {
+        "name": "Bassline",
+        "track": "Bassline",
+        "ppq": 480,
+        "lengthTicks": 3360,
+        "notes": 21,
+        "events": 0,
+        "content": "6badcf95aca3"
+      },
+      {
+        "name": "Bassline",
+        "track": "Bassline",
+        "ppq": 480,
+        "lengthTicks": 7680,
+        "notes": 17,
+        "events": 0,
+        "content": "2c56cf1892b8"
+      },
+      {
+        "name": "absynth",
+        "track": "absynth",
+        "ppq": 480,
+        "lengthTicks": 44160,
+        "notes": 1,
+        "events": 0,
+        "content": "ca64858344e3"
+      }
+    ],
+    "sampleReferences": [
+      {
+        "file": "Kick.wav",
+        "use": "audio"
+      },
+      {
+        "file": "Kick.wav",
+        "use": "audio"
+      },
+      {
+        "file": "Kick1.wav",
+        "use": "audio"
+      },
+      {
+        "file": "Kick1-01.wav",
+        "use": "audio",
+        "kind": "processed"
+      },
+      {
+        "file": "Kick2-03.wav",
+        "use": "audio",
+        "kind": "processed"
+      },
+      {
+        "file": "HiHat Open.wav",
+        "use": "audio"
+      },
+      {
+        "file": "HiHat Open.wav",
+        "use": "audio"
+      },
+      {
+        "file": "sdeTTE38013snare1.wav",
+        "use": "audio"
+      },
+      {
+        "file": "sdeTTE38013snare1.wav",
+        "use": "audio"
+      },
+      {
+        "file": "sdeTTE38013snare2.wav",
+        "use": "audio"
+      },
+      {
+        "file": "HIHAT122(CLSD).wav",
+        "use": "audio"
+      },
+      {
+        "file": "HIHAT122(CLSD).wav",
+        "use": "audio"
+      },
+      {
+        "file": "sdeTTE38013snare2-01.wav",
+        "use": "audio",
+        "kind": "processed"
+      },
+      {
+        "file": "HIHAT1(CLSD).wav",
+        "use": "audio"
+      },
+      {
+        "file": "HIHAT1(CLSD).wav",
+        "use": "audio"
+      },
+      {
+        "file": "HIHAT155(CLSD).wav",
+        "use": "audio"
+      },
+      {
+        "file": "HIHAT155(CLSD).wav",
+        "use": "audio"
+      },
+      {
+        "file": "HIHAT200(CLSD).wav",
+        "use": "audio"
+      },
+      {
+        "file": "HIHAT200(CLSD).wav",
+        "use": "audio"
+      },
+      {
+        "file": "HIHAT437(OPEN).wav",
+        "use": "audio"
+      },
+      {
+        "file": "HIHAT437(OPEN).wav",
+        "use": "audio"
+      },
+      {
+        "file": "loop 01-01.wav",
+        "use": "audio",
+        "kind": "processed"
+      },
+      {
+        "file": "loop 01.wav",
+        "use": "audio"
+      },
+      {
+        "file": "Crash 01.wav",
+        "use": "audio"
+      },
+      {
+        "file": "Crash 01.wav",
+        "use": "audio"
+      },
+      {
+        "file": "Crash 2.wav",
+        "use": "audio"
+      },
+      {
+        "file": "VEE FX 055.wav",
+        "use": "audio"
+      },
+      {
+        "file": "VEE FX 055.wav",
+        "use": "audio"
+      },
+      {
+        "file": "voiTTE64018voicesyn-A.wav",
+        "use": "audio"
+      },
+      {
+        "file": "voiTTE64018voicesyn-A.wav",
+        "use": "audio"
+      },
+      {
+        "file": "voiTTE64018voicesyn-A1.wav",
+        "use": "audio"
+      },
+      {
+        "file": "strTTE65005string-A.wav",
+        "use": "audio"
+      },
+      {
+        "file": "strTTE65005string-A.wav",
+        "use": "audio"
+      },
+      {
+        "file": "strTTE65005string-A1.wav",
+        "use": "audio"
+      },
+      {
+        "file": "dsadadas.wav",
+        "use": "audio"
+      },
+      {
+        "file": "dsadadas.wav",
+        "use": "audio"
+      },
+      {
+        "file": "dsadadas1.wav",
+        "use": "audio"
+      },
+      {
+        "file": "vox130TTE81014franca3-A.wav",
+        "use": "audio"
+      },
+      {
+        "file": "vox130TTE81014franca3-A.wav",
+        "use": "audio"
+      },
+      {
+        "file": "drum loop.wav",
+        "use": "audio"
+      },
+      {
+        "file": "drum loop.wav",
+        "use": "audio"
+      },
+      {
+        "file": "SNARE14.wav",
+        "use": "audio"
+      },
+      {
+        "file": "SNARE14.wav",
+        "use": "audio"
+      },
+      {
+        "file": "TOM28.wav",
+        "use": "audio"
+      },
+      {
+        "file": "TOM28.wav",
+        "use": "audio"
+      },
+      {
+        "file": "TOM47.wav",
+        "use": "audio"
+      },
+      {
+        "file": "TOM47.wav",
+        "use": "audio"
+      },
+      {
+        "file": "VEE FX 026.wav",
+        "use": "audio"
+      },
+      {
+        "file": "VEE FX 026.wav",
+        "use": "audio"
+      },
+      {
+        "file": "loop 02.wav",
+        "use": "audio"
+      },
+      {
+        "file": "loop 02.wav",
+        "use": "audio"
+      },
+      {
+        "file": "Kick2.wav",
+        "use": "audio"
+      }
+    ]
+  }
+}

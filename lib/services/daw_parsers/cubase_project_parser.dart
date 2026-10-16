@@ -226,7 +226,7 @@ class CubaseProjectParser {
       from = at + key.length;
       // Type 0x0008 = string.
       if (!_has(from, 6) || _data.getUint16(from) != 8) continue;
-      final value = _readString(from + 2);
+      final value = _readValueString(from + 2);
       if (value == null) continue;
       var name = value.text;
       // A renamed instrument stores the user's label here and the real
@@ -234,14 +234,69 @@ class CubaseProjectParser {
       if (_matchesAt(original, value.end) &&
           _has(value.end + original.length, 6) &&
           _data.getUint16(value.end + original.length) == 8) {
-        final orig = _readString(value.end + original.length + 2);
+        final orig = _readValueString(value.end + original.length + 2);
         if (orig != null && orig.text.isNotEmpty) name = orig.text;
       }
       if (_internalPlugins.contains(name.trim())) continue;
       names.add(name);
     }
-    return names;
+    return names.isEmpty ? _devicePathPlugins() : names;
   }
+
+  /// An attribute's string value: as [_readString] reads it, or as Cubase 4
+  /// writes it — the length, then exactly that many bytes, no NUL. Read the
+  /// other way, every Cubase 4 plug-in was rejected.
+  ({String text, int end})? _readValueString(int offset) {
+    final terminated = _readString(offset);
+    if (terminated != null) return terminated;
+    if (!_has(offset, 4)) return null;
+    final len = _data.getUint32(offset);
+    if (len < 1 || len > 256 || !_has(offset + 4, len)) return null;
+    final raw = bytes.sublist(offset + 4, offset + 4 + len);
+    if (raw.any((b) => b < 0x20)) return null;
+    return (text: utf8.decode(raw, allowMalformed: true), end: offset + 4 + len);
+  }
+
+  /// Plug-ins as Cubase SX 3 names them, with no `Plugin Name` attributes:
+  /// the devices' paths, a `CONT` string per step — "VST Instruments",
+  /// "Slot 3", "Vanguard 2"; "Inserts", "Slot 2", "Sonalksis TBK Stereo 4".
+  /// The step after a slot is the plug-in, numbered after its first
+  /// instance; the number is dropped when the name also appears without it
+  /// or with another — "Pro-Q 3" alone keeps its 3.
+  List<String> _devicePathPlugins() {
+    final steps = <String>[];
+    final tag = ascii.encode('CONT');
+    var from = 0;
+    while (true) {
+      final at = _indexOf(tag, from);
+      if (at < 0) break;
+      from = at + tag.length;
+      final step = _readString(from);
+      if (step != null && step.text.isNotEmpty) steps.add(step.text);
+    }
+    final raw = <String>[];
+    for (var i = 1; i + 1 < steps.length; i++) {
+      if (_slot.hasMatch(steps[i]) &&
+          (steps[i - 1] == 'VST Instruments' || steps[i - 1] == 'Inserts')) {
+        raw.add(steps[i + 1]);
+      }
+    }
+    final numbers = <String, Set<String>>{};
+    for (final name in raw) {
+      final m = _instance.firstMatch(name);
+      (numbers[m == null ? name : m[1]!] ??= {}).add(m == null ? '' : m[2]!);
+    }
+    return [
+      for (final name in raw)
+        switch (_instance.firstMatch(name)) {
+          final m? when numbers[m[1]!]!.length > 1 => m[1]!,
+          _ => name,
+        },
+    ].where((n) => !_internalPlugins.contains(n.trim())).toList();
+  }
+
+  static final _slot = RegExp(r'^Slot( \d+)?$');
+  static final _instance = RegExp(r'^(.+?) (\d+)$');
 
   /// Every distinct MIDI part in the project, trimmed to what it plays.
   List<MidiClip> readMidiClips() {
@@ -379,10 +434,85 @@ class CubaseProjectParser {
 
   // --- notes ---------------------------------------------------------------
 
+  /// The version of Cubase/Nuendo that saved [bytes] ("11.0.41"), from the
+  /// `PAppVersion` record: a big-endian u32 length, "Version 11.0.41" and a
+  /// NUL. Cubase 6 and later write it first, SX, 4 and 5 last. Null when
+  /// there is none.
+  static String? appVersion(Uint8List bytes) {
+    const tag = [0x56, 0x65, 0x72, 0x73, 0x69, 0x6F, 0x6E, 0x20]; // "Version "
+    final data = ByteData.sublistView(bytes);
+    outer:
+    for (var i = 4; i + tag.length < bytes.length; i++) {
+      for (var j = 0; j < tag.length; j++) {
+        if (bytes[i + j] != tag[j]) continue outer;
+      }
+      final length = data.getUint32(i - 4, Endian.big);
+      final end = i + length - 1; // the NUL
+      if (length < tag.length + 2 || length > 32 || end >= bytes.length || bytes[end] != 0) {
+        continue;
+      }
+      final text = String.fromCharCodes(bytes.sublist(i + tag.length, end));
+      if (_versionText.hasMatch(text)) return text;
+    }
+    return null;
+  }
+
+  static final _versionText = RegExp(r'^\d+(\.\d+)*$');
+
+  /// Whether Cubase SX, 4 or 5 saved this — they write notes as
+  /// [_legacyNote]s.
+  late final bool _legacy = switch (appVersion(bytes)) {
+    final v? => (int.tryParse(v.split('.').first) ?? 99) <= 5,
+    null => false,
+  };
+
+  /// A note as Cubase SX, 4 and 5 write it, at [o]: status, start (f64),
+  /// channel, pitch, velocity, a flags byte (2 on nearly every note), four
+  /// zero bytes, no attributes, the length (f64), 16 zero bytes and the
+  /// note-off velocity — 43 bytes. Measured across 115,000 notes of 51 real
+  /// projects; null where [o] holds no such record.
+  MidiNote? _legacyNote(int o, int end) {
+    if (o + 43 > end) return null;
+    final status = bytes[o];
+    if (status < 0x90 || status > 0x9F) return null;
+    if (bytes[o + 9] > 0x0F || bytes[o + 10] > 0x7F || bytes[o + 11] > 0x7F) return null;
+    for (var i = 13; i <= 17; i++) {
+      if (bytes[o + i] != 0) return null;
+    }
+    for (var i = 26; i < 42; i++) {
+      if (bytes[o + i] != 0) return null;
+    }
+    final startTick = _f64(o + 1), length = _f64(o + 18);
+    if (startTick == null ||
+        length == null ||
+        !(length >= 0 && length < 1e8) ||
+        !(startTick > -1e9 && startTick < 1e9)) {
+      return null;
+    }
+    final velocity = bytes[o + 11];
+    return MidiNote(
+      startTick: startTick.round(),
+      lengthTicks: length.round() < 1 ? 1 : length.round(),
+      pitch: bytes[o + 10],
+      velocity: velocity == 0 ? 1 : velocity,
+      channel: status & 0x0F,
+    );
+  }
+
   List<MidiNote> _readNotes(int start, int end) {
     final notes = <MidiNote>[];
     var o = start;
     while (o + 18 < end) {
+      if (_legacy) {
+        final note = _legacyNote(o, end);
+        if (note != null) {
+          notes.add(note);
+          o += 43;
+        } else {
+          o++;
+        }
+        continue;
+      }
       final status = bytes[o];
       if (status < 0x90 ||
           status > 0x9F ||

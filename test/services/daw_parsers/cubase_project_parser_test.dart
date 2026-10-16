@@ -153,6 +153,29 @@ class _Archive {
     end();
   }
 
+  /// A part as Cubase SX, 4 and 5 write one: 43-byte notes — status, start,
+  /// channel, pitch, velocity, flags (2), four zeros, no attributes, the
+  /// length, 16 zeros and the note-off velocity.
+  void legacyMidiPart(String name, double lengthTicks, List<(double, int, int, double)> notes) {
+    begin('MMidiPartEvent', version: 2);
+    zeros(2);
+    f64(0);
+    f64(lengthTicks);
+    begin('MMidiPart', version: 2);
+    string(name);
+    zeros(9);
+    for (final (start, pitch, velocity, length) in notes) {
+      raw([0x90]);
+      f64(start);
+      raw([0, pitch, velocity, 2, 0, 0, 0, 0, 0]);
+      f64(length);
+      zeros(16);
+      raw([0x40]);
+    }
+    end();
+    end();
+  }
+
   /// A pool file as Cubase writes it: an `FNPath` holding the name, the
   /// type ("WAVE", the extension twice, a description) and the folder.
   void poolFile(String name, String folder) {
@@ -167,13 +190,23 @@ class _Archive {
     end();
   }
 
-  Uint8List toCpr() {
+  /// With [version], a `PAppVersion` record saying which Cubase saved it.
+  Uint8List toCpr({String? version}) {
     final arch = Uint8List.fromList(_bytes);
     final out = BytesBuilder();
     void u32(int v) => out.add([(v >> 24) & 255, (v >> 16) & 255, (v >> 8) & 255, v & 255]);
     final rootBody = [...ascii.encode('Arrangement1'), 0];
+    final versionText = [if (version != null) ...ascii.encode('Version $version'), 0];
+    final versionChunk = [
+      if (version != null) ...[
+        ...ascii.encode('ROOT'),
+        ...[0, 0, 0, 4 + versionText.length],
+        ...[0, 0, 0, versionText.length],
+        ...versionText,
+      ],
+    ];
     out.add(ascii.encode('RIFF'));
-    u32(4 + 8 + rootBody.length + 8 + arch.length);
+    u32(4 + 8 + rootBody.length + 8 + arch.length + versionChunk.length);
     out.add(ascii.encode('NUND'));
     out.add(ascii.encode('ROOT'));
     u32(rootBody.length);
@@ -181,6 +214,7 @@ class _Archive {
     out.add(ascii.encode('ARCH'));
     u32(arch.length);
     out.add(arch);
+    out.add(versionChunk);
     return out.toBytes();
   }
 }
@@ -343,6 +377,77 @@ void main() {
         MidiNote(startTick: 480, lengthTicks: 240, pitch: 38, velocity: 1),
         MidiNote(startTick: 1800, lengthTicks: 120, pitch: 40, velocity: 80),
       ]);
+    });
+  });
+
+  group('Cubase SX, 4 and 5', () {
+    Uint8List legacy(String version) {
+      final a = _Archive();
+      a.begin('MTrackList');
+      a.track('MMidiTrackEvent', 'Nord rack');
+      a.legacyMidiPart('Nord rack', 1920, [(0, 50, 100, 240), (480, 62, 90, 240), (960, 48, 80, 480)]);
+      a.end();
+      return a.toCpr(version: version);
+    }
+
+    test('their notes are read — 51 real projects read none', () {
+      final clips = CubaseProjectParser(legacy('5.1.0')).readMidiClips();
+      expect(clips.single.notes, const [
+        MidiNote(startTick: 0, lengthTicks: 240, pitch: 50, velocity: 100),
+        MidiNote(startTick: 480, lengthTicks: 240, pitch: 62, velocity: 90),
+        MidiNote(startTick: 960, lengthTicks: 480, pitch: 48, velocity: 80),
+      ]);
+      expect(CubaseProjectParser(legacy('3.1.1')).readMidiClips().single.notes, hasLength(3));
+    });
+
+    test('the same bytes in a newer project are not notes', () {
+      expect(CubaseProjectParser(legacy('13.0.41')).readMidiClips(), isEmpty);
+    });
+
+    test('appVersion reads the version record, whatever its length', () {
+      expect(CubaseProjectParser.appVersion(legacy('5.1.0')), '5.1.0');
+      expect(CubaseProjectParser.appVersion(legacy('13.0.41')), '13.0.41');
+      expect(CubaseProjectParser.appVersion(_project()), isNull);
+    });
+  });
+
+  group('plug-ins of older versions', () {
+    test('Cubase 4 writes a value with no NUL — its plug-ins still read', () {
+      final a = _Archive();
+      a.begin('MTrackList');
+      for (final name in ['QuadraFuzz', 'GEQ-30']) {
+        a.raw([0, 0, 0, 12, ...ascii.encode('Plugin Name'), 0, 0, 8]);
+        a.raw([0, 0, 0, name.length, ...ascii.encode(name)]);
+        a.raw([0, 0, 0, 18, ...ascii.encode('Audio Input Count'), 0, 0, 1]);
+        a.zeros(8);
+      }
+      a.end();
+      expect(CubaseProjectParser(a.toCpr(version: '4.1.3')).readStats().plugins,
+          ['GEQ-30', 'QuadraFuzz']);
+    });
+
+    test('Cubase SX 3 names them only in its device paths', () {
+      // As a real SX 3 project writes them: a CONT string per step.
+      void path(_Archive a, List<String> steps) {
+        for (final step in steps) {
+          a.raw(ascii.encode('CONT'));
+          a.string(step);
+        }
+      }
+
+      final a = _Archive();
+      a.begin('MTrackList');
+      path(a, ['Device Root', 'VST Mixer', 'VST Instruments', 'Slot', 'Vanguard']);
+      path(a, ['Device Root', 'VST Mixer', 'VST Instruments', 'Slot 2', 'Vanguard 2']);
+      path(a, ['Device Root', 'VST Mixer', 'Channels', 'Synth', 'Inserts', 'Slot 2', 'Sonalksis TBK Stereo 4']);
+      path(a, ['Device Root', 'VST Mixer', 'Channels', 'Synth 2', 'Inserts', 'Slot', 'Sonalksis TBK Stereo 9']);
+      path(a, ['Device Root', 'VST Mixer', 'Channels', 'Synth 3', 'Inserts', 'Slot', 'Pro-Q 3']);
+      path(a, ['Device Root', 'VST Mixer', 'Channels', 'Audio 1']);
+      a.end();
+      expect(CubaseProjectParser(a.toCpr(version: '3.1.1')).readStats().plugins,
+          ['Pro-Q 3', 'Sonalksis TBK Stereo', 'Vanguard'],
+          reason: 'instance numbers dropped where a name comes numbered more than once; '
+              'a lone "Pro-Q 3" keeps its 3');
     });
   });
 

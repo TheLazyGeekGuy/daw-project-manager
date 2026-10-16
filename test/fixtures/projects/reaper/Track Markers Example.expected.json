@@ -1,0 +1,26 @@
+{
+  "Reaper Daw Manager Example File with Track Markers.rpp": {
+    "dawType": "Reaper",
+    "dawVersion": "7.78",
+    "bpm": 120.0,
+    "key": null,
+    "markers": [
+      "Track 1: HelloDAW Project Manager",
+      "Track 2: This is the result of a recording session",
+      "Track 3: I made a simple example for you to parse",
+      "Track 4: But I could have adapted other parameters like BPM etc I set BPM to 200 now"
+    ],
+    "stats": {
+      "audio": 0,
+      "midi": 0,
+      "instrument": 0,
+      "sampler": 0,
+      "bus": 0,
+      "folder": 0,
+      "plugins": [],
+      "midiClips": 0
+    },
+    "midiClips": [],
+    "sampleReferences": []
+  }
+}

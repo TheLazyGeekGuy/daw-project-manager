@@ -1,0 +1,268 @@
+{
+  "Blur - Song 2 (TetraSound Rmx).flp": {
+    "dawType": "FL Studio",
+    "dawVersion": "7.0",
+    "bpm": 145.0,
+    "key": null,
+    "markers": [],
+    "stats": {
+      "audio": 3,
+      "midi": 0,
+      "instrument": 6,
+      "sampler": 13,
+      "bus": 0,
+      "folder": 0,
+      "plugins": [
+        "CronoX",
+        "Fruity Delay 2",
+        "Fruity Flangus",
+        "Fruity Love Philter",
+        "Fruity Multiband Compressor",
+        "Fruity Parametric EQ 2",
+        "Fruity Reeverb 2",
+        "Fruity slicer",
+        "reFX Vanguard",
+        "Waves RBass"
+      ],
+      "midiClips": 18
+    },
+    "midiClips": [
+      {
+        "name": "Musica Midi",
+        "track": "Sampler #2",
+        "ppq": 96,
+        "lengthTicks": 24960,
+        "notes": 3376,
+        "events": 0,
+        "content": "e71ab74e77e1"
+      },
+      {
+        "name": "bass normal",
+        "track": "CronoX",
+        "ppq": 96,
+        "lengthTicks": 384,
+        "notes": 12,
+        "events": 0,
+        "content": "fdfcc77df3dc"
+      },
+      {
+        "name": "Bassline da Music",
+        "track": "CronoX",
+        "ppq": 96,
+        "lengthTicks": 768,
+        "notes": 24,
+        "events": 0,
+        "content": "5e4c5bc5271c"
+      },
+      {
+        "name": "bass ritmo",
+        "track": "CronoX",
+        "ppq": 96,
+        "lengthTicks": 1536,
+        "notes": 48,
+        "events": 0,
+        "content": "1e7417e01107"
+      },
+      {
+        "name": "Crash #2",
+        "track": "CRASH5 #2",
+        "ppq": 96,
+        "lengthTicks": 2304,
+        "notes": 13,
+        "events": 0,
+        "content": "74b4fc12e9fe"
+      },
+      {
+        "name": "Melody Intro",
+        "track": "reFX Vanguard",
+        "ppq": 96,
+        "lengthTicks": 768,
+        "notes": 16,
+        "events": 0,
+        "content": "a0f73c3e0327"
+      },
+      {
+        "name": "Melody Intro #2",
+        "track": "reFX Vanguard",
+        "ppq": 96,
+        "lengthTicks": 1536,
+        "notes": 32,
+        "events": 0,
+        "content": "23bfc24e9df9"
+      },
+      {
+        "name": "lead 02",
+        "track": "reFX Vanguard #2",
+        "ppq": 96,
+        "lengthTicks": 768,
+        "notes": 16,
+        "events": 0,
+        "content": "3b1675d1bd5f"
+      },
+      {
+        "name": "lead 02 #2",
+        "track": "reFX Vanguard #2",
+        "ppq": 96,
+        "lengthTicks": 384,
+        "notes": 8,
+        "events": 0,
+        "content": "000ee9b94313"
+      },
+      {
+        "name": "lead 02 ritmo",
+        "track": "reFX Vanguard #2",
+        "ppq": 96,
+        "lengthTicks": 1536,
+        "notes": 32,
+        "events": 0,
+        "content": "8d5c3674c24f"
+      },
+      {
+        "name": "Pattern 29",
+        "track": "reFX Vanguard #2",
+        "ppq": 96,
+        "lengthTicks": 384,
+        "notes": 1,
+        "events": 0,
+        "content": "a7fe1bb6b786"
+      },
+      {
+        "name": "Pattern 30",
+        "track": "reFX Vanguard #3",
+        "ppq": 96,
+        "lengthTicks": 9216,
+        "notes": 239,
+        "events": 0,
+        "content": "4e701fd8e7a0"
+      },
+      {
+        "name": "Pattern 32",
+        "track": "reFX Vanguard #3",
+        "ppq": 96,
+        "lengthTicks": 3072,
+        "notes": 78,
+        "events": 0,
+        "content": "f3b5d6df68e4"
+      },
+      {
+        "name": "snare sub longa",
+        "track": "SNARE12",
+        "ppq": 96,
+        "lengthTicks": 3072,
+        "notes": 124,
+        "events": 0,
+        "content": "b6e56e8fb0cf"
+      },
+      {
+        "name": "snare sub curta",
+        "track": "SNARE12",
+        "ppq": 96,
+        "lengthTicks": 1536,
+        "notes": 76,
+        "events": 0,
+        "content": "edb819033d65"
+      },
+      {
+        "name": "talk lead",
+        "track": "reFX Vanguard #3",
+        "ppq": 96,
+        "lengthTicks": 6912,
+        "notes": 94,
+        "events": 0,
+        "content": "7c63c75b4f83"
+      },
+      {
+        "name": "talk lead #2",
+        "track": "reFX Vanguard #3",
+        "ppq": 96,
+        "lengthTicks": 4224,
+        "notes": 80,
+        "events": 0,
+        "content": "51b780d30a95"
+      },
+      {
+        "name": "talk lead 2",
+        "track": "reFX Vanguard #3",
+        "ppq": 96,
+        "lengthTicks": 9600,
+        "notes": 84,
+        "events": 0,
+        "content": "b490aa1613ce"
+      }
+    ],
+    "sampleReferences": [
+      {
+        "file": "nova musica.wav",
+        "use": "plugin"
+      },
+      {
+        "file": "ANP_(proc)kick54.wav",
+        "use": "sampler"
+      },
+      {
+        "file": "ANP_(proc)kick54.wav",
+        "use": "sampler"
+      },
+      {
+        "file": "CLAP10.wav",
+        "use": "sampler"
+      },
+      {
+        "file": "CRASH5.wav",
+        "use": "sampler"
+      },
+      {
+        "file": "HIHAT382(OPEN).wav",
+        "use": "sampler"
+      },
+      {
+        "file": "HIHAT15(CLSD).wav",
+        "use": "sampler"
+      },
+      {
+        "file": "HIHAT98(CLSD).wav",
+        "use": "sampler"
+      },
+      {
+        "file": "HIHAT23(CLSD).wav",
+        "use": "sampler"
+      },
+      {
+        "file": "KICK120.wav",
+        "use": "sampler"
+      },
+      {
+        "file": "SNARE78.wav",
+        "use": "sampler"
+      },
+      {
+        "file": "HIHAT34(OPEN).wav",
+        "use": "sampler"
+      },
+      {
+        "file": "HIHAT414(OPEN).wav",
+        "use": "sampler"
+      },
+      {
+        "file": "SNARE12.wav",
+        "use": "plugin"
+      },
+      {
+        "file": "CRASH5.wav",
+        "use": "plugin"
+      },
+      {
+        "file": "wuhull.wav",
+        "use": "audio"
+      },
+      {
+        "file": "CRASH25.wav",
+        "use": "audio"
+      },
+      {
+        "file": "Subida 02.wav",
+        "use": "audio"
+      }
+    ]
+  }
+}

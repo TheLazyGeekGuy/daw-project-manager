@@ -109,7 +109,20 @@ class GoogleDriveSyncService {
       : 'DAW Project Manager';
   static const String _databaseFileName = 'database_backup.json';
   static const String _metadataFileName = 'sync_metadata.json';
-  static const String _credentialsStorageKey = 'google_drive_credentials_json';
+  /// Where this library's sign-in is kept in the OS credential store
+  /// (Windows, Linux; macOS keeps a file inside the library's own folder).
+  ///
+  /// An isolated library — a pull-request build, a dev run, the UI tests —
+  /// keeps its own, as it keeps its own Drive folder: sharing the stable
+  /// app's signed every such build in as the user, with their real account.
+  static String get _credentialsStorageKey => credentialsStorageKeyFor(
+        appDataDirName,
+        isolated: isUsingIsolatedAppData,
+      );
+
+  @visibleForTesting
+  static String credentialsStorageKeyFor(String dirName, {required bool isolated}) =>
+      isolated ? 'google_drive_credentials_json_$dirName' : 'google_drive_credentials_json';
   static const String _backupTimestampBoxName = 'backup_timestamps';
   
   bool _isInitialized = false;

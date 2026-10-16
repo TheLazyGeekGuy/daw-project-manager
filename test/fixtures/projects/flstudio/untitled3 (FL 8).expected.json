@@ -1,0 +1,150 @@
+{
+  "untitled3.flp": {
+    "dawType": "FL Studio",
+    "dawVersion": "8.0",
+    "bpm": 145.0,
+    "key": null,
+    "markers": [],
+    "stats": {
+      "audio": 9,
+      "midi": 0,
+      "instrument": 2,
+      "sampler": 7,
+      "bus": 0,
+      "folder": 0,
+      "plugins": [
+        "CronoX",
+        "Fruity Delay 2",
+        "Fruity Limiter",
+        "Fruity Love Philter",
+        "Fruity Multiband Compressor",
+        "Fruity Parametric EQ 2",
+        "Fruity Reeverb 2",
+        "reFX Vanguard"
+      ],
+      "midiClips": 6
+    },
+    "midiClips": [
+      {
+        "name": "CronoX",
+        "track": "CronoX",
+        "ppq": 96,
+        "lengthTicks": 768,
+        "notes": 24,
+        "events": 0,
+        "content": "812dd4395a09"
+      },
+      {
+        "name": "CronoX #3",
+        "track": "CronoX",
+        "ppq": 96,
+        "lengthTicks": 1536,
+        "notes": 48,
+        "events": 0,
+        "content": "629e73a955b4"
+      },
+      {
+        "name": "CronoX #2",
+        "track": "CronoX",
+        "ppq": 96,
+        "lengthTicks": 768,
+        "notes": 16,
+        "events": 0,
+        "content": "4d42f43f6c65"
+      },
+      {
+        "name": "reFX Vanguard",
+        "track": "reFX Vanguard",
+        "ppq": 96,
+        "lengthTicks": 1536,
+        "notes": 13,
+        "events": 0,
+        "content": "9522a49e20b6"
+      },
+      {
+        "name": "reFX Vanguard #2",
+        "track": "reFX Vanguard",
+        "ppq": 96,
+        "lengthTicks": 1536,
+        "notes": 16,
+        "events": 0,
+        "content": "861691864017"
+      },
+      {
+        "name": "Pattern 12",
+        "track": "EH_Snare 14",
+        "ppq": 96,
+        "lengthTicks": 1536,
+        "notes": 60,
+        "events": 0,
+        "content": "dc20731624cb"
+      }
+    ],
+    "sampleReferences": [
+      {
+        "file": "phanatic.wav",
+        "use": "sampler"
+      },
+      {
+        "file": "VEE Snare 002.wav",
+        "use": "sampler"
+      },
+      {
+        "file": "VEE Open Hihat 20.wav",
+        "use": "sampler"
+      },
+      {
+        "file": "VEE Open Hihat 021.wav",
+        "use": "sampler"
+      },
+      {
+        "file": "VEE Open Hihat 09.wav",
+        "use": "sampler"
+      },
+      {
+        "file": "Crash 01.wav",
+        "use": "sampler"
+      },
+      {
+        "file": "EH_Snare 14.wav",
+        "use": "sampler"
+      },
+      {
+        "file": "EH_Effects 12.wav",
+        "use": "audio"
+      },
+      {
+        "file": "VEE Synth Sound 036.wav",
+        "use": "audio"
+      },
+      {
+        "file": "VEE Synth Sound 036.wav",
+        "use": "audio"
+      },
+      {
+        "file": "VEE Synth Sound 044.wav",
+        "use": "audio"
+      },
+      {
+        "file": "VEE Synth Sound 045.wav",
+        "use": "audio"
+      },
+      {
+        "file": "VEE Synth Sound 094.wav",
+        "use": "audio"
+      },
+      {
+        "file": "EH_Effects 21.wav",
+        "use": "audio"
+      },
+      {
+        "file": "EH_Effects 26.wav",
+        "use": "audio"
+      },
+      {
+        "file": "EH_Effects 7.wav",
+        "use": "audio"
+      }
+    ]
+  }
+}

@@ -16,12 +16,17 @@ import 'embedded_audio_paths.dart';
 /// * 64 (word) starts a new channel; 21 (byte) is that channel's type —
 ///   0 sampler, 1 native generator, 2 plug-in generator, 4 audio clip
 ///   (3 layer and 5 automation aren't tracks).
-/// * 201 (text) is a plug-in's internal name; 203 (text) its display name.
-///   Wrapped VST/VST3s report `Fruity Wrapper` as their internal name, so the
-///   display name stands in for those.
+/// * 201 (text) is a plug-in's internal name; 203 (text) its display name —
+///   192 (text) before FL 12 (FL 7 and 10 write it after the plug-in's
+///   state). Wrapped VST/VST3s report `Fruity Wrapper` as their internal
+///   name; the wrapper's state (213) names the plug-in it hosts, and the
+///   display name — often a preset's — stands in when it doesn't.
 /// * 65 (word) starts a pattern, 193 (text) names it, and 224 (data) holds
-///   its notes as 24-byte records: position u32, flags u16, channel u16,
-///   length u32, key u16, then pitch/pan/velocity bytes (velocity at +21).
+///   its notes: position u32, flags u16, channel u16, length u32, then the
+///   key. Since FL 9 a record is 24 bytes — key u16, group u16, fine pitch,
+///   a byte, release, MIDI channel (+19), pan, velocity (+21), mod X/Y. FL 7
+///   wrote 20 — key, fine pitch, release, MIDI channel (+15), pan, velocity
+///   (+17), mod X/Y, a byte each (see [_noteRecordSize]).
 ///
 /// Text payloads are UTF-16LE since FL 11.5 and ASCII before it.
 class FlpProjectParser {
@@ -31,15 +36,27 @@ class FlpProjectParser {
   final ByteData _data;
 
   static const _wrapper = 'Fruity Wrapper';
+  static final _instanceNumber = RegExp(r'\s+#\d+$');
 
   ProjectStats readStats({bool countMidiClips = true}) {
     final events = _events().toList();
     var sampler = 0, instrument = 0, audio = 0;
     final plugins = <String>[];
-    String? pendingInternal;
+    // One plug-in slot at a time — a channel's generator or a mixer effect:
+    // its internal name (201), display name (203, or 192 before FL 12) and,
+    // for a wrapped VST, the name in its state (213). They come in either
+    // order, so the slot is named when the next one starts.
+    String? internal, display, wrapped;
+    void endSlot() {
+      final name = internal == _wrapper ? (wrapped ?? display) : internal;
+      if (name != null && name.isNotEmpty) plugins.add(name);
+      internal = display = wrapped = null;
+    }
 
     for (final e in events) {
       switch (e.id) {
+        case 64:
+          endSlot();
         case 21:
           switch (e.value) {
             case 0:
@@ -51,25 +68,22 @@ class FlpProjectParser {
               audio++;
           }
         case 201:
+          endSlot();
           final name = _text(e);
-          if (pendingInternal != null && pendingInternal != _wrapper) {
-            plugins.add(pendingInternal);
-          }
-          pendingInternal = name.isEmpty ? null : name;
-        case 203:
-          final name = _text(e);
-          if (pendingInternal == _wrapper && name.isNotEmpty) {
-            plugins.add(name);
-            pendingInternal = null;
-          } else if (pendingInternal != null) {
-            plugins.add(pendingInternal);
-            pendingInternal = null;
-          }
+          // FL 7 spells it "Fruity wrapper".
+          internal = name.isEmpty
+              ? null
+              : name.toLowerCase() == _wrapper.toLowerCase()
+                  ? _wrapper
+                  : name;
+        case 203 || 192:
+          // FL numbers a second instance "Sylenth1 #2": the same plug-in.
+          if (internal != null) display ??= _text(e).replaceFirst(_instanceNumber, '');
+        case 213:
+          if (internal == _wrapper) wrapped ??= _wrappedPluginName(e);
       }
     }
-    if (pendingInternal != null && pendingInternal != _wrapper) {
-      plugins.add(pendingInternal);
-    }
+    endSlot();
 
     return ProjectStats(
       samplerTracks: sampler,
@@ -95,7 +109,7 @@ class FlpProjectParser {
       switch (e.id) {
         case 64:
           channel = e.value;
-        case 203:
+        case 203 || 192:
           if (channel >= 0) channelNames.putIfAbsent(channel, () => _text(e));
         case 65:
           pattern = e.value;
@@ -103,12 +117,17 @@ class FlpProjectParser {
           patternNames[pattern] = _text(e);
         case 224:
           final list = patternNotes.putIfAbsent(pattern, () => []);
-          for (var o = e.offset; o + 24 <= e.offset + e.length; o += 24) {
+          final size = _noteRecordSize(e);
+          for (var o = e.offset; o + size <= e.offset + e.length; o += size) {
             final position = _data.getUint32(o, Endian.little);
             final rackChannel = _data.getUint16(o + 6, Endian.little);
             final length = _data.getUint32(o + 8, Endian.little);
-            final key = _data.getUint16(o + 12, Endian.little);
-            final velocity = bytes[o + 21];
+            final key = size == 20 ? bytes[o + 12] : _data.getUint16(o + 12, Endian.little);
+            final velocity = bytes[o + (size == 20 ? 17 : 21)];
+            // A note's own MIDI channel: a pattern imported from a MIDI file
+            // keeps each of its parts on one, and two parts can double a
+            // note — dropped, they collide on one channel in a .mid.
+            final midiChannel = bytes[o + (size == 20 ? 15 : 19)];
             if (key > 127) continue;
             list.add((
               rackChannel,
@@ -117,6 +136,7 @@ class FlpProjectParser {
                 lengthTicks: length < 1 ? 1 : length,
                 pitch: key,
                 velocity: velocity.clamp(1, 127),
+                channel: midiChannel & 0x0F,
               ),
             ));
           }
@@ -187,6 +207,67 @@ class FlpProjectParser {
       }
     }
     return refs;
+  }
+
+  /// How long [notes]' records are: 24 bytes since FL 9, 20 in FL 7's
+  /// files. A payload only one of them divides says which; one both divide
+  /// (every multiple of 120 bytes) goes by which reads as notes — read with
+  /// the wrong size, every record after the first starts mid-note, and
+  /// positions, lengths and keys come out as flag bytes.
+  int _noteRecordSize(_FlpEvent notes) {
+    final fits = [
+      for (final size in const [24, 20])
+        if (notes.length % size == 0) size,
+    ];
+    if (fits.length == 1) return fits.single;
+    if (fits.isEmpty) return 24;
+    var best = 24, bestScore = -1.0;
+    for (final size in fits) {
+      final score = _plausibleNotes(notes, size);
+      if (score > bestScore) (best, bestScore) = (size, score);
+    }
+    return best;
+  }
+
+  /// The share of [notes]' records that, read [size] bytes at a time, look
+  /// like notes: a key in range, a position and length under a day of ticks.
+  double _plausibleNotes(_FlpEvent notes, int size) {
+    const sane = 1 << 24;
+    var good = 0, all = 0;
+    for (var o = notes.offset; o + size <= notes.offset + notes.length; o += size) {
+      all++;
+      final key = size == 20 ? bytes[o + 12] : _data.getUint16(o + 12, Endian.little);
+      if (key <= 127 &&
+          _data.getUint32(o, Endian.little) < sane &&
+          _data.getUint32(o + 8, Endian.little) < sane) {
+        good++;
+      }
+    }
+    return all == 0 ? 0 : good / all;
+  }
+
+  /// The plug-in a Fruity Wrapper hosts, from its state (213): a u32, then
+  /// records of id u32, size u64 and data, record 54 being the plug-in's own
+  /// name — "Sylenth1" on a channel renamed after its preset. Null when the
+  /// state is laid out otherwise.
+  String? _wrappedPluginName(_FlpEvent state) {
+    var pos = state.offset + 4;
+    final end = state.offset + state.length;
+    while (pos + 12 <= end) {
+      final id = _data.getUint32(pos, Endian.little);
+      final size = _data.getUint64(pos + 4, Endian.little);
+      pos += 12;
+      // A u64 past 2^63 reads negative: FL 7's state is laid out otherwise.
+      if (size < 0 || size > end - pos) return null;
+      if (id == 54) {
+        final name = utf8.decode(bytes.sublist(pos, pos + size), allowMalformed: true)
+            .replaceAll('\u0000', '')
+            .trim();
+        return name.isEmpty ? null : name;
+      }
+      pos += size;
+    }
+    return null;
   }
 
   int get _ppq {

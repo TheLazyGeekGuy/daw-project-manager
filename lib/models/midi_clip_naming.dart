@@ -251,7 +251,7 @@ Map<MidiNameField, String?> midiNameParts(
     ),
     MidiNameField.bpm: tempo == null || tempo <= 0
         ? null
-        : '${_bpmText(tempo)}BPM',
+        : '${midiBpmText(tempo)}BPM',
     MidiNameField.key: key == null || key.isEmpty ? null : key,
     MidiNameField.bars: labels.bars(midiClipBars(clip, signature)),
     MidiNameField.timeSignature: signature == TimeSignature.common
@@ -262,7 +262,10 @@ Map<MidiNameField, String?> midiNameParts(
   };
 }
 
-String _bpmText(double bpm) {
+/// A tempo as names write it: whole when it is ("146"), else to two places
+/// with trailing zeros gone ("128.5") — a .mid's microseconds per beat make
+/// 146.00032 out of 146, which is "146", never "146." or "146.00".
+String midiBpmText(double bpm) {
   if (bpm == bpm.roundToDouble()) return bpm.round().toString();
   return bpm
       .toStringAsFixed(2)

@@ -4,6 +4,7 @@ import 'dart:typed_data';
 import 'package:flutter_test/flutter_test.dart';
 
 import 'package:daw_project_manager/models/midi_clip.dart';
+import 'package:daw_project_manager/services/midi/midi_file_import.dart';
 import 'package:daw_project_manager/services/midi/midi_file_writer.dart';
 
 /// Just enough of a Standard MIDI File reader to check what the writer wrote.
@@ -195,6 +196,50 @@ void main() {
     ], length: 300000)));
     expect(smf.events.first.$1, 200000);
     expect(smf.endTick, 300000);
+  });
+
+  group('same-pitch notes that overlap on one channel', () {
+    MidiNote note(int start, int length, {int pitch = 60, int channel = 0}) =>
+        MidiNote(startTick: start, lengthTicks: length, pitch: pitch, velocity: 100, channel: channel);
+    // Sorted by start, pitch, channel: the order notes are compared in.
+    List<(int, int, int, int)> rows(Iterable<MidiNote> notes) =>
+        [for (final n in notes) (n.startTick, n.lengthTicks, n.pitch, n.channel)]
+          ..sort((a, b) => a.$1 != b.$1 ? a.$1 - b.$1 : a.$3 != b.$3 ? a.$3 - b.$3 : a.$4 - b.$4);
+    List<(int, int, int, int)> roundTrip(List<MidiNote> notes) {
+      final clip = MidiClip(name: 'x', ppq: 96, lengthTicks: 1920, notes: notes);
+      return rows(importMidiFile(encodeMidiClip(clip), 'x.mid')!.clips.single.notes);
+    }
+
+    test('a doubled note is written once — the longer of the two', () {
+      // Read from a real FL Studio 7 pattern; written twice, it came back
+      // as a 10-tick blip beside the note.
+      final notes = [note(0, 96), note(0, 48), note(96, 96)];
+      expect(rows(notesForMidiFile(notes)), [(0, 96, 60, 0), (96, 96, 60, 0)]);
+      expect(roundTrip(notes), [(0, 96, 60, 0), (96, 96, 60, 0)]);
+    });
+
+    test('a note still sounding ends where the same pitch starts again', () {
+      final notes = [note(0, 192), note(96, 192)];
+      expect(rows(notesForMidiFile(notes)), [(0, 96, 60, 0), (96, 192, 60, 0)]);
+      expect(roundTrip(notes), [(0, 96, 60, 0), (96, 192, 60, 0)],
+          reason: 'not the second one cut short by the note-off of the first');
+    });
+
+    test('a note inside a longer one ends it there', () {
+      final notes = [note(0, 384), note(96, 48)];
+      expect(roundTrip(notes), [(0, 96, 60, 0), (96, 48, 60, 0)]);
+    });
+
+    test('other pitches and other channels are not overlaps', () {
+      final notes = [note(0, 192), note(0, 192, pitch: 64), note(0, 192, channel: 1), note(96, 96, channel: 2)];
+      expect(identical(notesForMidiFile(notes), notes), isTrue);
+      expect(roundTrip(notes), rows(notes));
+    });
+
+    test('what is written is exactly what reads back', () {
+      final notes = [note(0, 500), note(10, 20), note(10, 400), note(300, 50, channel: 3), note(305, 10, channel: 3)];
+      expect(roundTrip(notes), rows(notesForMidiFile(notes)));
+    });
   });
 
   group('midiClipFileName', () {

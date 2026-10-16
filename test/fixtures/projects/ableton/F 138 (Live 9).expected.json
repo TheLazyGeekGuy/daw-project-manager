@@ -1,0 +1,591 @@
+{
+  "28_05_2015_F_138.als": {
+    "dawType": "Ableton Live",
+    "dawVersion": "9.1",
+    "bpm": 138.0,
+    "key": null,
+    "markers": [],
+    "stats": {
+      "audio": 8,
+      "midi": 1,
+      "instrument": 0,
+      "sampler": 0,
+      "bus": 5,
+      "folder": 0,
+      "plugins": [],
+      "midiClips": 2
+    },
+    "midiClips": [
+      {
+        "name": "",
+        "track": "Bass",
+        "ppq": 960,
+        "lengthTicks": 7680,
+        "notes": 18,
+        "events": 0,
+        "content": "94a4eac9ebf2"
+      },
+      {
+        "name": "",
+        "track": "Bass",
+        "ppq": 960,
+        "lengthTicks": 7680,
+        "notes": 8,
+        "events": 0,
+        "content": "e6f1ff64d8d7"
+      }
+    ],
+    "sampleReferences": [
+      {
+        "file": "Freeze 4-BazzISM2-2.wav",
+        "use": "audio",
+        "kind": "processed"
+      },
+      {
+        "file": "Freeze 4-BazzISM2-2.wav",
+        "use": "audio",
+        "kind": "processed"
+      },
+      {
+        "file": "Freeze 4-BazzISM2-2.wav",
+        "use": "audio",
+        "kind": "processed"
+      },
+      {
+        "file": "Freeze 4-BazzISM2-2.wav",
+        "use": "audio",
+        "kind": "processed"
+      },
+      {
+        "file": "Freeze 4-BazzISM2-2.wav",
+        "use": "audio",
+        "kind": "processed"
+      },
+      {
+        "file": "Freeze 4-BazzISM2-2.wav",
+        "use": "audio",
+        "kind": "processed"
+      },
+      {
+        "file": "EHU_MIN_SnareDrum.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "EHU_MIN_SnareDrum.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "EHU_MIN_SnareDrum.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "EHU_MIN_SnareDrum.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "EHU_MIN_SnareDrum.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "EHU_MIN_SnareDrum.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "EHU_MIN_SnareDrum.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "EHU_MIN_SnareDrum.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "EHU_IDH_SnareDrum.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "EHU_IDH_SnareDrum.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "EHU_IDH_SnareDrum.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "EHU_IDH_SnareDrum.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "EHU_IDH_SnareDrum.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "EHU_IDH_SnareDrum.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "EHU_IDH_SnareDrum.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "EHU_IDH_SnareDrum.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "EHU_QTP_HiHat2.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "EHU_QTP_HiHat2.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "EHU_QTP_HiHat2.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "EHU_QTP_HiHat2.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "EHU_QTP_HiHat2.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "EHU_QTP_HiHat2.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "EHU_QTP_HiHat2.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "EHU_QTP_HiHat2.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "EHU_QTP_HiHat2.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "EHU_QTP_HiHat2.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "EHU_QTP_HiHat2.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "EHU_QTP_HiHat2.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "EHU_QTP_HiHat2.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "EHU_QTP_HiHat2.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "EHU_QTP_HiHat2.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "EHU_QTP_HiHat2.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "VDUB2 Closed Hihat 016.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "VDUB2 Closed Hihat 016.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "VDUB2 Closed Hihat 016.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "VDUB2 Closed Hihat 016.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "VDUB2 Closed Hihat 016.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "VDUB2 Closed Hihat 016.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "VDUB2 Closed Hihat 016.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "VDUB2 Closed Hihat 016.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "VDUB2 Closed Hihat 016.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "VDUB2 Closed Hihat 016.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "VDUB2 Closed Hihat 016.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "VDUB2 Closed Hihat 016.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "VDUB2 Closed Hihat 016.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "VDUB2 Closed Hihat 016.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "VDUB2 Closed Hihat 016.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "VDUB2 Closed Hihat 016.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "VDUB2 Closed Hihat 028.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "VDUB2 Closed Hihat 028.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "VDUB2 Closed Hihat 028.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "VDUB2 Closed Hihat 028.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "VDUB2 Closed Hihat 028.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "VDUB2 Closed Hihat 028.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "VDUB2 Closed Hihat 028.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "VDUB2 Closed Hihat 028.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "VDUB2 Closed Hihat 028.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "VDUB2 Closed Hihat 028.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "VDUB2 Closed Hihat 028.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "VDUB2 Closed Hihat 028.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "VDUB2 Closed Hihat 028.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "VDUB2 Closed Hihat 028.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "VDUB2 Closed Hihat 028.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "VDUB2 Closed Hihat 028.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "VDUB2 Closed Hihat 066.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "VDUB2 Closed Hihat 066.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "VDUB2 Closed Hihat 066.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "VDUB2 Closed Hihat 066.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "VDUB2 Closed Hihat 066.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "VDUB2 Closed Hihat 066.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "VDUB2 Closed Hihat 066.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "VDUB2 Closed Hihat 066.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "VDUB2 Closed Hihat 066.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "VDUB2 Closed Hihat 066.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "VDUB2 Closed Hihat 066.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "VDUB2 Closed Hihat 066.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "VDUB2 Closed Hihat 066.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "VDUB2 Closed Hihat 066.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "VDUB2 Closed Hihat 066.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "VDUB2 Closed Hihat 066.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "EHU_909_ClosedHat1.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "EHU_909_ClosedHat1.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "EHU_909_ClosedHat1.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "EHU_909_ClosedHat1.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "EHU_909_ClosedHat1.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "EHU_909_ClosedHat1.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "EHU_909_ClosedHat1.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "EHU_909_ClosedHat1.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "EHU_909_ClosedHat1.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "EHU_909_ClosedHat1.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "EHU_909_ClosedHat1.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "EHU_909_ClosedHat1.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "EHU_909_ClosedHat1.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "EHU_909_ClosedHat1.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "EHU_909_ClosedHat1.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "EHU_909_ClosedHat1.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "EHU_909_ClosedHat1.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "EHU_909_ClosedHat1.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "EHU_909_ClosedHat1.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "EHU_909_ClosedHat1.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "EHU_909_ClosedHat1.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "EHU_909_ClosedHat1.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "EHU_909_ClosedHat1.wav",
+        "use": "audio",
+        "kind": "imported"
+      },
+      {
+        "file": "EHU_909_ClosedHat1.wav",
+        "use": "audio",
+        "kind": "imported"
+      }
+    ]
+  }
+}

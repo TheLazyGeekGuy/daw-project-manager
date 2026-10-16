@@ -1,0 +1,228 @@
+{
+  "motherfucker bassline.flp": {
+    "dawType": "FL Studio",
+    "dawVersion": "20.6",
+    "bpm": 145.0,
+    "key": null,
+    "markers": [],
+    "stats": {
+      "audio": 24,
+      "midi": 0,
+      "instrument": 4,
+      "sampler": 8,
+      "bus": 0,
+      "folder": 0,
+      "plugins": [
+        "3x Osc",
+        "CronoX",
+        "Distructor",
+        "Fruity Compressor",
+        "Fruity Limiter",
+        "Fruity Parametric EQ 2",
+        "Fruity Reeverb 2",
+        "PoiZone",
+        "Sytrus"
+      ],
+      "midiClips": 7
+    },
+    "midiClips": [
+      {
+        "name": "Pattern 1",
+        "track": "Bass 2 16th-C2-145Bpm(Wet)",
+        "ppq": 96,
+        "lengthTicks": 384,
+        "notes": 2,
+        "events": 0,
+        "content": "1731180cfca0"
+      },
+      {
+        "name": "CronoX",
+        "track": "ANP_(proc)kick58",
+        "ppq": 96,
+        "lengthTicks": 384,
+        "notes": 4,
+        "events": 0,
+        "content": "cbf6d3e64798"
+      },
+      {
+        "name": "CronoX",
+        "track": "Bass 2 16th-C2-145Bpm(Wet)",
+        "ppq": 96,
+        "lengthTicks": 384,
+        "notes": 12,
+        "events": 0,
+        "content": "62f82d2a2b99"
+      },
+      {
+        "name": "CronoX",
+        "track": "CronoX",
+        "ppq": 96,
+        "lengthTicks": 384,
+        "notes": 12,
+        "events": 0,
+        "content": "d16fdaa14ccc"
+      },
+      {
+        "name": "CronoX",
+        "track": "bass",
+        "ppq": 96,
+        "lengthTicks": 384,
+        "notes": 12,
+        "events": 0,
+        "content": "520ef35bf595"
+      },
+      {
+        "name": "CronoX",
+        "track": "PoiZone",
+        "ppq": 96,
+        "lengthTicks": 384,
+        "notes": 12,
+        "events": 0,
+        "content": "a4afe1092d15"
+      },
+      {
+        "name": "Pattern 3",
+        "track": "CronoX",
+        "ppq": 96,
+        "lengthTicks": 1536,
+        "notes": 48,
+        "events": 0,
+        "content": "25799d29089d"
+      }
+    ],
+    "sampleReferences": [
+      {
+        "file": "ANP_(proc)kick58.wav",
+        "use": "sampler"
+      },
+      {
+        "file": "cosma kick.wav",
+        "use": "sampler"
+      },
+      {
+        "file": "gms kik 2.wav",
+        "use": "sampler"
+      },
+      {
+        "file": "Clap Basic.wav",
+        "use": "sampler"
+      },
+      {
+        "file": "Hat Basic.wav",
+        "use": "sampler"
+      },
+      {
+        "file": "Bass 2 16th-C2-145Bpm(Wet).wav",
+        "use": "sampler"
+      },
+      {
+        "file": "1st atmos.wav",
+        "use": "audio"
+      },
+      {
+        "file": "open hat.wav",
+        "use": "audio"
+      },
+      {
+        "file": "snare.wav",
+        "use": "audio"
+      },
+      {
+        "file": "All stuff.wav",
+        "use": "audio"
+      },
+      {
+        "file": "Groover.wav",
+        "use": "audio"
+      },
+      {
+        "file": "Psychedellic synth.wav",
+        "use": "audio"
+      },
+      {
+        "file": "nova musica.wav",
+        "use": "plugin"
+      },
+      {
+        "file": "bass.wav",
+        "use": "sampler"
+      },
+      {
+        "file": "bass.wav",
+        "use": "sampler"
+      },
+      {
+        "file": "Impact 3-D#.wav",
+        "use": "audio"
+      },
+      {
+        "file": "reverse chords.wav",
+        "use": "audio"
+      },
+      {
+        "file": "ES2 Fat Fucker.wav",
+        "use": "audio"
+      },
+      {
+        "file": "WIld east.wav",
+        "use": "audio"
+      },
+      {
+        "file": "Crash 01.wav",
+        "use": "audio"
+      },
+      {
+        "file": "SIde BEGINNINg.wav",
+        "use": "audio"
+      },
+      {
+        "file": "music back.wav",
+        "use": "audio"
+      },
+      {
+        "file": "Octave sidechain.wav",
+        "use": "audio"
+      },
+      {
+        "file": "SEQ CHORDS.wav",
+        "use": "audio"
+      },
+      {
+        "file": "ES2 SYNC.wav",
+        "use": "audio"
+      },
+      {
+        "file": "Reactionary Synth.wav",
+        "use": "audio"
+      },
+      {
+        "file": "CronoX (consolidated).wav",
+        "use": "audio"
+      },
+      {
+        "file": "Motherfucking Bassline.wav",
+        "use": "audio"
+      },
+      {
+        "file": "Put the fucking music back.wav",
+        "use": "audio"
+      },
+      {
+        "file": "BornLoop.wav",
+        "use": "audio"
+      },
+      {
+        "file": "BB4 bitch.wav",
+        "use": "audio"
+      },
+      {
+        "file": "Es2 Chord.wav",
+        "use": "audio"
+      },
+      {
+        "file": "Blue van.wav",
+        "use": "audio"
+      }
+    ]
+  }
+}
