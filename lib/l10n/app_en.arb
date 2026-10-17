@@ -3570,7 +3570,7 @@
   "@resetOnboarding": {},
   "onboardingWelcomeTitle": "Welcome to DAW Project Manager",
   "@onboardingWelcomeTitle": {},
-  "onboardingWelcomeBody": "Organize all your music projects across every DAW in one place.",
+  "onboardingWelcomeBody": "Every project, every DAW, one place.",
   "@onboardingWelcomeBody": {},
   "onboardingFeatureScanFolders": "Scan DAW project folders automatically",
   "@onboardingFeatureScanFolders": {},

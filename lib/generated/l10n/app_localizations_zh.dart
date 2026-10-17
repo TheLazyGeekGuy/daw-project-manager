@@ -3695,7 +3695,7 @@ class AppLocalizationsZh extends AppLocalizations {
   String get onboardingWelcomeTitle => '欢迎使用 DAW Project Manager';
 
   @override
-  String get onboardingWelcomeBody => '在一个地方管理您所有的音乐项目。';
+  String get onboardingWelcomeBody => '每个项目，每款 DAW，尽在一处。';
 
   @override
   String get onboardingFeatureScanFolders => '自动扫描DAW项目文件夹';

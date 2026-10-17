@@ -4,7 +4,7 @@
 
 <h1 align="center">DAW Project Manager</h1>
 
-<p align="center">Every music project, on every drive, in every DAW — in one place.</p>
+<p align="center"><b>Every project, every DAW, one place.</b></p>
 
 <p align="center">
   <a href="https://github.com/bandpassrecords/daw-project-manager/releases/latest"><img src="https://img.shields.io/github/v/release/bandpassrecords/daw-project-manager?label=release&color=4A9EFF" alt="Latest release"></a>

@@ -3831,7 +3831,7 @@ class AppLocalizationsIt extends AppLocalizations {
 
   @override
   String get onboardingWelcomeBody =>
-      'Organizza tutti i tuoi progetti musicali in un unico posto.';
+      'Ogni progetto, ogni DAW, un unico posto.';
 
   @override
   String get onboardingFeatureScanFolders =>

@@ -3825,8 +3825,7 @@ class AppLocalizationsPt extends AppLocalizations {
   String get onboardingWelcomeTitle => 'Bem-vindo ao DAW Project Manager';
 
   @override
-  String get onboardingWelcomeBody =>
-      'Organize todos os seus projetos musicais em um só lugar.';
+  String get onboardingWelcomeBody => 'Cada projeto, cada DAW, um só lugar.';
 
   @override
   String get onboardingFeatureScanFolders =>

@@ -2604,7 +2604,7 @@
   "@resetOnboarding": {},
   "onboardingWelcomeTitle": "Bienvenido a DAW Project Manager",
   "@onboardingWelcomeTitle": {},
-  "onboardingWelcomeBody": "Organiza todos tus proyectos musicales en un solo lugar.",
+  "onboardingWelcomeBody": "Cada proyecto, cada DAW, un solo lugar.",
   "@onboardingWelcomeBody": {},
   "onboardingFeatureScanFolders": "Escanea automáticamente las carpetas de proyectos DAW",
   "@onboardingFeatureScanFolders": {},

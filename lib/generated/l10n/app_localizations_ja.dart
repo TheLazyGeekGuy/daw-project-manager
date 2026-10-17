@@ -3732,7 +3732,7 @@ class AppLocalizationsJa extends AppLocalizations {
   String get onboardingWelcomeTitle => 'DAW Project Managerへようこそ';
 
   @override
-  String get onboardingWelcomeBody => 'すべての音楽プロジェクトを一か所で管理できます。';
+  String get onboardingWelcomeBody => 'すべてのプロジェクト、すべてのDAWを、ひとつの場所に。';
 
   @override
   String get onboardingFeatureScanFolders => 'DAWプロジェクトフォルダを自動的にスキャン';

@@ -3825,7 +3825,7 @@ class AppLocalizationsRu extends AppLocalizations {
 
   @override
   String get onboardingWelcomeBody =>
-      'Управляйте всеми музыкальными проектами в одном месте.';
+      'Каждый проект, каждая DAW — в одном месте.';
 
   @override
   String get onboardingFeatureScanFolders =>

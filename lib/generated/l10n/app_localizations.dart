@@ -6452,7 +6452,7 @@ abstract class AppLocalizations {
   /// No description provided for @onboardingWelcomeBody.
   ///
   /// In en, this message translates to:
-  /// **'Organize all your music projects across every DAW in one place.'**
+  /// **'Every project, every DAW, one place.'**
   String get onboardingWelcomeBody;
 
   /// No description provided for @onboardingFeatureScanFolders.
