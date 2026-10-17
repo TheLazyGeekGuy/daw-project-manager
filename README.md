@@ -26,7 +26,7 @@
       <a href="https://github.com/bandpassrecords/daw-project-manager/releases/latest"><img src="resources/os/Linux_logo.svg" height="44" alt=""><br><b>Linux</b></a><br><sub>AppImage · Flatpak · .tar.gz</sub>
     </td>
     <td align="center" width="170">
-      <img src="resources/os/android-head.png" height="44" alt=""><br><b>Android</b><br><sub>closed testing</sub>
+      <a href="https://groups.google.com/g/daw-project-manager-android-testers"><img src="resources/os/android-head.png" height="44" alt=""><br><b>Android</b></a><br><sub><a href="https://groups.google.com/g/daw-project-manager-android-testers">closed testing</a></sub>
     </td>
   </tr>
 </table>
