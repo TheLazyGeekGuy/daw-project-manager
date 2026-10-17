@@ -17,7 +17,7 @@
 <table align="center">
   <tr>
     <td align="center" width="170">
-      <a href="https://github.com/bandpassrecords/daw-project-manager/releases/latest"><img src="resources/os/Windows_logo_-_2012.svg" height="44" alt=""><br><b>Windows</b></a><br><sub>.exe · .msix</sub>
+      <a href="https://apps.microsoft.com/detail/9n8hxzd3hwx7"><img src="resources/os/Windows_logo_-_2012.svg" height="44" alt=""><br><b>Windows</b></a><br><sub><a href="https://apps.microsoft.com/detail/9n8hxzd3hwx7">Microsoft Store</a> · <a href="https://github.com/bandpassrecords/daw-project-manager/releases/latest">.exe</a></sub>
     </td>
     <td align="center" width="170">
       <a href="https://github.com/bandpassrecords/daw-project-manager/releases/latest"><img src="resources/os/MacOS_logo_(2017).svg" height="44" alt=""><br><b>macOS</b></a><br><sub>.dmg · .zip</sub>
