@@ -3231,6 +3231,14 @@
   "@projectDetailLayoutSectionedDescription": {
     "description": "Description of the sectioned project detail layout"
   },
+  "onboardingDetailLayoutTitle": "Pagine dei progetti",
+  "@onboardingDetailLayoutTitle": {
+    "description": "Title of the setup wizard step that picks the project detail page layout"
+  },
+  "onboardingDetailLayoutBody": "Come è organizzata la pagina di un progetto. Puoi cambiarlo quando vuoi con i pulsanti in cima alla pagina.",
+  "@onboardingDetailLayoutBody": {
+    "description": "Subtitle of the setup wizard step that picks the project detail page layout"
+  },
   "stackAsVersions": "Impila come versioni",
   "stackNeedsTwoVersions": "Seleziona almeno due progetti per impilarli come versioni di un progetto principale.",
   "stackCreatedMessage": "{count} versioni impilate in un progetto principale.",

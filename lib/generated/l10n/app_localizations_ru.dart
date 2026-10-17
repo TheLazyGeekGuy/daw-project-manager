@@ -4759,6 +4759,13 @@ class AppLocalizationsRu extends AppLocalizations {
       'Панель слева выбирает по одному разделу.';
 
   @override
+  String get onboardingDetailLayoutTitle => 'Страницы проектов';
+
+  @override
+  String get onboardingDetailLayoutBody =>
+      'Как устроена страница проекта. Переключить можно в любой момент кнопками вверху страницы.';
+
+  @override
   String get stackAsVersions => 'Объединить как версии';
 
   @override

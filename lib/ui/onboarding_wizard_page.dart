@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../generated/l10n/app_localizations.dart';
+import '../models/project_detail_layout.dart';
 import '../providers/providers.dart';
 import '../providers/theme_provider.dart';
 import '../services/auto_start_service.dart';
@@ -34,6 +35,10 @@ class _OnboardingWizardPageState extends ConsumerState<OnboardingWizardPage> {
   // section of settings_page.dart).
   bool get _showFolders => !MobileUtils.isMobile();
 
+  // A phone always gets the single scroll (see ProjectDetailLayout), so the
+  // choice only exists on desktop.
+  bool get _showDetailLayout => !MobileUtils.isMobile();
+
   // The startup step is skipped entirely on platforms that have no
   // launch-at-login concept (mobile).
   bool get _showStartup => AutoStartService.isSupported;
@@ -47,6 +52,7 @@ class _OnboardingWizardPageState extends ConsumerState<OnboardingWizardPage> {
         _LanguagePage(l10n: l10n),
         _ThemePage(l10n: l10n),
         _TabsPage(l10n: l10n),
+        if (_showDetailLayout) _DetailLayoutPage(l10n: l10n),
         if (_showFolders) _FoldersPage(l10n: l10n),
         if (_showUpdates) _UpdatesPage(l10n: l10n),
         _SuggestionsPage(l10n: l10n),
@@ -56,9 +62,14 @@ class _OnboardingWizardPageState extends ConsumerState<OnboardingWizardPage> {
         _DonePage(l10n: l10n),
       ];
 
-  // Welcome, Language, Theme, Tabs, [Folders], [Updates], Suggestions, SessionMode, Phases, [Startup], Done.
+  // Welcome, Language, Theme, Tabs, [DetailLayout], [Folders], [Updates],
+  // Suggestions, SessionMode, Phases, [Startup], Done.
   int get _totalPages =>
-      8 + (_showFolders ? 1 : 0) + (_showUpdates ? 1 : 0) + (_showStartup ? 1 : 0);
+      8 +
+      (_showDetailLayout ? 1 : 0) +
+      (_showFolders ? 1 : 0) +
+      (_showUpdates ? 1 : 0) +
+      (_showStartup ? 1 : 0);
 
   @override
   void dispose() {
@@ -230,6 +241,9 @@ class _WizardStep extends StatelessWidget {
   final Widget child;
   final double iconSize;
 
+  /// Wider for a step that shows pictures side by side.
+  final double maxWidth;
+
   const _WizardStep({
     this.icon,
     this.art,
@@ -237,6 +251,7 @@ class _WizardStep extends StatelessWidget {
     this.subtitle,
     required this.child,
     this.iconSize = 64,
+    this.maxWidth = 560,
   }) : assert(icon != null || art != null);
 
   @override
@@ -246,7 +261,7 @@ class _WizardStep extends StatelessWidget {
       padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 32),
       child: Center(
         child: ConstrainedBox(
-          constraints: const BoxConstraints(maxWidth: 560),
+          constraints: BoxConstraints(maxWidth: maxWidth),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -404,6 +419,344 @@ class _ThemePage extends ConsumerWidget {
                   ref.read(selectedThemeIdProvider.notifier).select(spec.id),
             ),
         ],
+      ),
+    );
+  }
+}
+
+// ── Project page layout (desktop only) ───────────────────────────────────────
+
+class _DetailLayoutPage extends ConsumerWidget {
+  final AppLocalizations l10n;
+  const _DetailLayoutPage({required this.l10n});
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final current = ref.watch(projectDetailLayoutProvider);
+    final theme = Theme.of(context);
+    return _WizardStep(
+      icon: Icons.view_sidebar_outlined,
+      title: l10n.onboardingDetailLayoutTitle,
+      subtitle: l10n.onboardingDetailLayoutBody,
+      maxWidth: 760,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              for (final (i, layout) in ProjectDetailLayout.values.indexed) ...[
+                if (i > 0) const SizedBox(width: 14),
+                Expanded(
+                  child: _DetailLayoutCard(
+                    key: ValueKey('onboarding-layout-${layout.name}'),
+                    layout: layout,
+                    l10n: l10n,
+                    selected: current == layout,
+                    onTap: () => ref.read(projectDetailLayoutProvider.notifier).set(layout),
+                  ),
+                ),
+              ],
+            ],
+          ),
+          const SizedBox(height: 12),
+          Text(
+            l10n.canBeChangedInSettings,
+            style: theme.textTheme.bodySmall?.copyWith(
+              color: theme.colorScheme.onSurface.withValues(alpha: 0.5),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _DetailLayoutCard extends StatelessWidget {
+  final ProjectDetailLayout layout;
+  final AppLocalizations l10n;
+  final bool selected;
+  final VoidCallback onTap;
+
+  const _DetailLayoutCard({
+    super.key,
+    required this.layout,
+    required this.l10n,
+    required this.selected,
+    required this.onTap,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final cs = theme.colorScheme;
+    final (label, description) = switch (layout) {
+      ProjectDetailLayout.classic => (l10n.projectDetailLayoutClassic, l10n.projectDetailLayoutClassicDescription),
+      ProjectDetailLayout.sectioned => (l10n.projectDetailLayoutSectioned, l10n.projectDetailLayoutSectionedDescription),
+    };
+    return Semantics(
+      selected: selected,
+      button: true,
+      child: InkWell(
+        onTap: onTap,
+        borderRadius: BorderRadius.circular(10),
+        child: AnimatedContainer(
+          duration: const Duration(milliseconds: 180),
+          padding: const EdgeInsets.all(10),
+          decoration: BoxDecoration(
+            color: selected
+                ? cs.primaryContainer.withValues(alpha: 0.25)
+                : cs.surfaceContainerHighest.withValues(alpha: 0.4),
+            borderRadius: BorderRadius.circular(10),
+            border: Border.all(color: selected ? cs.primary : cs.outlineVariant, width: selected ? 2 : 1),
+          ),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              _DetailLayoutPreview(layout: layout, l10n: l10n),
+              const SizedBox(height: 10),
+              Row(
+                children: [
+                  Icon(
+                    selected ? Icons.radio_button_checked : Icons.radio_button_unchecked,
+                    size: 16,
+                    color: selected ? cs.primary : cs.outline,
+                  ),
+                  const SizedBox(width: 6),
+                  // Full contrast either way: a muted primary (Classic Dark's
+                  // slate) made the chosen one the harder one to read.
+                  Text(
+                    label,
+                    style: theme.textTheme.titleSmall?.copyWith(fontWeight: FontWeight.w700),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 4),
+              Text(
+                description,
+                style: theme.textTheme.bodySmall?.copyWith(color: cs.onSurface.withValues(alpha: 0.7)),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+/// A miniature of the project page in [layout], drawn in the current theme:
+/// the header and its buttons, then either every section in one long scroll
+/// or the section rail beside the first section. Both carry the page's real
+/// section names, so what is picked here is what the page will show.
+class _DetailLayoutPreview extends StatelessWidget {
+  final ProjectDetailLayout layout;
+  final AppLocalizations l10n;
+  const _DetailLayoutPreview({required this.layout, required this.l10n});
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final cs = theme.colorScheme;
+    final line = cs.onSurface.withValues(alpha: 0.10);
+    final text = cs.onSurface.withValues(alpha: 0.28);
+
+    Widget bar(double width, {double height = 5, Color? color}) => Container(
+          width: width,
+          height: height,
+          decoration: BoxDecoration(color: color ?? text, borderRadius: BorderRadius.circular(2)),
+        );
+    Widget field({int flex = 1}) => Expanded(
+          flex: flex,
+          child: Container(
+            height: 16,
+            padding: const EdgeInsets.symmetric(horizontal: 4),
+            alignment: Alignment.centerLeft,
+            decoration: BoxDecoration(border: Border.all(color: line), borderRadius: BorderRadius.circular(3)),
+            child: bar(18, height: 3),
+          ),
+        );
+    Widget card(String label, List<Widget> children) => Container(
+          margin: const EdgeInsets.only(bottom: 6),
+          padding: const EdgeInsets.all(5),
+          decoration: BoxDecoration(
+            color: cs.surfaceContainerHighest.withValues(alpha: 0.5),
+            borderRadius: BorderRadius.circular(4),
+          ),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Padding(
+                padding: const EdgeInsets.only(bottom: 4),
+                child: Text(
+                  label,
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  style: TextStyle(fontSize: 7.5, fontWeight: FontWeight.w700, color: cs.onSurface.withValues(alpha: 0.75)),
+                ),
+              ),
+              ...children,
+            ],
+          ),
+        );
+
+    final details = card(l10n.projectDetails, [
+      Row(children: [field()]),
+      const SizedBox(height: 4),
+      Row(children: [field(), const SizedBox(width: 3), field(), const SizedBox(width: 3), field()]),
+      const SizedBox(height: 4),
+      Row(children: [field()]),
+      const SizedBox(height: 4),
+      Row(children: [field()]),
+    ]);
+    final notes = card(l10n.notes, [bar(110, height: 3), const SizedBox(height: 3), bar(70, height: 3)]);
+    final preview = card(l10n.previewSong, [
+      SizedBox(
+        height: 14,
+        child: Row(
+          children: [
+            for (var i = 0; i < 34; i++)
+              Expanded(
+                child: Container(
+                  margin: const EdgeInsets.symmetric(horizontal: 0.6),
+                  height: 3.0 + (i * 37 % 11),
+                  color: cs.primary.withValues(alpha: 0.45),
+                ),
+              ),
+          ],
+        ),
+      ),
+    ]);
+    final todos = card(l10n.todoList, [
+      for (final w in [80.0, 60.0])
+        Padding(
+          padding: const EdgeInsets.only(bottom: 3),
+          child: Row(children: [
+            Container(
+              width: 6,
+              height: 6,
+              decoration: BoxDecoration(border: Border.all(color: text), borderRadius: BorderRadius.circular(1)),
+            ),
+            const SizedBox(width: 4),
+            bar(w, height: 3),
+          ]),
+        ),
+    ]);
+
+    final sections = [
+      (Icons.tune_outlined, l10n.projectDetails),
+      (Icons.notes_outlined, l10n.notes),
+      (Icons.music_note_outlined, l10n.previewSong),
+      (Icons.checklist_outlined, l10n.todoList),
+      (Icons.history_outlined, l10n.sessionHistory),
+    ];
+
+    // What is taller than the frame is cut off, as a page that scrolls.
+    Widget scroll(List<Widget> children) => SingleChildScrollView(
+          physics: const NeverScrollableScrollPhysics(),
+          padding: const EdgeInsets.all(6),
+          child: Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: children),
+        );
+
+    final body = switch (layout) {
+      ProjectDetailLayout.classic => Stack(
+          children: [
+            Positioned.fill(child: scroll([details, notes, preview, todos])),
+            // A long page: a scrollbar along its edge.
+            Positioned(
+              right: 1.5,
+              top: 6,
+              child: Container(
+                width: 3,
+                height: 30,
+                decoration: BoxDecoration(color: text, borderRadius: BorderRadius.circular(2)),
+              ),
+            ),
+          ],
+        ),
+      ProjectDetailLayout.sectioned => Row(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            Container(
+              width: 84,
+              padding: const EdgeInsets.symmetric(vertical: 6, horizontal: 4),
+              decoration: BoxDecoration(border: Border(right: BorderSide(color: line))),
+              child: Column(
+                children: [
+                  for (final (i, (icon, label)) in sections.indexed)
+                    Container(
+                      margin: const EdgeInsets.only(bottom: 2),
+                      padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 3),
+                      decoration: BoxDecoration(
+                        color: i == 0 ? cs.primary.withValues(alpha: 0.18) : null,
+                        borderRadius: BorderRadius.circular(3),
+                      ),
+                      child: Row(
+                        children: [
+                          Icon(icon, size: 8, color: i == 0 ? cs.primary : cs.onSurface.withValues(alpha: 0.55)),
+                          const SizedBox(width: 3),
+                          Expanded(
+                            child: Text(
+                              label,
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                              style: TextStyle(
+                                fontSize: 6.5,
+                                color: i == 0 ? cs.primary : cs.onSurface.withValues(alpha: 0.65),
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                ],
+              ),
+            ),
+            Expanded(child: scroll([details])),
+          ],
+        ),
+    };
+
+    return AspectRatio(
+      aspectRatio: 16 / 11,
+      child: Container(
+        clipBehavior: Clip.antiAlias,
+        decoration: BoxDecoration(
+          color: theme.scaffoldBackgroundColor,
+          borderRadius: BorderRadius.circular(6),
+          border: Border.all(color: line),
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            // The header: the song's name and phase, then its buttons.
+            Container(
+              padding: const EdgeInsets.fromLTRB(6, 6, 6, 5),
+              decoration: BoxDecoration(border: Border(bottom: BorderSide(color: line))),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Row(children: [
+                    bar(60, height: 6, color: cs.onSurface.withValues(alpha: 0.6)),
+                    const Spacer(),
+                    bar(20, height: 7, color: cs.primary.withValues(alpha: 0.5)),
+                  ]),
+                  const SizedBox(height: 3),
+                  bar(90, height: 3),
+                  const SizedBox(height: 5),
+                  Row(children: [
+                    bar(18, height: 7, color: line),
+                    const Spacer(),
+                    for (final w in [22.0, 26.0, 22.0]) ...[
+                      const SizedBox(width: 3),
+                      bar(w, height: 7, color: line),
+                    ],
+                  ]),
+                ],
+              ),
+            ),
+            Expanded(child: body),
+          ],
+        ),
       ),
     );
   }

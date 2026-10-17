@@ -221,6 +221,49 @@ class DemoDataService {
     return demoProfile;
   }
 
+  /// Work sessions adding up to exactly [totalSeconds], so a demo project's
+  /// session history agrees with its "worked" total: one an evening on
+  /// separate days between [createdAt] and [updatedAt], uneven lengths in
+  /// whole quarter hours, each in the phase the song had reached by then
+  /// ([phases] runs from the first to the current one).
+  static List<SessionRecord> demoSessions({
+    required int totalSeconds,
+    required DateTime createdAt,
+    required DateTime updatedAt,
+    required List<String> phases,
+    required int seed,
+  }) {
+    final days = updatedAt.difference(createdAt).inDays;
+    if (totalSeconds <= 0 || days < 1 || phases.isEmpty) return const [];
+    final random = Random(seed);
+    final count = (totalSeconds / 5400).ceil().clamp(1, min(12, days)).toInt();
+    final weights = List.generate(count, (_) => 2 + random.nextInt(5));
+    final weightSum = weights.reduce((a, b) => a + b);
+    const quarter = 900;
+    final lengths = [
+      for (final w in weights) max(quarter, (totalSeconds * w / weightSum / quarter).floor() * quarter),
+    ];
+    // Whatever rounding left over goes to the longest, which can take it.
+    final longest = lengths.indexOf(lengths.reduce(max));
+    lengths[longest] += totalSeconds - lengths.reduce((a, b) => a + b);
+
+    return [
+      for (var k = 0; k < count; k++)
+        () {
+          final day = createdAt.add(Duration(days: k * days ~/ count));
+          final start = DateTime(day.year, day.month, day.day, 17 + random.nextInt(4), random.nextInt(4) * 15);
+          return SessionRecord(
+            id: start.toIso8601String(),
+            startedAt: start,
+            endedAt: start.add(Duration(seconds: lengths[k])),
+            durationSeconds: lengths[k],
+            // The first in the first phase, the last in the current one.
+            phase: phases[count == 1 ? phases.length - 1 : (k * (phases.length - 1) / (count - 1)).round()],
+          );
+        }(),
+    ];
+  }
+
   Future<Profile> _getOrCreateProfile(ProfileRepository profileRepo, String name) async {
     final existing = profileRepo.getAllProfiles().where((p) => p.name == name);
     return existing.isNotEmpty ? existing.first : await profileRepo.createProfile(name);
@@ -311,6 +354,7 @@ class DemoDataService {
         await File(filePath).create(recursive: true);
       }
 
+      final workSeconds = (statusIndex + 1) * 3600 * (2 + i % 4);
       var project = MusicProject(
         id: projectId,
         filePath: filePath,
@@ -333,7 +377,14 @@ class DemoDataService {
         fileCreatedAt: createdAt,
         deadline: deadline,
         statusChangedAt: statusIndex == 0 ? null : updatedAt,
-        totalWorkSeconds: (statusIndex + 1) * 3600 * (2 + i % 4),
+        totalWorkSeconds: workSeconds,
+        sessions: demoSessions(
+          totalSeconds: workSeconds,
+          createdAt: createdAt,
+          updatedAt: updatedAt,
+          phases: _statuses.sublist(0, statusIndex + 1),
+          seed: i,
+        ),
       );
 
       if (hasPreview) {

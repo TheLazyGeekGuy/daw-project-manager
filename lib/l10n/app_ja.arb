@@ -3231,6 +3231,14 @@
   "@projectDetailLayoutSectionedDescription": {
     "description": "Description of the sectioned project detail layout"
   },
+  "onboardingDetailLayoutTitle": "プロジェクトページ",
+  "@onboardingDetailLayoutTitle": {
+    "description": "Title of the setup wizard step that picks the project detail page layout"
+  },
+  "onboardingDetailLayoutBody": "プロジェクトのページの構成方法です。ページ上部のボタンでいつでも切り替えられます。",
+  "@onboardingDetailLayoutBody": {
+    "description": "Subtitle of the setup wizard step that picks the project detail page layout"
+  },
   "stackAsVersions": "バージョンとしてまとめる",
   "stackNeedsTwoVersions": "1つのメインプロジェクトのバージョンとしてまとめるには、プロジェクトを2つ以上選択してください。",
   "stackCreatedMessage": "{count} 個のバージョンを1つのメインプロジェクトにまとめました。",

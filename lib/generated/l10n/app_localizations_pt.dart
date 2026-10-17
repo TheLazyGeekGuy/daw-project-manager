@@ -4764,6 +4764,13 @@ class AppLocalizationsPt extends AppLocalizations {
       'Uma barra à esquerda escolhe uma seção por vez.';
 
   @override
+  String get onboardingDetailLayoutTitle => 'Páginas de projeto';
+
+  @override
+  String get onboardingDetailLayoutBody =>
+      'Como a página de cada projeto é organizada. Você pode trocar quando quiser pelos botões no topo da página.';
+
+  @override
   String get stackAsVersions => 'Empilhar como versões';
 
   @override

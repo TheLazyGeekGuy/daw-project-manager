@@ -8057,6 +8057,18 @@ abstract class AppLocalizations {
   /// **'A rail on the left picks one section at a time.'**
   String get projectDetailLayoutSectionedDescription;
 
+  /// Title of the setup wizard step that picks the project detail page layout
+  ///
+  /// In en, this message translates to:
+  /// **'Project pages'**
+  String get onboardingDetailLayoutTitle;
+
+  /// Subtitle of the setup wizard step that picks the project detail page layout
+  ///
+  /// In en, this message translates to:
+  /// **'How a project\'s own page is arranged. Switch any time with the buttons at the top of the page.'**
+  String get onboardingDetailLayoutBody;
+
   /// Bulk action: combine the selected projects into one song
   ///
   /// In en, this message translates to:

@@ -3678,9 +3678,26 @@ class ProjectDetailLayoutNotifier extends Notifier<ProjectDetailLayout> {
 
   @override
   ProjectDetailLayout build() {
+    // Once the app is up the box is open: read it at once, so a project
+    // page's first frame is already in the saved layout. Built in classic and
+    // switched a frame later, the first page opened drew every section, then
+    // threw them away — its preview player created and torn down mid-load.
+    try {
+      if (Hive.isBoxOpen('settings')) {
+        return _parse(Hive.box<String>('settings').get(_boxKey));
+      }
+    } catch (_) {
+      // Opened as another type, or unreadable: the async load below decides.
+    }
     SchedulerBinding.instance.addPostFrameCallback((_) => _load());
     return ProjectDetailLayout.classic;
   }
+
+  static ProjectDetailLayout _parse(String? saved) =>
+      ProjectDetailLayout.values.firstWhere(
+        (e) => e.name == saved,
+        orElse: () => ProjectDetailLayout.classic,
+      );
 
   Future<void> _load() async {
     try {
@@ -3688,10 +3705,7 @@ class ProjectDetailLayoutNotifier extends Notifier<ProjectDetailLayout> {
       final box = await Hive.openBox<String>('settings');
       final saved = box.get(_boxKey);
       if (saved == null || saved.isEmpty) return;
-      state = ProjectDetailLayout.values.firstWhere(
-        (e) => e.name == saved,
-        orElse: () => ProjectDetailLayout.classic,
-      );
+      state = _parse(saved);
     } catch (_) {
       // Keep the default if the box cannot be read.
     }

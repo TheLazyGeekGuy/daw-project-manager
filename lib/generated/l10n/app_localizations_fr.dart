@@ -4801,6 +4801,13 @@ class AppLocalizationsFr extends AppLocalizations {
       'Une barre à gauche choisit une section à la fois.';
 
   @override
+  String get onboardingDetailLayoutTitle => 'Pages de projet';
+
+  @override
+  String get onboardingDetailLayoutBody =>
+      'La façon dont la page d\'un projet est organisée. Modifiable à tout moment avec les boutons en haut de la page.';
+
+  @override
   String get stackAsVersions => 'Empiler comme versions';
 
   @override

@@ -3231,6 +3231,14 @@
   "@projectDetailLayoutSectionedDescription": {
     "description": "Description of the sectioned project detail layout"
   },
+  "onboardingDetailLayoutTitle": "Страницы проектов",
+  "@onboardingDetailLayoutTitle": {
+    "description": "Title of the setup wizard step that picks the project detail page layout"
+  },
+  "onboardingDetailLayoutBody": "Как устроена страница проекта. Переключить можно в любой момент кнопками вверху страницы.",
+  "@onboardingDetailLayoutBody": {
+    "description": "Subtitle of the setup wizard step that picks the project detail page layout"
+  },
   "stackAsVersions": "Объединить как версии",
   "stackNeedsTwoVersions": "Выберите не менее двух проектов, чтобы объединить их как версии одного основного проекта.",
   "stackCreatedMessage": "{count} версий объединены в один основной проект.",

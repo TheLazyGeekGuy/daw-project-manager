@@ -4578,6 +4578,12 @@ class AppLocalizationsZh extends AppLocalizations {
   String get projectDetailLayoutSectionedDescription => '左侧栏每次选择一个分区。';
 
   @override
+  String get onboardingDetailLayoutTitle => '项目页面';
+
+  @override
+  String get onboardingDetailLayoutBody => '项目页面的排列方式。随时可以用页面顶部的按钮切换。';
+
+  @override
   String get stackAsVersions => '堆叠为版本';
 
   @override

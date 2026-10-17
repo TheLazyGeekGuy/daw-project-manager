@@ -5,6 +5,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 import 'package:daw_project_manager/generated/l10n/app_localizations.dart';
+import 'package:daw_project_manager/models/project_detail_layout.dart';
+import 'package:daw_project_manager/providers/providers.dart';
 import 'package:daw_project_manager/services/auto_start_service.dart';
 import 'package:daw_project_manager/services/update_check_service.dart';
 import 'package:daw_project_manager/ui/onboarding_wizard_page.dart';
@@ -82,6 +84,31 @@ void main() {
     expect(find.byIcon(Icons.music_note), findsNothing, reason: 'not a generic note');
   });
 
+  testWidgets('a step picks the project page layout, each shown as a preview', (tester) async {
+    final l10n = await pumpWizard(tester);
+    for (var i = 0; i < 4; i++) {
+      await next(tester, l10n); // Language, Theme, Tabs, then the layout
+    }
+    expect(find.text(l10n.onboardingDetailLayoutTitle), findsOneWidget);
+
+    final classic = find.byKey(const ValueKey('onboarding-layout-classic'));
+    final sectioned = find.byKey(const ValueKey('onboarding-layout-sectioned'));
+    expect(classic, findsOneWidget);
+    expect(sectioned, findsOneWidget);
+    // Each preview names the page's sections; the sections one has its rail.
+    expect(find.descendant(of: sectioned, matching: find.text(l10n.sessionHistory)), findsOneWidget);
+    expect(find.descendant(of: classic, matching: find.text(l10n.todoList)), findsOneWidget);
+
+    final container = ProviderScope.containerOf(tester.element(find.byType(OnboardingWizardPage)));
+    expect(container.read(projectDetailLayoutProvider), ProjectDetailLayout.classic);
+    await tester.tap(sectioned);
+    await tester.pumpAndSettle();
+    expect(container.read(projectDetailLayoutProvider), ProjectDetailLayout.sectioned);
+    await tester.tap(classic);
+    await tester.pumpAndSettle();
+    expect(container.read(projectDetailLayoutProvider), ProjectDetailLayout.classic);
+  });
+
   testWidgets(
     'steps through Folders, Updates, Suggestions and Session Mode before Phases',
     (tester) async {
@@ -91,6 +118,8 @@ void main() {
       await next(tester, l10n); // -> Language
       await next(tester, l10n); // -> Theme
       await next(tester, l10n); // -> Tabs
+      await next(tester, l10n); // -> Project page layout
+      expect(find.text(l10n.onboardingDetailLayoutTitle), findsOneWidget);
       await next(tester, l10n); // -> Folders
 
       expect(find.text(l10n.onboardingFoldersTitle), findsOneWidget);

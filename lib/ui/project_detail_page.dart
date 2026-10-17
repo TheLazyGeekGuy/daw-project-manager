@@ -2640,8 +2640,18 @@ class _PreviewSongPlayerState extends ConsumerState<_PreviewSongPlayer>
   void _preWarmAlt(Source source) {
     _warmPlayer?.dispose();
     _warmPlayer = AudioPlayer();
-    _warmPlayer!.setVolume(_volume);
-    _warmPlayer!.setSource(source); // fire-and-forget; loads into native buffer
+    _loadInBackground(_warmPlayer!, source);
+  }
+
+  /// Loads [source] into [player] without waiting for it. The player can be
+  /// disposed before it is done — the page closed, its section switched —
+  /// and the load then fails with nothing waiting on it: dropped here rather
+  /// than left to surface as an uncaught error.
+  void _loadInBackground(AudioPlayer player, Source source) {
+    player.setVolume(_volume).catchError((Object _) {});
+    player.setSource(source).catchError((Object e) {
+      debugPrint('[PreviewSongPlayer] background load dropped: $e');
+    });
   }
 
   /// Fades [player] from 0 → [_volume] over ~120 ms.
@@ -2777,8 +2787,7 @@ class _PreviewSongPlayerState extends ConsumerState<_PreviewSongPlayer>
         : (_monoFilePath != null ? DeviceFileSource(_monoFilePath!) : null);
     if (altSource != null) {
       _warmPlayer = oldActive;
-      _warmPlayer!.setVolume(_volume);
-      _warmPlayer!.setSource(altSource); // fire-and-forget
+      _loadInBackground(_warmPlayer!, altSource);
     } else {
       oldActive.dispose();
     }

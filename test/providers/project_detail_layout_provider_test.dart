@@ -91,6 +91,27 @@ void main() {
     expect(box.get('projectDetailLayout'), 'sectioned');
   });
 
+  test('with the settings box open, the first read is already the saved layout', () async {
+    // Read a frame late, a project page was first built in classic and then
+    // rebuilt in sections: everything on it, its preview player included,
+    // made and torn down on every first open.
+    final box = await Hive.openBox<String>('settings');
+    await box.put('projectDetailLayout', 'sectioned');
+
+    final container = ProviderContainer();
+    addTearDown(container.dispose);
+
+    expect(container.read(projectDetailLayoutProvider), ProjectDetailLayout.sectioned);
+  });
+
+  test('with the settings box open and nothing saved, classic at once', () async {
+    await Hive.openBox<String>('settings');
+    final container = ProviderContainer();
+    addTearDown(container.dispose);
+
+    expect(container.read(projectDetailLayoutProvider), ProjectDetailLayout.classic);
+  });
+
   test('every layout has a distinct name to persist', () {
     final names = ProjectDetailLayout.values.map((e) => e.name).toSet();
     expect(names, hasLength(ProjectDetailLayout.values.length));

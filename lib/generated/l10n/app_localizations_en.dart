@@ -4743,6 +4743,13 @@ class AppLocalizationsEn extends AppLocalizations {
       'A rail on the left picks one section at a time.';
 
   @override
+  String get onboardingDetailLayoutTitle => 'Project pages';
+
+  @override
+  String get onboardingDetailLayoutBody =>
+      'How a project\'s own page is arranged. Switch any time with the buttons at the top of the page.';
+
+  @override
   String get stackAsVersions => 'Stack as Versions';
 
   @override

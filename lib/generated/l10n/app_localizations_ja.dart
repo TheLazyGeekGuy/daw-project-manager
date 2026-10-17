@@ -4628,6 +4628,13 @@ class AppLocalizationsJa extends AppLocalizations {
   String get projectDetailLayoutSectionedDescription => '左のバーでセクションを1つずつ選択。';
 
   @override
+  String get onboardingDetailLayoutTitle => 'プロジェクトページ';
+
+  @override
+  String get onboardingDetailLayoutBody =>
+      'プロジェクトのページの構成方法です。ページ上部のボタンでいつでも切り替えられます。';
+
+  @override
   String get stackAsVersions => 'バージョンとしてまとめる';
 
   @override

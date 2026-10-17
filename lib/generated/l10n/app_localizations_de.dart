@@ -4775,6 +4775,13 @@ class AppLocalizationsDe extends AppLocalizations {
       'Eine Leiste links wählt jeweils einen Abschnitt.';
 
   @override
+  String get onboardingDetailLayoutTitle => 'Projektseiten';
+
+  @override
+  String get onboardingDetailLayoutBody =>
+      'Wie die Seite eines Projekts aufgebaut ist. Jederzeit umschaltbar mit den Schaltflächen oben auf der Seite.';
+
+  @override
   String get stackAsVersions => 'Als Versionen stapeln';
 
   @override

@@ -3231,6 +3231,14 @@
   "@projectDetailLayoutSectionedDescription": {
     "description": "Description of the sectioned project detail layout"
   },
+  "onboardingDetailLayoutTitle": "项目页面",
+  "@onboardingDetailLayoutTitle": {
+    "description": "Title of the setup wizard step that picks the project detail page layout"
+  },
+  "onboardingDetailLayoutBody": "项目页面的排列方式。随时可以用页面顶部的按钮切换。",
+  "@onboardingDetailLayoutBody": {
+    "description": "Subtitle of the setup wizard step that picks the project detail page layout"
+  },
   "stackAsVersions": "堆叠为版本",
   "stackNeedsTwoVersions": "请至少选择两个项目，才能将它们堆叠为同一个主项目的版本。",
   "stackCreatedMessage": "已将 {count} 个版本堆叠为一个主项目。",

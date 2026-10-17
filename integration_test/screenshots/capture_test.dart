@@ -109,6 +109,8 @@ Future<void> _seed() async {
     'warnBeforeQuit': 'false',
     'closeToTray': 'false',
     'dashboardViewMode': 'table',
+    // A project's page one section at a time, picked from the rail.
+    'projectDetailLayout': 'sectioned',
   });
   final appSettings = await Hive.openBox<String>('app_settings');
   await appSettings.putAll({'syncOnStartup': 'false', 'autoBackupInterval': 'off'});
@@ -248,6 +250,14 @@ void main() {
       await tester.projectMenu('Distant Shore', 'View Details');
       await tester.until(find.text('Notes'));
       await tester.shot('project-detail/project-detail-metadata.png');
+      // Other sections, from the rail on the left: its work sessions…
+      await tester.tapOn(find.text('Session History').hitTestable().first);
+      await tester.shot('work-sessions/session-history.png');
+      await tester.back();
+      // …and the to-dos of a song still being arranged: Distant Shore's are done.
+      await tester.projectMenu('Fever Dream', 'View Details');
+      await tester.tapOn(find.text('TODO List').hitTestable().first);
+      await tester.shot('project-detail/project-detail-todos.png');
       await tester.back();
     });
 
@@ -397,16 +407,25 @@ void main() {
       final wizard = find.byType(OnboardingWizardPage);
       await tester.until(wizard);
       await tester.settle(20);
-      // The page's own column, with room around it for what frames it.
-      final column = find.descendant(
-        of: wizard,
-        matching: find.byWidgetPredicate(
-          (w) => w is ConstrainedBox && w.constraints.maxWidth == 560,
-        ),
-      );
-      final content = tester.getRect(column.first);
-      final frame = Rect.fromLTRB(content.left - 140, content.top - 8, content.right + 140, content.bottom + 48);
-      await tester.shot('onboarding/onboarding-welcome.png', crop: frame);
+      // A step's own column, with room around it for what frames it.
+      Rect column(double width) => tester.getRect(find
+          .descendant(
+            of: wizard,
+            matching: find.byWidgetPredicate((w) => w is ConstrainedBox && w.constraints.maxWidth == width),
+          )
+          .first);
+      final welcome = column(560);
+      await tester.shot('onboarding/onboarding-welcome.png',
+          crop: Rect.fromLTRB(welcome.left - 140, welcome.top - 8, welcome.right + 140, welcome.bottom + 48));
+
+      // Language, Theme, Tabs, then the project page's layout.
+      for (var i = 0; i < 4; i++) {
+        await tester.tapOn(find.widgetWithText(FilledButton, 'Next'));
+      }
+      await tester.until(find.text('Project pages'));
+      final layout = column(760);
+      await tester.shot('onboarding/onboarding-detail-layout.png',
+          crop: Rect.fromLTRB(layout.left - 60, layout.top - 8, layout.right + 60, layout.bottom + 40));
     });
 
     debugPrint('SCREENSHOTS SKIPPED: ${failed.isEmpty ? 'none' : failed.join(' | ')}');

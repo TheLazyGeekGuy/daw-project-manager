@@ -188,6 +188,32 @@ void main() {
       }
     });
 
+    test('a project\'s work sessions add up to the time it says was worked', () async {
+      final profile = await DemoDataService().generate(
+        profileRepo,
+        previewSongsPathProvider: fakePreviewSongsPath,
+        demoFilesPathProvider: fakeDemoFilesPath,
+      );
+      final projects = await Hive.openBox<MusicProject>('${profile.id}_projects');
+      const order = ['Idea', 'Arranging', 'Mixing', 'Mastering', 'Finished'];
+
+      for (final project in projects.values) {
+        final sessions = project.sessions;
+        expect(sessions, isNotEmpty, reason: '${project.displayName} has no session history');
+        expect(sessions.fold<int>(0, (a, s) => a + s.durationSeconds), project.totalWorkSeconds,
+            reason: project.displayName);
+        for (final (k, s) in sessions.indexed) {
+          expect(s.endedAt.difference(s.startedAt).inSeconds, s.durationSeconds);
+          expect(order.indexOf(s.phase!), lessThanOrEqualTo(order.indexOf(project.status)),
+              reason: 'a session in a phase the song had not reached');
+          if (k > 0) {
+            expect(s.startedAt.isAfter(sessions[k - 1].endedAt), isTrue, reason: 'sessions overlap');
+          }
+        }
+        expect(sessions.map((s) => s.id).toSet().length, sessions.length);
+      }
+    });
+
     test('does not touch a separate profile\'s real project data', () async {
       final realRepo = await HiveTestHelper.createRepository(profileId: 'real-user-profile');
       final realProject = TestFactories.makeProject(id: 'real-project-1');
@@ -298,6 +324,52 @@ void main() {
         'Demo — Solo Artist',
         'Demo — Studio B',
       });
+    });
+  });
+
+  group('DemoDataService.demoSessions', () {
+    final created = DateTime(2026, 1, 1);
+
+    test('adds up exactly, in quarter hours, one a day, the phases in order', () {
+      for (final total in [7200, 10800, 36000, 90000]) {
+        final sessions = DemoDataService.demoSessions(
+          totalSeconds: total,
+          createdAt: created,
+          updatedAt: created.add(const Duration(days: 60)),
+          phases: const ['Idea', 'Arranging', 'Mixing'],
+          seed: total,
+        );
+        expect(sessions.fold<int>(0, (a, s) => a + s.durationSeconds), total);
+        expect(sessions.every((s) => s.durationSeconds > 0 && s.durationSeconds % 900 == 0), isTrue);
+        final days = sessions.map((s) => DateTime(s.startedAt.year, s.startedAt.month, s.startedAt.day));
+        expect(days.toSet().length, sessions.length, reason: 'two sessions on one day');
+        expect(sessions.first.phase, 'Idea');
+        expect(sessions.last.phase, 'Mixing');
+      }
+    });
+
+    test('never more sessions than days to hold them', () {
+      final sessions = DemoDataService.demoSessions(
+        totalSeconds: 90000,
+        createdAt: created,
+        updatedAt: created.add(const Duration(days: 3)),
+        phases: const ['Idea'],
+        seed: 1,
+      );
+      expect(sessions.length, 3);
+      expect(sessions.fold<int>(0, (a, s) => a + s.durationSeconds), 90000);
+    });
+
+    test('nothing worked, or no time to work in: no sessions', () {
+      expect(
+        DemoDataService.demoSessions(
+            totalSeconds: 0, createdAt: created, updatedAt: created.add(const Duration(days: 9)), phases: const ['Idea'], seed: 0),
+        isEmpty,
+      );
+      expect(
+        DemoDataService.demoSessions(totalSeconds: 3600, createdAt: created, updatedAt: created, phases: const ['Idea'], seed: 0),
+        isEmpty,
+      );
     });
   });
 
