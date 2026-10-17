@@ -3533,7 +3533,11 @@ class QueueNavigationNotifier
     state = (playNext: playNext, playPrev: playPrev);
   }
 
-  void unregister() => state = (playNext: null, playPrev: null);
+  /// Takes back the callbacks registered with [playNext] — not a newer
+  /// player page's, which may have registered since.
+  void unregister(void Function() playNext) {
+    if (state.playNext == playNext) state = (playNext: null, playPrev: null);
+  }
 }
 
 final queueNavigationProvider =

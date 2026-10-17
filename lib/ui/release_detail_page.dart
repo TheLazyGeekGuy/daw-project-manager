@@ -2207,6 +2207,7 @@ class _AudioFileItemState extends ConsumerState<_AudioFileItem> {
   @override
   void initState() {
     super.initState();
+    _floor = ref.read(playingReleaseAudioProvider.notifier);
     // Pause when another player in the app starts making sound.
     AppAudioFocus.register(this, () {
       if (_audioPlayer.state == PlayerState.playing) _audioPlayer.pause();
@@ -2388,13 +2389,21 @@ class _AudioFileItemState extends ConsumerState<_AudioFileItem> {
     }
   }
 
+  /// Kept from [initState]: `ref` can't be used in [dispose]. Reading it
+  /// there threw on every unmount — before the players were disposed and the
+  /// audio focus released, so leaving a release page leaked both.
+  late final PlayingReleaseAudioNotifier _floor;
+
   @override
   void dispose() {
     HardwareKeyboard.instance.removeHandler(_handleKeyboard);
     // Leaving the page mid-playback must not leave the floor claimed by a
     // widget that no longer exists — the next item to play would see a stale
-    // owner and pause itself.
-    ref.read(playingReleaseAudioProvider.notifier).releaseFloor(widget.file.id);
+    // owner and pause itself. After the frame: providers can't change while
+    // the tree is torn down.
+    final floor = _floor;
+    final fileId = widget.file.id;
+    Future.microtask(() => floor.releaseFloor(fileId));
     _warmPlayer?.dispose();
     _audioPlayer.dispose();
     AppAudioFocus.unregister(this);

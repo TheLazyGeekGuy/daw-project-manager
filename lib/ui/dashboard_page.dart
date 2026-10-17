@@ -124,6 +124,11 @@ const String appVersion = String.fromEnvironment(
   defaultValue: '0.0.0',
 );
 
+/// Leaves the version out of the window title
+/// (`--dart-define=DPM_HIDE_VERSION=true`), for screenshots that don't go
+/// stale with every release — see integration_test/screenshots/.
+const bool hideVersionInTitle = bool.fromEnvironment('DPM_HIDE_VERSION');
+
 /// Horizontal inset the projects grid's Name cell applies itself.
 ///
 /// Matches TrinaGrid's own `defaultCellPadding`, which the column opts out of
@@ -3576,9 +3581,11 @@ class _DashboardPageState extends ConsumerState<DashboardPage>
 
                         // Title bar (Windows/Linux) or traffic-light spacer (macOS).
                         final titleBar = DesktopTitleBar(
-                          title: AppLocalizations.of(
-                            context,
-                          )!.appTitleWithVersion(appVersion),
+                          title: hideVersionInTitle
+                              ? AppLocalizations.of(context)!.appTitle
+                              : AppLocalizations.of(
+                                  context,
+                                )!.appTitleWithVersion(appVersion),
                           actions: [
                             // Donate button
                             Consumer(

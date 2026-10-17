@@ -15,6 +15,7 @@ import 'camelot_wheel_widget.dart';
 import 'marker_navigation.dart';
 import 'project_detail_page.dart';
 import 'widgets/project_markers_section.dart';
+import 'widgets/player_queue_header.dart';
 import 'widgets/project_notes_section.dart';
 import 'app_snack_bar.dart';
 
@@ -85,18 +86,25 @@ class _MusicPlayerPageState extends ConsumerState<MusicPlayerPage>
       final value = ref.read(allProjectsStreamProvider).value;
       if (value != null) _buildTrackList(value);
       // Register queue navigation callbacks for the bottom player bar.
-      ref.read(queueNavigationProvider.notifier).register(
-        playNext: _playNext,
-        playPrev: _playPrev,
-      );
+      final navigation = ref.read(queueNavigationProvider.notifier);
+      navigation.register(playNext: _playNext, playPrev: _playPrev);
+      _queueNavigation = navigation;
     });
   }
+
+  /// Kept from registering: `ref` can't be used in [dispose] — it threw
+  /// there on every unmount, so the callbacks were never taken back and
+  /// this State's own dispose never finished.
+  QueueNavigationNotifier? _queueNavigation;
 
   @override
   void dispose() {
     _searchController.dispose();
     _addTodoController.dispose();
-    ref.read(queueNavigationProvider.notifier).unregister();
+    // After the frame: providers can't change while the tree is torn down.
+    final navigation = _queueNavigation;
+    final playNext = _playNext;
+    if (navigation != null) Future.microtask(() => navigation.unregister(playNext));
     super.dispose();
   }
 
@@ -1118,79 +1126,28 @@ class _MusicPlayerPageState extends ConsumerState<MusicPlayerPage>
             children: [
               Padding(
                 padding: const EdgeInsets.fromLTRB(12, 10, 8, 6),
-                child: Row(
-                  children: [
-                    Icon(Icons.queue_music, size: 16, color: cs.primary),
-                    const SizedBox(width: 6),
-                    Text(l10n.playerQueueTitle,
-                        style: theme.textTheme.titleSmall
-                            ?.copyWith(fontWeight: FontWeight.w600)),
-                    const SizedBox(width: 4),
-                    Text(
-                      '${_playlist.length}',
-                      style: theme.textTheme.bodySmall?.copyWith(
-                        color: cs.onSurface.withValues(alpha: 0.5),
-                      ),
-                    ),
-                    const Spacer(),
-                    if (_tracks.isNotEmpty) ...[
-                      IconButton(
-                        icon: Icon(Icons.auto_awesome, size: 16,
-                            color: cs.onSurface.withValues(alpha: 0.35)),
-                        tooltip: l10n.camelotGenerateButton,
-                        visualDensity: VisualDensity.compact,
-                        onPressed: () => _showCamelotDialog(context),
-                      ),
-                      IconButton(
-                        icon: Icon(Icons.shuffle, size: 16,
-                            color: _loopMode == _PlayerLoopMode.shuffle
-                                ? cs.primary
-                                : cs.onSurface.withValues(alpha: 0.35)),
-                        tooltip: l10n.playerShuffle,
-                        visualDensity: VisualDensity.compact,
-                        onPressed: () => setState(() => _loopMode =
-                            _loopMode == _PlayerLoopMode.shuffle
-                                ? _PlayerLoopMode.none
-                                : _PlayerLoopMode.shuffle),
-                      ),
-                      IconButton(
-                        icon: Icon(Icons.repeat, size: 16,
-                            color: _loopMode == _PlayerLoopMode.repeatAll
-                                ? cs.primary
-                                : cs.onSurface.withValues(alpha: 0.35)),
-                        tooltip: l10n.playerRepeatAll,
-                        visualDensity: VisualDensity.compact,
-                        onPressed: () => setState(() => _loopMode =
-                            _loopMode == _PlayerLoopMode.repeatAll
-                                ? _PlayerLoopMode.none
-                                : _PlayerLoopMode.repeatAll),
-                      ),
-                    ],
-                    if (_playlist.isNotEmpty) ...[
-                      IconButton(
-                        icon: const Icon(Icons.skip_previous, size: 18),
-                        tooltip: l10n.playerPrev,
-                        visualDensity: VisualDensity.compact,
-                        onPressed: _playPrev,
-                      ),
-                      IconButton(
-                        icon: const Icon(Icons.skip_next, size: 18),
-                        tooltip: l10n.playerNext,
-                        visualDensity: VisualDensity.compact,
-                        onPressed: _playNext,
-                      ),
-                      IconButton(
-                        icon: const Icon(Icons.clear_all, size: 18),
-                        tooltip: l10n.playerClearQueue,
-                        visualDensity: VisualDensity.compact,
-                        onPressed: () => setState(() {
-                          _playlist.clear();
-                          _playlistIndex = -1;
-                          _playingFromPlaylist = false;
-                        }),
-                      ),
-                    ],
-                  ],
+                child: PlayerQueueHeader(
+                  count: _playlist.length,
+                  libraryActions: _tracks.isNotEmpty,
+                  queueActions: _playlist.isNotEmpty,
+                  shuffleOn: _loopMode == _PlayerLoopMode.shuffle,
+                  repeatOn: _loopMode == _PlayerLoopMode.repeatAll,
+                  onAutoQueue: () => _showCamelotDialog(context),
+                  onShuffle: () => setState(() => _loopMode =
+                      _loopMode == _PlayerLoopMode.shuffle
+                          ? _PlayerLoopMode.none
+                          : _PlayerLoopMode.shuffle),
+                  onRepeat: () => setState(() => _loopMode =
+                      _loopMode == _PlayerLoopMode.repeatAll
+                          ? _PlayerLoopMode.none
+                          : _PlayerLoopMode.repeatAll),
+                  onPrevious: _playPrev,
+                  onNext: _playNext,
+                  onClear: () => setState(() {
+                    _playlist.clear();
+                    _playlistIndex = -1;
+                    _playingFromPlaylist = false;
+                  }),
                 ),
               ),
               const Divider(height: 1),
