@@ -11,7 +11,7 @@
   <a href="https://github.com/bandpassrecords/daw-project-manager/actions/workflows/release.yml?query=branch%3Amain"><img src="https://github.com/bandpassrecords/daw-project-manager/actions/workflows/release.yml/badge.svg?branch=main" alt="CI"></a>
   <a href="https://github.com/bandpassrecords/daw-project-manager/releases"><img src="https://img.shields.io/github/downloads/bandpassrecords/daw-project-manager/total?color=4A9EFF" alt="Downloads"></a>
   <img src="https://img.shields.io/badge/Flutter-3.41.9-02569B?logo=flutter" alt="Flutter 3.41.9">
-  <a href="LICENSE"><img src="https://img.shields.io/github/license/bandpassrecords/daw-project-manager" alt="MIT license"></a>
+  <a href="LICENSE"><img src="https://img.shields.io/badge/license-MIT-green" alt="MIT license"></a>
 </p>
 
 <table align="center">
