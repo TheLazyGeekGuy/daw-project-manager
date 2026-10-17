@@ -2,21 +2,31 @@
 
 [← README](../README.md) · [Development](development.md) · [Testing](testing.md) · [Architecture](architecture.md) · **Releasing**
 
-1. Add the version to the in-app changelog (shown as "What's New"):
-   ```bash
-   python scripts/new_changelog_entry.py 2.10.0 --highlight "…" --highlight "…"
-   ```
-2. Tag and push:
-   ```bash
-   git tag v2.10.0 && git push bp v2.10.0
-   ```
+**Release with the `release` skill**, in [Claude Code](https://claude.com/claude-code) at the root of this repo:
 
-CI then builds and attaches to the release:
+```
+/release 2.10.0
+```
+
+It asks for two things up front, the version and the notes (the in-app "What's New" highlights and the GitHub release notes), then does the rest: writes the changelog and Flatpak metainfo entries, checks both version gates, runs the tests, publishes the GitHub release, and watches the pipeline. If a build fails, it deletes the release and tag, fixes the cause, and tries again. The steps are in [`.claude/skills/release/SKILL.md`](../.claude/skills/release/SKILL.md).
+
+Don't release by hand by tagging and pushing. **A bare tag fails the release**: every build job uploads to a GitHub release that has to exist already, so the release is created first (`gh release create`), and creating it is what pushes the tag.
+
+## What CI checks and builds
+
+Before building, the `Unit Tests` job fails the run unless the tag matches **both**:
+
+- the newest entry in `assets/changelog/changelog.json` (bundled, because the Flatpak build has no network);
+- the newest `<release>` in `flatpak/com.bandpassrecords.dpm.metainfo.xml` (Flathub's changelog, and the Flatpak build's version).
+
+`pubspec.yaml` stays at `0.0.0+0`: CI stamps the version from the tag.
+
+Then, in about 15 minutes, it attaches to the release:
 
 | Windows | macOS | Linux | Android |
 |---|---|---|---|
 | installer `.exe`, `.msix` | `.dmg`, `.zip` | AppImage, `.tar.gz`, Flatpak | `.aab` |
 
-…and points the website's download buttons at them. It fails if the newest changelog entry doesn't match the tag.
+…runs an iOS compile check, and points the website's download buttons at the new files. Flathub picks the new tag up by itself (its bot opens the PR).
 
 Repository secrets it needs: `DESKTOP_CLIENT_ID`, `DESKTOP_CLIENT_SECRET`, `ANDROID_WEB_CLIENT_ID`, plus the signing ones in [`.github/SIGNING_SETUP.md`](../.github/SIGNING_SETUP.md). Flatpak specifics: [`flatpak/README.md`](../flatpak/README.md).
