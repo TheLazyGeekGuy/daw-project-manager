@@ -331,6 +331,63 @@ void main() {
       await tester.back();
     });
 
+    // Google Drive, signed out: the demo library has no account, and a
+    // signed-in page would show one.
+    await screen('google drive', () async {
+      await tester.openTab(Icons.library_music);
+      await tester.tapOn(find.text('Google Drive').hitTestable());
+      await tester.settle(20);
+      // Signed out it opens Settings → Backup: frame its two Drive cards.
+      final top = tester.getRect(find.text('Google Drive Sync').hitTestable().first).top;
+      final bottom = tester.getRect(find.text('Upload auto-detected preview songs').hitTestable().first).bottom;
+      await tester.shot('google-drive-sync/drive-sync.png',
+          crop: Rect.fromLTRB(256, top - 44, _size.width - 10, bottom + 48));
+      await tester.back();
+    });
+
+    // Session Mode: switched on, a session started on a project, its time.
+    await screen('work sessions', () async {
+      await tester.tapOn(find.text('Settings').hitTestable());
+      await tester.tapOn(find.text('Work Sessions').hitTestable().first);
+      // The option, not the card's title above it: the last "Session mode".
+      await tester.tapOn(find.text('Session mode').hitTestable().last);
+      await tester.settle(10);
+      await tester.shot('work-sessions/settings-session-mode.png');
+      await tester.back();
+
+      await tester.openTab(Icons.library_music);
+      final start = find.byTooltip('Start Session (S)').hitTestable();
+      await tester.until(start);
+      await tester.tap(start.first);
+      final dialog = find.byType(AlertDialog);
+      await tester.until(dialog);
+      await tester.shot('work-sessions/session-start.png');
+      await tester.tapOn(find.descendant(of: dialog, matching: find.text('Start Session')).last);
+      // Real seconds: the timer counts wall-clock time.
+      for (var i = 0; i < 70; i++) {
+        await tester.pump(const Duration(milliseconds: 100));
+      }
+      await tester.shot('work-sessions/session-running.png');
+      // The session bar on its own: the song, its total, this session's time.
+      final bar = find.ancestor(
+        of: find.text('Distant Shore').hitTestable().first,
+        matching: find.byWidgetPredicate((w) => w is Container && w.decoration is BoxDecoration),
+      );
+      await tester.shot('work-sessions/session-bar.png', crop: tester.getRect(bar.first).inflate(12));
+
+      // In Session Mode the menu's first entry starts a session: the row's
+      // details button opens the page.
+      final details = find.byIcon(Icons.assignment).hitTestable();
+      await tester.until(details);
+      final firstRow = details.evaluate().map((e) => (e.renderObject! as RenderBox).localToGlobal(Offset.zero))
+          .where((o) => o.dy > 200)
+          .reduce((a, b) => a.dy <= b.dy ? a : b);
+      await tester.tapAt(firstRow + const Offset(8, 8));
+      await tester.until(find.text('Notes'));
+      await tester.shot('work-sessions/session-project-time.png');
+      await tester.back();
+    });
+
     // Last, because it ends the session: the setup wizard, framed on its
     // first page — Settings → General → Reset onboarding.
     await screen('wizard', () async {

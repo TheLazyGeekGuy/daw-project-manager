@@ -75,6 +75,13 @@ void main() {
     await tester.pumpAndSettle();
   }
 
+  testWidgets('the welcome page shows the app\'s own logo', (tester) async {
+    await pumpWizard(tester);
+    final logo = tester.widget<Image>(find.byKey(const ValueKey('onboarding-app-logo')));
+    expect((logo.image as AssetImage).assetName, 'app_icon.png');
+    expect(find.byIcon(Icons.music_note), findsNothing, reason: 'not a generic note');
+  });
+
   testWidgets(
     'steps through Folders, Updates, Suggestions and Session Mode before Phases',
     (tester) async {

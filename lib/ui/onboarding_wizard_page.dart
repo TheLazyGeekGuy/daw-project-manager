@@ -221,19 +221,23 @@ class _WizardNav extends StatelessWidget {
 // ── Shared page scaffold ──────────────────────────────────────────────────────
 
 class _WizardStep extends StatelessWidget {
-  final IconData icon;
+  final IconData? icon;
+
+  /// Drawn in place of [icon] — the app's own logo on the welcome page.
+  final Widget? art;
   final String title;
   final String? subtitle;
   final Widget child;
   final double iconSize;
 
   const _WizardStep({
-    required this.icon,
+    this.icon,
+    this.art,
     required this.title,
     this.subtitle,
     required this.child,
     this.iconSize = 64,
-  });
+  }) : assert(icon != null || art != null);
 
   @override
   Widget build(BuildContext context) {
@@ -247,7 +251,7 @@ class _WizardStep extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Center(
-                child: Icon(icon, size: iconSize, color: theme.colorScheme.primary),
+                child: art ?? Icon(icon, size: iconSize, color: theme.colorScheme.primary),
               ),
               const SizedBox(height: 20),
               Center(
@@ -289,8 +293,13 @@ class _WelcomePage extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     return _WizardStep(
-      icon: Icons.music_note,
-      iconSize: 80,
+      art: Image.asset(
+        'app_icon.png',
+        key: const ValueKey('onboarding-app-logo'),
+        width: 96,
+        height: 96,
+        filterQuality: FilterQuality.medium,
+      ),
       title: l10n.onboardingWelcomeTitle,
       subtitle: l10n.onboardingWelcomeBody,
       child: _FeatureList(theme: theme, l10n: l10n),
