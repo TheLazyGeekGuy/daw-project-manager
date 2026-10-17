@@ -27,6 +27,7 @@ import 'package:daw_project_manager/models/music_project.dart';
 import 'package:daw_project_manager/models/stored_midi_clips.dart';
 import 'package:daw_project_manager/repository/midi_clip_store.dart';
 import 'package:daw_project_manager/services/metadata_extractor.dart';
+import 'package:daw_project_manager/ui/onboarding_wizard_page.dart' show OnboardingWizardPage;
 import 'package:daw_project_manager/ui/midi_collection_actions.dart' show collectionItemFor;
 import 'package:daw_project_manager/repository/profile_repository.dart';
 import 'package:daw_project_manager/repository/project_repository.dart';
@@ -161,11 +162,13 @@ extension on WidgetTester {
   }
 
   /// Writes what is on screen to resources/screenshots/[path].
-  Future<void> shot(String path) async {
+  /// [crop], a part of the window, frames one thing — a wizard, a dialog.
+  Future<void> shot(String path, {Rect? crop}) async {
     await settle();
     final view = binding.renderViews.first;
     final layer = view.debugLayer! as OffsetLayer;
-    final image = await layer.toImage(Offset.zero & view.size, pixelRatio: 1);
+    final bounds = (crop ?? Offset.zero & view.size).intersect(Offset.zero & view.size);
+    final image = await layer.toImage(bounds, pixelRatio: 1);
     final png = await image.toByteData(format: ui.ImageByteFormat.png);
     final file = File(p.join('resources', 'screenshots', path));
     await file.parent.create(recursive: true);
@@ -217,7 +220,9 @@ void main() {
         (w) => w is TextField && (w.decoration?.hintText ?? '').startsWith('Search projects'),
       );
       await tester.tapOn(search);
-      await tester.enterText(search.first, 'Ableton');
+      // A project's name: search matches names, notes, markers, plug-ins,
+      // tags and custom fields — not the DAW, which has a filter of its own.
+      await tester.enterText(search.first, 'night');
       await tester.shot('dashboard/dashboard-filters-search.png');
       await tester.enterText(search.first, '');
       await tester.settle();
@@ -324,6 +329,27 @@ void main() {
         await tester.shot('settings/$file');
       }
       await tester.back();
+    });
+
+    // Last, because it ends the session: the setup wizard, framed on its
+    // first page — Settings → General → Reset onboarding.
+    await screen('wizard', () async {
+      await tester.tapOn(find.text('Settings').hitTestable());
+      await tester.tapOn(find.text('Reset onboarding').hitTestable());
+      await tester.tapOn(find.widgetWithText(FilledButton, 'Reset onboarding'));
+      final wizard = find.byType(OnboardingWizardPage);
+      await tester.until(wizard);
+      await tester.settle(20);
+      // The page's own column, with room around it for what frames it.
+      final column = find.descendant(
+        of: wizard,
+        matching: find.byWidgetPredicate(
+          (w) => w is ConstrainedBox && w.constraints.maxWidth == 560,
+        ),
+      );
+      final content = tester.getRect(column.first);
+      final frame = Rect.fromLTRB(content.left - 140, content.top - 8, content.right + 140, content.bottom + 48);
+      await tester.shot('onboarding/onboarding-welcome.png', crop: frame);
     });
 
     debugPrint('SCREENSHOTS SKIPPED: ${failed.isEmpty ? 'none' : failed.join(' | ')}');
