@@ -23,7 +23,7 @@
       <a href="https://github.com/bandpassrecords/daw-project-manager/releases/latest"><img src="resources/os/MacOS_logo_(2017).svg" height="44" alt=""><br><b>macOS</b></a><br><sub>.dmg · .zip</sub>
     </td>
     <td align="center" width="170">
-      <a href="https://github.com/bandpassrecords/daw-project-manager/releases/latest"><img src="resources/os/Linux_logo.svg" height="44" alt=""><br><b>Linux</b></a><br><sub>AppImage · Flatpak · .tar.gz</sub>
+      <a href="https://flathub.org/en/apps/com.bandpassrecords.dpm"><img src="resources/os/Linux_logo.svg" height="44" alt=""><br><b>Linux</b></a><br><sub><a href="https://flathub.org/en/apps/com.bandpassrecords.dpm">Flathub</a> · <a href="https://github.com/bandpassrecords/daw-project-manager/releases/latest">AppImage</a> · <a href="https://github.com/bandpassrecords/daw-project-manager/releases/latest">.tar.gz</a></sub>
     </td>
     <td align="center" width="170">
       <a href="https://groups.google.com/g/daw-project-manager-android-testers"><img src="resources/os/android-head.png" height="44" alt=""><br><b>Android</b></a><br><sub><a href="https://groups.google.com/g/daw-project-manager-android-testers">closed testing</a></sub>
