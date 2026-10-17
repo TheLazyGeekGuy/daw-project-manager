@@ -73,4 +73,4 @@ Opens the app on a demo library (never yours), visits every screen and rewrites 
 
 1. Branch from `main`.
 2. Follow the codebase's rules in [`CLAUDE.md`](../CLAUDE.md): every UI string translated, a test with every fix, which data syncs.
-3. Open a pull request. CI runs **Unit tests** on Windows, macOS and Linux and builds every platform; all must pass.
+3. Open a pull request. CI runs **Unit tests** on Windows, macOS and Linux and builds every platform; all must pass. After the merge it does both again on `main`, building nothing for release: two pull requests merged one after the other were each checked only against the `main` before the other.
