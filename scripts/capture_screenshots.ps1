@@ -19,7 +19,8 @@ Push-Location $repo
 try {
   flutter test integration_test/screenshots/capture_test.dart -d windows `
     --dart-define=DPM_DATA_DIR=daw_project_manager_screenshots `
-    --dart-define=DPM_HIDE_VERSION=true
+    --dart-define=DPM_HIDE_VERSION=true `
+    --dart-define=DPM_SCREENSHOTS=true
   $code = $LASTEXITCODE
 } finally {
   Get-Process daw_project_manager -ErrorAction SilentlyContinue | Stop-Process -Force

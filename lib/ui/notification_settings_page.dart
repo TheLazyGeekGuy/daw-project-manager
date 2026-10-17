@@ -7,6 +7,7 @@ import '../models/notification_preferences.dart';
 import '../services/deadline_notification_service.dart';
 import '../providers/providers.dart';
 import '../utils/mobile_utils.dart';
+import '../utils/screenshot_mode.dart';
 import 'widgets/desktop_title_bar.dart';
 import 'app_snack_bar.dart';
 
@@ -266,8 +267,8 @@ class _NotificationSettingsPageState extends ConsumerState<NotificationSettingsP
             ),
           ),
 
-          // Debug section (only visible in debug mode)
-          if (kDebugMode) ...[
+          // Debug section (debug builds only, never in a screenshot)
+          if (showDeveloperTools) ...[
             const SizedBox(height: 16),
             Card(
               color: Colors.orange.shade50,

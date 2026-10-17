@@ -13,7 +13,11 @@ not from someone's desktop:
   in a real window, on a library of its own
   (`DPM_DATA_DIR=daw_project_manager_screenshots`; it refuses any other and
   wipes that one), with the version left out of the title
-  (`DPM_HIDE_VERSION=true`).
+  (`DPM_HIDE_VERSION=true`) and the debug-only developer tools hidden
+  (`DPM_SCREENSHOTS=true`, read as `showDeveloperTools` in
+  `lib/utils/screenshot_mode.dart`).
+- Project pages are shot in the **Sections** layout (`projectDetailLayout`
+  is seeded `sectioned`): a section at a time, picked from the rail.
 - The seed is `DemoDataService` plus what a lived-in library has: MIDI read
   from the test collection, a collection with folders, a scan folder, a song
   in Recently deleted. Profiles are renamed Studio / Solo / Collab.
@@ -50,6 +54,15 @@ Open each changed PNG and look at it. What to catch:
   seed more in `_seed()`;
 - anything personal or odd: real paths, "Demo — …", a version number,
   "DEBUG" (the banner is off via `WidgetsApp.debugAllowBannerOverride`);
+- **developer tools** — anything a user's build doesn't have. The tool runs a
+  debug build, so a debug-only control is on screen unless it is gated on
+  `showDeveloperTools` (not `kDebugMode`). The Profile Manager's
+  *Generate / Remove Testing Database* buttons were in its picture until they
+  were. `shot()` refuses a picture showing any text in `_neverInAPicture`:
+  gate a new developer tool on `showDeveloperTools` and add its label there;
+- a song that shows nothing for the screen's subject (a to-do list with every
+  item done, a session history with no sessions): pick another demo song, or
+  seed what it lacks;
 - yellow-black overflow stripes.
 
 ## 3. Adding a screen
@@ -70,7 +83,21 @@ Lessons from writing these:
 - Seed data in `_seed()` before `app.main`: write through the repositories
   and stores (`ProjectRepository.init` first — it registers the adapters).
 
-## 4. Publish
+## 4. What the user guide says — and leaves out
+
+The guide is for people making music, not for people working on the app.
+Say what they can do and where; leave out how the app does it inside, and
+anything they never need to think about. Removed for that reason:
+
+- "Cubase reads back to SX 3; FL Studio back to FL 7; Ableton Live back to
+  Live 8." — which versions the readers were tested against. That belongs in
+  `docs/testing.md`, for developers.
+- "A value read wrong? Type over it on the project's page: what you type wins
+  over later scans." — how typed values and scanned ones are merged.
+
+The same goes for pictures: no developer tools (above), no debug output.
+
+## 5. Publish
 
 - **README** (`main`): references `resources/screenshots/…` directly; the
   feature tiles are a 2-column table.

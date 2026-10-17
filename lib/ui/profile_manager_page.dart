@@ -16,12 +16,11 @@ import 'widgets/theme_switcher.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'widgets/language_switcher.dart';
 import 'app_snack_bar.dart';
+import '../utils/screenshot_mode.dart';
 
-// TODO: Set this back to `kDebugMode` once promotional screenshots are done.
-// The demo-data generator/remover is normally a debug-only tool, but it's
-// temporarily enabled in release builds too so it can be used to seed a
-// screenshot-ready profile from a release build.
-const bool _showTestingDatabaseTools = kDebugMode;
+// The demo-data generator/remover is a tool for working on the app: debug
+// builds only, and never in a screenshot.
+const bool _showTestingDatabaseTools = showDeveloperTools;
 
 class ProfileManagerPage extends ConsumerStatefulWidget {
   const ProfileManagerPage({super.key});

@@ -4,8 +4,9 @@
 //   scripts/capture_screenshots.ps1
 //
 // which runs it with --dart-define=DPM_DATA_DIR=daw_project_manager_screenshots
-// (the library it wipes and fills) and DPM_HIDE_VERSION=true (no version in
-// the title, so the pictures don't date with every release).
+// (the library it wipes and fills), DPM_HIDE_VERSION=true (no version in
+// the title, so the pictures don't date with every release) and
+// DPM_SCREENSHOTS=true (no debug-only developer tools).
 //
 // Writes resources/screenshots/<area>/<name>.png at 1920×1080, in Classic
 // Dark. Not part of CI: it is a tool, run when the UI changes enough that
@@ -35,6 +36,13 @@ import 'package:daw_project_manager/services/demo_data_service.dart';
 import 'package:daw_project_manager/utils/app_paths.dart';
 
 const _size = Size(1920, 1080);
+
+/// What a user never sees, so no picture may show it: the tools for working
+/// on the app, which a debug build has unless DPM_SCREENSHOTS hides them.
+const _neverInAPicture = [
+  'Generate Testing Database',
+  'Remove Testing Database',
+];
 
 /// A fresh demo library: the demo profiles and nothing else, past the
 /// first-run screens.
@@ -165,8 +173,14 @@ extension on WidgetTester {
 
   /// Writes what is on screen to resources/screenshots/[path].
   /// [crop], a part of the window, frames one thing — a wizard, a dialog.
+  /// Refuses a picture with a developer tool in it (see [_neverInAPicture]).
   Future<void> shot(String path, {Rect? crop}) async {
     await settle();
+    for (final text in _neverInAPicture) {
+      if (find.text(text).hitTestable().evaluate().isNotEmpty) {
+        throw TestFailure('$path shows "$text", a developer tool: run with --dart-define=DPM_SCREENSHOTS=true');
+      }
+    }
     final view = binding.renderViews.first;
     final layer = view.debugLayer! as OffsetLayer;
     final bounds = (crop ?? Offset.zero & view.size).intersect(Offset.zero & view.size);
