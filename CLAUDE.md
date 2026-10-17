@@ -241,8 +241,9 @@ Instructions for AI assistants working on this codebase.
 ## Common tasks
 
 ### Cutting a release: the in-app changelog
+- **Release with the `release` skill** (`.claude/skills/release/SKILL.md`), never by pushing a tag: every build uploads to a GitHub release that must already exist, so the skill creates the release (which creates the tag), checks both version gates (this changelog and the Flatpak metainfo), and retries failed runs.
 - `assets/changelog/changelog.json` is the changelog the app ships — the "What's New" dialog shown once after an update, and Settings > Changelog. It is an asset, not fetched from GitHub, because the Flatpak build has no network.
-- **Before tagging**, add the version's entry: `python scripts/new_changelog_entry.py 2.10.0 --highlight "..."` (repeat `--highlight`; add `--locale pt` etc. for translations — a missing locale falls back to English). `release.yml` fails the release if the newest entry doesn't match the tag.
+- The skill writes the version's entry; by hand it is `python scripts/new_changelog_entry.py 2.10.0 --highlight "..."` (repeat `--highlight`; add `--locale pt` etc. for translations — a missing locale falls back to English). `release.yml` fails the release if the newest entry doesn't match the tag.
 - Write user-facing highlights, not commit messages. Entries before 2.9.0 were backfilled from GitHub release notes and git history, and are English-only.
 
 ### Adding a new DAW
