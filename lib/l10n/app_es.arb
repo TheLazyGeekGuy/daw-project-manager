@@ -4445,5 +4445,10 @@
   "companionEndSessionWhenDawCloses": "Finalizar la sesión cuando la DAW cierre el proyecto",
   "companionEndSessionWhenDawClosesDescription": "También tras un fallo: la sesión termina en el momento en que la DAW soltó el proyecto.",
   "companionStartSessionWhenDawOpens": "Iniciar una sesión cuando se abra un proyecto en la DAW",
-  "companionStartSessionWhenDawOpensDescription": "Solo si no hay ninguna sesión en curso, y solo para proyectos del perfil activo."
+  "companionStartSessionWhenDawOpensDescription": "Solo si no hay ninguna sesión en curso, y solo para proyectos del perfil activo.",
+  "companionSessionEndedTitle": "Sesión finalizada",
+  "companionSessionEndedClosed": "{daw} cerró {project}, así que su sesión de trabajo terminó.",
+  "companionSessionEndedNoResponse": "DPM Companion dejó de responder en {daw}, así que la sesión de {project} terminó cuando se tuvo noticia de él por última vez. Puede que la DAW se haya bloqueado o cerrado de golpe.",
+  "companionUnknownDaw": "Tu DAW",
+  "companionSessionEndedSummary": "{start}–{end} · {duration}"
 }

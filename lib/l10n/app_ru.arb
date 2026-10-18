@@ -4445,5 +4445,10 @@
   "companionEndSessionWhenDawCloses": "Завершать сессию, когда DAW закрывает проект",
   "companionEndSessionWhenDawClosesDescription": "И после сбоя: сессия завершается в тот момент, когда DAW отпустила проект.",
   "companionStartSessionWhenDawOpens": "Начинать сессию, когда проект открывается в DAW",
-  "companionStartSessionWhenDawOpensDescription": "Только если ни одна сессия не идёт, и только для проектов активного профиля."
+  "companionStartSessionWhenDawOpensDescription": "Только если ни одна сессия не идёт, и только для проектов активного профиля.",
+  "companionSessionEndedTitle": "Сессия завершена",
+  "companionSessionEndedClosed": "{daw} закрыла {project}, поэтому рабочая сессия завершена.",
+  "companionSessionEndedNoResponse": "DPM Companion перестал отвечать в {daw}, поэтому сессия {project} завершена в момент последнего отклика. Возможно, DAW аварийно завершилась или была закрыта принудительно.",
+  "companionUnknownDaw": "Ваша DAW",
+  "companionSessionEndedSummary": "{start}–{end} · {duration}"
 }

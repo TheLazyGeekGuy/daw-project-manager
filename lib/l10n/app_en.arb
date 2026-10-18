@@ -8029,5 +8029,13 @@
   "companionEndSessionWhenDawCloses": "End the session when the DAW closes the project",
   "companionEndSessionWhenDawClosesDescription": "Also after a crash: the session ends at the moment the DAW let go of the project.",
   "companionStartSessionWhenDawOpens": "Start a session when a project opens in the DAW",
-  "companionStartSessionWhenDawOpensDescription": "Only when no session is running, and only for projects of the active profile."
+  "companionStartSessionWhenDawOpensDescription": "Only when no session is running, and only for projects of the active profile.",
+  "companionSessionEndedTitle": "Session ended",
+  "companionSessionEndedClosed": "{daw} closed {project}, so its work session ended.",
+  "@companionSessionEndedClosed": {"placeholders": {"daw": {"type": "String"}, "project": {"type": "String"}}},
+  "companionSessionEndedNoResponse": "DPM Companion stopped responding in {daw}, so the session for {project} ended when it was last heard from. The DAW may have crashed or been closed abruptly.",
+  "@companionSessionEndedNoResponse": {"placeholders": {"daw": {"type": "String"}, "project": {"type": "String"}}},
+  "companionUnknownDaw": "Your DAW",
+  "companionSessionEndedSummary": "{start}–{end} · {duration}",
+  "@companionSessionEndedSummary": {"placeholders": {"start": {"type": "String"}, "end": {"type": "String"}, "duration": {"type": "String"}}}
 }

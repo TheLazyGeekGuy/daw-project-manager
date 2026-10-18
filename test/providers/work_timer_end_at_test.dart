@@ -48,15 +48,33 @@ void main() {
 
     container.read(activeProjectProvider.notifier).set(repo.getById('p1')!);
     container.read(workTimerProvider.notifier).continueFrom(started);
-    container.read(workTimerProvider.notifier).endAt(closed);
+    final ended = container.read(workTimerProvider.notifier).endAt(closed)!;
 
     expect(container.read(activeProjectProvider), isNull);
+    expect(ended.start, started);
+    expect(ended.end, closed);
+    expect(ended.seconds, 6 * 60);
+
     final project = await savedSession();
     final session = project.sessions.single;
     expect(session.startedAt, started);
     expect(session.endedAt, closed);
     expect(session.durationSeconds, 6 * 60);
     expect(project.totalWorkSeconds, 6 * 60);
+  });
+
+  test('a UTC end from the plugin is saved as local time', () async {
+    final started = DateTime.now().subtract(const Duration(minutes: 10));
+    final closedUtc = started.add(const Duration(minutes: 6)).toUtc();
+
+    container.read(activeProjectProvider.notifier).set(repo.getById('p1')!);
+    container.read(workTimerProvider.notifier).continueFrom(started);
+    container.read(workTimerProvider.notifier).endAt(closedUtc);
+
+    final session = (await savedSession()).sessions.single;
+    expect(session.endedAt.isUtc, isFalse);
+    expect(session.endedAt.isAtSameMomentAs(closedUtc), isTrue);
+    expect(session.endedAt.hour, started.add(const Duration(minutes: 6)).hour);
   });
 
   test('endAt does nothing when no session is running', () async {

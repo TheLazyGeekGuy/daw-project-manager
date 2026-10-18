@@ -4445,5 +4445,10 @@
   "companionEndSessionWhenDawCloses": "DAW がプロジェクトを閉じたらセッションを終了",
   "companionEndSessionWhenDawClosesDescription": "クラッシュ後も同様です。セッションは DAW がプロジェクトを手放した時刻で終了します。",
   "companionStartSessionWhenDawOpens": "DAW でプロジェクトが開かれたらセッションを開始",
-  "companionStartSessionWhenDawOpensDescription": "実行中のセッションがない場合のみ、またアクティブなプロフィールのプロジェクトのみが対象です。"
+  "companionStartSessionWhenDawOpensDescription": "実行中のセッションがない場合のみ、またアクティブなプロフィールのプロジェクトのみが対象です。",
+  "companionSessionEndedTitle": "セッションが終了しました",
+  "companionSessionEndedClosed": "{daw} が {project} を閉じたため、作業セッションを終了しました。",
+  "companionSessionEndedNoResponse": "{daw} の DPM Companion から応答がなくなったため、{project} のセッションを最後に応答があった時刻で終了しました。DAW がクラッシュしたか、強制終了された可能性があります。",
+  "companionUnknownDaw": "DAW",
+  "companionSessionEndedSummary": "{start}–{end} · {duration}"
 }

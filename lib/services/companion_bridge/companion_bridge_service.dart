@@ -32,8 +32,9 @@ abstract class CompanionSessionHooks {
   bool get endWhenDawCloses;
   bool get startWhenDawOpens;
 
-  /// Ends the running session as if it had been ended at [at].
-  Future<void> endSession(DateTime at);
+  /// Ends the running session as if it had been ended when the DAW let go
+  /// of its project ([CompanionDeparture.at]), and tells the user why.
+  Future<void> endSession(CompanionDeparture departure);
 
   /// Starts a session for [project] — when it is in the active profile.
   Future<void> startSession(CompanionProjectRef project);
@@ -134,7 +135,7 @@ class CompanionBridgeService {
   // Presence: running plugin instances by runId, and what changed this tick.
   final Map<String, CompanionInstance> _instances = {};
   final List<CompanionProjectRef> _hellos = [];
-  final Map<String, DateTime> _departedAt = {};
+  final Map<String, CompanionDeparture> _departures = {};
   DateTime? _lastTick;
 
   String get outboxDir => p.join(bridgeDir, 'outbox');
@@ -168,7 +169,7 @@ class CompanionBridgeService {
       final now = _now();
       final before = presentProjects;
       _hellos.clear();
-      _departedAt.clear();
+      _departures.clear();
 
       // Woken from sleep: the plugins slept too, and their heartbeats are as
       // old as the nap. A fresh grace period, or waking would end the session
@@ -274,15 +275,15 @@ class CompanionBridgeService {
 
   Future<bool> _apply(CompanionMessage message, List<CompanionProfileProjects> library) async {
     switch (message) {
-      case CompanionHello(:final runId, :final project):
+      case CompanionHello(:final runId, :final project, :final hostName):
         if (runId != null && project != null) {
-          _see(CompanionInstance(runId, project, message.createdAt));
+          _see(CompanionInstance(runId, project, message.createdAt, hostName: hostName));
           _hellos.add(project);
         }
         return false;
 
       case CompanionGoodbye(:final runId):
-        if (runId != null) await _leave(runId, message.createdAt);
+        if (runId != null) await _leave(runId, message.createdAt, CompanionDepartureReason.closed);
         return false;
 
       case CompanionUnknownMessage(:final type):
@@ -313,16 +314,21 @@ class CompanionBridgeService {
   /// Records an instance as present, keeping whichever sighting is newer.
   void _see(CompanionInstance instance) {
     final known = _instances[instance.runId];
-    if (known == null || instance.lastSeen.isAfter(known.lastSeen)) _instances[instance.runId] = instance;
+    if (known != null && !instance.lastSeen.isAfter(known.lastSeen)) return;
+    _instances[instance.runId] = instance.hostName.isEmpty && known != null
+        ? CompanionInstance(instance.runId, instance.project, instance.lastSeen, hostName: known.hostName)
+        : instance;
   }
 
   /// An instance left at [at]: gone from presence, its heartbeat file too.
-  Future<void> _leave(String runId, DateTime at) async {
+  Future<void> _leave(String runId, DateTime at, CompanionDepartureReason reason) async {
     final instance = _instances.remove(runId);
     if (instance != null) {
       final key = companionKey(instance.project.profileId, instance.project.projectId);
-      final previous = _departedAt[key];
-      if (previous == null || at.isAfter(previous)) _departedAt[key] = at;
+      final previous = _departures[key];
+      if (previous == null || at.isAfter(previous.at)) {
+        _departures[key] = CompanionDeparture(at, reason, hostName: instance.hostName);
+      }
     }
     try {
       final file = File(p.join(instancesDir, '$runId.json'));
@@ -347,7 +353,7 @@ class CompanionBridgeService {
   Future<void> _expireStale(DateTime now) async {
     final stale = _instances.values.where((i) => now.difference(i.lastSeen) > companionHeartbeatStale).toList();
     for (final instance in stale) {
-      await _leave(instance.runId, instance.lastSeen);
+      await _leave(instance.runId, instance.lastSeen, CompanionDepartureReason.stoppedResponding);
     }
   }
 
@@ -363,7 +369,7 @@ class CompanionBridgeService {
       activeSessionKeys: activeKeys,
       presentBefore: presentBefore,
       presentAfter: presentAfter,
-      departedAt: _departedAt,
+      departures: _departures,
       // A hello only counts while its instance is still there: an old one
       // read after the app was closed for a day starts nothing.
       hellos: _hellos.where((h) => presentAfter.contains(companionKey(h.profileId, h.projectId))).toList(),
@@ -372,8 +378,8 @@ class CompanionBridgeService {
     );
 
     switch (action) {
-      case EndCompanionSession(:final at):
-        await hooks.endSession(at);
+      case EndCompanionSession(:final departure):
+        await hooks.endSession(departure);
       case StartCompanionSession(:final project):
         await hooks.startSession(project);
       case null:

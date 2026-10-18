@@ -13228,6 +13228,40 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Only when no session is running, and only for projects of the active profile.'**
   String get companionStartSessionWhenDawOpensDescription;
+
+  /// No description provided for @companionSessionEndedTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Session ended'**
+  String get companionSessionEndedTitle;
+
+  /// No description provided for @companionSessionEndedClosed.
+  ///
+  /// In en, this message translates to:
+  /// **'{daw} closed {project}, so its work session ended.'**
+  String companionSessionEndedClosed(String daw, String project);
+
+  /// No description provided for @companionSessionEndedNoResponse.
+  ///
+  /// In en, this message translates to:
+  /// **'DPM Companion stopped responding in {daw}, so the session for {project} ended when it was last heard from. The DAW may have crashed or been closed abruptly.'**
+  String companionSessionEndedNoResponse(String daw, String project);
+
+  /// No description provided for @companionUnknownDaw.
+  ///
+  /// In en, this message translates to:
+  /// **'Your DAW'**
+  String get companionUnknownDaw;
+
+  /// No description provided for @companionSessionEndedSummary.
+  ///
+  /// In en, this message translates to:
+  /// **'{start}–{end} · {duration}'**
+  String companionSessionEndedSummary(
+    String start,
+    String end,
+    String duration,
+  );
 }
 
 class _AppLocalizationsDelegate

@@ -143,18 +143,21 @@ sealed class CompanionMessage {
   /// copies of one project are two instances. Null from older plugins.
   final String? runId;
 
-  const CompanionMessage(this.id, this.createdAt, this.project, {this.runId});
+  /// The DAW it runs in, as the host describes itself ("Steinberg Cubase 13").
+  final String hostName;
+
+  const CompanionMessage(this.id, this.createdAt, this.project, {this.runId, this.hostName = ''});
 }
 
 /// A plugin instance is running inside a project.
 class CompanionHello extends CompanionMessage {
-  const CompanionHello(super.id, super.createdAt, super.project, {super.runId});
+  const CompanionHello(super.id, super.createdAt, super.project, {super.runId, super.hostName});
 }
 
 /// A plugin instance has left a project: the DAW closed it or quit, the
 /// plugin was removed, or it was linked elsewhere. [createdAt] is when.
 class CompanionGoodbye extends CompanionMessage {
-  const CompanionGoodbye(super.id, super.createdAt, super.project, {super.runId});
+  const CompanionGoodbye(super.id, super.createdAt, super.project, {super.runId, super.hostName});
 }
 
 class CompanionTodoAdd extends CompanionMessage {
@@ -196,6 +199,11 @@ class CompanionUnknownMessage extends CompanionMessage {
 const int companionMaxTodoLength = 500;
 
 /// Reads one outbox file. Null when it isn't a message at all.
+/// A time written by the plugin (UTC, "Z"), as the app keeps times: local.
+/// Dart parses "…Z" as a UTC DateTime, and DateFormat prints it as such —
+/// which is how a session once showed as 12:51–10:52 two hours east of UTC.
+DateTime? companionTime(Object? value) => DateTime.tryParse('$value')?.toLocal();
+
 CompanionMessage? parseCompanionMessage(String text) {
   final Object? decoded;
   try {
@@ -209,7 +217,7 @@ CompanionMessage? parseCompanionMessage(String text) {
   final type = decoded['type'];
   if (id is! String || id.isEmpty || type is! String) return null;
 
-  final createdAt = DateTime.tryParse('${decoded['createdAt']}') ?? DateTime.now();
+  final createdAt = companionTime(decoded['createdAt']) ?? DateTime.now();
   final project = _parseRef(decoded['project']);
   final payload = decoded['payload'] is Map<String, dynamic>
       ? decoded['payload'] as Map<String, dynamic>
@@ -220,12 +228,15 @@ CompanionMessage? parseCompanionMessage(String text) {
       ? plugin['runId'] as String
       : null;
 
+  final host = decoded['host'];
+  final hostName = host is Map<String, dynamic> && host['name'] is String ? host['name'] as String : '';
+
   switch (type) {
     case 'session.hello':
-      return CompanionHello(id, createdAt, project, runId: runId);
+      return CompanionHello(id, createdAt, project, runId: runId, hostName: hostName);
 
     case 'session.goodbye':
-      return CompanionGoodbye(id, createdAt, project, runId: runId);
+      return CompanionGoodbye(id, createdAt, project, runId: runId, hostName: hostName);
 
     case 'todo.add':
       final todoId = payload['todoId'];
@@ -236,7 +247,7 @@ CompanionMessage? parseCompanionMessage(String text) {
       return CompanionTodoAdd(id, createdAt, project,
           todoId: todoId,
           text: text.length > companionMaxTodoLength ? text.substring(0, companionMaxTodoLength) : text,
-          todoCreatedAt: DateTime.tryParse('${payload['createdAt']}') ?? createdAt);
+          todoCreatedAt: companionTime(payload['createdAt']) ?? createdAt);
 
     case 'todo.setCompleted':
       final todoId = payload['todoId'];
@@ -250,7 +261,7 @@ CompanionMessage? parseCompanionMessage(String text) {
       return CompanionCaptureReady(id, createdAt, project,
           file: file,
           durationSeconds: (payload['durationSeconds'] as num?)?.toDouble() ?? 0,
-          capturedAt: DateTime.tryParse('${payload['capturedAt']}') ?? createdAt);
+          capturedAt: companionTime(payload['capturedAt']) ?? createdAt);
 
     default:
       return CompanionUnknownMessage(id, createdAt, project, type);
@@ -300,10 +311,31 @@ class CompanionInstance {
   final String runId;
   final CompanionProjectRef project;
   final DateTime lastSeen;
+  final String hostName;
 
-  const CompanionInstance(this.runId, this.project, this.lastSeen);
+  const CompanionInstance(this.runId, this.project, this.lastSeen, {this.hostName = ''});
 
-  CompanionInstance seenAt(DateTime time) => CompanionInstance(runId, project, time);
+  CompanionInstance seenAt(DateTime time) => CompanionInstance(runId, project, time, hostName: hostName);
+}
+
+/// How an instance left its project.
+enum CompanionDepartureReason {
+  /// It said goodbye: the DAW closed the project or quit, or the plugin was
+  /// removed.
+  closed,
+
+  /// It went quiet: no goodbye, and its heartbeat went stale — a crashed or
+  /// killed DAW, most likely.
+  stoppedResponding,
+}
+
+/// When and how the last instance in a project left it.
+class CompanionDeparture {
+  final DateTime at;
+  final CompanionDepartureReason reason;
+  final String hostName;
+
+  const CompanionDeparture(this.at, this.reason, {this.hostName = ''});
 }
 
 /// Reads `instances/<runId>.json`. Null when it isn't a linked heartbeat.
@@ -317,9 +349,11 @@ CompanionInstance? parseCompanionHeartbeat(String text) {
   if (decoded is! Map<String, dynamic>) return null;
   final runId = decoded['runId'];
   final project = _parseRef(decoded['project']);
-  final lastSeen = DateTime.tryParse('${decoded['lastSeen']}');
+  final lastSeen = companionTime(decoded['lastSeen']);
   if (runId is! String || runId.isEmpty || project == null || lastSeen == null) return null;
-  return CompanionInstance(runId, project, lastSeen);
+  final host = decoded['host'];
+  final hostName = host is Map<String, dynamic> && host['name'] is String ? host['name'] as String : '';
+  return CompanionInstance(runId, project, lastSeen, hostName: hostName);
 }
 
 /// The key a session is tracked under: profile and id, never id alone.
@@ -332,8 +366,10 @@ sealed class CompanionSessionAction {
 
 /// End the running session, at the moment the DAW let go of its project.
 class EndCompanionSession extends CompanionSessionAction {
-  final DateTime at;
-  const EndCompanionSession(this.at);
+  final CompanionDeparture departure;
+  const EndCompanionSession(this.departure);
+
+  DateTime get at => departure.at;
 }
 
 /// Start a session for a project that just opened in the DAW.
@@ -348,8 +384,8 @@ class StartCompanionSession extends CompanionSessionAction {
 /// project's, plus — for a session on a version stack — every member's, so
 /// closing the version the DAW had open ends the stack's session.
 /// [presentBefore]/[presentAfter] are the keys with at least one instance at
-/// the start and end of the tick; [departedAt], when each key's last
-/// instance left; [hellos], projects that said hello this tick, in order.
+/// the start and end of the tick; [departures], when and how each key's
+/// last instance left; [hellos], projects that said hello this tick, in order.
 ///
 /// A session ends only on a transition from present to absent — a session
 /// for a project no plugin was ever present in is never ended — and only
@@ -359,7 +395,7 @@ CompanionSessionAction? decideCompanionSession({
   required Set<String> activeSessionKeys,
   required Set<String> presentBefore,
   required Set<String> presentAfter,
-  required Map<String, DateTime> departedAt,
+  required Map<String, CompanionDeparture> departures,
   required List<CompanionProjectRef> hellos,
   required bool endWhenDawCloses,
   required bool startWhenDawOpens,
@@ -370,12 +406,12 @@ CompanionSessionAction? decideCompanionSession({
     final isPresent = activeSessionKeys.any(presentAfter.contains);
     if (!wasPresent || isPresent) return null;
 
-    DateTime? end;
+    CompanionDeparture? last;
     for (final key in activeSessionKeys) {
-      final left = departedAt[key];
-      if (left != null && (end == null || left.isAfter(end))) end = left;
+      final left = departures[key];
+      if (left != null && (last == null || left.at.isAfter(last.at))) last = left;
     }
-    return end == null ? null : EndCompanionSession(end);
+    return last == null ? null : EndCompanionSession(last);
   }
 
   if (startWhenDawOpens && hellos.isNotEmpty) return StartCompanionSession(hellos.last);

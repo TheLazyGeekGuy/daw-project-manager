@@ -4445,5 +4445,10 @@
   "companionEndSessionWhenDawCloses": "DAW 关闭项目时结束会话",
   "companionEndSessionWhenDawClosesDescription": "崩溃后也一样：会话在 DAW 放开该项目的那一刻结束。",
   "companionStartSessionWhenDawOpens": "在 DAW 中打开项目时开始会话",
-  "companionStartSessionWhenDawOpensDescription": "仅在没有正在进行的会话时，并且仅限当前资料中的项目。"
+  "companionStartSessionWhenDawOpensDescription": "仅在没有正在进行的会话时，并且仅限当前资料中的项目。",
+  "companionSessionEndedTitle": "会话已结束",
+  "companionSessionEndedClosed": "{daw} 关闭了 {project}，因此其工作会话已结束。",
+  "companionSessionEndedNoResponse": "{daw} 中的 DPM Companion 停止了响应，因此 {project} 的会话在最后一次收到响应时结束。DAW 可能已崩溃或被强制关闭。",
+  "companionUnknownDaw": "你的 DAW",
+  "companionSessionEndedSummary": "{start}–{end} · {duration}"
 }

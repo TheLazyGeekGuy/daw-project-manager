@@ -24,6 +24,15 @@ void main() {
     );
   });
 
+  test('the end is local time even when handed a UTC time', () {
+    // The plugin's times arrive as UTC; stored as such, a session showed as
+    // 12:51–10:52 two hours east of UTC.
+    final closedUtc = DateTime(2026, 10, 18, 11, 30).toUtc();
+    final end = sessionEndTime(start: start, now: now, requestedEnd: closedUtc);
+    expect(end.isUtc, isFalse);
+    expect(end, DateTime(2026, 10, 18, 11, 30));
+  });
+
   test('an end in the future or before the start is clamped', () {
     expect(sessionEndTime(start: start, now: now, requestedEnd: now.add(const Duration(hours: 1))), now);
     expect(sessionEndTime(start: start, now: now, requestedEnd: start.subtract(const Duration(hours: 1))), start);

@@ -37,7 +37,10 @@ class FakeLibrary implements CompanionLibrary {
 /// Records what the bridge asks of the work sessions.
 class FakeHooks implements CompanionSessionHooks {
   CompanionProjectRef? active;
-  final ended = <DateTime>[];
+  final departures = <CompanionDeparture>[];
+  // In UTC to compare with the UTC test clock (Dart: equal moments in two
+  // zones are not ==). The app itself is handed local times.
+  List<DateTime> get ended => [for (final d in departures) d.at.toUtc()];
   final started = <CompanionProjectRef>[];
 
   @override
@@ -49,8 +52,8 @@ class FakeHooks implements CompanionSessionHooks {
   CompanionProjectRef? activeSession() => active;
 
   @override
-  Future<void> endSession(DateTime at) async {
-    ended.add(at);
+  Future<void> endSession(CompanionDeparture departure) async {
+    departures.add(departure);
     active = null;
   }
 
@@ -82,8 +85,9 @@ void main() {
       'schema': 1,
       'id': 'm$sequence',
       'type': type,
-      'createdAt': (at ?? DateTime.utc(2026, 10, 18, 12)).toIso8601String(),
+      'createdAt': (at ?? DateTime.utc(2026, 10, 18, 12)).toUtc().toIso8601String(),
       if (runId != null) 'plugin': {'version': '0.1.0', 'instanceId': 'saved', 'runId': runId},
+      'host': {'name': 'Steinberg Cubase 13', 'windowTitle': ''},
       'project': {'id': projectId, 'profileId': profileId},
       'payload': payload,
     }));
@@ -385,6 +389,9 @@ void main() {
       await after(const Duration(minutes: 41));
 
       expect(hooks.ended, [closedAt]);
+      expect(hooks.departures.single.reason, CompanionDepartureReason.closed);
+      expect(hooks.departures.single.hostName, 'Steinberg Cubase 13');
+      expect(hooks.departures.single.at.isUtc, isFalse);
       expect(b.presentProjects, isEmpty);
     });
 
@@ -405,6 +412,7 @@ void main() {
         await after(const Duration(seconds: 3));
       }
       expect(hooks.ended, [lastBeat]);
+      expect(hooks.departures.single.reason, CompanionDepartureReason.stoppedResponding);
       expect(File(p.join(bridgeDir, 'instances', 'r1.json')).existsSync(), isFalse);
     });
 
@@ -479,6 +487,19 @@ void main() {
       await b.tick();
       expect(hooks.started, isEmpty);
       expect(b.presentProjects, isEmpty);
+    });
+
+    test('without any sign of the plugin, no session is ever ended', () async {
+      // Someone who does not use the plugin at all: hours of ticks, a sleep,
+      // nothing in the bridge folder. The session must run untouched.
+      hooks.active = const CompanionProjectRef('solo', 'p1');
+      for (var i = 0; i < 200; i++) {
+        await after(const Duration(seconds: 3));
+      }
+      await after(const Duration(hours: 3));
+      await after(const Duration(seconds: 3));
+      expect(hooks.ended, isEmpty);
+      expect(hooks.active, isNotNull);
     });
 
     test('a leftover heartbeat from a crash long ago ends nothing and is cleared', () async {

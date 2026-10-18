@@ -4,11 +4,21 @@ import '../../providers/providers.dart';
 import 'companion_bridge_service.dart';
 import 'companion_protocol.dart';
 
+/// A session the DAW ended, for telling the user — otherwise it would just
+/// vanish from the dashboard and they might keep working without a clock.
+class CompanionSessionEnded {
+  final String projectName;
+  final CompanionDeparture departure;
+  final EndedSession session;
+
+  const CompanionSessionEnded(this.projectName, this.departure, this.session);
+}
+
 /// The bridge's view of the app's work sessions: the active project is the
 /// running session, clearing it ends one (the work timer saves it), setting
 /// it starts one — the same moves the dashboard's buttons make.
 class RiverpodCompanionSessionHooks implements CompanionSessionHooks {
-  RiverpodCompanionSessionHooks(this.container) {
+  RiverpodCompanionSessionHooks(this.container, {this.onSessionEnded}) {
     // Kept alive from here on: the timer is what saves a session when the
     // active project is cleared, window open or not.
     container.listen(workTimerProvider, (_, _) {});
@@ -18,6 +28,10 @@ class RiverpodCompanionSessionHooks implements CompanionSessionHooks {
   }
 
   final ProviderContainer container;
+
+  /// Shows the user what happened (main.dart: a dialog, and a notification
+  /// when the window isn't in front).
+  final void Function(CompanionSessionEnded ended)? onSessionEnded;
 
   String? get _profileId => container.read(currentProfileProvider).value?.id;
 
@@ -36,8 +50,12 @@ class RiverpodCompanionSessionHooks implements CompanionSessionHooks {
   bool get startWhenDawOpens => container.read(companionStartSessionProvider);
 
   @override
-  Future<void> endSession(DateTime at) async {
-    container.read(workTimerProvider.notifier).endAt(at);
+  Future<void> endSession(CompanionDeparture departure) async {
+    final project = container.read(activeProjectProvider);
+    final session = container.read(workTimerProvider.notifier).endAt(departure.at);
+    if (project != null && session != null) {
+      onSessionEnded?.call(CompanionSessionEnded(project.displayName, departure, session));
+    }
   }
 
   @override

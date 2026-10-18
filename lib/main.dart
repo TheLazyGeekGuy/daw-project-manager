@@ -64,6 +64,7 @@ import 'ui/app_snack_bar.dart';
 import 'services/companion_bridge/companion_bridge_service.dart';
 import 'services/companion_bridge/repository_companion_library.dart';
 import 'services/companion_bridge/riverpod_companion_session_hooks.dart';
+import 'ui/dialogs/companion_session_ended_dialog.dart';
 
 // Global navigator key for deep linking
 final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
@@ -328,7 +329,10 @@ Future<void> _startCompanionBridge(ProviderContainer container) async {
       // The plugin's "Update available" follows the app's own update check:
       // the same setting, and off where the app doesn't check itself
       // (Flatpak has no network; see UpdateCheckService.isSupported).
-      sessions: RiverpodCompanionSessionHooks(container),
+      sessions: RiverpodCompanionSessionHooks(
+        container,
+        onSessionEnded: (ended) => unawaited(_tellSessionEndedByDaw(container, ended)),
+      ),
       checkLatestRelease: fetchLatestCompanionRelease,
       releaseChecksAllowed: () async {
         if (!UpdateCheckService.isSupported) return false;
@@ -341,6 +345,28 @@ Future<void> _startCompanionBridge(ProviderContainer container) async {
   } catch (e) {
     if (kDebugMode) print('Companion bridge not started: $e');
   }
+}
+
+/// A session the DAW ended would otherwise just vanish from the dashboard:
+/// a dialog with its summary, waiting for whenever the window is next seen,
+/// and a notification when the window isn't in front (hidden in the tray, or
+/// behind the DAW — which is where the user is when they close a project).
+Future<void> _tellSessionEndedByDaw(ProviderContainer container, CompanionSessionEnded ended) async {
+  _runWithNavigatorContext((context) => showCompanionSessionEndedDialog(context, ended));
+
+  var inFront = false;
+  try {
+    inFront = await windowManager.isVisible() && await windowManager.isFocused();
+  } catch (_) {}
+  if (inFront) return;
+
+  final l10n = lookupAppLocalizations(container.read(localeProvider));
+  try {
+    await DeadlineNotificationService().showWorkTimerNotification(
+      l10n.companionSessionEndedTitle,
+      '${companionSessionSummary(l10n, ended)}\n${companionSessionEndedReason(l10n, ended)}',
+    );
+  } catch (_) {}
 }
 
 // Background folder watcher (desktop only) — auto-detects new project files

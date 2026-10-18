@@ -5096,8 +5096,13 @@ DateTime sessionEndTime({
   var end = requestedEnd ?? now;
   if (end.isAfter(now)) end = now;
   if (pausedAt != null && pausedAt.isBefore(end)) end = pausedAt;
-  return end.isBefore(start) ? start : end;
+  // Local, as every other session time: a UTC end next to a local start
+  // printed as 12:51–10:52.
+  return (end.isBefore(start) ? start : end).toLocal();
 }
+
+/// What [WorkTimerNotifier.endAt] ended, for telling the user about it.
+typedef EndedSession = ({DateTime start, DateTime end, int seconds});
 
 class WorkTimerNotifier extends Notifier<int> {
   // State = elapsed seconds of active work (0 when idle; frozen while paused).
@@ -5185,14 +5190,20 @@ class WorkTimerNotifier extends Notifier<int> {
   /// — when the DAW companion plugin reports the project closed, which may
   /// be a while before the app hears of it (a crashed DAW's heartbeat takes a
   /// minute and a half to go stale).
-  void endAt(DateTime end) {
-    if (ref.read(activeProjectProvider) == null) return;
+  ///
+  /// Returns the session as it is saved, or null when none was running.
+  EndedSession? endAt(DateTime end) {
+    final start = _startTime;
+    if (ref.read(activeProjectProvider) == null || start == null) return null;
+    final ended = sessionEndTime(start: start, now: DateTime.now(), pausedAt: _pausedAt, requestedEnd: end);
+
     _requestedEnd = end;
     try {
       ref.read(activeProjectProvider.notifier).clear();
     } finally {
       _requestedEnd = null;
     }
+    return (start: start, end: ended, seconds: ended.difference(start).inSeconds);
   }
 
   Future<void> _saveSession(MusicProject project) async {

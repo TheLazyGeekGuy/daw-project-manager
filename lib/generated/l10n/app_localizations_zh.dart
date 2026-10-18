@@ -7774,4 +7774,29 @@ class AppLocalizationsZh extends AppLocalizations {
   @override
   String get companionStartSessionWhenDawOpensDescription =>
       '仅在没有正在进行的会话时，并且仅限当前资料中的项目。';
+
+  @override
+  String get companionSessionEndedTitle => '会话已结束';
+
+  @override
+  String companionSessionEndedClosed(String daw, String project) {
+    return '$daw 关闭了 $project，因此其工作会话已结束。';
+  }
+
+  @override
+  String companionSessionEndedNoResponse(String daw, String project) {
+    return '$daw 中的 DPM Companion 停止了响应，因此 $project 的会话在最后一次收到响应时结束。DAW 可能已崩溃或被强制关闭。';
+  }
+
+  @override
+  String get companionUnknownDaw => '你的 DAW';
+
+  @override
+  String companionSessionEndedSummary(
+    String start,
+    String end,
+    String duration,
+  ) {
+    return '$start–$end · $duration';
+  }
 }

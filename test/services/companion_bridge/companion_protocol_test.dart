@@ -158,7 +158,7 @@ void main() {
       expect(add.project!.projectId, 'p1');
       expect(add.todoId, 't9');
       expect(add.text, '[01:23] Vocal too loud');
-      expect(add.todoCreatedAt, DateTime.utc(2026, 10, 18, 12, 0, 4));
+      expect(add.todoCreatedAt, DateTime.utc(2026, 10, 18, 12, 0, 4).toLocal());
     });
 
     test('reads a tick, a capture and a hello', () {
@@ -202,12 +202,37 @@ void main() {
   });
 
   group('presence', () {
+    test('every time from the plugin is local, as the app keeps times', () {
+      // The plugin writes UTC with a Z. Kept as UTC, a session once showed as
+      // 12:51-10:52 two hours east of UTC.
+      expect(companionTime('2026-10-18T10:52:00.000Z')!.isUtc, isFalse);
+      expect(companionTime('2026-10-18T10:52:00.000Z'), DateTime.utc(2026, 10, 18, 10, 52).toLocal());
+      final m = parseCompanionMessage(jsonEncode({
+        'id': 'm1',
+        'type': 'todo.add',
+        'createdAt': '2026-10-18T10:52:00.000Z',
+        'project': {'id': 'p1', 'profileId': 'solo'},
+        'payload': {'todoId': 't1', 'text': 'x', 'createdAt': '2026-10-18T10:51:00.000Z'},
+      })) as CompanionTodoAdd;
+      expect(m.createdAt.isUtc, isFalse);
+      expect(m.todoCreatedAt.isUtc, isFalse);
+      expect(
+        parseCompanionHeartbeat(jsonEncode({
+          'runId': 'r',
+          'lastSeen': '2026-10-18T10:52:00.000Z',
+          'project': {'id': 'p1', 'profileId': 'solo'},
+        }))!.lastSeen.isUtc,
+        isFalse,
+      );
+    });
+
     test('hello and goodbye carry the running instance\'s id', () {
       String msg(String type) => jsonEncode({
             'id': 'm1',
             'type': type,
             'createdAt': '2026-10-18T12:42:00.000Z',
             'plugin': {'version': '0.1.0', 'instanceId': 'saved', 'runId': 'run-1'},
+            'host': {'name': 'Steinberg Cubase 13', 'windowTitle': 'x'},
             'project': {'id': 'p1', 'profileId': 'solo'},
             'payload': {},
           });
@@ -217,7 +242,8 @@ void main() {
       expect(hello.runId, 'run-1');
       expect(goodbye, isA<CompanionGoodbye>());
       expect(goodbye.runId, 'run-1');
-      expect(goodbye.createdAt, DateTime.utc(2026, 10, 18, 12, 42));
+      expect(goodbye.createdAt, DateTime.utc(2026, 10, 18, 12, 42).toLocal());
+      expect(goodbye.hostName, 'Steinberg Cubase 13');
     });
 
     test('a heartbeat names the instance, its project and when it was last seen', () {
@@ -229,7 +255,7 @@ void main() {
       }))!;
       expect(beat.runId, 'run-1');
       expect(beat.project.projectId, 'p1');
-      expect(beat.lastSeen, DateTime.utc(2026, 10, 18, 12, 41, 50));
+      expect(beat.lastSeen, DateTime.utc(2026, 10, 18, 12, 41, 50).toLocal());
 
       expect(parseCompanionHeartbeat('{'), isNull);
       expect(parseCompanionHeartbeat(jsonEncode({'runId': 'r', 'lastSeen': 'x', 'project': null})), isNull);
@@ -238,11 +264,12 @@ void main() {
 
   group('decideCompanionSession', () {
     final left = DateTime.utc(2026, 10, 18, 12, 42);
+    CompanionDeparture closedAt(DateTime at) => CompanionDeparture(at, CompanionDepartureReason.closed);
     CompanionSessionAction? decide({
       Set<String> active = const {'solo/p1'},
       Set<String> before = const {'solo/p1'},
       Set<String> after = const {},
-      Map<String, DateTime>? departed,
+      Map<String, CompanionDeparture>? departed,
       List<CompanionProjectRef> hellos = const [],
       bool end = true,
       bool start = false,
@@ -251,7 +278,7 @@ void main() {
           activeSessionKeys: active,
           presentBefore: before,
           presentAfter: after,
-          departedAt: departed ?? {'solo/p1': left},
+          departures: departed ?? {'solo/p1': closedAt(left)},
           hellos: hellos,
           endWhenDawCloses: end,
           startWhenDawOpens: start,
@@ -272,7 +299,7 @@ void main() {
     });
 
     test('another project closing doesn\'t end this session', () {
-      expect(decide(before: {'solo/p1', 'solo/p2'}, after: {'solo/p1'}, departed: {'solo/p2': left}), isNull);
+      expect(decide(before: {'solo/p1', 'solo/p2'}, after: {'solo/p1'}, departed: {'solo/p2': closedAt(left)}), isNull);
     });
 
     test('with the setting off, nothing ends', () {
@@ -284,12 +311,12 @@ void main() {
       final action = decide(
         active: {'solo/stack', 'solo/v1', 'solo/v2'},
         before: {'solo/v1', 'solo/v2'},
-        departed: {'solo/v1': left, 'solo/v2': later},
+        departed: {'solo/v1': closedAt(left), 'solo/v2': closedAt(later)},
       );
       expect((action as EndCompanionSession).at, later);
 
       expect(decide(active: {'solo/stack', 'solo/v1', 'solo/v2'}, before: {'solo/v1', 'solo/v2'}, after: {'solo/v2'},
-          departed: {'solo/v1': left}), isNull);
+          departed: {'solo/v1': closedAt(left)}), isNull);
     });
 
     test('a hello starts a session only when asked to, and never over a running one', () {

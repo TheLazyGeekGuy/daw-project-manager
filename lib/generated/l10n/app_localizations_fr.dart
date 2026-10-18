@@ -8186,4 +8186,29 @@ class AppLocalizationsFr extends AppLocalizations {
   @override
   String get companionStartSessionWhenDawOpensDescription =>
       'Seulement si aucune session n\'est en cours, et seulement pour les projets du profil actif.';
+
+  @override
+  String get companionSessionEndedTitle => 'Session terminée';
+
+  @override
+  String companionSessionEndedClosed(String daw, String project) {
+    return '$daw a fermé $project, la session de travail est donc terminée.';
+  }
+
+  @override
+  String companionSessionEndedNoResponse(String daw, String project) {
+    return 'DPM Companion a cessé de répondre dans $daw, la session de $project s\'est donc terminée au dernier signe de vie. La DAW a peut-être planté ou été fermée brutalement.';
+  }
+
+  @override
+  String get companionUnknownDaw => 'Votre DAW';
+
+  @override
+  String companionSessionEndedSummary(
+    String start,
+    String end,
+    String duration,
+  ) {
+    return '$start–$end · $duration';
+  }
 }
