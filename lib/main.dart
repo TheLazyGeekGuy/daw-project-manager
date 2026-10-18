@@ -324,6 +324,15 @@ Future<void> _startCompanionBridge(ProviderContainer container) async {
       bridgeDir: await companionBridgePath(),
       previewSongsDir: await getPreviewSongsPath(),
       appVersion: appVersion,
+      // The plugin's "Update available" follows the app's own update check:
+      // the same setting, and off where the app doesn't check itself
+      // (Flatpak has no network; see UpdateCheckService.isSupported).
+      checkLatestRelease: fetchLatestCompanionRelease,
+      releaseChecksAllowed: () async {
+        if (!UpdateCheckService.isSupported) return false;
+        final box = await Hive.openBox<String>('app_settings');
+        return box.get('checkForUpdates') == 'true';
+      },
     );
     _companionBridge = bridge;
     bridge.start();

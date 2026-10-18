@@ -83,6 +83,42 @@ void main() {
     });
   });
 
+  group('plugin releases', () {
+    test('the index names the newest release when one is known', () {
+      final library = [CompanionProfileProjects(solo, [])];
+      final withRelease = buildCompanionIndex(library,
+          generatedAt: now,
+          appVersion: '1',
+          latestRelease: const CompanionRelease('0.2.0', 'https://github.com/bandpassrecords/dpm-companion/releases/tag/v0.2.0'));
+      expect(withRelease['companion'], {
+        'latestVersion': '0.2.0',
+        'releaseUrl': 'https://github.com/bandpassrecords/dpm-companion/releases/tag/v0.2.0',
+      });
+      expect(buildCompanionIndex(library, generatedAt: now, appVersion: '1').containsKey('companion'), isFalse);
+    });
+
+    test('a new release changes the fingerprint, so the index is rewritten', () {
+      final library = [CompanionProfileProjects(solo, [])];
+      final before = buildCompanionIndex(library, generatedAt: now, appVersion: '1');
+      final after = buildCompanionIndex(library,
+          generatedAt: now, appVersion: '1', latestRelease: const CompanionRelease('0.2.0', 'u'));
+      expect(companionIndexFingerprint(after), isNot(companionIndexFingerprint(before)));
+    });
+
+    test('GitHub\'s latest-release answer is read', () {
+      final release = parseCompanionRelease({
+        'tag_name': 'v0.2.0',
+        'html_url': 'https://github.com/bandpassrecords/dpm-companion/releases/tag/v0.2.0',
+      })!;
+      expect(release.version, '0.2.0');
+      expect(release.url, 'https://github.com/bandpassrecords/dpm-companion/releases/tag/v0.2.0');
+
+      expect(parseCompanionRelease({'tag_name': 'nightly', 'html_url': 'u'}), isNull);
+      expect(parseCompanionRelease({'tag_name': 'v1.2', 'html_url': 'u'}), isNull);
+      expect(parseCompanionRelease({'html_url': 'u'}), isNull);
+    });
+  });
+
   test('the launch hint names the project, its profile and when it opened', () {
     final hint = buildCompanionLaunchHint(
       profileId: 'solo',

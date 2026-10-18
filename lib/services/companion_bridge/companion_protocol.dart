@@ -41,13 +41,23 @@ MusicProject companionOwnerOf(MusicProject project, List<MusicProject> profilePr
 /// don't; a stack's members do, carrying the stack's to-dos.
 bool companionListsProject(MusicProject project) => !project.isVirtual && !project.isArchived;
 
+/// The newest plugin release on GitHub, for the plugin's "Update available".
+class CompanionRelease {
+  final String version;
+  final String url;
+
+  const CompanionRelease(this.version, this.url);
+}
+
 /// `index.json`: every profile's projects with the to-dos the app shows for
 /// them. Every profile, not just the active one — a DAW session belongs to
-/// whichever artist it belongs to.
+/// whichever artist it belongs to. [latestRelease], when known, lets the
+/// plugin offer its own update without going on the network itself.
 Map<String, dynamic> buildCompanionIndex(
   List<CompanionProfileProjects> library, {
   required DateTime generatedAt,
   required String appVersion,
+  CompanionRelease? latestRelease,
 }) {
   final projects = <Map<String, dynamic>>[];
 
@@ -79,8 +89,21 @@ Map<String, dynamic> buildCompanionIndex(
     'schema': companionIndexSchema,
     'generatedAt': generatedAt.toUtc().toIso8601String(),
     'app': {'version': appVersion},
+    if (latestRelease != null)
+      'companion': {'latestVersion': latestRelease.version, 'releaseUrl': latestRelease.url},
     'projects': projects,
   };
+}
+
+/// Reads GitHub's "latest release" answer for the plugin's repo. Null when it
+/// isn't one (no tag, no page, a version that isn't x.y.z).
+CompanionRelease? parseCompanionRelease(Map<String, dynamic> json) {
+  final tag = json['tag_name'];
+  final url = json['html_url'];
+  if (tag is! String || url is! String) return null;
+  final version = tag.replaceFirst(RegExp(r'^v'), '');
+  if (!RegExp(r'^\d+\.\d+\.\d+$').hasMatch(version)) return null;
+  return CompanionRelease(version, url);
 }
 
 /// The index without its timestamp, for "did anything change?" — rewriting

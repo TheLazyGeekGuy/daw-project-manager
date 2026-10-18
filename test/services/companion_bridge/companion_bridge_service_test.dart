@@ -238,6 +238,80 @@ void main() {
     });
   });
 
+  group('plugin updates', () {
+    const release = CompanionRelease('0.2.0', 'https://github.com/bandpassrecords/dpm-companion/releases/tag/v0.2.0');
+
+    CompanionBridgeService withChecker(Future<CompanionRelease?> Function() check, {Future<bool> Function()? allowed}) =>
+        CompanionBridgeService(
+          library: library,
+          bridgeDir: bridgeDir,
+          previewSongsDir: previewDir,
+          appVersion: '2.10.0',
+          clock: () => clock,
+          checkLatestRelease: check,
+          releaseChecksAllowed: allowed,
+        );
+
+    Future<Map<String, dynamic>> index(CompanionBridgeService b) async =>
+        jsonDecode(await b.indexFile.readAsString()) as Map<String, dynamic>;
+
+    test('the release is looked up once a day and written into the index', () async {
+      var calls = 0;
+      final b = withChecker(() async {
+        calls++;
+        return release;
+      });
+
+      await b.writeIndex();
+      expect((await index(b))['companion']['latestVersion'], '0.2.0');
+
+      clock = clock.add(const Duration(hours: 23));
+      await b.writeIndex(force: true);
+      expect(calls, 1);
+
+      clock = clock.add(const Duration(hours: 2));
+      await b.writeIndex(force: true);
+      expect(calls, 2);
+    });
+
+    test('a failed lookup is retried an hour later and keeps the last known release', () async {
+      final answers = <CompanionRelease?>[release, null, null];
+      var calls = 0;
+      final b = withChecker(() async => answers[calls++]);
+
+      await b.writeIndex();
+      clock = clock.add(const Duration(hours: 25));
+      await b.writeIndex(force: true);
+      expect(calls, 2);
+      expect((await index(b))['companion']['latestVersion'], '0.2.0');
+
+      clock = clock.add(const Duration(minutes: 30));
+      await b.writeIndex(force: true);
+      expect(calls, 2);
+      clock = clock.add(const Duration(minutes: 31));
+      await b.writeIndex(force: true);
+      expect(calls, 3);
+    });
+
+    test('with update checks off, nothing is looked up and no release is named', () async {
+      var allowed = true;
+      var calls = 0;
+      final b = withChecker(() async {
+        calls++;
+        return release;
+      }, allowed: () async => allowed);
+
+      await b.writeIndex();
+      expect((await index(b)).containsKey('companion'), isTrue);
+
+      allowed = false;
+      clock = clock.add(const Duration(days: 2));
+      expect(await b.writeIndex(), isTrue);   // the release left the index
+      expect((await index(b)).containsKey('companion'), isFalse);
+      expect(calls, 1);
+    });
+  });
+
   test('the launch hint is written whole', () async {
     await writeCompanionLaunchHint('solo', library.project('solo', 'p1'), bridgeDir: bridgeDir);
     final hint = jsonDecode(await File(p.join(bridgeDir, 'launch.json')).readAsString());

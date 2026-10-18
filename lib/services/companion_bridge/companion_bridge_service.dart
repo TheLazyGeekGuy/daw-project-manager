@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:flutter/foundation.dart';
+import 'package:http/http.dart' as http;
 import 'package:path/path.dart' as p;
 
 import '../../models/music_project.dart';
@@ -38,6 +39,25 @@ Future<void> writeCompanionLaunchHint(String profileId, MusicProject project, {S
   }
 }
 
+/// The plugin's newest release on GitHub, or null when it can't be found out.
+Future<CompanionRelease?> fetchLatestCompanionRelease({http.Client? client}) async {
+  final c = client ?? http.Client();
+  try {
+    final response = await c
+        .get(Uri.parse('https://api.github.com/repos/bandpassrecords/dpm-companion/releases/latest'),
+            headers: {'Accept': 'application/vnd.github+json'})
+        .timeout(const Duration(seconds: 10));
+    if (response.statusCode != 200) return null;
+    final json = jsonDecode(response.body);
+    return json is Map<String, dynamic> ? parseCompanionRelease(json) : null;
+  } catch (e) {
+    if (kDebugMode) debugPrint('Companion release check failed: $e');
+    return null;
+  } finally {
+    if (client == null) c.close();
+  }
+}
+
 /// Writes [contents] to a temporary name and renames it over [target], so a
 /// reader (the plugin) never sees half a file.
 Future<void> writeFileAtomically(File target, String contents) async {
@@ -61,6 +81,8 @@ class CompanionBridgeService {
     required this.previewSongsDir,
     required this.appVersion,
     DateTime Function()? clock,
+    this.checkLatestRelease,
+    this.releaseChecksAllowed,
   }) : _now = clock ?? DateTime.now;
 
   final CompanionLibrary library;
@@ -69,9 +91,23 @@ class CompanionBridgeService {
   final String appVersion;
   final DateTime Function() _now;
 
+  /// Looks up the plugin's newest release ([fetchLatestCompanionRelease]).
+  /// Null: never look.
+  final Future<CompanionRelease?> Function()? checkLatestRelease;
+
+  /// Whether looking is allowed right now — the user's "check for updates"
+  /// setting, in a build that checks its own updates. Null: always.
+  final Future<bool> Function()? releaseChecksAllowed;
+
+  /// How often the release is looked up again, and how soon after a failure.
+  static const releaseCheckInterval = Duration(hours: 24);
+  static const releaseRetryInterval = Duration(hours: 1);
+
   Timer? _timer;
   bool _ticking = false;
   String? _lastFingerprint;
+  CompanionRelease? _latestRelease;
+  DateTime? _nextReleaseCheck;
 
   String get outboxDir => p.join(bridgeDir, 'outbox');
   String get capturesDir => p.join(bridgeDir, 'captures');
@@ -108,13 +144,37 @@ class CompanionBridgeService {
   /// Writes `index.json` when its content changed since the last write (or
   /// when [force]d). Returns whether it wrote.
   Future<bool> writeIndex({bool force = false}) async {
-    final index = buildCompanionIndex(await library.load(), generatedAt: _now(), appVersion: appVersion);
+    await _refreshLatestRelease();
+    final index = buildCompanionIndex(await library.load(),
+        generatedAt: _now(), appVersion: appVersion, latestRelease: _latestRelease);
     final fingerprint = companionIndexFingerprint(index);
     if (!force && fingerprint == _lastFingerprint && await indexFile.exists()) return false;
 
     await writeFileAtomically(indexFile, jsonEncode(index));
     _lastFingerprint = fingerprint;
     return true;
+  }
+
+  /// Looks the plugin's newest release up again when it is due: once a day,
+  /// an hour after a failure. When checks aren't allowed (any more), the
+  /// index stops naming a release, so the plugin stops offering it.
+  Future<void> _refreshLatestRelease() async {
+    final check = checkLatestRelease;
+    if (check == null) return;
+
+    final allowed = releaseChecksAllowed == null || await releaseChecksAllowed!();
+    if (!allowed) {
+      _latestRelease = null;
+      _nextReleaseCheck = null;
+      return;
+    }
+
+    final now = _now();
+    if (_nextReleaseCheck != null && now.isBefore(_nextReleaseCheck!)) return;
+
+    final release = await check();
+    if (release != null) _latestRelease = release;
+    _nextReleaseCheck = now.add(release != null ? releaseCheckInterval : releaseRetryInterval);
   }
 
   /// Applies every message in the outbox, oldest first, deleting each once
