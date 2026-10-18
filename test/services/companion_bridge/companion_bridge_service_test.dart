@@ -34,6 +34,33 @@ class FakeLibrary implements CompanionLibrary {
       profiles.entries.firstWhere((e) => e.key.id == profileId).value.firstWhere((x) => x.id == id);
 }
 
+/// Records what the bridge asks of the work sessions.
+class FakeHooks implements CompanionSessionHooks {
+  CompanionProjectRef? active;
+  final ended = <DateTime>[];
+  final started = <CompanionProjectRef>[];
+
+  @override
+  bool endWhenDawCloses = true;
+  @override
+  bool startWhenDawOpens = false;
+
+  @override
+  CompanionProjectRef? activeSession() => active;
+
+  @override
+  Future<void> endSession(DateTime at) async {
+    ended.add(at);
+    active = null;
+  }
+
+  @override
+  Future<void> startSession(CompanionProjectRef project) async {
+    started.add(project);
+    active = project;
+  }
+}
+
 void main() {
   late Directory tmp;
   late String bridgeDir;
@@ -46,7 +73,8 @@ void main() {
   final duo = Profile(id: 'duo', name: 'Duo', createdAt: DateTime(2025));
 
   var sequence = 0;
-  Future<File> drop(String type, Map<String, dynamic> payload, {String profileId = 'solo', String projectId = 'p1'}) async {
+  Future<File> drop(String type, Map<String, dynamic> payload,
+      {String profileId = 'solo', String projectId = 'p1', String? runId, DateTime? at}) async {
     final file = File(p.join(bridgeDir, 'outbox',
         '20261018T120000000Z-${(sequence++).toString().padLeft(6, '0')}-abcd1234.json'));
     await file.parent.create(recursive: true);
@@ -54,7 +82,8 @@ void main() {
       'schema': 1,
       'id': 'm$sequence',
       'type': type,
-      'createdAt': '2026-10-18T12:00:00.000Z',
+      'createdAt': (at ?? DateTime.utc(2026, 10, 18, 12)).toIso8601String(),
+      if (runId != null) 'plugin': {'version': '0.1.0', 'instanceId': 'saved', 'runId': runId},
       'project': {'id': projectId, 'profileId': profileId},
       'payload': payload,
     }));
@@ -309,6 +338,155 @@ void main() {
       expect(await b.writeIndex(), isTrue);   // the release left the index
       expect((await index(b)).containsKey('companion'), isFalse);
       expect(calls, 1);
+    });
+  });
+
+  group('work sessions follow the DAW', () {
+    late FakeHooks hooks;
+    late CompanionBridgeService b;
+
+    setUp(() {
+      hooks = FakeHooks();
+      b = CompanionBridgeService(
+        library: library,
+        bridgeDir: bridgeDir,
+        previewSongsDir: previewDir,
+        appVersion: '2.10.0',
+        clock: () => clock,
+        sessions: hooks,
+      );
+    });
+
+    Future<void> heartbeat(String runId, DateTime lastSeen, {String projectId = 'p1'}) async {
+      final file = File(p.join(bridgeDir, 'instances', '$runId.json'));
+      await file.parent.create(recursive: true);
+      await file.writeAsString(jsonEncode({
+        'schema': 1,
+        'runId': runId,
+        'lastSeen': lastSeen.toIso8601String(),
+        'project': {'id': projectId, 'profileId': 'solo'},
+      }));
+    }
+
+    Future<void> after(Duration d) async {
+      clock = clock.add(d);
+      await b.tick();
+    }
+
+    test('closing the project in the DAW ends the session at the goodbye\'s time', () async {
+      hooks.active = const CompanionProjectRef('solo', 'p1');
+      await drop('session.hello', {}, runId: 'r1', at: clock);
+      await b.tick();
+      expect(b.presentProjects, {'solo/p1'});
+      expect(hooks.ended, isEmpty);
+
+      final closedAt = clock.add(const Duration(minutes: 40));
+      await drop('session.goodbye', {}, runId: 'r1', at: closedAt);
+      await after(const Duration(minutes: 41));
+
+      expect(hooks.ended, [closedAt]);
+      expect(b.presentProjects, isEmpty);
+    });
+
+    test('a crashed DAW ends the session at its last heartbeat, once it is stale', () async {
+      hooks.active = const CompanionProjectRef('solo', 'p1');
+      await heartbeat('r1', clock);
+      await b.tick();
+      final lastBeat = clock.add(const Duration(minutes: 5));
+      await heartbeat('r1', lastBeat);
+      await after(const Duration(minutes: 5));
+      expect(hooks.ended, isEmpty);
+
+      // No more heartbeats: still present for 90 s, then gone at the last one.
+      await after(const Duration(seconds: 3));
+      await after(const Duration(seconds: 3));
+      expect(hooks.ended, isEmpty);
+      for (var i = 0; i < 30; i++) {
+        await after(const Duration(seconds: 3));
+      }
+      expect(hooks.ended, [lastBeat]);
+      expect(File(p.join(bridgeDir, 'instances', 'r1.json')).existsSync(), isFalse);
+    });
+
+    test('waking from sleep is not a crash', () async {
+      hooks.active = const CompanionProjectRef('solo', 'p1');
+      await heartbeat('r1', clock);
+      await b.tick();
+
+      // The computer slept for two hours; the plugin wakes and beats again.
+      clock = clock.add(const Duration(hours: 2));
+      await b.tick();
+      expect(hooks.ended, isEmpty);
+      await heartbeat('r1', clock.add(const Duration(seconds: 5)));
+      await after(const Duration(seconds: 6));
+      expect(hooks.ended, isEmpty);
+      expect(b.presentProjects, {'solo/p1'});
+    });
+
+    test('the session ends only when the last instance in the project leaves', () async {
+      hooks.active = const CompanionProjectRef('solo', 'p1');
+      await drop('session.hello', {}, runId: 'master-bus', at: clock);
+      await drop('session.hello', {}, runId: 'vocal-bus', at: clock);
+      await b.tick();
+
+      await drop('session.goodbye', {}, runId: 'vocal-bus', at: clock.add(const Duration(minutes: 1)));
+      await after(const Duration(minutes: 2));
+      expect(hooks.ended, isEmpty);
+
+      await drop('session.goodbye', {}, runId: 'master-bus', at: clock);
+      await after(const Duration(seconds: 3));
+      expect(hooks.ended, hasLength(1));
+    });
+
+    test('a session the DAW never had the project open for is left alone', () async {
+      hooks.active = const CompanionProjectRef('solo', 'p1');
+      await drop('session.hello', {}, runId: 'r1', projectId: 'v1', at: clock);
+      await b.tick();
+      await drop('session.goodbye', {}, runId: 'r1', projectId: 'v1', at: clock);
+      await after(const Duration(seconds: 3));
+      expect(hooks.ended, isEmpty);
+    });
+
+    test('a stack\'s session ends when the version the DAW had open closes', () async {
+      hooks.active = const CompanionProjectRef('solo', 'stack');
+      await drop('session.hello', {}, runId: 'r1', projectId: 'v1', at: clock);
+      await b.tick();
+      await drop('session.goodbye', {}, runId: 'r1', projectId: 'v1', at: clock);
+      await after(const Duration(seconds: 3));
+      expect(hooks.ended, hasLength(1));
+    });
+
+    test('with the setting off, closing the DAW changes nothing', () async {
+      hooks.active = const CompanionProjectRef('solo', 'p1');
+      hooks.endWhenDawCloses = false;
+      await drop('session.hello', {}, runId: 'r1', at: clock);
+      await b.tick();
+      await drop('session.goodbye', {}, runId: 'r1', at: clock);
+      await after(const Duration(seconds: 3));
+      expect(hooks.ended, isEmpty);
+    });
+
+    test('opening a project in the DAW starts its session when asked to', () async {
+      hooks.startWhenDawOpens = true;
+      await drop('session.hello', {}, runId: 'r1', at: clock);
+      await b.tick();
+      expect(hooks.started.single.projectId, 'p1');
+    });
+
+    test('an old hello, read after the app was closed, starts nothing', () async {
+      hooks.startWhenDawOpens = true;
+      await drop('session.hello', {}, runId: 'r1', at: clock.subtract(const Duration(hours: 20)));
+      await b.tick();
+      expect(hooks.started, isEmpty);
+      expect(b.presentProjects, isEmpty);
+    });
+
+    test('a leftover heartbeat from a crash long ago ends nothing and is cleared', () async {
+      hooks.active = const CompanionProjectRef('solo', 'p1');
+      await heartbeat('old', clock.subtract(const Duration(days: 3)));
+      await b.tick();
+      expect(hooks.ended, isEmpty);
+      expect(File(p.join(bridgeDir, 'instances', 'old.json')).existsSync(), isFalse);
     });
   });
 

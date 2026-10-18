@@ -21,6 +21,24 @@ abstract class CompanionLibrary {
   Future<void> saveProject(String profileId, MusicProject project);
 }
 
+/// How the bridge reaches the app's work sessions, for ending a session when
+/// the DAW closes the project and starting one when it opens. An interface
+/// so the decisions are tested without Riverpod or a timer.
+abstract class CompanionSessionHooks {
+  /// The running session's project (in the active profile), or null.
+  CompanionProjectRef? activeSession();
+
+  /// Settings > Work Sessions, device-local.
+  bool get endWhenDawCloses;
+  bool get startWhenDawOpens;
+
+  /// Ends the running session as if it had been ended at [at].
+  Future<void> endSession(DateTime at);
+
+  /// Starts a session for [project] — when it is in the active profile.
+  Future<void> startSession(CompanionProjectRef project);
+}
+
 /// The bridge folder the DPM Companion plugin shares with this app:
 /// `plugin_bridge` inside the library folder. A pinned or dev library gets
 /// its own, so a test build never talks to plugins working for the stable app.
@@ -83,7 +101,11 @@ class CompanionBridgeService {
     DateTime Function()? clock,
     this.checkLatestRelease,
     this.releaseChecksAllowed,
+    this.sessions,
   }) : _now = clock ?? DateTime.now;
+
+  /// Null: presence is tracked but never touches a session.
+  final CompanionSessionHooks? sessions;
 
   final CompanionLibrary library;
   final String bridgeDir;
@@ -109,7 +131,18 @@ class CompanionBridgeService {
   CompanionRelease? _latestRelease;
   DateTime? _nextReleaseCheck;
 
+  // Presence: running plugin instances by runId, and what changed this tick.
+  final Map<String, CompanionInstance> _instances = {};
+  final List<CompanionProjectRef> _hellos = [];
+  final Map<String, DateTime> _departedAt = {};
+  DateTime? _lastTick;
+
   String get outboxDir => p.join(bridgeDir, 'outbox');
+  String get instancesDir => p.join(bridgeDir, 'instances');
+
+  /// Projects (by [companionKey]) a DAW has open right now.
+  Set<String> get presentProjects =>
+      {for (final i in _instances.values) companionKey(i.project.profileId, i.project.projectId)};
   String get capturesDir => p.join(bridgeDir, 'captures');
   String get companionPreviewDir => p.join(previewSongsDir, companionPreviewFolderName);
   File get indexFile => File(p.join(bridgeDir, 'index.json'));
@@ -132,7 +165,24 @@ class CompanionBridgeService {
     if (_ticking) return;
     _ticking = true;
     try {
+      final now = _now();
+      final before = presentProjects;
+      _hellos.clear();
+      _departedAt.clear();
+
+      // Woken from sleep: the plugins slept too, and their heartbeats are as
+      // old as the nap. A fresh grace period, or waking would end the session
+      // at the moment the lid closed.
+      final last = _lastTick;
+      if (last != null && now.difference(last) > companionSleepGap) {
+        _instances.updateAll((_, i) => i.seenAt(now));
+      }
+      _lastTick = now;
+
+      await _readHeartbeats();
       final applied = await processOutbox();
+      await _expireStale(now);
+      await _decideSession(before);
       await writeIndex(force: applied > 0);
     } catch (e) {
       if (kDebugMode) debugPrint('Companion bridge tick failed: $e');
@@ -224,7 +274,15 @@ class CompanionBridgeService {
 
   Future<bool> _apply(CompanionMessage message, List<CompanionProfileProjects> library) async {
     switch (message) {
-      case CompanionHello():
+      case CompanionHello(:final runId, :final project):
+        if (runId != null && project != null) {
+          _see(CompanionInstance(runId, project, message.createdAt));
+          _hellos.add(project);
+        }
+        return false;
+
+      case CompanionGoodbye(:final runId):
+        if (runId != null) await _leave(runId, message.createdAt);
         return false;
 
       case CompanionUnknownMessage(:final type):
@@ -250,6 +308,92 @@ class CompanionBridgeService {
       case CompanionCaptureReady():
         return _adoptCapture(message, library);
     }
+  }
+
+  /// Records an instance as present, keeping whichever sighting is newer.
+  void _see(CompanionInstance instance) {
+    final known = _instances[instance.runId];
+    if (known == null || instance.lastSeen.isAfter(known.lastSeen)) _instances[instance.runId] = instance;
+  }
+
+  /// An instance left at [at]: gone from presence, its heartbeat file too.
+  Future<void> _leave(String runId, DateTime at) async {
+    final instance = _instances.remove(runId);
+    if (instance != null) {
+      final key = companionKey(instance.project.profileId, instance.project.projectId);
+      final previous = _departedAt[key];
+      if (previous == null || at.isAfter(previous)) _departedAt[key] = at;
+    }
+    try {
+      final file = File(p.join(instancesDir, '$runId.json'));
+      if (await file.exists()) await file.delete();
+    } catch (_) {}
+  }
+
+  Future<void> _readHeartbeats() async {
+    final dir = Directory(instancesDir);
+    if (!await dir.exists()) return;
+    await for (final entry in dir.list()) {
+      if (entry is! File || !entry.path.endsWith('.json')) continue;
+      try {
+        final instance = parseCompanionHeartbeat(await entry.readAsString());
+        if (instance != null) _see(instance);
+      } catch (_) {} // being rewritten; next tick
+    }
+  }
+
+  /// Instances whose heartbeat went stale died without a goodbye (a crashed
+  /// DAW): they leave at their last heartbeat.
+  Future<void> _expireStale(DateTime now) async {
+    final stale = _instances.values.where((i) => now.difference(i.lastSeen) > companionHeartbeatStale).toList();
+    for (final instance in stale) {
+      await _leave(instance.runId, instance.lastSeen);
+    }
+  }
+
+  Future<void> _decideSession(Set<String> presentBefore) async {
+    final hooks = sessions;
+    if (hooks == null) return;
+
+    final presentAfter = presentProjects;
+    final active = hooks.activeSession();
+    final activeKeys = active == null ? <String>{} : await _sessionKeys(active);
+
+    final action = decideCompanionSession(
+      activeSessionKeys: activeKeys,
+      presentBefore: presentBefore,
+      presentAfter: presentAfter,
+      departedAt: _departedAt,
+      // A hello only counts while its instance is still there: an old one
+      // read after the app was closed for a day starts nothing.
+      hellos: _hellos.where((h) => presentAfter.contains(companionKey(h.profileId, h.projectId))).toList(),
+      endWhenDawCloses: hooks.endWhenDawCloses,
+      startWhenDawOpens: hooks.startWhenDawOpens,
+    );
+
+    switch (action) {
+      case EndCompanionSession(:final at):
+        await hooks.endSession(at);
+      case StartCompanionSession(:final project):
+        await hooks.startSession(project);
+      case null:
+        break;
+    }
+  }
+
+  /// The keys a session answers to: its project's, and for a version stack
+  /// every member's — the DAW opens a version, the session is the stack's.
+  Future<Set<String>> _sessionKeys(CompanionProjectRef active) async {
+    final keys = {companionKey(active.profileId, active.projectId)};
+    for (final entry in await library.load()) {
+      if (entry.profile.id != active.profileId) continue;
+      for (final project in entry.projects) {
+        if (project.id == active.projectId && project.isVirtual) {
+          keys.addAll(project.memberProjectIds.map((id) => companionKey(active.profileId, id)));
+        }
+      }
+    }
+    return keys;
   }
 
   ({String profileId, MusicProject owner})? _find(

@@ -4439,5 +4439,11 @@
   "midiRecordLatencyBody": "Le note registrate vengono inserite in anticipo di tanto, per compensare il tempo che il suono impiega a raggiungerti e i tuoi tasti a raggiungere l’app. Calibra per misurarla su questo computer.",
   "midiCalibrate": "Calibra",
   "midiCalibrating": "Suona un tasto a ogni clic ({done} di {total})",
-  "midiCalibrated": "Latenza di registrazione impostata a {ms} ms"
+  "midiCalibrated": "Latenza di registrazione impostata a {ms} ms",
+  "companionSessionsTitle": "Plugin per la DAW (DPM Companion)",
+  "companionSessionsDescription": "Con il plugin DPM Companion in un progetto, l'app sa quando la tua DAW lo apre e lo chiude.",
+  "companionEndSessionWhenDawCloses": "Termina la sessione quando la DAW chiude il progetto",
+  "companionEndSessionWhenDawClosesDescription": "Anche dopo un crash: la sessione termina nel momento in cui la DAW ha lasciato il progetto.",
+  "companionStartSessionWhenDawOpens": "Avvia una sessione quando un progetto si apre nella DAW",
+  "companionStartSessionWhenDawOpensDescription": "Solo se non c'è nessuna sessione in corso, e solo per i progetti del profilo attivo."
 }

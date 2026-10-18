@@ -4439,5 +4439,11 @@
   "midiRecordLatencyBody": "Записанные ноты ставятся на столько раньше, чтобы учесть время, за которое звук доходит до вас, а нажатия клавиш — до приложения. Откалибруйте, чтобы измерить её на этом компьютере.",
   "midiCalibrate": "Откалибровать",
   "midiCalibrating": "Нажимайте клавишу на каждый щелчок ({done} из {total})",
-  "midiCalibrated": "Задержка записи: {ms} мс"
+  "midiCalibrated": "Задержка записи: {ms} мс",
+  "companionSessionsTitle": "Плагин для DAW (DPM Companion)",
+  "companionSessionsDescription": "Когда плагин DPM Companion есть в проекте, приложение знает, когда ваша DAW открывает и закрывает его.",
+  "companionEndSessionWhenDawCloses": "Завершать сессию, когда DAW закрывает проект",
+  "companionEndSessionWhenDawClosesDescription": "И после сбоя: сессия завершается в тот момент, когда DAW отпустила проект.",
+  "companionStartSessionWhenDawOpens": "Начинать сессию, когда проект открывается в DAW",
+  "companionStartSessionWhenDawOpensDescription": "Только если ни одна сессия не идёт, и только для проектов активного профиля."
 }

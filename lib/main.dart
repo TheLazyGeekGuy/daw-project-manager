@@ -63,6 +63,7 @@ import 'utils/route_observer.dart';
 import 'ui/app_snack_bar.dart';
 import 'services/companion_bridge/companion_bridge_service.dart';
 import 'services/companion_bridge/repository_companion_library.dart';
+import 'services/companion_bridge/riverpod_companion_session_hooks.dart';
 
 // Global navigator key for deep linking
 final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
@@ -327,6 +328,7 @@ Future<void> _startCompanionBridge(ProviderContainer container) async {
       // The plugin's "Update available" follows the app's own update check:
       // the same setting, and off where the app doesn't check itself
       // (Flatpak has no network; see UpdateCheckService.isSupported).
+      sessions: RiverpodCompanionSessionHooks(container),
       checkLatestRelease: fetchLatestCompanionRelease,
       releaseChecksAllowed: () async {
         if (!UpdateCheckService.isSupported) return false;

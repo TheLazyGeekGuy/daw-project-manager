@@ -4804,6 +4804,61 @@ final sessionModeProvider = NotifierProvider<SessionModeNotifier, bool>(
 );
 
 // ---------------------------------------------------------------------------
+// DPM Companion plugin and work sessions (device-local, like session mode)
+// ---------------------------------------------------------------------------
+
+/// A device-local on/off setting kept in the `settings` box.
+abstract class _StoredSwitchNotifier extends Notifier<bool> {
+  String get storageKey;
+  bool get defaultValue;
+
+  @override
+  bool build() {
+    _load();
+    return defaultValue;
+  }
+
+  Future<void> _load() async {
+    final box = await Hive.openBox<String>('settings');
+    final saved = box.get(storageKey);
+    if (saved != null) state = saved == 'true';
+  }
+
+  Future<void> set(bool value) async {
+    state = value;
+    final box = await Hive.openBox<String>('settings');
+    await box.put(storageKey, value.toString());
+  }
+}
+
+/// End the work session when the DAW closes the project the DPM Companion
+/// plugin is in. On by default: a session left running overnight is the
+/// problem this solves.
+class CompanionEndSessionNotifier extends _StoredSwitchNotifier {
+  @override
+  String get storageKey => 'companionEndSessionWhenDawCloses';
+  @override
+  bool get defaultValue => true;
+}
+
+/// Start a work session when a project with the plugin opens in the DAW.
+/// Off by default: starting the clock is a choice some people make by hand.
+class CompanionStartSessionNotifier extends _StoredSwitchNotifier {
+  @override
+  String get storageKey => 'companionStartSessionWhenDawOpens';
+  @override
+  bool get defaultValue => false;
+}
+
+final companionEndSessionProvider = NotifierProvider<CompanionEndSessionNotifier, bool>(
+  CompanionEndSessionNotifier.new,
+);
+
+final companionStartSessionProvider = NotifierProvider<CompanionStartSessionNotifier, bool>(
+  CompanionStartSessionNotifier.new,
+);
+
+// ---------------------------------------------------------------------------
 // Session Suggestions Enabled
 // ---------------------------------------------------------------------------
 
@@ -5028,11 +5083,28 @@ final workTimerNotifIntervalProvider =
 // Work Timer — tracks time on the subscribed project, fires notifications
 // ---------------------------------------------------------------------------
 
+/// When a session that started at [start] ends: [requestedEnd] (the DAW
+/// plugin saying when the project closed) or [now], but never after the
+/// timer was paused — paused time isn't work — and never after now.
+@visibleForTesting
+DateTime sessionEndTime({
+  required DateTime start,
+  required DateTime now,
+  DateTime? pausedAt,
+  DateTime? requestedEnd,
+}) {
+  var end = requestedEnd ?? now;
+  if (end.isAfter(now)) end = now;
+  if (pausedAt != null && pausedAt.isBefore(end)) end = pausedAt;
+  return end.isBefore(start) ? start : end;
+}
+
 class WorkTimerNotifier extends Notifier<int> {
   // State = elapsed seconds of active work (0 when idle; frozen while paused).
   Timer? _ticker;
   DateTime? _startTime; // adjusted on resume to exclude paused durations
   DateTime? _pausedAt; // set when paused, null otherwise
+  DateTime? _requestedEnd; // set by endAt for the save it triggers
 
   @override
   int build() {
@@ -5109,11 +5181,31 @@ class WorkTimerNotifier extends Notifier<int> {
     _ticker = Timer.periodic(const Duration(seconds: 1), (_) => _tick());
   }
 
+  /// Ends the running session as if "End session" had been pressed at [end]
+  /// — when the DAW companion plugin reports the project closed, which may
+  /// be a while before the app hears of it (a crashed DAW's heartbeat takes a
+  /// minute and a half to go stale).
+  void endAt(DateTime end) {
+    if (ref.read(activeProjectProvider) == null) return;
+    _requestedEnd = end;
+    try {
+      ref.read(activeProjectProvider.notifier).clear();
+    } finally {
+      _requestedEnd = null;
+    }
+  }
+
   Future<void> _saveSession(MusicProject project) async {
     final start = _startTime;
     if (start == null) return;
-    // Use _pausedAt as the end time if paused; otherwise use now.
-    final end = _pausedAt ?? DateTime.now();
+    // Read synchronously, before the first await: endAt's value is only set
+    // for the duration of the clear() that brought us here.
+    final end = sessionEndTime(
+      start: start,
+      now: DateTime.now(),
+      pausedAt: _pausedAt,
+      requestedEnd: _requestedEnd,
+    );
     final elapsedSeconds = end.difference(start).inSeconds;
     if (elapsedSeconds <= 0) return;
     final repo = await ref.read(repositoryProvider.future);

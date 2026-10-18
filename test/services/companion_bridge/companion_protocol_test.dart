@@ -201,6 +201,106 @@ void main() {
     });
   });
 
+  group('presence', () {
+    test('hello and goodbye carry the running instance\'s id', () {
+      String msg(String type) => jsonEncode({
+            'id': 'm1',
+            'type': type,
+            'createdAt': '2026-10-18T12:42:00.000Z',
+            'plugin': {'version': '0.1.0', 'instanceId': 'saved', 'runId': 'run-1'},
+            'project': {'id': 'p1', 'profileId': 'solo'},
+            'payload': {},
+          });
+      final hello = parseCompanionMessage(msg('session.hello'))!;
+      final goodbye = parseCompanionMessage(msg('session.goodbye'))!;
+      expect(hello, isA<CompanionHello>());
+      expect(hello.runId, 'run-1');
+      expect(goodbye, isA<CompanionGoodbye>());
+      expect(goodbye.runId, 'run-1');
+      expect(goodbye.createdAt, DateTime.utc(2026, 10, 18, 12, 42));
+    });
+
+    test('a heartbeat names the instance, its project and when it was last seen', () {
+      final beat = parseCompanionHeartbeat(jsonEncode({
+        'schema': 1,
+        'runId': 'run-1',
+        'lastSeen': '2026-10-18T12:41:50.000Z',
+        'project': {'id': 'p1', 'profileId': 'solo'},
+      }))!;
+      expect(beat.runId, 'run-1');
+      expect(beat.project.projectId, 'p1');
+      expect(beat.lastSeen, DateTime.utc(2026, 10, 18, 12, 41, 50));
+
+      expect(parseCompanionHeartbeat('{'), isNull);
+      expect(parseCompanionHeartbeat(jsonEncode({'runId': 'r', 'lastSeen': 'x', 'project': null})), isNull);
+    });
+  });
+
+  group('decideCompanionSession', () {
+    final left = DateTime.utc(2026, 10, 18, 12, 42);
+    CompanionSessionAction? decide({
+      Set<String> active = const {'solo/p1'},
+      Set<String> before = const {'solo/p1'},
+      Set<String> after = const {},
+      Map<String, DateTime>? departed,
+      List<CompanionProjectRef> hellos = const [],
+      bool end = true,
+      bool start = false,
+    }) =>
+        decideCompanionSession(
+          activeSessionKeys: active,
+          presentBefore: before,
+          presentAfter: after,
+          departedAt: departed ?? {'solo/p1': left},
+          hellos: hellos,
+          endWhenDawCloses: end,
+          startWhenDawOpens: start,
+        );
+
+    test('the DAW letting go of the session\'s project ends it, when it left', () {
+      final action = decide();
+      expect(action, isA<EndCompanionSession>());
+      expect((action as EndCompanionSession).at, left);
+    });
+
+    test('nothing ends while another instance is still in the project', () {
+      expect(decide(after: {'solo/p1'}), isNull);
+    });
+
+    test('a session for a project no plugin was ever in is never ended', () {
+      expect(decide(before: {}), isNull);
+    });
+
+    test('another project closing doesn\'t end this session', () {
+      expect(decide(before: {'solo/p1', 'solo/p2'}, after: {'solo/p1'}, departed: {'solo/p2': left}), isNull);
+    });
+
+    test('with the setting off, nothing ends', () {
+      expect(decide(end: false), isNull);
+    });
+
+    test('a stack\'s session ends when the last of its versions closes, at the latest departure', () {
+      final later = left.add(const Duration(minutes: 3));
+      final action = decide(
+        active: {'solo/stack', 'solo/v1', 'solo/v2'},
+        before: {'solo/v1', 'solo/v2'},
+        departed: {'solo/v1': left, 'solo/v2': later},
+      );
+      expect((action as EndCompanionSession).at, later);
+
+      expect(decide(active: {'solo/stack', 'solo/v1', 'solo/v2'}, before: {'solo/v1', 'solo/v2'}, after: {'solo/v2'},
+          departed: {'solo/v1': left}), isNull);
+    });
+
+    test('a hello starts a session only when asked to, and never over a running one', () {
+      const opened = CompanionProjectRef('solo', 'p9');
+      expect(decide(active: {}, before: {}, hellos: [opened]), isNull);
+      final start = decide(active: {}, before: {}, hellos: [opened], start: true);
+      expect((start as StartCompanionSession).project.projectId, 'p9');
+      expect(decide(after: {'solo/p1'}, hellos: [opened], start: true), isNull);
+    });
+  });
+
   group('applying to-do messages', () {
     final add = CompanionTodoAdd('m1', now, const CompanionProjectRef('solo', 'p1'),
         todoId: 't9', text: 'Automate the filter', todoCreatedAt: now);

@@ -8023,5 +8023,11 @@
         "type": "int"
       }
     }
-  }
+  },
+  "companionSessionsTitle": "DAW plugin (DPM Companion)",
+  "companionSessionsDescription": "With the DPM Companion plugin in a project, the app knows when your DAW opens and closes it.",
+  "companionEndSessionWhenDawCloses": "End the session when the DAW closes the project",
+  "companionEndSessionWhenDawClosesDescription": "Also after a crash: the session ends at the moment the DAW let go of the project.",
+  "companionStartSessionWhenDawOpens": "Start a session when a project opens in the DAW",
+  "companionStartSessionWhenDawOpensDescription": "Only when no session is running, and only for projects of the active profile."
 }

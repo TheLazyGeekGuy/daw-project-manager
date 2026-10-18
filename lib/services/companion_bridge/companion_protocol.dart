@@ -139,12 +139,22 @@ sealed class CompanionMessage {
   final DateTime createdAt;
   final CompanionProjectRef? project;
 
-  const CompanionMessage(this.id, this.createdAt, this.project);
+  /// The running plugin instance that sent it — never saved, so two open
+  /// copies of one project are two instances. Null from older plugins.
+  final String? runId;
+
+  const CompanionMessage(this.id, this.createdAt, this.project, {this.runId});
 }
 
 /// A plugin instance is running inside a project.
 class CompanionHello extends CompanionMessage {
-  const CompanionHello(super.id, super.createdAt, super.project);
+  const CompanionHello(super.id, super.createdAt, super.project, {super.runId});
+}
+
+/// A plugin instance has left a project: the DAW closed it or quit, the
+/// plugin was removed, or it was linked elsewhere. [createdAt] is when.
+class CompanionGoodbye extends CompanionMessage {
+  const CompanionGoodbye(super.id, super.createdAt, super.project, {super.runId});
 }
 
 class CompanionTodoAdd extends CompanionMessage {
@@ -205,9 +215,17 @@ CompanionMessage? parseCompanionMessage(String text) {
       ? decoded['payload'] as Map<String, dynamic>
       : const <String, dynamic>{};
 
+  final plugin = decoded['plugin'];
+  final runId = plugin is Map<String, dynamic> && plugin['runId'] is String && (plugin['runId'] as String).isNotEmpty
+      ? plugin['runId'] as String
+      : null;
+
   switch (type) {
     case 'session.hello':
-      return CompanionHello(id, createdAt, project);
+      return CompanionHello(id, createdAt, project, runId: runId);
+
+    case 'session.goodbye':
+      return CompanionGoodbye(id, createdAt, project, runId: runId);
 
     case 'todo.add':
       final todoId = payload['todoId'];
@@ -265,6 +283,103 @@ MusicProject? applyCompanionTodoSetCompleted(MusicProject owner, CompanionTodoSe
   final todos = [...owner.todos];
   todos[index] = todos[index].copyWith(completed: message.completed);
   return owner.copyWith(todos: todos);
+}
+
+// --- Presence: which projects a DAW has open --------------------------------
+
+/// A plugin instance's heartbeat goes stale after this long without a
+/// refresh (it refreshes every 10 s): the DAW died without a goodbye.
+const companionHeartbeatStale = Duration(seconds: 90);
+
+/// A gap this long between two of the app's own ticks means the computer
+/// slept: every instance then gets a fresh [companionHeartbeatStale].
+const companionSleepGap = Duration(seconds: 30);
+
+/// One running plugin instance, present in a project.
+class CompanionInstance {
+  final String runId;
+  final CompanionProjectRef project;
+  final DateTime lastSeen;
+
+  const CompanionInstance(this.runId, this.project, this.lastSeen);
+
+  CompanionInstance seenAt(DateTime time) => CompanionInstance(runId, project, time);
+}
+
+/// Reads `instances/<runId>.json`. Null when it isn't a linked heartbeat.
+CompanionInstance? parseCompanionHeartbeat(String text) {
+  final Object? decoded;
+  try {
+    decoded = jsonDecode(text);
+  } catch (_) {
+    return null;
+  }
+  if (decoded is! Map<String, dynamic>) return null;
+  final runId = decoded['runId'];
+  final project = _parseRef(decoded['project']);
+  final lastSeen = DateTime.tryParse('${decoded['lastSeen']}');
+  if (runId is! String || runId.isEmpty || project == null || lastSeen == null) return null;
+  return CompanionInstance(runId, project, lastSeen);
+}
+
+/// The key a session is tracked under: profile and id, never id alone.
+String companionKey(String profileId, String projectId) => '$profileId/$projectId';
+
+/// What the plugin's comings and goings mean for the work session.
+sealed class CompanionSessionAction {
+  const CompanionSessionAction();
+}
+
+/// End the running session, at the moment the DAW let go of its project.
+class EndCompanionSession extends CompanionSessionAction {
+  final DateTime at;
+  const EndCompanionSession(this.at);
+}
+
+/// Start a session for a project that just opened in the DAW.
+class StartCompanionSession extends CompanionSessionAction {
+  final CompanionProjectRef project;
+  const StartCompanionSession(this.project);
+}
+
+/// Decides one tick of presence changes.
+///
+/// [activeSessionKeys] are the keys the running session answers to: its
+/// project's, plus — for a session on a version stack — every member's, so
+/// closing the version the DAW had open ends the stack's session.
+/// [presentBefore]/[presentAfter] are the keys with at least one instance at
+/// the start and end of the tick; [departedAt], when each key's last
+/// instance left; [hellos], projects that said hello this tick, in order.
+///
+/// A session ends only on a transition from present to absent — a session
+/// for a project no plugin was ever present in is never ended — and only
+/// once *every* key it answers to is absent. A session starts only when none
+/// is running: it never switches away from one.
+CompanionSessionAction? decideCompanionSession({
+  required Set<String> activeSessionKeys,
+  required Set<String> presentBefore,
+  required Set<String> presentAfter,
+  required Map<String, DateTime> departedAt,
+  required List<CompanionProjectRef> hellos,
+  required bool endWhenDawCloses,
+  required bool startWhenDawOpens,
+}) {
+  if (activeSessionKeys.isNotEmpty) {
+    if (!endWhenDawCloses) return null;
+    final wasPresent = activeSessionKeys.any(presentBefore.contains);
+    final isPresent = activeSessionKeys.any(presentAfter.contains);
+    if (!wasPresent || isPresent) return null;
+
+    DateTime? end;
+    for (final key in activeSessionKeys) {
+      final left = departedAt[key];
+      if (left != null && (end == null || left.isAfter(end))) end = left;
+    }
+    return end == null ? null : EndCompanionSession(end);
+  }
+
+  if (startWhenDawOpens && hellos.isNotEmpty) return StartCompanionSession(hellos.last);
+  return null;
 }
 
 /// The plugin's captures are copied here, under the preview-songs folder,

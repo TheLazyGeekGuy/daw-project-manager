@@ -3021,7 +3021,55 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
             child: WorkTimerSection(l10n: l10n),
           ),
         ),
+        // The DPM Companion plugin runs in desktop DAWs only.
+        if (!MobileUtils.isMobile()) ...[
+          const SizedBox(height: 12),
+          _buildCompanionSessionsCard(l10n),
+        ],
       ],
+    );
+  }
+
+  Widget _buildCompanionSessionsCard(AppLocalizations l10n) {
+    final endOnClose = ref.watch(companionEndSessionProvider);
+    final startOnOpen = ref.watch(companionStartSessionProvider);
+
+    return Card(
+      clipBehavior: Clip.antiAlias,
+      child: Padding(
+        padding: const EdgeInsets.all(16),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              children: [
+                const Icon(Icons.extension_outlined),
+                const SizedBox(width: 10),
+                Expanded(
+                  child: Text(l10n.companionSessionsTitle, style: Theme.of(context).textTheme.titleMedium),
+                ),
+              ],
+            ),
+            const SizedBox(height: 4),
+            Text(l10n.companionSessionsDescription, style: Theme.of(context).textTheme.bodySmall),
+            const SizedBox(height: 8),
+            SwitchListTile(
+              contentPadding: EdgeInsets.zero,
+              title: Text(l10n.companionEndSessionWhenDawCloses),
+              subtitle: Text(l10n.companionEndSessionWhenDawClosesDescription),
+              value: endOnClose,
+              onChanged: (v) => ref.read(companionEndSessionProvider.notifier).set(v),
+            ),
+            SwitchListTile(
+              contentPadding: EdgeInsets.zero,
+              title: Text(l10n.companionStartSessionWhenDawOpens),
+              subtitle: Text(l10n.companionStartSessionWhenDawOpensDescription),
+              value: startOnOpen,
+              onChanged: (v) => ref.read(companionStartSessionProvider.notifier).set(v),
+            ),
+          ],
+        ),
+      ),
     );
   }
 

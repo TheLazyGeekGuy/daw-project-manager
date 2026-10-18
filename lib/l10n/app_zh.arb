@@ -4439,5 +4439,11 @@
   "midiRecordLatencyBody": "录制的音符会提前这么多放入，以抵消声音传到你耳中、以及按键传到应用所需的时间。校准即可在这台电脑上测出它。",
   "midiCalibrate": "校准",
   "midiCalibrating": "每听到一下咔哒声就弹一个键（{done}/{total}）",
-  "midiCalibrated": "录制延迟已设为 {ms} 毫秒"
+  "midiCalibrated": "录制延迟已设为 {ms} 毫秒",
+  "companionSessionsTitle": "DAW 插件 (DPM Companion)",
+  "companionSessionsDescription": "项目中装有 DPM Companion 插件时，应用会知道你的 DAW 何时打开和关闭该项目。",
+  "companionEndSessionWhenDawCloses": "DAW 关闭项目时结束会话",
+  "companionEndSessionWhenDawClosesDescription": "崩溃后也一样：会话在 DAW 放开该项目的那一刻结束。",
+  "companionStartSessionWhenDawOpens": "在 DAW 中打开项目时开始会话",
+  "companionStartSessionWhenDawOpensDescription": "仅在没有正在进行的会话时，并且仅限当前资料中的项目。"
 }
