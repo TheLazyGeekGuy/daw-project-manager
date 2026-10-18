@@ -54,6 +54,13 @@ Instructions for AI assistants working on this codebase.
 - **Every overwrite keeps the previous backup** in the backup folder's `history` (Drive-side copy, newest `snapshotsKept`), for "Recover from an earlier backup".
 - Errors are shown through `classifySyncError` + `syncErrorSentence`, never by matching English text, and the failure kind is stored so the next launch still shows it. `test/helpers/fake_drive.dart` is an in-memory Drive behind the real `googleapis` client — test sync behaviour against it, not against mocks.
 
+### The DPM Companion plugin talks to the app through files
+- The DAW plugin (#118, its own repo: bandpassrecords/dpm-companion, C++/JUCE) and the app share `plugin_bridge/` inside the library folder (`companionBridgePath()`). Its `docs/PROTOCOL.md` is the contract; `lib/services/companion_bridge/` is this side of it. Change them together.
+- The app writes `index.json` (every profile's projects with their to-dos — stacks and archived projects left out, a stack member carrying its stack's to-dos) whenever it changes, and always right after applying the plugin's messages: a fresh `generatedAt` is how the plugin learns they arrived. `launchProjectInDaw` writes `launch.json` just before launching.
+- The plugin's `outbox/` messages are applied in file-name order and deleted. Matching is by profile and id, never id alone. A `todo.add` keeps the plugin's `todoId` as the `TodoItem.id` (that is the acknowledgement, and what makes a replay harmless); a tick on a to-do deleted in the app is dropped.
+- A capture becomes the preview song only when `companionMayReplacePreview` says so: no preview yet, an earlier capture, or an auto-detected mixdown older than the capture — **never** a preview the user picked. Captures are copied under `preview_songs/companion/<id>/`, which is how the app tells them apart.
+- Desktop only, on a 3-second timer started in `main.dart`. Tests run against `CompanionLibrary` fakes and a temp folder, never Hive. Nothing new is stored: to-dos and `previewSongPath` already sync and back up.
+
 ---
 
 ## Architecture
@@ -290,6 +297,7 @@ Instructions for AI assistants working on this codebase.
 | Audio length from a file's header (WAV/AIFF/FLAC) | `lib/utils/audio_file_info.dart` |
 | Google Drive sync (not available inside Flatpak) | `lib/services/google_drive_sync_service.dart` |
 | Local backup/restore (Flatpak's only backup path) | `lib/services/backup_service.dart` |
+| DPM Companion plugin bridge (index, outbox, captures) | `lib/services/companion_bridge/` |
 | Archive a project to a verified zip, and restore it | `lib/services/project_archive_service.dart` |
 | Move one project's files, rewriting its stored paths | `lib/services/project_move_service.dart` |
 | "Does another project share this folder?" (archive scope + move) | `lib/utils/project_folder_utils.dart` |

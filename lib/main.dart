@@ -61,6 +61,8 @@ import 'ui/widgets/update_available_dialog.dart';
 import 'providers/theme_provider.dart';
 import 'utils/route_observer.dart';
 import 'ui/app_snack_bar.dart';
+import 'services/companion_bridge/companion_bridge_service.dart';
+import 'services/companion_bridge/repository_companion_library.dart';
 
 // Global navigator key for deep linking
 final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
@@ -98,6 +100,7 @@ ProviderContainer? _appContainer;
 /// hung until the user manually reopened the window.)
 Future<void> quitApp() async {
   _autoBackupTimer?.cancel();
+  _companionBridge?.stop();
   _folderWatcherRepoSub?.close();
   await _folderWatcherRootsSub?.cancel();
   await _folderWatcherChangesSub?.cancel();
@@ -305,6 +308,27 @@ Future<void> _runAutoSync(
     if (kDebugMode) print('Auto-sync failed: $e');
   } finally {
     _autoBackupRunning = false;
+  }
+}
+
+// The DPM Companion plugin's bridge (desktop only). Like the folder watcher,
+// it lives here rather than in a page so it runs whatever screen is open,
+// and hidden in the tray too.
+CompanionBridgeService? _companionBridge;
+
+Future<void> _startCompanionBridge(ProviderContainer container) async {
+  try {
+    const appVersion = String.fromEnvironment('APP_VERSION', defaultValue: '0.0.0');
+    final bridge = CompanionBridgeService(
+      library: RepositoryCompanionLibrary(container),
+      bridgeDir: await companionBridgePath(),
+      previewSongsDir: await getPreviewSongsPath(),
+      appVersion: appVersion,
+    );
+    _companionBridge = bridge;
+    bridge.start();
+  } catch (e) {
+    if (kDebugMode) print('Companion bridge not started: $e');
   }
 }
 
@@ -842,6 +866,12 @@ Future<void> _main(List<String> args) async {
     // roots today) — auto-detects new project files without a full rescan.
     if (!kIsWeb && !MobileUtils.isMobile()) {
       _startFolderWatcher(container);
+    }
+
+    // 4c-3. DPM Companion plugin bridge (desktop only): shares the project
+    // list with the DAW plugin and takes in its to-dos and captures (#118).
+    if (!kIsWeb && !MobileUtils.isMobile()) {
+      unawaited(_startCompanionBridge(container));
     }
 
     // 4d. Schedule deadline notifications (Android only)

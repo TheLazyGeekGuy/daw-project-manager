@@ -1,0 +1,267 @@
+import 'dart:async';
+import 'dart:convert';
+import 'dart:io';
+
+import 'package:flutter/foundation.dart';
+import 'package:path/path.dart' as p;
+
+import '../../models/music_project.dart';
+import '../../utils/app_paths.dart';
+import 'companion_protocol.dart';
+
+/// Where the app reads projects from and saves them to, for the bridge. An
+/// interface so the bridge is tested against plain lists, never Hive.
+abstract class CompanionLibrary {
+  /// Every profile with its projects.
+  Future<List<CompanionProfileProjects>> load();
+
+  /// Saves an edit made on the plugin's behalf, as a user edit (bumped
+  /// `updatedAt`, so it syncs like one).
+  Future<void> saveProject(String profileId, MusicProject project);
+}
+
+/// The bridge folder the DPM Companion plugin shares with this app:
+/// `plugin_bridge` inside the library folder. A pinned or dev library gets
+/// its own, so a test build never talks to plugins working for the stable app.
+Future<String> companionBridgePath() async => p.join(await getLocalAppDataPath(), 'plugin_bridge');
+
+/// Writes `launch.json` just before [project] opens in its DAW, so the plugin
+/// can link to it without asking. Best effort: a failure costs the plugin a
+/// hint, never the launch.
+Future<void> writeCompanionLaunchHint(String profileId, MusicProject project, {String? bridgeDir}) async {
+  try {
+    final dir = bridgeDir ?? await companionBridgePath();
+    final hint = buildCompanionLaunchHint(profileId: profileId, project: project, launchedAt: DateTime.now());
+    await writeFileAtomically(File(p.join(dir, 'launch.json')), jsonEncode(hint));
+  } catch (e) {
+    if (kDebugMode) debugPrint('Companion launch hint not written: $e');
+  }
+}
+
+/// Writes [contents] to a temporary name and renames it over [target], so a
+/// reader (the plugin) never sees half a file.
+Future<void> writeFileAtomically(File target, String contents) async {
+  await target.parent.create(recursive: true);
+  final temp = File('${target.path}.tmp');
+  await temp.writeAsString(contents, flush: true);
+  await temp.rename(target.path);
+}
+
+/// The app's half of the DPM Companion plugin's protocol (docs/PROTOCOL.md in
+/// bandpassrecords/dpm-companion): keeps `index.json` current and applies the
+/// plugin's outbox — new to-dos, ticks and pre-listen captures.
+///
+/// Desktop only. Runs on a timer rather than a file watcher: the folder is
+/// tiny, a tick costs a directory listing, and watchers are unreliable on
+/// network and cloud-synced home folders.
+class CompanionBridgeService {
+  CompanionBridgeService({
+    required this.library,
+    required this.bridgeDir,
+    required this.previewSongsDir,
+    required this.appVersion,
+    DateTime Function()? clock,
+  }) : _now = clock ?? DateTime.now;
+
+  final CompanionLibrary library;
+  final String bridgeDir;
+  final String previewSongsDir;
+  final String appVersion;
+  final DateTime Function() _now;
+
+  Timer? _timer;
+  bool _ticking = false;
+  String? _lastFingerprint;
+
+  String get outboxDir => p.join(bridgeDir, 'outbox');
+  String get capturesDir => p.join(bridgeDir, 'captures');
+  String get companionPreviewDir => p.join(previewSongsDir, companionPreviewFolderName);
+  File get indexFile => File(p.join(bridgeDir, 'index.json'));
+
+  void start({Duration interval = const Duration(seconds: 3)}) {
+    _timer?.cancel();
+    unawaited(tick());
+    _timer = Timer.periodic(interval, (_) => unawaited(tick()));
+  }
+
+  void stop() {
+    _timer?.cancel();
+    _timer = null;
+  }
+
+  /// Applies the outbox, then rewrites the index if anything in it changed —
+  /// always after applying a message, since a fresh `generatedAt` is how the
+  /// plugin learns its changes arrived. Never runs twice at once.
+  Future<void> tick() async {
+    if (_ticking) return;
+    _ticking = true;
+    try {
+      final applied = await processOutbox();
+      await writeIndex(force: applied > 0);
+    } catch (e) {
+      if (kDebugMode) debugPrint('Companion bridge tick failed: $e');
+    } finally {
+      _ticking = false;
+    }
+  }
+
+  /// Writes `index.json` when its content changed since the last write (or
+  /// when [force]d). Returns whether it wrote.
+  Future<bool> writeIndex({bool force = false}) async {
+    final index = buildCompanionIndex(await library.load(), generatedAt: _now(), appVersion: appVersion);
+    final fingerprint = companionIndexFingerprint(index);
+    if (!force && fingerprint == _lastFingerprint && await indexFile.exists()) return false;
+
+    await writeFileAtomically(indexFile, jsonEncode(index));
+    _lastFingerprint = fingerprint;
+    return true;
+  }
+
+  /// Applies every message in the outbox, oldest first, deleting each once
+  /// handled. Returns how many changed a project.
+  Future<int> processOutbox() async {
+    final dir = Directory(outboxDir);
+    if (!await dir.exists()) return 0;
+
+    final files = await dir
+        .list()
+        .where((e) => e is File && e.path.endsWith('.json'))
+        .cast<File>()
+        .toList();
+    if (files.isEmpty) return 0;
+    // Names start with the UTC time and a sequence number: name order is the
+    // order the plugin wrote them in.
+    files.sort((a, b) => p.basename(a.path).compareTo(p.basename(b.path)));
+
+    var library = await this.library.load();
+    var changed = 0;
+
+    for (final file in files) {
+      final String text;
+      try {
+        text = await file.readAsString();
+      } catch (_) {
+        continue; // still being written by another tool; next tick
+      }
+
+      final message = parseCompanionMessage(text);
+      try {
+        if (message != null && await _apply(message, library)) {
+          changed++;
+          library = await this.library.load();
+        }
+      } catch (e) {
+        if (kDebugMode) debugPrint('Companion message ${p.basename(file.path)} failed: $e');
+      }
+
+      try {
+        await file.delete();
+      } catch (_) {}
+    }
+
+    return changed;
+  }
+
+  Future<bool> _apply(CompanionMessage message, List<CompanionProfileProjects> library) async {
+    switch (message) {
+      case CompanionHello():
+        return false;
+
+      case CompanionUnknownMessage(:final type):
+        if (kDebugMode) debugPrint('Companion message of unknown type "$type" dropped');
+        return false;
+
+      case CompanionTodoAdd():
+        final found = _find(library, message.project);
+        if (found == null) return false;
+        final updated = applyCompanionTodoAdd(found.owner, message);
+        if (updated == null) return false;
+        await this.library.saveProject(found.profileId, updated);
+        return true;
+
+      case CompanionTodoSetCompleted():
+        final found = _find(library, message.project);
+        if (found == null) return false;
+        final updated = applyCompanionTodoSetCompleted(found.owner, message);
+        if (updated == null) return false;
+        await this.library.saveProject(found.profileId, updated);
+        return true;
+
+      case CompanionCaptureReady():
+        return _adoptCapture(message, library);
+    }
+  }
+
+  ({String profileId, MusicProject owner})? _find(
+    List<CompanionProfileProjects> library,
+    CompanionProjectRef? ref,
+  ) {
+    if (ref == null) return null;
+    for (final entry in library) {
+      if (entry.profile.id != ref.profileId) continue;
+      for (final project in entry.projects) {
+        if (project.id == ref.projectId) {
+          return (profileId: entry.profile.id, owner: companionOwnerOf(project, entry.projects));
+        }
+      }
+    }
+    return null;
+  }
+
+  /// Copies a capture into the preview songs and makes it the project's
+  /// preview when [companionMayReplacePreview] allows. The capture file is
+  /// removed either way: the plugin records a new one on the next pass.
+  Future<bool> _adoptCapture(CompanionCaptureReady message, List<CompanionProfileProjects> library) async {
+    final source = File(p.normalize(p.join(bridgeDir, message.file)));
+    // Only files in captures/: a message must not point the app elsewhere.
+    if (!p.isWithin(capturesDir, source.path)) return false;
+    // Gone: superseded by a later capture before the app got to it.
+    if (!await source.exists()) return false;
+
+    try {
+      final found = _find(library, message.project);
+      if (found == null) return false;
+
+      final owner = found.owner;
+      final current = owner.previewSongPath;
+      DateTime? currentModified;
+      if (current != null && current.isNotEmpty && !current.startsWith('drive://')) {
+        final currentFile = File(current);
+        if (await currentFile.exists()) currentModified = await currentFile.lastModified();
+      }
+
+      if (!companionMayReplacePreview(owner,
+          companionPreviewDir: companionPreviewDir,
+          capturedAt: message.capturedAt,
+          currentPreviewModifiedAt: currentModified)) {
+        return false;
+      }
+
+      final destination = File(p.join(companionPreviewDir, owner.id, p.basename(source.path)));
+      await destination.parent.create(recursive: true);
+      await source.copy(destination.path);
+
+      await this.library.saveProject(
+        found.profileId,
+        owner.copyWith(previewSongPath: destination.path, previewSongFileName: p.basename(destination.path)),
+      );
+
+      // The capture it replaces, if no other row still points at it (a
+      // stack and its promoted member can share one preview).
+      if (current != null && p.isWithin(companionPreviewDir, current) && current != destination.path) {
+        final reloaded = await this.library.load();
+        final stillUsed = reloaded.any((e) => e.projects.any((pr) => pr.previewSongPath == current));
+        if (!stillUsed) {
+          try {
+            await File(current).delete();
+          } catch (_) {}
+        }
+      }
+      return true;
+    } finally {
+      try {
+        await source.delete();
+      } catch (_) {}
+    }
+  }
+}
