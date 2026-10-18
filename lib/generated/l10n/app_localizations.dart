@@ -13192,6 +13192,42 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Recording latency set to {ms} ms'**
   String midiCalibrated(int ms);
+
+  /// No description provided for @companionSessionsTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'DAW plugin (DPM Companion)'**
+  String get companionSessionsTitle;
+
+  /// No description provided for @companionSessionsDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'With the DPM Companion plugin in a project, the app knows when your DAW opens and closes it.'**
+  String get companionSessionsDescription;
+
+  /// No description provided for @companionEndSessionWhenDawCloses.
+  ///
+  /// In en, this message translates to:
+  /// **'End the session when the DAW closes the project'**
+  String get companionEndSessionWhenDawCloses;
+
+  /// No description provided for @companionEndSessionWhenDawClosesDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'Also after a crash: the session ends at the moment the DAW let go of the project.'**
+  String get companionEndSessionWhenDawClosesDescription;
+
+  /// No description provided for @companionStartSessionWhenDawOpens.
+  ///
+  /// In en, this message translates to:
+  /// **'Start a session when a project opens in the DAW'**
+  String get companionStartSessionWhenDawOpens;
+
+  /// No description provided for @companionStartSessionWhenDawOpensDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'Only when no session is running, and only for projects of the active profile.'**
+  String get companionStartSessionWhenDawOpensDescription;
 }
 
 class _AppLocalizationsDelegate

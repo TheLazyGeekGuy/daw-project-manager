@@ -8145,4 +8145,27 @@ class AppLocalizationsEs extends AppLocalizations {
   String midiCalibrated(int ms) {
     return 'Latencia de grabación ajustada a $ms ms';
   }
+
+  @override
+  String get companionSessionsTitle => 'Plugin para la DAW (DPM Companion)';
+
+  @override
+  String get companionSessionsDescription =>
+      'Con el plugin DPM Companion en un proyecto, la aplicación sabe cuándo tu DAW lo abre y lo cierra.';
+
+  @override
+  String get companionEndSessionWhenDawCloses =>
+      'Finalizar la sesión cuando la DAW cierre el proyecto';
+
+  @override
+  String get companionEndSessionWhenDawClosesDescription =>
+      'También tras un fallo: la sesión termina en el momento en que la DAW soltó el proyecto.';
+
+  @override
+  String get companionStartSessionWhenDawOpens =>
+      'Iniciar una sesión cuando se abra un proyecto en la DAW';
+
+  @override
+  String get companionStartSessionWhenDawOpensDescription =>
+      'Solo si no hay ninguna sesión en curso, y solo para proyectos del perfil activo.';
 }

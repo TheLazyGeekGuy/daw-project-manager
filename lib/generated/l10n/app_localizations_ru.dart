@@ -8147,4 +8147,27 @@ class AppLocalizationsRu extends AppLocalizations {
   String midiCalibrated(int ms) {
     return 'Задержка записи: $ms мс';
   }
+
+  @override
+  String get companionSessionsTitle => 'Плагин для DAW (DPM Companion)';
+
+  @override
+  String get companionSessionsDescription =>
+      'Когда плагин DPM Companion есть в проекте, приложение знает, когда ваша DAW открывает и закрывает его.';
+
+  @override
+  String get companionEndSessionWhenDawCloses =>
+      'Завершать сессию, когда DAW закрывает проект';
+
+  @override
+  String get companionEndSessionWhenDawClosesDescription =>
+      'И после сбоя: сессия завершается в тот момент, когда DAW отпустила проект.';
+
+  @override
+  String get companionStartSessionWhenDawOpens =>
+      'Начинать сессию, когда проект открывается в DAW';
+
+  @override
+  String get companionStartSessionWhenDawOpensDescription =>
+      'Только если ни одна сессия не идёт, и только для проектов активного профиля.';
 }

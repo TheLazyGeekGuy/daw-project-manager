@@ -7753,4 +7753,25 @@ class AppLocalizationsZh extends AppLocalizations {
   String midiCalibrated(int ms) {
     return '录制延迟已设为 $ms 毫秒';
   }
+
+  @override
+  String get companionSessionsTitle => 'DAW 插件 (DPM Companion)';
+
+  @override
+  String get companionSessionsDescription =>
+      '项目中装有 DPM Companion 插件时，应用会知道你的 DAW 何时打开和关闭该项目。';
+
+  @override
+  String get companionEndSessionWhenDawCloses => 'DAW 关闭项目时结束会话';
+
+  @override
+  String get companionEndSessionWhenDawClosesDescription =>
+      '崩溃后也一样：会话在 DAW 放开该项目的那一刻结束。';
+
+  @override
+  String get companionStartSessionWhenDawOpens => '在 DAW 中打开项目时开始会话';
+
+  @override
+  String get companionStartSessionWhenDawOpensDescription =>
+      '仅在没有正在进行的会话时，并且仅限当前资料中的项目。';
 }
