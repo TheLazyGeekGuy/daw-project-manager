@@ -4441,10 +4441,11 @@
   "midiInputNoDevices": "Nenhuma entrada MIDI encontrada",
   "midiInputListening": "Entrada MIDI: {names}",
   "midiInputBusy": "Não foi possível abrir {names}. Talvez outro app esteja usando.",
-  "midiStepInput": "Entrada por passos: cada nota ou acorde que você tocar entra no cursor, com um passo da grade",
   "midiShortcutsMidiInput": "Teclado MIDI",
   "midiGesturePlayKey": "Tocar uma tecla",
   "midiShortcutPlayKey": "Toca a nota com o instrumento do clipe",
-  "midiShortcutStepInput": "Com a entrada por passos: insere a nota no cursor (teclas seguradas juntas formam um acorde)",
-  "midiShortcutStepCursor": "Com a entrada por passos: move o cursor um passo para trás ou para a frente"
+  "midiRecord": "Gravar do teclado MIDI: toca o loop e grava o que você tocar",
+  "midiStopRecording": "Parar a gravação",
+  "midiShortcutRecord": "Gravar do teclado MIDI (toca o loop; cada volta guarda o que você tocar)",
+  "midiShortcutRulerDoubleClick": "Na régua: tocar a partir dali"
 }

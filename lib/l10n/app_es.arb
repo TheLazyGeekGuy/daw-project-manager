@@ -4417,10 +4417,11 @@
   "midiInputNoDevices": "No se encontraron entradas MIDI",
   "midiInputListening": "Entrada MIDI: {names}",
   "midiInputBusy": "No se pudo abrir {names}. Puede que otra aplicación la esté usando.",
-  "midiStepInput": "Entrada por pasos: cada nota o acorde que toques se coloca en el cursor, de un paso de cuadrícula",
   "midiShortcutsMidiInput": "Teclado MIDI",
   "midiGesturePlayKey": "Tocar una tecla",
   "midiShortcutPlayKey": "Suena la nota con el instrumento del clip",
-  "midiShortcutStepInput": "Con la entrada por pasos: coloca la nota en el cursor (las teclas pulsadas a la vez forman un acorde)",
-  "midiShortcutStepCursor": "Con la entrada por pasos: mueve el cursor un paso atrás o adelante"
+  "midiRecord": "Grabar desde el teclado MIDI: reproduce el bucle y graba lo que toques",
+  "midiStopRecording": "Detener la grabación",
+  "midiShortcutRecord": "Grabar desde el teclado MIDI (reproduce el bucle; cada pasada conserva lo que toques)",
+  "midiShortcutRulerDoubleClick": "En la regla: reproducir desde ahí"
 }

@@ -4417,10 +4417,11 @@
   "midiInputNoDevices": "未找到 MIDI 输入",
   "midiInputListening": "MIDI 输入：{names}",
   "midiInputBusy": "无法打开 {names}。可能有其他应用正在使用它。",
-  "midiStepInput": "步进输入：弹奏的每个音符或和弦都会放在光标处，长度为一个网格步长",
   "midiShortcutsMidiInput": "MIDI 键盘",
   "midiGesturePlayKey": "弹奏一个键",
   "midiShortcutPlayKey": "用片段的乐器发出该音符",
-  "midiShortcutStepInput": "步进输入时：在光标处输入音符（同时按住的键组成和弦）",
-  "midiShortcutStepCursor": "步进输入时：将光标后退或前进一步"
+  "midiRecord": "从 MIDI 键盘录制：播放循环并录下你弹奏的内容",
+  "midiStopRecording": "停止录制",
+  "midiShortcutRecord": "从 MIDI 键盘录制（播放循环；每一遍都会保留你弹奏的内容）",
+  "midiShortcutRulerDoubleClick": "在标尺上：从该处播放"
 }

@@ -50,11 +50,15 @@ void main() {
           contains(l10n.midiShortcutsMidiInput));
     });
 
-    test('says what a MIDI keyboard does, step input and its cursor', () {
+    test('says what a MIDI keyboard does, how to record, and the ruler', () {
       final rows = all(mac: false);
-      expect([for (final s in rows) s.keys.join('+')], contains('← / →'));
+      expect([for (final s in rows) s.keys.join('+')], contains('R'));
       expect([for (final s in rows) s.action],
-          containsAll([l10n.midiShortcutPlayKey, l10n.midiShortcutStepInput]));
+          containsAll([
+            l10n.midiShortcutPlayKey,
+            l10n.midiShortcutRecord,
+            l10n.midiShortcutRulerDoubleClick,
+          ]));
     });
 
     test('keys are named as a Mac prints them on a Mac', () {

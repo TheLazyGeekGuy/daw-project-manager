@@ -8038,10 +8038,6 @@ class AppLocalizationsDe extends AppLocalizations {
   }
 
   @override
-  String get midiStepInput =>
-      'Schritteingabe: Jede gespielte Note oder jeder Akkord wird am Cursor eingefügt, einen Rasterschritt lang';
-
-  @override
   String get midiShortcutsMidiInput => 'MIDI-Keyboard';
 
   @override
@@ -8052,10 +8048,17 @@ class AppLocalizationsDe extends AppLocalizations {
       'Spielt die Note mit dem Instrument des Clips';
 
   @override
-  String get midiShortcutStepInput =>
-      'Bei Schritteingabe: fügt die Note am Cursor ein (zusammen gehaltene Tasten ergeben einen Akkord)';
+  String get midiRecord =>
+      'Vom MIDI-Keyboard aufnehmen: spielt den Loop und nimmt auf, was du spielst';
 
   @override
-  String get midiShortcutStepCursor =>
-      'Bei Schritteingabe: bewegt den Cursor einen Schritt zurück oder vor';
+  String get midiStopRecording => 'Aufnahme beenden';
+
+  @override
+  String get midiShortcutRecord =>
+      'Vom MIDI-Keyboard aufnehmen (spielt den Loop; jeder Durchgang behält, was du spielst)';
+
+  @override
+  String get midiShortcutRulerDoubleClick =>
+      'Auf dem Lineal: von dort abspielen';
 }

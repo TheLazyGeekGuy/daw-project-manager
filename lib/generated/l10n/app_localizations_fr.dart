@@ -8072,10 +8072,6 @@ class AppLocalizationsFr extends AppLocalizations {
   }
 
   @override
-  String get midiStepInput =>
-      'Saisie pas à pas : chaque note ou accord joué est placé au curseur, long d’un pas de grille';
-
-  @override
   String get midiShortcutsMidiInput => 'Clavier MIDI';
 
   @override
@@ -8086,10 +8082,17 @@ class AppLocalizationsFr extends AppLocalizations {
       'Fait entendre la note avec l’instrument du clip';
 
   @override
-  String get midiShortcutStepInput =>
-      'Avec la saisie pas à pas : place la note au curseur (les touches tenues ensemble forment un accord)';
+  String get midiRecord =>
+      'Enregistrer depuis le clavier MIDI : joue la boucle et enregistre ce que vous jouez';
 
   @override
-  String get midiShortcutStepCursor =>
-      'Avec la saisie pas à pas : recule ou avance le curseur d’un pas';
+  String get midiStopRecording => 'Arrêter l’enregistrement';
+
+  @override
+  String get midiShortcutRecord =>
+      'Enregistrer depuis le clavier MIDI (joue la boucle ; chaque passage garde ce que vous jouez)';
+
+  @override
+  String get midiShortcutRulerDoubleClick =>
+      'Sur la règle : lire à partir de là';
 }

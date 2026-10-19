@@ -4417,10 +4417,11 @@
   "midiInputNoDevices": "Nessun ingresso MIDI trovato",
   "midiInputListening": "Ingresso MIDI: {names}",
   "midiInputBusy": "Impossibile aprire {names}. Forse lo sta usando un’altra app.",
-  "midiStepInput": "Inserimento a passi: ogni nota o accordo che suoni va al cursore, lungo un passo di griglia",
   "midiShortcutsMidiInput": "Tastiera MIDI",
   "midiGesturePlayKey": "Suonare un tasto",
   "midiShortcutPlayKey": "Fa sentire la nota con lo strumento della clip",
-  "midiShortcutStepInput": "Con l’inserimento a passi: inserisce la nota al cursore (i tasti tenuti insieme formano un accordo)",
-  "midiShortcutStepCursor": "Con l’inserimento a passi: sposta il cursore di un passo indietro o avanti"
+  "midiRecord": "Registra dalla tastiera MIDI: riproduce il loop e registra ciò che suoni",
+  "midiStopRecording": "Interrompi la registrazione",
+  "midiShortcutRecord": "Registra dalla tastiera MIDI (riproduce il loop; ogni passaggio tiene ciò che suoni)",
+  "midiShortcutRulerDoubleClick": "Sul righello: riproduci da lì"
 }

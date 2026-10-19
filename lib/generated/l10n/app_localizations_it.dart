@@ -8042,10 +8042,6 @@ class AppLocalizationsIt extends AppLocalizations {
   }
 
   @override
-  String get midiStepInput =>
-      'Inserimento a passi: ogni nota o accordo che suoni va al cursore, lungo un passo di griglia';
-
-  @override
   String get midiShortcutsMidiInput => 'Tastiera MIDI';
 
   @override
@@ -8056,10 +8052,16 @@ class AppLocalizationsIt extends AppLocalizations {
       'Fa sentire la nota con lo strumento della clip';
 
   @override
-  String get midiShortcutStepInput =>
-      'Con l’inserimento a passi: inserisce la nota al cursore (i tasti tenuti insieme formano un accordo)';
+  String get midiRecord =>
+      'Registra dalla tastiera MIDI: riproduce il loop e registra ciò che suoni';
 
   @override
-  String get midiShortcutStepCursor =>
-      'Con l’inserimento a passi: sposta il cursore di un passo indietro o avanti';
+  String get midiStopRecording => 'Interrompi la registrazione';
+
+  @override
+  String get midiShortcutRecord =>
+      'Registra dalla tastiera MIDI (riproduce il loop; ogni passaggio tiene ciò che suoni)';
+
+  @override
+  String get midiShortcutRulerDoubleClick => 'Sul righello: riproduci da lì';
 }

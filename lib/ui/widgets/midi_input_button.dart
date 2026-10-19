@@ -11,7 +11,8 @@ class MidiInputLabels {
     required this.noDevices,
     required this.listening,
     required this.busy,
-    required this.stepInput,
+    required this.record,
+    required this.stopRecording,
   });
 
   /// The button's tooltip while nothing is listened to: "MIDI input".
@@ -29,8 +30,8 @@ class MidiInputLabels {
   /// The tooltip when the input couldn't be opened.
   final String Function(String names) busy;
 
-  /// The step input toggle's tooltip.
-  final String stepInput;
+  /// The record button's tooltips, before and while recording.
+  final String record, stopRecording;
 }
 
 /// The piano roll's MIDI input button: lit while a keyboard is listened

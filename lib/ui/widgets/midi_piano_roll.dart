@@ -435,7 +435,12 @@ class MidiPianoRoll extends StatefulWidget {
     this.acousticFeedback = false,
     this.onAcousticFeedbackChanged,
     this.playedKeys,
+    this.onPlayFrom,
   });
+
+  /// A double-click on the ruler's bar numbers: play from there (a single
+  /// click only moves where playback starts, or jumps while playing).
+  final ValueChanged<Duration>? onPlayFrom;
 
   /// The keys being played on a MIDI keyboard, drawn pressed like a key
   /// held down with the mouse.
@@ -687,7 +692,6 @@ class _MidiPianoRollState extends State<MidiPianoRoll>
     }
     if (old.restTick != widget.restTick && !_ticker.isActive) {
       _playhead.value = _restTick;
-      _keepInView(widget.restTick);
     }
     if (!identical(old.clip, widget.clip)) {
       _range = _rangeFor(_shown);
@@ -771,21 +775,6 @@ class _MidiPianoRollState extends State<MidiPianoRoll>
     }
   }
 
-  /// Brings [tick] back into view when it has moved off it — the step
-  /// input cursor walking past the right edge — centred, as following
-  /// playback does. Left alone when it is on screen.
-  void _keepInView(double? tick) {
-    if (tick == null || _view == Size.zero) return;
-    final x = tick * _px;
-    if (x >= _scrollX && x <= _scrollX + _gridWidth) return;
-    final next = followScroll(
-      playheadX: x,
-      viewWidth: _gridWidth,
-      maxScroll: math.max(_maxScrollX, x),
-    );
-    if (next != _scrollX) setState(() => _scrollX = next);
-  }
-
   /// The tick under the ruler at [x] (ruler-relative pixels), in the clip.
   double _tickAtRulerX(double x) =>
       ((_scrollX + x) / _px).clamp(0.0, (_clipEnd ?? _contentTicks).toDouble());
@@ -828,7 +817,29 @@ class _MidiPianoRollState extends State<MidiPianoRoll>
       toggle();
       return;
     }
-    _seekTo(_tickAtRulerX(x));
+    final tick = _tickAtRulerX(x);
+    _seekTo(tick);
+    if (_rulerDoubleClick) {
+      widget.onPlayFrom?.call(durationAtTick(tick, widget.bpm, _shown.ppq));
+    }
+  }
+
+  // The ruler's last press, and whether the one under way makes a
+  // double-click with it — told from the presses' own times, so a single
+  // click still acts at once instead of waiting to see if a second comes.
+  Duration? _lastRulerPressTime;
+  Offset? _lastRulerPressAt;
+  bool _rulerDoubleClick = false;
+
+  void _onRulerPress(PointerDownEvent e) {
+    _rulerDoubleClick = isDoubleTap(
+      previousTime: _lastRulerPressTime,
+      previousAt: _lastRulerPressAt,
+      time: e.timeStamp,
+      at: e.localPosition,
+    );
+    _lastRulerPressTime = _rulerDoubleClick ? null : e.timeStamp;
+    _lastRulerPressAt = _rulerDoubleClick ? null : e.localPosition;
   }
 
   /// The loop region's end being dragged on the ruler, if one is.
@@ -2054,7 +2065,9 @@ class _MidiPianoRollState extends State<MidiPianoRoll>
                             cursor: _rulerCursor,
                             onHover: (e) =>
                                 _updateRulerCursor(e.localPosition),
-                            child: GestureDetector(
+                            child: Listener(
+                              onPointerDown: _onRulerPress,
+                              child: GestureDetector(
                               key: const ValueKey('midi-piano-roll-ruler'),
                               behavior: HitTestBehavior.opaque,
                               // From where the press went down, not where
@@ -2099,6 +2112,7 @@ class _MidiPianoRollState extends State<MidiPianoRoll>
                                 _loopMoveFrom = null;
                                 _scrubTick = null;
                               },
+                            ),
                             ),
                           ),
                         ),

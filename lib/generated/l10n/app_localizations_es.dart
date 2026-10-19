@@ -8055,10 +8055,6 @@ class AppLocalizationsEs extends AppLocalizations {
   }
 
   @override
-  String get midiStepInput =>
-      'Entrada por pasos: cada nota o acorde que toques se coloca en el cursor, de un paso de cuadrícula';
-
-  @override
   String get midiShortcutsMidiInput => 'Teclado MIDI';
 
   @override
@@ -8068,10 +8064,17 @@ class AppLocalizationsEs extends AppLocalizations {
   String get midiShortcutPlayKey => 'Suena la nota con el instrumento del clip';
 
   @override
-  String get midiShortcutStepInput =>
-      'Con la entrada por pasos: coloca la nota en el cursor (las teclas pulsadas a la vez forman un acorde)';
+  String get midiRecord =>
+      'Grabar desde el teclado MIDI: reproduce el bucle y graba lo que toques';
 
   @override
-  String get midiShortcutStepCursor =>
-      'Con la entrada por pasos: mueve el cursor un paso atrás o adelante';
+  String get midiStopRecording => 'Detener la grabación';
+
+  @override
+  String get midiShortcutRecord =>
+      'Grabar desde el teclado MIDI (reproduce el bucle; cada pasada conserva lo que toques)';
+
+  @override
+  String get midiShortcutRulerDoubleClick =>
+      'En la regla: reproducir desde ahí';
 }

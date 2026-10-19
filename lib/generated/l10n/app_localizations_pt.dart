@@ -8016,10 +8016,6 @@ class AppLocalizationsPt extends AppLocalizations {
   }
 
   @override
-  String get midiStepInput =>
-      'Entrada por passos: cada nota ou acorde que você tocar entra no cursor, com um passo da grade';
-
-  @override
   String get midiShortcutsMidiInput => 'Teclado MIDI';
 
   @override
@@ -8029,10 +8025,16 @@ class AppLocalizationsPt extends AppLocalizations {
   String get midiShortcutPlayKey => 'Toca a nota com o instrumento do clipe';
 
   @override
-  String get midiShortcutStepInput =>
-      'Com a entrada por passos: insere a nota no cursor (teclas seguradas juntas formam um acorde)';
+  String get midiRecord =>
+      'Gravar do teclado MIDI: toca o loop e grava o que você tocar';
 
   @override
-  String get midiShortcutStepCursor =>
-      'Com a entrada por passos: move o cursor um passo para trás ou para a frente';
+  String get midiStopRecording => 'Parar a gravação';
+
+  @override
+  String get midiShortcutRecord =>
+      'Gravar do teclado MIDI (toca o loop; cada volta guarda o que você tocar)';
+
+  @override
+  String get midiShortcutRulerDoubleClick => 'Na régua: tocar a partir dali';
 }

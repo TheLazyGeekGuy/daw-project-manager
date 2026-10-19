@@ -4417,10 +4417,11 @@
   "midiInputNoDevices": "MIDI-входы не найдены",
   "midiInputListening": "MIDI-вход: {names}",
   "midiInputBusy": "Не удалось открыть {names}. Возможно, его использует другое приложение.",
-  "midiStepInput": "Пошаговый ввод: каждая сыгранная нота или аккорд встаёт на курсор, длиной в шаг сетки",
   "midiShortcutsMidiInput": "MIDI-клавиатура",
   "midiGesturePlayKey": "Сыграть клавишу",
   "midiShortcutPlayKey": "Звучит нота инструментом клипа",
-  "midiShortcutStepInput": "При пошаговом вводе: ставит ноту на курсор (клавиши, нажатые вместе, дают аккорд)",
-  "midiShortcutStepCursor": "При пошаговом вводе: сдвигает курсор на шаг назад или вперёд"
+  "midiRecord": "Запись с MIDI-клавиатуры: воспроизводит луп и записывает то, что вы играете",
+  "midiStopRecording": "Остановить запись",
+  "midiShortcutRecord": "Запись с MIDI-клавиатуры (воспроизводит луп; каждый проход сохраняет сыгранное)",
+  "midiShortcutRulerDoubleClick": "На линейке: воспроизвести оттуда"
 }

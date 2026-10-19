@@ -7758,9 +7758,6 @@ class AppLocalizationsJa extends AppLocalizations {
   }
 
   @override
-  String get midiStepInput => 'ステップ入力：弾いたノートや和音をカーソル位置に、グリッド1ステップの長さで入力します';
-
-  @override
   String get midiShortcutsMidiInput => 'MIDIキーボード';
 
   @override
@@ -7770,8 +7767,14 @@ class AppLocalizationsJa extends AppLocalizations {
   String get midiShortcutPlayKey => 'クリップの楽器でノートを鳴らす';
 
   @override
-  String get midiShortcutStepInput => 'ステップ入力中：カーソル位置にノートを入力（同時に押さえた鍵盤は和音になる）';
+  String get midiRecord => 'MIDIキーボードから録音：ループを再生し、弾いた内容を記録します';
 
   @override
-  String get midiShortcutStepCursor => 'ステップ入力中：カーソルを1ステップ戻す／進める';
+  String get midiStopRecording => '録音を停止';
+
+  @override
+  String get midiShortcutRecord => 'MIDIキーボードから録音（ループを再生し、各周回で弾いた内容を残す）';
+
+  @override
+  String get midiShortcutRulerDoubleClick => 'ルーラーの上：その位置から再生';
 }

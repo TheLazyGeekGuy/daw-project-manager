@@ -93,7 +93,8 @@ final _labels = MidiPianoRollWindowLabels(
     noDevices: 'No MIDI inputs found',
     listening: (names) => 'MIDI input: $names',
     busy: (names) => 'Busy: $names',
-    stepInput: 'Step input',
+    record: 'Record',
+    stopRecording: 'Stop recording',
   ),
 );
 
@@ -103,8 +104,10 @@ void main() {
   late _Ear ear;
   late List<MidiInputChoice> choices;
   late List<MidiClip> saved;
+  late int plays;
 
   setUp(() {
+    plays = 0;
     player = MidiPreviewPlayer();
     backend = FakeMidiInput([_keyStep, _pads]);
     ear = _Ear();
@@ -141,7 +144,7 @@ void main() {
                     playerKey: 'k',
                     bpm: 120,
                     labels: _labels,
-                    onPlay: (_, _) {},
+                    onPlay: (_, _) => plays++,
                     voice: SynthVoice.keys,
                     auditioner: ear,
                     midiInput: backend,
@@ -177,15 +180,9 @@ void main() {
     await play(tester, [0x80, pitch, 0]);
   }
 
-  Future<void> stepInputOn(WidgetTester tester) async {
-    await tester.tap(find.byKey(const ValueKey('midi-piano-roll-step-input')));
-    await tester.pumpAndSettle();
-  }
-
-  Future<List<MidiNote>> save(WidgetTester tester) async {
-    await tester.tap(find.byKey(const ValueKey('midi-piano-roll-save')));
-    await tester.pumpAndSettle();
-    return saved.last.notes;
+  Future<void> record(WidgetTester tester) async {
+    await tester.tap(find.byKey(const ValueKey('midi-piano-roll-record')));
+    await tester.pump();
   }
 
   Future<void> close(WidgetTester tester) async {
@@ -214,7 +211,7 @@ void main() {
       await open(tester, choice: MidiInputChoice.off, offered: false);
       expect(find.byKey(const ValueKey('midi-piano-roll-midi-input')),
           findsNothing);
-      expect(find.byKey(const ValueKey('midi-piano-roll-step-input')),
+      expect(find.byKey(const ValueKey('midi-piano-roll-record')),
           findsNothing);
       expect(backend.opened, isEmpty);
       await close(tester);
@@ -223,7 +220,7 @@ void main() {
     testWidgets('off: nothing is opened', (tester) async {
       await open(tester, choice: MidiInputChoice.off);
       expect(backend.opened, isEmpty);
-      expect(find.byKey(const ValueKey('midi-piano-roll-step-input')),
+      expect(find.byKey(const ValueKey('midi-piano-roll-record')),
           findsNothing);
       await close(tester);
     });
@@ -239,7 +236,7 @@ void main() {
       await close(tester);
     });
 
-    testWidgets('without step input, playing never changes the clip',
+    testWidgets('without recording, playing never changes the clip',
         (tester) async {
       await open(tester);
       await tap(tester, 60);
@@ -298,7 +295,7 @@ void main() {
       await tester.pumpAndSettle();
       expect(choices, [MidiInputChoice.off]);
       expect(backend.connections.single.closed, isTrue);
-      expect(find.byKey(const ValueKey('midi-piano-roll-step-input')),
+      expect(find.byKey(const ValueKey('midi-piano-roll-record')),
           findsNothing);
       await close(tester);
     });
@@ -314,93 +311,196 @@ void main() {
     });
   });
 
-  group('step input', () {
-    testWidgets('each note goes in a grid step after the last', (tester) async {
-      await open(tester);
-      await stepInputOn(tester);
-      await tap(tester, 60, velocity: 80);
-      await tap(tester, 62);
-      await tap(tester, 64);
-      final notes = await save(tester);
-      expect([for (final n in notes) (n.startTick, n.lengthTicks, n.pitch)],
-          [(0, 120, 60), (120, 120, 62), (240, 120, 64)]);
-      expect(notes.first.velocity, 80, reason: 'as hard as it was played');
-      await close(tester);
-    });
+  group('recording', () {
+    /// The take as the player would have it: the clip as opened, playing,
+    /// at [at] into the loop — positions are read through the player.
+    Future<void> playheadAt(WidgetTester tester, Duration at) async {
+      player.preparingKey = null;
+      player.playingKey = 'k';
+      await player.seek('k', at);
+    }
 
-    testWidgets('keys held together go in as a chord', (tester) async {
-      await open(tester);
-      await stepInputOn(tester);
-      await play(tester, [0x90, 60, 100]);
-      await play(tester, [0x90, 64, 100]);
-      await play(tester, [0x90, 67, 100]);
-      await play(tester, [0x80, 60, 0]);
-      await play(tester, [0x80, 64, 0]);
-      await play(tester, [0x80, 67, 0]);
-      await tap(tester, 72);
-      final notes = await save(tester);
-      expect([for (final n in notes) (n.startTick, n.pitch)],
-          [(0, 60), (0, 64), (0, 67), (120, 72)]);
-      await close(tester);
-    });
+    // At 120 BPM and 480 PPQ, a second is 960 ticks.
+    const ms = Duration(milliseconds: 1);
 
-    testWidgets('→ leaves a rest, ← steps back', (tester) async {
-      await open(tester);
-      await stepInputOn(tester);
-      await tap(tester, 60);
-      await tester.sendKeyEvent(LogicalKeyboardKey.arrowRight);
-      await tap(tester, 62);
-      await tester.sendKeyEvent(LogicalKeyboardKey.arrowLeft);
-      await tester.sendKeyEvent(LogicalKeyboardKey.arrowLeft);
-      await tap(tester, 64);
-      final notes = await save(tester);
-      // 60 at 0, a rest, 62 at 240; then back two steps from 360: 120.
-      expect([for (final n in notes) (n.startTick, n.pitch)],
-          [(0, 60), (120, 64), (240, 62)]);
-      await close(tester);
-    });
+    MidiClip shown(WidgetTester tester) =>
+        tester.widget<MidiPianoRoll>(find.byType(MidiPianoRoll)).editor!.clip;
 
-    testWidgets('turning it on starts editing; editing off turns it off',
+    Future<void> stopPlayback(WidgetTester tester) async {
+      await player.stop();
+      await tester.pump(const Duration(seconds: 1));
+    }
+
+    testWidgets('plays the loop region, cycling, whatever the loop button says',
         (tester) async {
       await open(tester);
-      await stepInputOn(tester);
-      final toggle = find.byKey(const ValueKey('midi-piano-roll-step-input'));
-      expect(tester.widget<IconButton>(toggle).isSelected, isTrue);
-      await tester.tap(find.byKey(const ValueKey('midi-piano-roll-edit')));
-      await tester.pumpAndSettle();
-      expect(tester.widget<IconButton>(toggle).isSelected, isFalse);
-      await tap(tester, 60);
-      expect(find.byKey(const ValueKey('midi-piano-roll-save')), findsNothing);
-      await close(tester);
+      await record(tester);
+      expect(player.requestedLoop, isTrue);
+      expect(player.requestedClip!.lengthTicks, 1920, reason: 'the region');
+      final button = find.byKey(const ValueKey('midi-piano-roll-record'));
+      expect(tester.widget<IconButton>(button).isSelected, isTrue);
+      expect(tester.widget<IconButton>(button).tooltip, 'Stop recording');
+      await stopPlayback(tester);
     });
 
-    testWidgets('a view-only window has no step input', (tester) async {
-      await open(tester, editable: false);
-      expect(find.byKey(const ValueKey('midi-piano-roll-step-input')),
-          findsNothing);
-      await tap(tester, 60);
-      expect(ear.heard.single.$1, 60, reason: 'it still sounds');
-      await close(tester);
-    });
-
-    testWidgets('a new tempo leaves the cursor on the same note', (tester) async {
-      // The cursor is kept as a time; turned into ticks at the new tempo, it
-      // used to jump — at double the tempo, twice as far along.
+    testWidgets('a key goes in where it was pressed, as long as it was held',
+        (tester) async {
       await open(tester);
-      await stepInputOn(tester);
+      await record(tester);
+      await playheadAt(tester, ms * 500); // Tick 480.
+      await play(tester, [0x90, 60, 90]);
+      await playheadAt(tester, ms * 750); // Tick 720.
+      await play(tester, [0x80, 60, 0]);
+      final note = shown(tester).notes.single;
+      expect(note.pitch, 60);
+      expect(note.velocity, 90, reason: 'as hard as it was played');
+      expect(note.startTick, closeTo(480, 24), reason: 'as played, off the grid');
+      expect(note.lengthTicks, closeTo(240, 24));
+      await stopPlayback(tester);
+    });
+
+    testWidgets('what was recorded plays on the next pass', (tester) async {
+      await open(tester);
+      await record(tester);
+      await playheadAt(tester, ms * 250);
+      player.requestedClip = null;
+      await play(tester, [0x90, 64, 100]);
+      await play(tester, [0x80, 64, 0]);
+      expect(player.requestedClip, isNull, reason: 'not a render per note');
+      await tester.pump(const Duration(milliseconds: 500));
+      expect(player.requestedClip!.notes.map((n) => n.pitch), [64]);
+      await stopPlayback(tester);
+    });
+
+    testWidgets('a whole take undoes as one', (tester) async {
+      await open(tester);
+      await record(tester);
+      for (final (i, pitch) in [60, 62, 64].indexed) {
+        await playheadAt(tester, ms * (200 + i * 300));
+        await play(tester, [0x90, pitch, 100]);
+        await playheadAt(tester, ms * (300 + i * 300));
+        await play(tester, [0x80, pitch, 0]);
+      }
+      expect(shown(tester).notes, hasLength(3));
+      tester.widget<MidiPianoRoll>(find.byType(MidiPianoRoll)).editor!.undo();
+      await tester.pump();
+      expect(shown(tester).notes, isEmpty);
+      await stopPlayback(tester);
+    });
+
+    testWidgets('a key held across the loop end stops there', (tester) async {
+      await open(tester);
+      await record(tester);
+      await playheadAt(tester, ms * 1900); // Tick 1824 of 1920.
+      await play(tester, [0x90, 67, 100]);
+      await playheadAt(tester, ms * 100); // The next pass.
+      await play(tester, [0x80, 67, 0]);
+      final note = shown(tester).notes.single;
+      expect(note.startTick, closeTo(1824, 24));
+      expect(note.startTick + note.lengthTicks, 1920);
+      await stopPlayback(tester);
+    });
+
+    testWidgets('a key already down when recording starts is not kept',
+        (tester) async {
+      await open(tester);
+      await play(tester, [0x90, 60, 100]);
+      await record(tester);
+      await playheadAt(tester, ms * 500);
+      await play(tester, [0x80, 60, 0]);
+      expect(shown(tester).notes, isEmpty);
+      await stopPlayback(tester);
+    });
+
+    testWidgets('stop ends recording; keys still down go in', (tester) async {
+      await open(tester);
+      await record(tester);
+      await playheadAt(tester, ms * 500);
+      await play(tester, [0x90, 60, 100]);
+      await tester.tap(find.byKey(const ValueKey('midi-piano-roll-stop')));
+      await tester.pump(const Duration(seconds: 1));
+      expect(
+          tester
+              .widget<IconButton>(
+                  find.byKey(const ValueKey('midi-piano-roll-record')))
+              .isSelected,
+          isFalse);
+      expect(shown(tester).notes.single.pitch, 60);
+    });
+
+    testWidgets('R starts and ends it', (tester) async {
+      await open(tester);
+      await tester.sendKeyEvent(LogicalKeyboardKey.keyR);
+      await tester.pump();
+      final button = find.byKey(const ValueKey('midi-piano-roll-record'));
+      expect(tester.widget<IconButton>(button).isSelected, isTrue);
+      await playheadAt(tester, ms * 500);
+      await tester.sendKeyEvent(LogicalKeyboardKey.keyR);
+      await tester.pump();
+      expect(tester.widget<IconButton>(button).isSelected, isFalse);
+      await stopPlayback(tester);
+    });
+
+    testWidgets('no MIDI input chosen: no record button', (tester) async {
+      await open(tester, choice: MidiInputChoice.off);
+      expect(find.byKey(const ValueKey('midi-piano-roll-record')), findsNothing);
+      await close(tester);
+    });
+
+    testWidgets('only viewing: no record button, keys still sound',
+        (tester) async {
+      await open(tester, editable: false);
+      expect(find.byKey(const ValueKey('midi-piano-roll-record')), findsNothing);
       await tap(tester, 60);
-      await tap(tester, 62);
+      expect(ear.heard.single.$1, 60);
+      await close(tester);
+    });
+  });
+
+  group('the ruler', () {
+    var clock = Duration.zero;
+
+    Future<void> clickRuler(WidgetTester tester, double x,
+        {Duration after = const Duration(seconds: 1)}) async {
+      clock += after;
+      final ruler =
+          tester.getRect(find.byKey(const ValueKey('midi-piano-roll-ruler')));
+      // Below the loop's strip, on the bar numbers.
+      final at = Offset(ruler.left + x, ruler.bottom - 4);
+      final g = await tester.createGesture();
+      await g.down(at, timeStamp: clock);
+      await g.up(timeStamp: clock);
+      await tester.pumpAndSettle();
+    }
+
+    testWidgets('a double-click plays from there; a click only moves the start',
+        (tester) async {
+      await open(tester, choice: MidiInputChoice.off);
+      await clickRuler(tester, 200);
+      expect(plays, 0, reason: 'a single click never starts playback');
+      await clickRuler(tester, 200, after: const Duration(milliseconds: 120));
+      expect(plays, 1);
+      expect(player.pendingStartFor('k'), greaterThan(Duration.zero),
+          reason: 'from where it was double-clicked');
+    });
+
+    testWidgets('a new tempo leaves the resting line on the same tick',
+        (tester) async {
+      // Kept as a time and read back at the new tempo, it used to jump —
+      // at double the tempo, twice as far along.
+      await open(tester, choice: MidiInputChoice.off);
+      await clickRuler(tester, 300);
+      final before =
+          tester.widget<MidiPianoRoll>(find.byType(MidiPianoRoll)).restTick!;
       final field = find.descendant(
           of: find.byKey(const ValueKey('midi-piano-roll-tempo')),
           matching: find.byType(TextField));
       await tester.enterText(field, '240');
       await tester.testTextInput.receiveAction(TextInputAction.done);
       await tester.pumpAndSettle();
-      await tap(tester, 64);
-      final notes = await save(tester);
-      expect([for (final n in notes) (n.startTick, n.pitch)],
-          [(0, 60), (120, 62), (240, 64)]);
-      await close(tester);
+      expect(before, greaterThan(0));
+      expect(tester.widget<MidiPianoRoll>(find.byType(MidiPianoRoll)).restTick,
+          closeTo(before, 1));
     });
   });
 }

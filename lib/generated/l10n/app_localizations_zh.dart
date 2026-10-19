@@ -7668,9 +7668,6 @@ class AppLocalizationsZh extends AppLocalizations {
   }
 
   @override
-  String get midiStepInput => '步进输入：弹奏的每个音符或和弦都会放在光标处，长度为一个网格步长';
-
-  @override
   String get midiShortcutsMidiInput => 'MIDI 键盘';
 
   @override
@@ -7680,8 +7677,14 @@ class AppLocalizationsZh extends AppLocalizations {
   String get midiShortcutPlayKey => '用片段的乐器发出该音符';
 
   @override
-  String get midiShortcutStepInput => '步进输入时：在光标处输入音符（同时按住的键组成和弦）';
+  String get midiRecord => '从 MIDI 键盘录制：播放循环并录下你弹奏的内容';
 
   @override
-  String get midiShortcutStepCursor => '步进输入时：将光标后退或前进一步';
+  String get midiStopRecording => '停止录制';
+
+  @override
+  String get midiShortcutRecord => '从 MIDI 键盘录制（播放循环；每一遍都会保留你弹奏的内容）';
+
+  @override
+  String get midiShortcutRulerDoubleClick => '在标尺上：从该处播放';
 }

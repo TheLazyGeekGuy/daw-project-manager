@@ -4417,10 +4417,11 @@
   "midiInputNoDevices": "MIDI入力が見つかりません",
   "midiInputListening": "MIDI入力：{names}",
   "midiInputBusy": "{names}を開けませんでした。ほかのアプリが使用している可能性があります。",
-  "midiStepInput": "ステップ入力：弾いたノートや和音をカーソル位置に、グリッド1ステップの長さで入力します",
   "midiShortcutsMidiInput": "MIDIキーボード",
   "midiGesturePlayKey": "鍵盤を弾く",
   "midiShortcutPlayKey": "クリップの楽器でノートを鳴らす",
-  "midiShortcutStepInput": "ステップ入力中：カーソル位置にノートを入力（同時に押さえた鍵盤は和音になる）",
-  "midiShortcutStepCursor": "ステップ入力中：カーソルを1ステップ戻す／進める"
+  "midiRecord": "MIDIキーボードから録音：ループを再生し、弾いた内容を記録します",
+  "midiStopRecording": "録音を停止",
+  "midiShortcutRecord": "MIDIキーボードから録音（ループを再生し、各周回で弾いた内容を残す）",
+  "midiShortcutRulerDoubleClick": "ルーラーの上：その位置から再生"
 }

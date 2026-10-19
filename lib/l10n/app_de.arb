@@ -4417,10 +4417,11 @@
   "midiInputNoDevices": "Keine MIDI-Eingänge gefunden",
   "midiInputListening": "MIDI-Eingang: {names}",
   "midiInputBusy": "{names} konnte nicht geöffnet werden. Vielleicht verwendet eine andere App ihn.",
-  "midiStepInput": "Schritteingabe: Jede gespielte Note oder jeder Akkord wird am Cursor eingefügt, einen Rasterschritt lang",
   "midiShortcutsMidiInput": "MIDI-Keyboard",
   "midiGesturePlayKey": "Eine Taste spielen",
   "midiShortcutPlayKey": "Spielt die Note mit dem Instrument des Clips",
-  "midiShortcutStepInput": "Bei Schritteingabe: fügt die Note am Cursor ein (zusammen gehaltene Tasten ergeben einen Akkord)",
-  "midiShortcutStepCursor": "Bei Schritteingabe: bewegt den Cursor einen Schritt zurück oder vor"
+  "midiRecord": "Vom MIDI-Keyboard aufnehmen: spielt den Loop und nimmt auf, was du spielst",
+  "midiStopRecording": "Aufnahme beenden",
+  "midiShortcutRecord": "Vom MIDI-Keyboard aufnehmen (spielt den Loop; jeder Durchgang behält, was du spielst)",
+  "midiShortcutRulerDoubleClick": "Auf dem Lineal: von dort abspielen"
 }

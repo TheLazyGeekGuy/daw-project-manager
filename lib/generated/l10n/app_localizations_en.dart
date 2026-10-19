@@ -7975,10 +7975,6 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
-  String get midiStepInput =>
-      'Step input: each note or chord you play goes in at the cursor, one grid step long';
-
-  @override
   String get midiShortcutsMidiInput => 'MIDI keyboard';
 
   @override
@@ -7988,10 +7984,16 @@ class AppLocalizationsEn extends AppLocalizations {
   String get midiShortcutPlayKey => 'Sounds the note in the clip’s instrument';
 
   @override
-  String get midiShortcutStepInput =>
-      'With step input on: enters the note at the cursor (keys held together make a chord)';
+  String get midiRecord =>
+      'Record from the MIDI keyboard: plays the loop and records what you play';
 
   @override
-  String get midiShortcutStepCursor =>
-      'With step input on: moves the cursor a step back or on';
+  String get midiStopRecording => 'Stop recording';
+
+  @override
+  String get midiShortcutRecord =>
+      'Record from the MIDI keyboard (plays the loop; each pass keeps what you play)';
+
+  @override
+  String get midiShortcutRulerDoubleClick => 'On the ruler: play from there';
 }

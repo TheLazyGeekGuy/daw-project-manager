@@ -8058,10 +8058,6 @@ class AppLocalizationsRu extends AppLocalizations {
   }
 
   @override
-  String get midiStepInput =>
-      'Пошаговый ввод: каждая сыгранная нота или аккорд встаёт на курсор, длиной в шаг сетки';
-
-  @override
   String get midiShortcutsMidiInput => 'MIDI-клавиатура';
 
   @override
@@ -8071,10 +8067,16 @@ class AppLocalizationsRu extends AppLocalizations {
   String get midiShortcutPlayKey => 'Звучит нота инструментом клипа';
 
   @override
-  String get midiShortcutStepInput =>
-      'При пошаговом вводе: ставит ноту на курсор (клавиши, нажатые вместе, дают аккорд)';
+  String get midiRecord =>
+      'Запись с MIDI-клавиатуры: воспроизводит луп и записывает то, что вы играете';
 
   @override
-  String get midiShortcutStepCursor =>
-      'При пошаговом вводе: сдвигает курсор на шаг назад или вперёд';
+  String get midiStopRecording => 'Остановить запись';
+
+  @override
+  String get midiShortcutRecord =>
+      'Запись с MIDI-клавиатуры (воспроизводит луп; каждый проход сохраняет сыгранное)';
+
+  @override
+  String get midiShortcutRulerDoubleClick => 'На линейке: воспроизвести оттуда';
 }

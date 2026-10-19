@@ -7901,10 +7901,6 @@
       }
     }
   },
-  "midiStepInput": "Step input: each note or chord you play goes in at the cursor, one grid step long",
-  "@midiStepInput": {
-    "description": "Piano roll: tooltip of the step input toggle (as in Cubase: notes played on a MIDI keyboard are entered one grid step at a time, timing ignored)"
-  },
   "midiShortcutsMidiInput": "MIDI keyboard",
   "@midiShortcutsMidiInput": {
     "description": "Piano roll shortcut sheet: heading of the section about a MIDI keyboard"
@@ -7917,12 +7913,20 @@
   "@midiShortcutPlayKey": {
     "description": "Piano roll shortcut sheet: what playing a key on a MIDI keyboard does"
   },
-  "midiShortcutStepInput": "With step input on: enters the note at the cursor (keys held together make a chord)",
-  "@midiShortcutStepInput": {
-    "description": "Piano roll shortcut sheet: what playing a key on a MIDI keyboard does with step input on"
+  "midiRecord": "Record from the MIDI keyboard: plays the loop and records what you play",
+  "@midiRecord": {
+    "description": "Piano roll: tooltip of the record button (records notes played on a MIDI keyboard while the loop region plays)"
   },
-  "midiShortcutStepCursor": "With step input on: moves the cursor a step back or on",
-  "@midiShortcutStepCursor": {
-    "description": "Piano roll shortcut sheet: what the left/right arrow keys do with step input on"
+  "midiStopRecording": "Stop recording",
+  "@midiStopRecording": {
+    "description": "Piano roll: tooltip of the record button while recording"
+  },
+  "midiShortcutRecord": "Record from the MIDI keyboard (plays the loop; each pass keeps what you play)",
+  "@midiShortcutRecord": {
+    "description": "Piano roll shortcut sheet: what the R key does"
+  },
+  "midiShortcutRulerDoubleClick": "On the ruler: play from there",
+  "@midiShortcutRulerDoubleClick": {
+    "description": "Piano roll shortcut sheet: what a double-click on the bar ruler does"
   }
 }

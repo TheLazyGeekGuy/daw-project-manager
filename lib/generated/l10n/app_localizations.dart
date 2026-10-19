@@ -13055,12 +13055,6 @@ abstract class AppLocalizations {
   /// **'Couldn\'t open {names}. Another app may be using it.'**
   String midiInputBusy(String names);
 
-  /// Piano roll: tooltip of the step input toggle (as in Cubase: notes played on a MIDI keyboard are entered one grid step at a time, timing ignored)
-  ///
-  /// In en, this message translates to:
-  /// **'Step input: each note or chord you play goes in at the cursor, one grid step long'**
-  String get midiStepInput;
-
   /// Piano roll shortcut sheet: heading of the section about a MIDI keyboard
   ///
   /// In en, this message translates to:
@@ -13079,17 +13073,29 @@ abstract class AppLocalizations {
   /// **'Sounds the note in the clip’s instrument'**
   String get midiShortcutPlayKey;
 
-  /// Piano roll shortcut sheet: what playing a key on a MIDI keyboard does with step input on
+  /// Piano roll: tooltip of the record button (records notes played on a MIDI keyboard while the loop region plays)
   ///
   /// In en, this message translates to:
-  /// **'With step input on: enters the note at the cursor (keys held together make a chord)'**
-  String get midiShortcutStepInput;
+  /// **'Record from the MIDI keyboard: plays the loop and records what you play'**
+  String get midiRecord;
 
-  /// Piano roll shortcut sheet: what the left/right arrow keys do with step input on
+  /// Piano roll: tooltip of the record button while recording
   ///
   /// In en, this message translates to:
-  /// **'With step input on: moves the cursor a step back or on'**
-  String get midiShortcutStepCursor;
+  /// **'Stop recording'**
+  String get midiStopRecording;
+
+  /// Piano roll shortcut sheet: what the R key does
+  ///
+  /// In en, this message translates to:
+  /// **'Record from the MIDI keyboard (plays the loop; each pass keeps what you play)'**
+  String get midiShortcutRecord;
+
+  /// Piano roll shortcut sheet: what a double-click on the bar ruler does
+  ///
+  /// In en, this message translates to:
+  /// **'On the ruler: play from there'**
+  String get midiShortcutRulerDoubleClick;
 }
 
 class _AppLocalizationsDelegate
