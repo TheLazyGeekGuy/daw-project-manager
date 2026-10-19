@@ -2293,6 +2293,14 @@
       }
     }
   },
+  "relocateFolderAction": "Realocar",
+  "relocateFolderConfirmBody": "Os projetos desta pasta serão procurados na nova, mantendo suas notas, tarefas, tempo de trabalho e todo o resto. Nada é copiado nem movido no disco.",
+  "relocateFolderFrom": "De",
+  "relocateFolderTo": "Para",
+  "relocateFolderFound": "{total, plural, =1{{found} de 1 projeto já está na nova pasta.} other{{found} de {total} projetos já estão na nova pasta.}}",
+  "relocateFolderSomeMissing": "Os outros vão aparecer como ausentes até os arquivos estarem lá. Enquanto isso, não use Excluir ausentes.",
+  "relocateFolderNoneFound": "Nenhum está lá ainda. Se os arquivos ainda estão sendo baixados, tudo bem. Se não, confira se você escolheu a própria pasta, não a de cima nem a de baixo.",
+  "relocateFolderOverlapsOwn": "{path} já é uma pasta de projetos deste perfil ou se sobrepõe a uma. Escolha outra pasta ou remova aquela primeiro.",
   "matchedInDescription": "Encontrado na descrição",
   "matchedInProjectNotes": "Encontrado nas notas do projeto do DAW",
   "newerExportFound": "Exportação mais recente encontrada",

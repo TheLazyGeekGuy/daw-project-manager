@@ -2269,6 +2269,14 @@
       }
     }
   },
+  "relocateFolderAction": "移動",
+  "relocateFolderConfirmBody": "このフォルダのプロジェクトを新しいフォルダで探し、メモ、TODO、作業時間などはすべてそのまま残ります。ディスク上では何もコピー・移動されません。",
+  "relocateFolderFrom": "移動元",
+  "relocateFolderTo": "移動先",
+  "relocateFolderFound": "{total, plural, other{{total}件中{found}件のプロジェクトが新しいフォルダにあります。}}",
+  "relocateFolderSomeMissing": "残りはファイルが揃うまで「見つからない」と表示されます。それまで「見つからない項目を削除」は使わないでください。",
+  "relocateFolderNoneFound": "まだ1件もありません。ファイルをダウンロード中なら問題ありません。そうでなければ、上や下の階層ではなくそのフォルダ自体を選んだか確認してください。",
+  "relocateFolderOverlapsOwn": "{path} はすでにこのプロフィールのプロジェクトフォルダか、それと重なっています。別のフォルダを選ぶか、先にそちらを削除してください。",
   "matchedInDescription": "説明文でマッチ",
   "matchedInProjectNotes": "DAWプロジェクトノートでマッチ",
   "newerExportFound": "新しいエクスポートが見つかりました",

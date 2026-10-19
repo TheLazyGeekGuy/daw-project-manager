@@ -3191,6 +3191,41 @@ class AppLocalizationsZh extends AppLocalizations {
   }
 
   @override
+  String get relocateFolderAction => '重新定位';
+
+  @override
+  String get relocateFolderConfirmBody =>
+      '将在新文件夹中查找此文件夹的项目，保留其笔记、待办、工作时间及其他所有内容。磁盘上不会复制或移动任何文件。';
+
+  @override
+  String get relocateFolderFrom => '从';
+
+  @override
+  String get relocateFolderTo => '到';
+
+  @override
+  String relocateFolderFound(int found, int total) {
+    String _temp0 = intl.Intl.pluralLogic(
+      total,
+      locale: localeName,
+      other: '$total 个项目中已有 $found 个在新文件夹中。',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get relocateFolderSomeMissing => '其余项目在文件到位之前会显示为缺失。在此期间请勿使用“删除缺失项目”。';
+
+  @override
+  String get relocateFolderNoneFound =>
+      '那里还一个都没有。如果文件仍在下载，这没问题。否则请确认你选的是该文件夹本身，而不是它的上一级或下一级。';
+
+  @override
+  String relocateFolderOverlapsOwn(String path) {
+    return '$path 已是此个人资料的项目文件夹，或与其重叠。请选择其他文件夹，或先移除那个文件夹。';
+  }
+
+  @override
   String get customizeTabs => '自定义标签页';
 
   @override

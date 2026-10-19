@@ -5543,6 +5543,54 @@ abstract class AppLocalizations {
   /// **'{count, plural, =1{1 project path updated} other{{count} project paths updated}}'**
   String relocateFolderSuccess(int count);
 
+  /// Button confirming a scan folder relocation
+  ///
+  /// In en, this message translates to:
+  /// **'Relocate'**
+  String get relocateFolderAction;
+
+  /// What relocating a scan folder does: no files are copied or moved
+  ///
+  /// In en, this message translates to:
+  /// **'The projects in this folder will be looked for in the new one, keeping their notes, to-dos, work time and everything else. Nothing is copied or moved on disk.'**
+  String get relocateFolderConfirmBody;
+
+  /// Label before the folder a relocation starts from
+  ///
+  /// In en, this message translates to:
+  /// **'From'**
+  String get relocateFolderFrom;
+
+  /// Label before the folder a relocation goes to
+  ///
+  /// In en, this message translates to:
+  /// **'To'**
+  String get relocateFolderTo;
+
+  /// How many of the folder's projects are already at the new place
+  ///
+  /// In en, this message translates to:
+  /// **'{total, plural, =1{{found} of 1 project is already in the new folder.} other{{found} of {total} projects are already in the new folder.}}'**
+  String relocateFolderFound(int found, int total);
+
+  /// Shown when some projects are not at the new place yet
+  ///
+  /// In en, this message translates to:
+  /// **'The others will show as missing until their files are there. Don\'t use Delete Missing in the meantime.'**
+  String get relocateFolderSomeMissing;
+
+  /// Shown when none of the projects are at the new place
+  ///
+  /// In en, this message translates to:
+  /// **'None of them are there yet. If the files are still downloading, that\'s fine. Otherwise, check that you picked the folder itself, not the one above or below it.'**
+  String get relocateFolderNoneFound;
+
+  /// Relocation refused: the new folder is, holds or is inside another scan folder of the same profile
+  ///
+  /// In en, this message translates to:
+  /// **'{path} is already one of this profile\'s project folders, or overlaps one. Pick another folder, or remove that one first.'**
+  String relocateFolderOverlapsOwn(String path);
+
   /// No description provided for @customizeTabs.
   ///
   /// In en, this message translates to:

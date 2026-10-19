@@ -3318,6 +3318,43 @@ class AppLocalizationsEs extends AppLocalizations {
   }
 
   @override
+  String get relocateFolderAction => 'Reubicar';
+
+  @override
+  String get relocateFolderConfirmBody =>
+      'Los proyectos de esta carpeta se buscarán en la nueva y conservarán sus notas, tareas, tiempo de trabajo y todo lo demás. No se copia ni se mueve nada en el disco.';
+
+  @override
+  String get relocateFolderFrom => 'Desde';
+
+  @override
+  String get relocateFolderTo => 'Hacia';
+
+  @override
+  String relocateFolderFound(int found, int total) {
+    String _temp0 = intl.Intl.pluralLogic(
+      total,
+      locale: localeName,
+      other: '$found de $total proyectos ya están en la nueva carpeta.',
+      one: '$found de 1 proyecto ya está en la nueva carpeta.',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get relocateFolderSomeMissing =>
+      'Los demás aparecerán como faltantes hasta que sus archivos estén ahí. Mientras tanto, no uses Eliminar faltantes.';
+
+  @override
+  String get relocateFolderNoneFound =>
+      'Todavía no hay ninguno. Si los archivos aún se están descargando, no pasa nada. Si no, comprueba que elegiste la carpeta en sí, no la de arriba ni la de abajo.';
+
+  @override
+  String relocateFolderOverlapsOwn(String path) {
+    return '$path ya es una carpeta de proyectos de este perfil o se superpone con una. Elige otra carpeta o quita esa primero.';
+  }
+
+  @override
   String get customizeTabs => 'Personalizar pestanas';
 
   @override

@@ -25,7 +25,9 @@ import '../models/playlist.dart';
 import '../models/project_event.dart';
 import '../services/metadata_extractor.dart';
 import '../services/deadline_notification_service.dart';
+import '../services/project_move_service.dart' show repathProject;
 import '../utils/app_paths.dart';
+import '../utils/path_rebase.dart';
 
 import '../utils/version_stacks.dart';
 import 'midi_clip_store.dart';
@@ -739,58 +741,49 @@ class ProjectRepository {
     await rootsBox.put(id, root.copyWith(enabled: enabled));
   }
 
-  /// Updates the stored path for a scan root and rewrites the `filePath`,
-  /// `previewSongPath`, and `previewSongAutoPath` of every project whose path
-  /// starts with the old root path. No files are moved on disk.
-  /// Returns the number of projects whose paths were updated.
+  /// Points scan root [rootId] at [newPath], where the user has put its files
+  /// themselves (copied, or downloaded again from a cloud drive): no file is
+  /// read, copied or moved.
+  ///
+  /// Everything that names a path inside the old folder follows it, or the
+  /// next scan treats the files at their new place as new, empty projects:
+  /// - every project in it ([repathProject]: its file, preview songs, the
+  ///   newer mixdown it turned down, its attachments), with a fresh
+  ///   `updatedAt`, so the move syncs as a change instead of losing to an
+  ///   untouched copy of the old path;
+  /// - the excluded paths inside it, or what was excluded comes back;
+  /// - the projects in Recently deleted that were in it, so a restore lands
+  ///   on the new path.
+  ///
+  /// Returns how many projects moved (Recently deleted not counted).
   Future<int> relocateRoot(String rootId, String newPath) async {
     final root = rootsBox.get(rootId);
     if (root == null) return 0;
+    final from = root.path;
+    final to = p.normalize(newPath);
+    bool inside(String path) => rebasePath(path, from: from, to: to) != null;
 
-    final oldPath = p.normalize(root.path);
-    final newNorm = p.normalize(newPath);
-    final oldPrefix = oldPath.endsWith(p.separator)
-        ? oldPath
-        : oldPath + p.separator;
-    final newPrefix = newNorm.endsWith(p.separator)
-        ? newNorm
-        : newNorm + p.separator;
+    await rootsBox.put(rootId, root.copyWith(path: to));
 
-    String repath(String src) {
-      final norm = p.normalize(src);
-      if (norm.startsWith(oldPrefix)) {
-        return newPrefix + norm.substring(oldPrefix.length);
-      }
-      if (norm == oldPath) {
-        return newNorm;
-      }
-      return src;
-    }
+    final now = DateTime.now();
+    final moved = <String, MusicProject>{
+      for (final project in projectsBox.values)
+        if (inside(project.filePath))
+          project.id: repathProject(project, from: from, to: to).copyWith(updatedAt: now),
+    };
+    if (moved.isNotEmpty) await projectsBox.putAll(moved);
 
-    // Update the root itself
-    await rootsBox.put(rootId, root.copyWith(path: newNorm));
+    final excluded = <String, IgnoredPath>{
+      for (final ignored in ignoredPathsBox.values)
+        if (rebasePath(ignored.path, from: from, to: to) case final rebased?)
+          ignored.id: IgnoredPath(id: ignored.id, path: rebased, addedAt: ignored.addedAt),
+    };
+    if (excluded.isNotEmpty) await ignoredPathsBox.putAll(excluded);
 
-    int count = 0;
-    for (final project in projectsBox.values.toList()) {
-      if (!p.normalize(project.filePath).startsWith(oldPrefix) &&
-          p.normalize(project.filePath) != oldPath) {
-        continue;
-      }
-
-      final updated = project.copyWith(
-        filePath: repath(project.filePath),
-        fileName: p.basename(repath(project.filePath)),
-        previewSongPath: project.previewSongPath != null
-            ? repath(project.previewSongPath!)
-            : null,
-        previewSongAutoPath: project.previewSongAutoPath != null
-            ? repath(project.previewSongAutoPath!)
-            : null,
-      );
-      await projectsBox.put(updated.id, updated);
-      count++;
-    }
-    return count;
+    await trash.update(
+      (project) => inside(project.filePath) ? repathProject(project, from: from, to: to) : null,
+    );
+    return moved.length;
   }
 
   // Ignored paths (directories under roots that should not be scanned)

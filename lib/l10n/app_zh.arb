@@ -2269,6 +2269,14 @@
       }
     }
   },
+  "relocateFolderAction": "重新定位",
+  "relocateFolderConfirmBody": "将在新文件夹中查找此文件夹的项目，保留其笔记、待办、工作时间及其他所有内容。磁盘上不会复制或移动任何文件。",
+  "relocateFolderFrom": "从",
+  "relocateFolderTo": "到",
+  "relocateFolderFound": "{total, plural, other{{total} 个项目中已有 {found} 个在新文件夹中。}}",
+  "relocateFolderSomeMissing": "其余项目在文件到位之前会显示为缺失。在此期间请勿使用“删除缺失项目”。",
+  "relocateFolderNoneFound": "那里还一个都没有。如果文件仍在下载，这没问题。否则请确认你选的是该文件夹本身，而不是它的上一级或下一级。",
+  "relocateFolderOverlapsOwn": "{path} 已是此个人资料的项目文件夹，或与其重叠。请选择其他文件夹，或先移除那个文件夹。",
   "matchedInDescription": "在描述中匹配",
   "matchedInProjectNotes": "在 DAW 项目备注中匹配",
   "newerExportFound": "找到更新的导出文件",

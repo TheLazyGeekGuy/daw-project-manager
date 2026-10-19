@@ -4,6 +4,7 @@ import 'package:path/path.dart' as p;
 
 import '../models/music_project.dart';
 import '../utils/folder_copy_utils.dart';
+import '../utils/path_rebase.dart';
 import '../utils/project_folder_utils.dart';
 
 /// Why a move was refused before anything on disk was touched.
@@ -59,33 +60,18 @@ class ProjectMoveResult {
 /// lives under [to] instead. Pure — no filesystem access — so the interesting
 /// half of a move is testable without a disk.
 ///
-/// Same prefix rule as `ProjectRepository.relocateRoot`, which does this for a
-/// whole scan root: an exact match is replaced outright, a path under the
-/// prefix keeps its tail, and anything else is left alone. Kept consistent with
-/// it deliberately so per-project and per-root moves cannot drift apart.
+/// [rebasePath] is the rule, shared with `ProjectRepository.relocateRoot`,
+/// which does this for every project in a scan folder: an exact match is
+/// replaced outright, a path under [from] keeps its tail, and anything else
+/// is left alone.
 MusicProject repathProject(
   MusicProject project, {
   required String from,
   required String to,
 }) {
-  final fromNorm = p.normalize(from);
-  final toNorm = p.normalize(to);
-  final fromPrefix =
-      fromNorm.endsWith(p.separator) ? fromNorm : fromNorm + p.separator;
-  final toPrefix = toNorm.endsWith(p.separator) ? toNorm : toNorm + p.separator;
-
   String? repath(String? src) {
-    if (src == null || src.isEmpty) return src;
-    // A Drive fallback reference is not a filesystem path — normalizing it
-    // would mangle the "drive://" scheme into "drive:/".
-    if (src.startsWith('drive://')) return src;
-
-    final norm = p.normalize(src);
-    if (norm == fromNorm) return toNorm;
-    if (norm.startsWith(fromPrefix)) {
-      return toPrefix + norm.substring(fromPrefix.length);
-    }
-    return src;
+    if (src == null) return null;
+    return rebasePath(src, from: from, to: to) ?? src;
   }
 
   final newFilePath = repath(project.filePath)!;
@@ -94,6 +80,9 @@ MusicProject repathProject(
     fileName: p.basename(newFilePath),
     previewSongPath: repath(project.previewSongPath),
     previewSongAutoPath: repath(project.previewSongAutoPath),
+    // The newer mixdown the user turned down: left on the old path, it is no
+    // longer recognised and gets offered again.
+    ignoredNewerSongPath: repath(project.ignoredNewerSongPath),
     // Attachments (#112) are pointers, and the lyric sheet or reference bounce
     // a user attaches most often lives in the project's own folder — moving
     // the folder without rewriting those leaves every one of them broken.

@@ -3313,6 +3313,43 @@ class AppLocalizationsDe extends AppLocalizations {
   }
 
   @override
+  String get relocateFolderAction => 'Verschieben';
+
+  @override
+  String get relocateFolderConfirmBody =>
+      'Die Projekte dieses Ordners werden im neuen gesucht und behalten ihre Notizen, To-dos, Arbeitszeit und alles andere. Auf der Festplatte wird nichts kopiert oder verschoben.';
+
+  @override
+  String get relocateFolderFrom => 'Von';
+
+  @override
+  String get relocateFolderTo => 'Nach';
+
+  @override
+  String relocateFolderFound(int found, int total) {
+    String _temp0 = intl.Intl.pluralLogic(
+      total,
+      locale: localeName,
+      other: '$found von $total Projekten sind schon im neuen Ordner.',
+      one: '$found von 1 Projekt ist schon im neuen Ordner.',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get relocateFolderSomeMissing =>
+      'Die übrigen erscheinen als fehlend, bis ihre Dateien da sind. Verwende so lange nicht „Fehlende löschen“.';
+
+  @override
+  String get relocateFolderNoneFound =>
+      'Noch keines ist dort. Wenn die Dateien noch heruntergeladen werden, ist das in Ordnung. Sonst prüfe, ob du den Ordner selbst gewählt hast und nicht den darüber oder darunter.';
+
+  @override
+  String relocateFolderOverlapsOwn(String path) {
+    return '$path ist schon ein Projektordner dieses Profils oder überschneidet sich mit einem. Wähle einen anderen Ordner oder entferne zuerst diesen.';
+  }
+
+  @override
   String get customizeTabs => 'Tabs anpassen';
 
   @override

@@ -3307,6 +3307,43 @@ class AppLocalizationsIt extends AppLocalizations {
   }
 
   @override
+  String get relocateFolderAction => 'Riposiziona';
+
+  @override
+  String get relocateFolderConfirmBody =>
+      'I progetti di questa cartella verranno cercati in quella nuova, mantenendo note, attività, tempo di lavoro e tutto il resto. Sul disco non viene copiato né spostato nulla.';
+
+  @override
+  String get relocateFolderFrom => 'Da';
+
+  @override
+  String get relocateFolderTo => 'A';
+
+  @override
+  String relocateFolderFound(int found, int total) {
+    String _temp0 = intl.Intl.pluralLogic(
+      total,
+      locale: localeName,
+      other: '$found progetti su $total sono già nella nuova cartella.',
+      one: '$found progetto su 1 è già nella nuova cartella.',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get relocateFolderSomeMissing =>
+      'Gli altri risulteranno mancanti finché i loro file non ci saranno. Nel frattempo non usare Elimina mancanti.';
+
+  @override
+  String get relocateFolderNoneFound =>
+      'Non ce n\'è ancora nessuno. Se i file si stanno ancora scaricando, va bene. Altrimenti controlla di aver scelto proprio la cartella, non quella sopra o sotto.';
+
+  @override
+  String relocateFolderOverlapsOwn(String path) {
+    return '$path è già una cartella di progetti di questo profilo, o ne sovrappone una. Scegli un\'altra cartella, o rimuovi prima quella.';
+  }
+
+  @override
   String get customizeTabs => 'Personalizza le schede';
 
   @override

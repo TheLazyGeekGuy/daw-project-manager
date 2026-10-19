@@ -3291,6 +3291,43 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
+  String get relocateFolderAction => 'Relocate';
+
+  @override
+  String get relocateFolderConfirmBody =>
+      'The projects in this folder will be looked for in the new one, keeping their notes, to-dos, work time and everything else. Nothing is copied or moved on disk.';
+
+  @override
+  String get relocateFolderFrom => 'From';
+
+  @override
+  String get relocateFolderTo => 'To';
+
+  @override
+  String relocateFolderFound(int found, int total) {
+    String _temp0 = intl.Intl.pluralLogic(
+      total,
+      locale: localeName,
+      other: '$found of $total projects are already in the new folder.',
+      one: '$found of 1 project is already in the new folder.',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get relocateFolderSomeMissing =>
+      'The others will show as missing until their files are there. Don\'t use Delete Missing in the meantime.';
+
+  @override
+  String get relocateFolderNoneFound =>
+      'None of them are there yet. If the files are still downloading, that\'s fine. Otherwise, check that you picked the folder itself, not the one above or below it.';
+
+  @override
+  String relocateFolderOverlapsOwn(String path) {
+    return '$path is already one of this profile\'s project folders, or overlaps one. Pick another folder, or remove that one first.';
+  }
+
+  @override
   String get customizeTabs => 'Customize Tabs';
 
   @override
