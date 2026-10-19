@@ -39,6 +39,29 @@ void main() {
           reason: 'Cmd on a Mac');
     });
 
+    test('no MIDI keyboard section where MIDI input is not offered', () {
+      final titles = [
+        for (final s in midiShortcutSections(l10n, mac: false, midiInput: false))
+          s.title,
+      ];
+      expect(titles, isNot(contains(l10n.midiShortcutsMidiInput)));
+      expect(
+          [for (final s in midiShortcutSections(l10n, mac: false)) s.title],
+          contains(l10n.midiShortcutsMidiInput));
+    });
+
+    test('says what a MIDI keyboard does, how to record, and the ruler', () {
+      final rows = all(mac: false);
+      expect([for (final s in rows) s.keys.join('+')], containsAll(['R', 'C']));
+      expect([for (final s in rows) s.action],
+          containsAll([
+            l10n.midiShortcutPlayKey,
+            l10n.midiShortcutRecord,
+            l10n.midiShortcutRulerDoubleClick,
+            l10n.midiShortcutMetronome,
+          ]));
+    });
+
     test('keys are named as a Mac prints them on a Mac', () {
       final mac = [for (final s in all(mac: true)) ...s.keys];
       expect(mac, containsAll(['⌘', '⌥', '⇧', '⌫']));

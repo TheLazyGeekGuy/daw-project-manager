@@ -59,7 +59,8 @@ typedef MidiTickRange = ({int start, int end});
 /// [endGesture] makes the result one undo step (or [cancelGesture] drops
 /// it). The pencil's [beginNote] starts a gesture of its own, so a note
 /// drawn and stretched is one step too. Single actions — [addNoteAt], [deleteNote], [deleteSelected],
-/// [transposeSelection] — are a step of their own.
+/// [transposeSelection] — are a step of their own; so is each take
+/// recorded with [addPlayedNote].
 ///
 /// Notes keep their order while editing, so an index stays the same note;
 /// [finished] sorts them for saving.
@@ -358,14 +359,56 @@ class MidiClipEditController extends ChangeNotifier {
 
   /// A note one step long (a 16th with snapping off) at the grid step
   /// [tick] falls in, at the velocity last used.
-  MidiNote _newNote(double tick, int pitch, {bool free = false}) {
+  MidiNote _newNote(double tick, int pitch, {bool free = false}) => MidiNote(
+        startTick: free ? (tick < 0 ? 0 : tick.round()) : snapDown(tick),
+        lengthTicks: _newNoteTicks,
+        pitch: pitch.clamp(0, 127),
+        velocity: velocity.clamp(1, 127),
+      );
+
+  /// How long a new note is: one grid step, or a 16th with snapping off.
+  int get _newNoteTicks {
     final length = _snap == MidiSnap.off ? _clip.ppq ~/ 4 : stepTicks;
-    return MidiNote(
-      startTick: free ? (tick < 0 ? 0 : tick.round()) : snapDown(tick),
+    return length < 1 ? 1 : length;
+  }
+
+  /// The clip as the take being recorded left it, for the next note of
+  /// that take to recognise its undo step.
+  MidiClip? _take;
+
+  /// Recording: a note played on a MIDI keyboard, at [tick] (where the
+  /// playhead was as the key went down — off the grid, as played), [length]
+  /// ticks long (as long as it was held) at the [velocity] it was played
+  /// with. With [joinTake] it joins the notes recorded before it in the
+  /// same take — their undo step — so a whole take undoes as one.
+  ///
+  /// Ignored while a drag is under way, which would otherwise finish from
+  /// the clip as it was before the note and drop it.
+  void addPlayedNote(
+    int tick,
+    int pitch,
+    int velocity, {
+    required int length,
+    bool joinTake = false,
+  }) {
+    if (!_editing || !identical(_clip, _committed)) return;
+    final joining = joinTake && identical(_take, _committed);
+    final note = MidiNote(
+      startTick: tick < 0 ? 0 : tick,
       lengthTicks: length < 1 ? 1 : length,
       pitch: pitch.clamp(0, 127),
       velocity: velocity.clamp(1, 127),
     );
+    _clip = _committed.copyWith(notes: [..._committed.notes, note]);
+    if (joining) {
+      // The take's undo step already holds the clip before it.
+      _committed = _clip = _sized(_clip);
+      _base = _committed;
+      notifyListeners();
+    } else {
+      _commit();
+    }
+    _take = _committed;
   }
 
   /// Deletes note [index] — a double-click on it.

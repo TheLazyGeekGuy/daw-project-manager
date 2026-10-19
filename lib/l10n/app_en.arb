@@ -7866,5 +7866,117 @@
         "type": "String"
       }
     }
+  },
+  "midiInput": "MIDI input",
+  "@midiInput": {
+    "description": "Piano roll: tooltip of the MIDI input button while no MIDI keyboard is listened to"
+  },
+  "midiInputOff": "No MIDI input",
+  "@midiInputOff": {
+    "description": "Piano roll MIDI input menu: listen to no MIDI keyboard"
+  },
+  "midiInputAll": "All MIDI inputs",
+  "@midiInputAll": {
+    "description": "Piano roll MIDI input menu: listen to every MIDI keyboard plugged in"
+  },
+  "midiInputNoDevices": "No MIDI inputs found",
+  "@midiInputNoDevices": {
+    "description": "Piano roll MIDI input menu, when no MIDI keyboard or controller is plugged in"
+  },
+  "midiInputListening": "MIDI input: {names}",
+  "@midiInputListening": {
+    "description": "Piano roll: tooltip of the MIDI input button while listening; names are the inputs, comma-separated",
+    "placeholders": {
+      "names": {
+        "type": "String"
+      }
+    }
+  },
+  "midiInputBusy": "Couldn't open {names}. Another app may be using it.",
+  "@midiInputBusy": {
+    "description": "Piano roll: tooltip of the MIDI input button when the chosen input could not be opened (on Windows, usually because a DAW has it)",
+    "placeholders": {
+      "names": {
+        "type": "String"
+      }
+    }
+  },
+  "midiShortcutsMidiInput": "MIDI keyboard",
+  "@midiShortcutsMidiInput": {
+    "description": "Piano roll shortcut sheet: heading of the section about a MIDI keyboard"
+  },
+  "midiGesturePlayKey": "Play a key",
+  "@midiGesturePlayKey": {
+    "description": "Piano roll shortcut sheet: the gesture of playing a key on a MIDI keyboard"
+  },
+  "midiShortcutPlayKey": "Sounds the note in the clip’s instrument",
+  "@midiShortcutPlayKey": {
+    "description": "Piano roll shortcut sheet: what playing a key on a MIDI keyboard does"
+  },
+  "midiRecord": "Record from the MIDI keyboard: plays the loop and records what you play",
+  "@midiRecord": {
+    "description": "Piano roll: tooltip of the record button (records notes played on a MIDI keyboard while the loop region plays)"
+  },
+  "midiStopRecording": "Stop recording",
+  "@midiStopRecording": {
+    "description": "Piano roll: tooltip of the record button while recording"
+  },
+  "midiShortcutRecord": "Record from the MIDI keyboard (plays the loop; each pass keeps what you play)",
+  "@midiShortcutRecord": {
+    "description": "Piano roll shortcut sheet: what the R key does"
+  },
+  "midiShortcutRulerDoubleClick": "On the ruler: play from there",
+  "@midiShortcutRulerDoubleClick": {
+    "description": "Piano roll shortcut sheet: what a double-click on the bar ruler does"
+  },
+  "midiMetronome": "Metronome",
+  "@midiMetronome": {
+    "description": "Piano roll: tooltip of the metronome toggle"
+  },
+  "midiShortcutMetronome": "Metronome on or off",
+  "@midiShortcutMetronome": {
+    "description": "Piano roll shortcut sheet: what the C key does"
+  },
+  "midiRecordLatency": "Recording latency: {ms} ms",
+  "@midiRecordLatency": {
+    "description": "Piano roll MIDI input menu: the item opening the recording latency, with its current value",
+    "placeholders": {
+      "ms": {
+        "type": "int"
+      }
+    }
+  },
+  "midiRecordLatencyTitle": "Recording latency",
+  "@midiRecordLatencyTitle": {
+    "description": "Title of the recording latency dialog"
+  },
+  "midiRecordLatencyBody": "Recorded notes go in this much earlier, to make up for the time the sound takes to reach you and your keys take to reach the app. Calibrate to measure it on this computer.",
+  "@midiRecordLatencyBody": {
+    "description": "Recording latency dialog: what the setting does"
+  },
+  "midiCalibrate": "Calibrate",
+  "@midiCalibrate": {
+    "description": "Recording latency dialog: button that measures the latency by playing along to clicks"
+  },
+  "midiCalibrating": "Play a key on each click ({done} of {total})",
+  "@midiCalibrating": {
+    "description": "Piano roll banner while calibrating recording latency",
+    "placeholders": {
+      "done": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
+  "midiCalibrated": "Recording latency set to {ms} ms",
+  "@midiCalibrated": {
+    "description": "Piano roll banner after calibrating recording latency",
+    "placeholders": {
+      "ms": {
+        "type": "int"
+      }
+    }
   }
 }

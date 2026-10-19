@@ -90,12 +90,18 @@ class MidiPreviewPlayer extends ChangeNotifier {
   @visibleForTesting
   bool? requestedLoop;
 
+  /// The clicks that play was asked to carry, if any.
+  @visibleForTesting
+  Metronome? requestedMetronome;
+
   /// Where that play was asked to start ([startAt]), if anywhere.
   @visibleForTesting
   Duration? requestedStart;
 
   /// What [play] was last asked to play, so [setLoop] can carry on with it.
-  (String, MidiClip, double?, SynthVoice)? _current;
+  /// What plays: key, clip, tempo, voice — and the loop override and
+  /// metronome it was asked for, so a restart (looping switched) keeps them.
+  (String, MidiClip, double?, SynthVoice, bool?, Metronome?)? _current;
 
   /// One pass of the playing preview, when it is looping; null otherwise.
   Duration? _loopLength;
@@ -114,6 +120,9 @@ class MidiPreviewPlayer extends ChangeNotifier {
     // mode that was just switched away from.
     final key = playingKey ?? preparingKey;
     if (key == null || current == null || current.$1 != key) return;
+    // Asked to loop (or not) whatever the setting says — recording, or a
+    // draft playing on: switching the setting changes nothing it plays.
+    if (current.$5 != null) return;
     if (paused) {
       _loopChangedWhilePaused = true;
       return;
@@ -124,9 +133,10 @@ class MidiPreviewPlayer extends ChangeNotifier {
   Future<void> _restartFrom(Duration position) async {
     final current = _current;
     if (current == null) return;
-    final (key, clip, bpm, voice) = current;
+    final (key, clip, bpm, voice, loopOverride, metronome) = current;
     startAt(key, position);
-    await play(key, clip, bpm: bpm, voice: voice);
+    await play(key, clip,
+        bpm: bpm, voice: voice, loop: loopOverride, metronome: metronome);
   }
 
   /// Where the next [play] of a clip should start, set by [startAt].
@@ -176,7 +186,8 @@ class MidiPreviewPlayer extends ChangeNotifier {
       {double? bpm,
       required SynthVoice voice,
       bool takeOver = false,
-      bool? loop}) async {
+      bool? loop,
+      Metronome? metronome}) async {
     final generation = ++_generation;
     final takingOver = takeOver && playingKey != null && !paused;
     final heldKey = playingKey;
@@ -185,6 +196,7 @@ class MidiPreviewPlayer extends ChangeNotifier {
     final looping = loop ?? this.loop;
     requestedClip = clip;
     requestedLoop = looping;
+    requestedMetronome = metronome;
     final loopLength = looping
         ? Duration(
             microseconds:
@@ -196,7 +208,7 @@ class MidiPreviewPlayer extends ChangeNotifier {
     final startAt =
         requested == null ? null : wrapLoopPosition(requested, loopLength);
     _startAt = null;
-    _current = (key, clip, bpm, voice);
+    _current = (key, clip, bpm, voice, loop, metronome);
     _loopChangedWhilePaused = false;
     if (!takingOver) {
       preparingKey = key;
@@ -209,6 +221,7 @@ class MidiPreviewPlayer extends ChangeNotifier {
         bpm: bpm,
         voice: voice,
         loop: looping,
+        metronome: metronome,
         directory: await _previewDir(),
       );
       if (generation != _generation || _disposed) return;

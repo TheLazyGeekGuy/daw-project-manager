@@ -8031,4 +8031,81 @@ class AppLocalizationsEs extends AppLocalizations {
   String foldersEditingOtherProfile(String name) {
     return 'Estás editando las carpetas de $name, no las del perfil activo. Los archivos nuevos en ellas aparecerán la próxima vez que cambies a $name.';
   }
+
+  @override
+  String get midiInput => 'Entrada MIDI';
+
+  @override
+  String get midiInputOff => 'Sin entrada MIDI';
+
+  @override
+  String get midiInputAll => 'Todas las entradas MIDI';
+
+  @override
+  String get midiInputNoDevices => 'No se encontraron entradas MIDI';
+
+  @override
+  String midiInputListening(String names) {
+    return 'Entrada MIDI: $names';
+  }
+
+  @override
+  String midiInputBusy(String names) {
+    return 'No se pudo abrir $names. Puede que otra aplicación la esté usando.';
+  }
+
+  @override
+  String get midiShortcutsMidiInput => 'Teclado MIDI';
+
+  @override
+  String get midiGesturePlayKey => 'Tocar una tecla';
+
+  @override
+  String get midiShortcutPlayKey => 'Suena la nota con el instrumento del clip';
+
+  @override
+  String get midiRecord =>
+      'Grabar desde el teclado MIDI: reproduce el bucle y graba lo que toques';
+
+  @override
+  String get midiStopRecording => 'Detener la grabación';
+
+  @override
+  String get midiShortcutRecord =>
+      'Grabar desde el teclado MIDI (reproduce el bucle; cada pasada conserva lo que toques)';
+
+  @override
+  String get midiShortcutRulerDoubleClick =>
+      'En la regla: reproducir desde ahí';
+
+  @override
+  String get midiMetronome => 'Metrónomo';
+
+  @override
+  String get midiShortcutMetronome => 'Activar o desactivar el metrónomo';
+
+  @override
+  String midiRecordLatency(int ms) {
+    return 'Latencia de grabación: $ms ms';
+  }
+
+  @override
+  String get midiRecordLatencyTitle => 'Latencia de grabación';
+
+  @override
+  String get midiRecordLatencyBody =>
+      'Las notas grabadas entran así de antes, para compensar el tiempo que tarda el sonido en llegarte y tus teclas en llegar a la aplicación. Calibra para medirla en este equipo.';
+
+  @override
+  String get midiCalibrate => 'Calibrar';
+
+  @override
+  String midiCalibrating(int done, int total) {
+    return 'Toca una tecla en cada clic ($done de $total)';
+  }
+
+  @override
+  String midiCalibrated(int ms) {
+    return 'Latencia de grabación ajustada a $ms ms';
+  }
 }

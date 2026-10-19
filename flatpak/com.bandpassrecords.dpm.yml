@@ -29,6 +29,11 @@ finish-args:
   - --share=ipc
   - --device=dri
 
+  # Deliberately NOT requesting --device=all, which is the only grant that
+  # reaches the ALSA sequencer (/dev/snd/seq) MIDI keyboards are read
+  # through. MIDI input in the piano roll is switched off inside the sandbox
+  # instead (MidiInputBackend.isSupported), the same way Drive sync is.
+
   # Deliberately NO --share=network. The two things that would have
   # needed it are both switched off on Linux instead of granted the
   # permission: Google Drive sync (GoogleDriveSyncService.isSupported)

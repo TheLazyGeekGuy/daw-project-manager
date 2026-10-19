@@ -13018,6 +13018,132 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'You\'re editing {name}\'s folders, not the active profile\'s. New files in them show up the next time you switch to {name}.'**
   String foldersEditingOtherProfile(String name);
+
+  /// Piano roll: tooltip of the MIDI input button while no MIDI keyboard is listened to
+  ///
+  /// In en, this message translates to:
+  /// **'MIDI input'**
+  String get midiInput;
+
+  /// Piano roll MIDI input menu: listen to no MIDI keyboard
+  ///
+  /// In en, this message translates to:
+  /// **'No MIDI input'**
+  String get midiInputOff;
+
+  /// Piano roll MIDI input menu: listen to every MIDI keyboard plugged in
+  ///
+  /// In en, this message translates to:
+  /// **'All MIDI inputs'**
+  String get midiInputAll;
+
+  /// Piano roll MIDI input menu, when no MIDI keyboard or controller is plugged in
+  ///
+  /// In en, this message translates to:
+  /// **'No MIDI inputs found'**
+  String get midiInputNoDevices;
+
+  /// Piano roll: tooltip of the MIDI input button while listening; names are the inputs, comma-separated
+  ///
+  /// In en, this message translates to:
+  /// **'MIDI input: {names}'**
+  String midiInputListening(String names);
+
+  /// Piano roll: tooltip of the MIDI input button when the chosen input could not be opened (on Windows, usually because a DAW has it)
+  ///
+  /// In en, this message translates to:
+  /// **'Couldn\'t open {names}. Another app may be using it.'**
+  String midiInputBusy(String names);
+
+  /// Piano roll shortcut sheet: heading of the section about a MIDI keyboard
+  ///
+  /// In en, this message translates to:
+  /// **'MIDI keyboard'**
+  String get midiShortcutsMidiInput;
+
+  /// Piano roll shortcut sheet: the gesture of playing a key on a MIDI keyboard
+  ///
+  /// In en, this message translates to:
+  /// **'Play a key'**
+  String get midiGesturePlayKey;
+
+  /// Piano roll shortcut sheet: what playing a key on a MIDI keyboard does
+  ///
+  /// In en, this message translates to:
+  /// **'Sounds the note in the clip’s instrument'**
+  String get midiShortcutPlayKey;
+
+  /// Piano roll: tooltip of the record button (records notes played on a MIDI keyboard while the loop region plays)
+  ///
+  /// In en, this message translates to:
+  /// **'Record from the MIDI keyboard: plays the loop and records what you play'**
+  String get midiRecord;
+
+  /// Piano roll: tooltip of the record button while recording
+  ///
+  /// In en, this message translates to:
+  /// **'Stop recording'**
+  String get midiStopRecording;
+
+  /// Piano roll shortcut sheet: what the R key does
+  ///
+  /// In en, this message translates to:
+  /// **'Record from the MIDI keyboard (plays the loop; each pass keeps what you play)'**
+  String get midiShortcutRecord;
+
+  /// Piano roll shortcut sheet: what a double-click on the bar ruler does
+  ///
+  /// In en, this message translates to:
+  /// **'On the ruler: play from there'**
+  String get midiShortcutRulerDoubleClick;
+
+  /// Piano roll: tooltip of the metronome toggle
+  ///
+  /// In en, this message translates to:
+  /// **'Metronome'**
+  String get midiMetronome;
+
+  /// Piano roll shortcut sheet: what the C key does
+  ///
+  /// In en, this message translates to:
+  /// **'Metronome on or off'**
+  String get midiShortcutMetronome;
+
+  /// Piano roll MIDI input menu: the item opening the recording latency, with its current value
+  ///
+  /// In en, this message translates to:
+  /// **'Recording latency: {ms} ms'**
+  String midiRecordLatency(int ms);
+
+  /// Title of the recording latency dialog
+  ///
+  /// In en, this message translates to:
+  /// **'Recording latency'**
+  String get midiRecordLatencyTitle;
+
+  /// Recording latency dialog: what the setting does
+  ///
+  /// In en, this message translates to:
+  /// **'Recorded notes go in this much earlier, to make up for the time the sound takes to reach you and your keys take to reach the app. Calibrate to measure it on this computer.'**
+  String get midiRecordLatencyBody;
+
+  /// Recording latency dialog: button that measures the latency by playing along to clicks
+  ///
+  /// In en, this message translates to:
+  /// **'Calibrate'**
+  String get midiCalibrate;
+
+  /// Piano roll banner while calibrating recording latency
+  ///
+  /// In en, this message translates to:
+  /// **'Play a key on each click ({done} of {total})'**
+  String midiCalibrating(int done, int total);
+
+  /// Piano roll banner after calibrating recording latency
+  ///
+  /// In en, this message translates to:
+  /// **'Recording latency set to {ms} ms'**
+  String midiCalibrated(int ms);
 }
 
 class _AppLocalizationsDelegate

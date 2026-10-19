@@ -780,4 +780,62 @@ void main() {
     expect(c.tool, MidiEditTool.select,
         reason: 'not the pencil left in hand last time');
   });
+
+  group('recording', () {
+    const empty =
+        MidiClip(name: 'Idea', ppq: 480, lengthTicks: 1920, notes: []);
+
+    test('a note goes in as played: where, how long and how hard', () {
+      final c = MidiClipEditController(empty)..editing = true;
+      c.addPlayedNote(487, 64, 83, length: 233);
+      final n = c.clip.notes.single;
+      expect((n.startTick, n.lengthTicks, n.pitch, n.velocity),
+          (487, 233, 64, 83), reason: 'off the grid, as played');
+    });
+
+    test('a take is one undo step; the next take is another', () {
+      final c = MidiClipEditController(empty)..editing = true;
+      c.addPlayedNote(0, 60, 100, length: 100);
+      c.addPlayedNote(480, 62, 100, length: 100, joinTake: true);
+      c.addPlayedNote(960, 64, 100, length: 100, joinTake: true);
+      c.addPlayedNote(1440, 65, 100, length: 100); // A new take.
+      c.undo();
+      expect(c.clip.notes.map((n) => n.pitch), [60, 62, 64]);
+      c.undo();
+      expect(c.clip.notes, isEmpty);
+      expect(c.canUndo, isFalse);
+    });
+
+    test('joining a take that was undone starts a new step', () {
+      final c = MidiClipEditController(empty)..editing = true;
+      c.addPlayedNote(0, 60, 100, length: 100);
+      c.undo();
+      c.addPlayedNote(0, 64, 100, length: 100, joinTake: true);
+      c.undo();
+      expect(c.clip.notes, isEmpty);
+      expect(c.canRedo, isTrue);
+    });
+
+    test('never shorter than a tick, never before the start', () {
+      final c = MidiClipEditController(empty)..editing = true;
+      c.addPlayedNote(-5, 60, 100, length: 0);
+      expect((c.clip.notes.single.startTick, c.clip.notes.single.lengthTicks),
+          (0, 1));
+    });
+
+    test('nothing while only viewing, or mid-drag', () {
+      final viewing = MidiClipEditController(empty);
+      viewing.addPlayedNote(0, 60, 100, length: 100);
+      expect(viewing.clip.notes, isEmpty);
+
+      final c = MidiClipEditController(_clip)..editing = true;
+      c.select(0);
+      c.beginGesture();
+      c.moveSelection(240, 0);
+      c.addPlayedNote(0, 72, 100, length: 100);
+      c.endGesture();
+      expect(c.clip.notes.map((n) => (n.startTick, n.pitch)), [(240, 60)],
+          reason: 'the drag finished as dragged');
+    });
+  });
 }

@@ -7734,4 +7734,78 @@ class AppLocalizationsJa extends AppLocalizations {
   String foldersEditingOtherProfile(String name) {
     return '有効なプロファイルではなく、$name のフォルダを編集しています。その中の新しいファイルは、次に $name に切り替えたときに表示されます。';
   }
+
+  @override
+  String get midiInput => 'MIDI入力';
+
+  @override
+  String get midiInputOff => 'MIDI入力なし';
+
+  @override
+  String get midiInputAll => 'すべてのMIDI入力';
+
+  @override
+  String get midiInputNoDevices => 'MIDI入力が見つかりません';
+
+  @override
+  String midiInputListening(String names) {
+    return 'MIDI入力：$names';
+  }
+
+  @override
+  String midiInputBusy(String names) {
+    return '$namesを開けませんでした。ほかのアプリが使用している可能性があります。';
+  }
+
+  @override
+  String get midiShortcutsMidiInput => 'MIDIキーボード';
+
+  @override
+  String get midiGesturePlayKey => '鍵盤を弾く';
+
+  @override
+  String get midiShortcutPlayKey => 'クリップの楽器でノートを鳴らす';
+
+  @override
+  String get midiRecord => 'MIDIキーボードから録音：ループを再生し、弾いた内容を記録します';
+
+  @override
+  String get midiStopRecording => '録音を停止';
+
+  @override
+  String get midiShortcutRecord => 'MIDIキーボードから録音（ループを再生し、各周回で弾いた内容を残す）';
+
+  @override
+  String get midiShortcutRulerDoubleClick => 'ルーラーの上：その位置から再生';
+
+  @override
+  String get midiMetronome => 'メトロノーム';
+
+  @override
+  String get midiShortcutMetronome => 'メトロノームのオン／オフ';
+
+  @override
+  String midiRecordLatency(int ms) {
+    return '録音レイテンシー：$ms ms';
+  }
+
+  @override
+  String get midiRecordLatencyTitle => '録音レイテンシー';
+
+  @override
+  String get midiRecordLatencyBody =>
+      '録音したノートをこの分だけ早めに入力し、音が届くまでと鍵盤の入力がアプリに届くまでの遅れを補正します。キャリブレーションでこのコンピューターでの値を測定できます。';
+
+  @override
+  String get midiCalibrate => 'キャリブレーション';
+
+  @override
+  String midiCalibrating(int done, int total) {
+    return 'クリックごとに鍵盤を弾いてください（$done／$total）';
+  }
+
+  @override
+  String midiCalibrated(int ms) {
+    return '録音レイテンシーを $ms ms に設定しました';
+  }
 }

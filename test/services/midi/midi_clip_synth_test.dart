@@ -371,4 +371,89 @@ void main() {
     final x = _samples(wav);
     expect(x.sublist(x.length - 20).any((v) => v != 0), isTrue);
   });
+
+  group('metronome', () {
+    test('clicks every beat, the first of each bar accented', () {
+      const m = Metronome(beatTicks: 480, barTicks: 1920);
+      expect(m.clicks(3840).toList(), [
+        (0, true), (480, false), (960, false), (1440, false),
+        (1920, true), (2400, false), (2880, false), (3360, false),
+      ]);
+    });
+
+    test("a stretch cut from inside the clip keeps to the clip's beats", () {
+      // A loop region from beat 2½ (tick 1200) to the end of bar 2.
+      const m = Metronome(beatTicks: 480, barTicks: 1920, offsetTicks: 1200);
+      expect(m.clicks(2640).toList(),
+          [(240, false), (720, true), (1200, false), (1680, false), (2160, false)]);
+    });
+
+    test('in 6/8, an eighth-note beat and a six-beat bar', () {
+      // TimeSignature(6, 8): a beat is 240 ticks at 480 PPQ, a bar 1440.
+      const m = Metronome(beatTicks: 240, barTicks: 1440);
+      final accents = [
+        for (final (tick, accent) in m.clicks(2880)) if (accent) tick
+      ];
+      expect(accents, [0, 1440]);
+      expect(m.clicks(2880).length, 12);
+    });
+
+    test('is heard on the beats of a silent clip, and only there', () {
+      const sr = 8000;
+      final s = _samples(const MidiClipSynth(sampleRate: sr).renderWav(
+        _clip(const []),
+        bpm: 120,
+        loop: true,
+        metronome: Metronome(beatTicks: 480, barTicks: 1920),
+      ));
+      expect(s.length, 2 * sr, reason: 'a loop is still one pass long');
+      double energy(int from, int to) {
+        var sum = 0.0;
+        for (var i = from; i < to; i++) {
+          sum += s[i].abs();
+        }
+        return sum;
+      }
+
+      // Beats every half second at 120 BPM; between them, silence.
+      for (final beat in [0, 1, 2, 3]) {
+        final at = beat * sr ~/ 2;
+        expect(energy(at, at + 200), greaterThan(0), reason: 'beat $beat');
+        expect(energy(at + 1000, at + 3500), 0, reason: 'after beat $beat');
+      }
+    });
+
+    test('the accent is a different, higher click', () {
+      const sr = 8000;
+      final s = _samples(const MidiClipSynth(sampleRate: sr).renderWav(
+        _clip(const []),
+        bpm: 120,
+        loop: true,
+        metronome: Metronome(beatTicks: 480, barTicks: 1920),
+      ));
+      int crossings(int from) {
+        var n = 0;
+        for (var i = from + 1; i < from + 400; i++) {
+          if ((s[i - 1] < 0) != (s[i] < 0)) n++;
+        }
+        return n;
+      }
+
+      expect(crossings(0), greaterThan(crossings(sr ~/ 2)));
+    });
+
+    test('changes nothing without one', () {
+      final notes = _clip(const [
+        MidiNote(startTick: 0, lengthTicks: 480, pitch: 60, velocity: 100),
+      ]);
+      expect(listEquals(synth.renderWav(notes), synth.renderWav(notes)), isTrue);
+      expect(
+          listEquals(
+              synth.renderWav(notes),
+              synth.renderWav(notes,
+                  metronome:
+                      const Metronome(beatTicks: 480, barTicks: 1920))),
+          isFalse);
+    });
+  });
 }

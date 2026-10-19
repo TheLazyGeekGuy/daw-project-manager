@@ -7951,4 +7951,80 @@ class AppLocalizationsEn extends AppLocalizations {
   String foldersEditingOtherProfile(String name) {
     return 'You\'re editing $name\'s folders, not the active profile\'s. New files in them show up the next time you switch to $name.';
   }
+
+  @override
+  String get midiInput => 'MIDI input';
+
+  @override
+  String get midiInputOff => 'No MIDI input';
+
+  @override
+  String get midiInputAll => 'All MIDI inputs';
+
+  @override
+  String get midiInputNoDevices => 'No MIDI inputs found';
+
+  @override
+  String midiInputListening(String names) {
+    return 'MIDI input: $names';
+  }
+
+  @override
+  String midiInputBusy(String names) {
+    return 'Couldn\'t open $names. Another app may be using it.';
+  }
+
+  @override
+  String get midiShortcutsMidiInput => 'MIDI keyboard';
+
+  @override
+  String get midiGesturePlayKey => 'Play a key';
+
+  @override
+  String get midiShortcutPlayKey => 'Sounds the note in the clip’s instrument';
+
+  @override
+  String get midiRecord =>
+      'Record from the MIDI keyboard: plays the loop and records what you play';
+
+  @override
+  String get midiStopRecording => 'Stop recording';
+
+  @override
+  String get midiShortcutRecord =>
+      'Record from the MIDI keyboard (plays the loop; each pass keeps what you play)';
+
+  @override
+  String get midiShortcutRulerDoubleClick => 'On the ruler: play from there';
+
+  @override
+  String get midiMetronome => 'Metronome';
+
+  @override
+  String get midiShortcutMetronome => 'Metronome on or off';
+
+  @override
+  String midiRecordLatency(int ms) {
+    return 'Recording latency: $ms ms';
+  }
+
+  @override
+  String get midiRecordLatencyTitle => 'Recording latency';
+
+  @override
+  String get midiRecordLatencyBody =>
+      'Recorded notes go in this much earlier, to make up for the time the sound takes to reach you and your keys take to reach the app. Calibrate to measure it on this computer.';
+
+  @override
+  String get midiCalibrate => 'Calibrate';
+
+  @override
+  String midiCalibrating(int done, int total) {
+    return 'Play a key on each click ($done of $total)';
+  }
+
+  @override
+  String midiCalibrated(int ms) {
+    return 'Recording latency set to $ms ms';
+  }
 }

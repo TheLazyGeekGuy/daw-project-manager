@@ -5,6 +5,7 @@ import 'package:path/path.dart' as p;
 
 import 'package:daw_project_manager/models/midi_clip.dart';
 import 'package:daw_project_manager/services/midi/midi_clip_service.dart';
+import 'package:daw_project_manager/services/midi/midi_clip_synth.dart';
 import 'package:daw_project_manager/services/midi/midi_file_writer.dart';
 import 'package:daw_project_manager/services/midi/synth_voice.dart';
 
@@ -183,6 +184,21 @@ void main() {
         bpm: 120, loop: true, directory: tempDir);
     expect(looped, isNot(first), reason: 'and whether it loops');
     expect(looped, endsWith('_loop.wav'));
+
+    final clicking = await MidiClipService.renderPreview(clip,
+        bpm: 120,
+        loop: true,
+        metronome: const Metronome(beatTicks: 480, barTicks: 1920),
+        directory: tempDir);
+    expect(clicking, isNot(looped), reason: 'and the metronome');
+    final clickingFromBeat3 = await MidiClipService.renderPreview(clip,
+        bpm: 120,
+        loop: true,
+        metronome:
+            const Metronome(beatTicks: 480, barTicks: 1920, offsetTicks: 960),
+        directory: tempDir);
+    expect(clickingFromBeat3, isNot(clicking),
+        reason: 'clicks on other beats are another render');
 
     // A held note's loop is rendered once, too.
     final held = await MidiClipService.renderSustainLoop(

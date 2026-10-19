@@ -8048,4 +8048,82 @@ class AppLocalizationsFr extends AppLocalizations {
   String foldersEditingOtherProfile(String name) {
     return 'Vous modifiez les dossiers de $name, pas ceux du profil actif. Les nouveaux fichiers qu’ils contiennent apparaîtront la prochaine fois que vous passerez à $name.';
   }
+
+  @override
+  String get midiInput => 'Entrée MIDI';
+
+  @override
+  String get midiInputOff => 'Aucune entrée MIDI';
+
+  @override
+  String get midiInputAll => 'Toutes les entrées MIDI';
+
+  @override
+  String get midiInputNoDevices => 'Aucune entrée MIDI trouvée';
+
+  @override
+  String midiInputListening(String names) {
+    return 'Entrée MIDI : $names';
+  }
+
+  @override
+  String midiInputBusy(String names) {
+    return 'Impossible d’ouvrir $names. Une autre application l’utilise peut-être.';
+  }
+
+  @override
+  String get midiShortcutsMidiInput => 'Clavier MIDI';
+
+  @override
+  String get midiGesturePlayKey => 'Jouer une touche';
+
+  @override
+  String get midiShortcutPlayKey =>
+      'Fait entendre la note avec l’instrument du clip';
+
+  @override
+  String get midiRecord =>
+      'Enregistrer depuis le clavier MIDI : joue la boucle et enregistre ce que vous jouez';
+
+  @override
+  String get midiStopRecording => 'Arrêter l’enregistrement';
+
+  @override
+  String get midiShortcutRecord =>
+      'Enregistrer depuis le clavier MIDI (joue la boucle ; chaque passage garde ce que vous jouez)';
+
+  @override
+  String get midiShortcutRulerDoubleClick =>
+      'Sur la règle : lire à partir de là';
+
+  @override
+  String get midiMetronome => 'Métronome';
+
+  @override
+  String get midiShortcutMetronome => 'Activer ou désactiver le métronome';
+
+  @override
+  String midiRecordLatency(int ms) {
+    return 'Latence d’enregistrement : $ms ms';
+  }
+
+  @override
+  String get midiRecordLatencyTitle => 'Latence d’enregistrement';
+
+  @override
+  String get midiRecordLatencyBody =>
+      'Les notes enregistrées sont placées d’autant plus tôt, pour compenser le temps que met le son à vous parvenir et vos touches à atteindre l’application. Calibrez pour la mesurer sur cet ordinateur.';
+
+  @override
+  String get midiCalibrate => 'Calibrer';
+
+  @override
+  String midiCalibrating(int done, int total) {
+    return 'Jouez une touche à chaque clic ($done sur $total)';
+  }
+
+  @override
+  String midiCalibrated(int ms) {
+    return 'Latence d’enregistrement réglée à $ms ms';
+  }
 }

@@ -8018,4 +8018,81 @@ class AppLocalizationsIt extends AppLocalizations {
   String foldersEditingOtherProfile(String name) {
     return 'Stai modificando le cartelle di $name, non quelle del profilo attivo. I nuovi file al loro interno compariranno la prossima volta che passi a $name.';
   }
+
+  @override
+  String get midiInput => 'Ingresso MIDI';
+
+  @override
+  String get midiInputOff => 'Nessun ingresso MIDI';
+
+  @override
+  String get midiInputAll => 'Tutti gli ingressi MIDI';
+
+  @override
+  String get midiInputNoDevices => 'Nessun ingresso MIDI trovato';
+
+  @override
+  String midiInputListening(String names) {
+    return 'Ingresso MIDI: $names';
+  }
+
+  @override
+  String midiInputBusy(String names) {
+    return 'Impossibile aprire $names. Forse lo sta usando un’altra app.';
+  }
+
+  @override
+  String get midiShortcutsMidiInput => 'Tastiera MIDI';
+
+  @override
+  String get midiGesturePlayKey => 'Suonare un tasto';
+
+  @override
+  String get midiShortcutPlayKey =>
+      'Fa sentire la nota con lo strumento della clip';
+
+  @override
+  String get midiRecord =>
+      'Registra dalla tastiera MIDI: riproduce il loop e registra ciò che suoni';
+
+  @override
+  String get midiStopRecording => 'Interrompi la registrazione';
+
+  @override
+  String get midiShortcutRecord =>
+      'Registra dalla tastiera MIDI (riproduce il loop; ogni passaggio tiene ciò che suoni)';
+
+  @override
+  String get midiShortcutRulerDoubleClick => 'Sul righello: riproduci da lì';
+
+  @override
+  String get midiMetronome => 'Metronomo';
+
+  @override
+  String get midiShortcutMetronome => 'Attiva o disattiva il metronomo';
+
+  @override
+  String midiRecordLatency(int ms) {
+    return 'Latenza di registrazione: $ms ms';
+  }
+
+  @override
+  String get midiRecordLatencyTitle => 'Latenza di registrazione';
+
+  @override
+  String get midiRecordLatencyBody =>
+      'Le note registrate vengono inserite in anticipo di tanto, per compensare il tempo che il suono impiega a raggiungerti e i tuoi tasti a raggiungere l’app. Calibra per misurarla su questo computer.';
+
+  @override
+  String get midiCalibrate => 'Calibra';
+
+  @override
+  String midiCalibrating(int done, int total) {
+    return 'Suona un tasto a ogni clic ($done di $total)';
+  }
+
+  @override
+  String midiCalibrated(int ms) {
+    return 'Latenza di registrazione impostata a $ms ms';
+  }
 }

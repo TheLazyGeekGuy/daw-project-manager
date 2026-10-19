@@ -6,6 +6,8 @@ import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 import 'package:daw_project_manager/models/midi_clip.dart';
+import 'package:daw_project_manager/services/midi/midi_clip_synth.dart';
+import 'package:daw_project_manager/services/midi/synth_voice.dart';
 import 'package:daw_project_manager/ui/midi_clip_share.dart';
 import 'package:daw_project_manager/ui/midi_piano_roll_dialog.dart';
 import 'package:daw_project_manager/ui/midi_preview_player.dart';
@@ -76,6 +78,42 @@ void main() {
       player.startAt('k', const Duration(seconds: 2));
       expect(player.pendingStartFor('k'), const Duration(seconds: 2));
       expect(player.pendingStartFor('other'), isNull);
+    });
+  });
+
+  group('MidiPreviewPlayer restarting', () {
+    const m = Metronome(beatTicks: 480, barTicks: 1920);
+
+    test('looping switched: it plays again with its clicks', () async {
+      final player = MidiPreviewPlayer();
+      addTearDown(player.dispose);
+      final first = player.play('k', _clip, voice: SynthVoice.keys, metronome: m);
+      player
+        ..preparingKey = null
+        ..playingKey = 'k'
+        ..requestedClip = null
+        ..requestedMetronome = null;
+      final again = player.setLoop(!player.loop);
+      expect(player.requestedClip, isNotNull, reason: 'it restarted');
+      expect(player.requestedMetronome, m, reason: 'with the clicks kept');
+      await first.catchError((Object _) {});
+      await again.catchError((Object _) {});
+    });
+
+    test('asked to loop whatever the setting (recording): left alone',
+        () async {
+      final player = MidiPreviewPlayer();
+      addTearDown(player.dispose);
+      final first = player.play('k', _clip,
+          voice: SynthVoice.keys, loop: true, metronome: m);
+      player
+        ..preparingKey = null
+        ..playingKey = 'k'
+        ..requestedClip = null;
+      await player.setLoop(!player.loop);
+      expect(player.requestedClip, isNull,
+          reason: 'switching the loop button changes nothing it plays');
+      await first.catchError((Object _) {});
     });
   });
 

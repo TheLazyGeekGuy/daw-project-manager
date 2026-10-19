@@ -1,6 +1,7 @@
 import 'package:flutter/foundation.dart';
 import 'package:hive_ce/hive.dart';
 
+import 'midi/input/midi_input.dart';
 import 'player_volume_store.dart';
 
 /// Whether the piano roll sounds notes as they are edited (its "acoustic
@@ -72,3 +73,113 @@ class MidiPianoRollFullScreenStore {
     }
   }
 }
+
+/// Which MIDI input the piano roll listens to: none, all, or one by name.
+/// Device-local: it names this machine's hardware — neither synced nor
+/// backed up.
+class MidiInputChoiceStore {
+  const MidiInputChoiceStore._();
+
+  static const String key = 'midi_input_choice';
+  static MidiInputChoice _cached = MidiInputChoice.off;
+
+  static MidiInputChoice get current => _cached;
+
+  @visibleForTesting
+  static set cachedForTest(MidiInputChoice value) => _cached = value;
+
+  static Future<MidiInputChoice> load() async {
+    try {
+      final box = await Hive.openBox<String>(PlayerVolumeStore.boxName);
+      _cached = MidiInputChoice.parse(box.get(key));
+    } catch (e) {
+      debugPrint('[MidiInputChoice] failed to load: $e');
+    }
+    return _cached;
+  }
+
+  static Future<void> save(MidiInputChoice choice) async {
+    _cached = choice;
+    try {
+      final box = await Hive.openBox<String>(PlayerVolumeStore.boxName);
+      await box.put(key, choice.stored);
+    } catch (e) {
+      debugPrint('[MidiInputChoice] failed to save: $e');
+    }
+  }
+}
+
+/// Whether the piano roll's metronome clicks along with playback and
+/// recording. Device-local, like the acoustic feedback toggle.
+class MidiMetronomeStore {
+  const MidiMetronomeStore._();
+
+  static const String key = 'midi_metronome';
+  static bool _cached = false;
+
+  static bool get current => _cached;
+
+  @visibleForTesting
+  static set cachedForTest(bool value) => _cached = value;
+
+  static Future<bool> load() async {
+    try {
+      final box = await Hive.openBox<String>(PlayerVolumeStore.boxName);
+      _cached = box.get(key) == 'true';
+    } catch (e) {
+      debugPrint('[MidiMetronome] failed to load: $e');
+    }
+    return _cached;
+  }
+
+  static Future<void> save(bool on) async {
+    _cached = on;
+    try {
+      final box = await Hive.openBox<String>(PlayerVolumeStore.boxName);
+      await box.put(key, on.toString());
+    } catch (e) {
+      debugPrint('[MidiMetronome] failed to save: $e');
+    }
+  }
+}
+
+/// How late this machine hears playback, and gets a key played to it: what
+/// recording takes off each note's position (see `recordedTick`). Device-
+/// local: it belongs to this machine's audio output and MIDI input, so it
+/// is neither synced nor backed up.
+class MidiRecordLatencyStore {
+  const MidiRecordLatencyStore._();
+
+  static const String key = 'midi_record_latency_ms';
+  static Duration _cached = Duration.zero;
+
+  static Duration get current => _cached;
+
+  @visibleForTesting
+  static set cachedForTest(Duration value) => _cached = value;
+
+  static Future<Duration> load() async {
+    try {
+      final box = await Hive.openBox<String>(PlayerVolumeStore.boxName);
+      final ms = int.tryParse(box.get(key) ?? '') ?? 0;
+      _cached = Duration(milliseconds: ms.clamp(0, kMaxRecordLatencyMs));
+    } catch (e) {
+      debugPrint('[MidiRecordLatency] failed to load: $e');
+    }
+    return _cached;
+  }
+
+  static Future<void> save(Duration latency) async {
+    _cached = latency;
+    try {
+      final box = await Hive.openBox<String>(PlayerVolumeStore.boxName);
+      await box.put(key, latency.inMilliseconds.toString());
+    } catch (e) {
+      debugPrint('[MidiRecordLatency] failed to save: $e');
+    }
+  }
+}
+
+/// The most recording latency that can be set: a quarter of a second is
+/// already far more than any audio setup that is usable to play along to.
+const kMaxRecordLatencyMs = 250;

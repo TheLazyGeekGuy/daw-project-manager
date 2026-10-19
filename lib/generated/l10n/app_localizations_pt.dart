@@ -7992,4 +7992,80 @@ class AppLocalizationsPt extends AppLocalizations {
   String foldersEditingOtherProfile(String name) {
     return 'Você está editando as pastas de $name, não as do perfil ativo. Arquivos novos nelas aparecem na próxima vez que você mudar para $name.';
   }
+
+  @override
+  String get midiInput => 'Entrada MIDI';
+
+  @override
+  String get midiInputOff => 'Sem entrada MIDI';
+
+  @override
+  String get midiInputAll => 'Todas as entradas MIDI';
+
+  @override
+  String get midiInputNoDevices => 'Nenhuma entrada MIDI encontrada';
+
+  @override
+  String midiInputListening(String names) {
+    return 'Entrada MIDI: $names';
+  }
+
+  @override
+  String midiInputBusy(String names) {
+    return 'Não foi possível abrir $names. Talvez outro app esteja usando.';
+  }
+
+  @override
+  String get midiShortcutsMidiInput => 'Teclado MIDI';
+
+  @override
+  String get midiGesturePlayKey => 'Tocar uma tecla';
+
+  @override
+  String get midiShortcutPlayKey => 'Toca a nota com o instrumento do clipe';
+
+  @override
+  String get midiRecord =>
+      'Gravar do teclado MIDI: toca o loop e grava o que você tocar';
+
+  @override
+  String get midiStopRecording => 'Parar a gravação';
+
+  @override
+  String get midiShortcutRecord =>
+      'Gravar do teclado MIDI (toca o loop; cada volta guarda o que você tocar)';
+
+  @override
+  String get midiShortcutRulerDoubleClick => 'Na régua: tocar a partir dali';
+
+  @override
+  String get midiMetronome => 'Metrônomo';
+
+  @override
+  String get midiShortcutMetronome => 'Ligar ou desligar o metrônomo';
+
+  @override
+  String midiRecordLatency(int ms) {
+    return 'Latência de gravação: $ms ms';
+  }
+
+  @override
+  String get midiRecordLatencyTitle => 'Latência de gravação';
+
+  @override
+  String get midiRecordLatencyBody =>
+      'As notas gravadas entram este tanto antes, para compensar o tempo que o som leva para chegar até você e suas teclas levam para chegar ao app. Calibre para medir neste computador.';
+
+  @override
+  String get midiCalibrate => 'Calibrar';
+
+  @override
+  String midiCalibrating(int done, int total) {
+    return 'Toque uma tecla a cada clique ($done de $total)';
+  }
+
+  @override
+  String midiCalibrated(int ms) {
+    return 'Latência de gravação definida em $ms ms';
+  }
 }

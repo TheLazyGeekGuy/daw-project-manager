@@ -8034,4 +8034,80 @@ class AppLocalizationsRu extends AppLocalizations {
   String foldersEditingOtherProfile(String name) {
     return 'Вы редактируете папки $name, а не активного профиля. Новые файлы в них появятся, когда вы в следующий раз переключитесь на $name.';
   }
+
+  @override
+  String get midiInput => 'MIDI-вход';
+
+  @override
+  String get midiInputOff => 'Без MIDI-входа';
+
+  @override
+  String get midiInputAll => 'Все MIDI-входы';
+
+  @override
+  String get midiInputNoDevices => 'MIDI-входы не найдены';
+
+  @override
+  String midiInputListening(String names) {
+    return 'MIDI-вход: $names';
+  }
+
+  @override
+  String midiInputBusy(String names) {
+    return 'Не удалось открыть $names. Возможно, его использует другое приложение.';
+  }
+
+  @override
+  String get midiShortcutsMidiInput => 'MIDI-клавиатура';
+
+  @override
+  String get midiGesturePlayKey => 'Сыграть клавишу';
+
+  @override
+  String get midiShortcutPlayKey => 'Звучит нота инструментом клипа';
+
+  @override
+  String get midiRecord =>
+      'Запись с MIDI-клавиатуры: воспроизводит луп и записывает то, что вы играете';
+
+  @override
+  String get midiStopRecording => 'Остановить запись';
+
+  @override
+  String get midiShortcutRecord =>
+      'Запись с MIDI-клавиатуры (воспроизводит луп; каждый проход сохраняет сыгранное)';
+
+  @override
+  String get midiShortcutRulerDoubleClick => 'На линейке: воспроизвести оттуда';
+
+  @override
+  String get midiMetronome => 'Метроном';
+
+  @override
+  String get midiShortcutMetronome => 'Включить или выключить метроном';
+
+  @override
+  String midiRecordLatency(int ms) {
+    return 'Задержка записи: $ms мс';
+  }
+
+  @override
+  String get midiRecordLatencyTitle => 'Задержка записи';
+
+  @override
+  String get midiRecordLatencyBody =>
+      'Записанные ноты ставятся на столько раньше, чтобы учесть время, за которое звук доходит до вас, а нажатия клавиш — до приложения. Откалибруйте, чтобы измерить её на этом компьютере.';
+
+  @override
+  String get midiCalibrate => 'Откалибровать';
+
+  @override
+  String midiCalibrating(int done, int total) {
+    return 'Нажимайте клавишу на каждый щелчок ($done из $total)';
+  }
+
+  @override
+  String midiCalibrated(int ms) {
+    return 'Задержка записи: $ms мс';
+  }
 }
