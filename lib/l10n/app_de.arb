@@ -2269,6 +2269,14 @@
       }
     }
   },
+  "relocateFolderAction": "Verschieben",
+  "relocateFolderConfirmBody": "Die Projekte dieses Ordners werden im neuen gesucht und behalten ihre Notizen, To-dos, Arbeitszeit und alles andere. Auf der Festplatte wird nichts kopiert oder verschoben.",
+  "relocateFolderFrom": "Von",
+  "relocateFolderTo": "Nach",
+  "relocateFolderFound": "{total, plural, =1{{found} von 1 Projekt ist schon im neuen Ordner.} other{{found} von {total} Projekten sind schon im neuen Ordner.}}",
+  "relocateFolderSomeMissing": "Die übrigen erscheinen als fehlend, bis ihre Dateien da sind. Verwende so lange nicht „Fehlende löschen“.",
+  "relocateFolderNoneFound": "Noch keines ist dort. Wenn die Dateien noch heruntergeladen werden, ist das in Ordnung. Sonst prüfe, ob du den Ordner selbst gewählt hast und nicht den darüber oder darunter.",
+  "relocateFolderOverlapsOwn": "{path} ist schon ein Projektordner dieses Profils oder überschneidet sich mit einem. Wähle einen anderen Ordner oder entferne zuerst diesen.",
   "matchedInDescription": "In Beschreibung gefunden",
   "matchedInProjectNotes": "In DAW-Projektnotizen gefunden",
   "newerExportFound": "Neuerer Export gefunden",

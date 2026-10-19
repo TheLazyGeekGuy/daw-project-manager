@@ -2269,6 +2269,14 @@
       }
     }
   },
+  "relocateFolderAction": "Reubicar",
+  "relocateFolderConfirmBody": "Los proyectos de esta carpeta se buscarán en la nueva y conservarán sus notas, tareas, tiempo de trabajo y todo lo demás. No se copia ni se mueve nada en el disco.",
+  "relocateFolderFrom": "Desde",
+  "relocateFolderTo": "Hacia",
+  "relocateFolderFound": "{total, plural, =1{{found} de 1 proyecto ya está en la nueva carpeta.} other{{found} de {total} proyectos ya están en la nueva carpeta.}}",
+  "relocateFolderSomeMissing": "Los demás aparecerán como faltantes hasta que sus archivos estén ahí. Mientras tanto, no uses Eliminar faltantes.",
+  "relocateFolderNoneFound": "Todavía no hay ninguno. Si los archivos aún se están descargando, no pasa nada. Si no, comprueba que elegiste la carpeta en sí, no la de arriba ni la de abajo.",
+  "relocateFolderOverlapsOwn": "{path} ya es una carpeta de proyectos de este perfil o se superpone con una. Elige otra carpeta o quita esa primero.",
   "matchedInDescription": "Encontrado en la descripción",
   "matchedInProjectNotes": "Encontrado en las notas del proyecto del DAW",
   "newerExportFound": "Exportación más reciente encontrada",

@@ -43,6 +43,8 @@ import '../services/update_check_service.dart';
 import '../utils/daw_logo.dart';
 import '../utils/file_launcher.dart';
 import '../utils/mobile_utils.dart';
+import '../utils/relocation_preview.dart';
+import '../utils/root_overlap.dart' show findRootOverlaps;
 import '../utils/phase_colors.dart';
 import 'dashboard_page.dart' show appVersion;
 import 'dialogs/daw_launch_command_dialog.dart';
@@ -82,6 +84,7 @@ import 'dialogs/sample_pack_export_dialog.dart';
 import 'midi_collection_naming.dart' show midiNamingLabelsOf;
 import 'widgets/sample_pack_card.dart';
 import 'dialogs/root_overlap_dialog.dart';
+import 'dialogs/relocate_folder_dialog.dart';
 
 /// A Flatpak document-portal path, e.g.
 /// `/run/user/1000/doc/98127/projects` — the portal never exposes the real
@@ -997,12 +1000,39 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
     final picked = await FilePicker.getDirectoryPath(
       dialogTitle: l10n.relocateFolderDialogTitle,
     );
-    if (picked == null) return;
+    if (picked == null || p.equals(picked, oldPath)) return;
     if (!mounted) return;
+
+    // Onto, into or over another of this profile's folders, the same files
+    // would be under two roots: refused, as adding that folder would be.
+    final ownOverlaps = findRootOverlaps(picked, {
+      '': [
+        for (final r in _foldersRoots())
+          if (r.id != folderId) r.path,
+      ],
+    });
+    if (ownOverlaps.isNotEmpty) {
+      ScaffoldMessenger.of(context).showAppSnackBar(
+        SnackBar(content: Text(l10n.relocateFolderOverlapsOwn(ownOverlaps.first.rootPath))),
+      );
+      return;
+    }
+    if (!await confirmScanFolderOverlap(context, ref, picked, forProfileId: _editedProfileId)) {
+      return;
+    }
+    if (!mounted) return;
+
+    final repo = await _foldersRepo();
+    final preview = previewRelocation(repo.getAllProjects(), from: oldPath, to: picked);
+    if (!mounted) return;
+    final go = await showDialog<bool>(
+      context: context,
+      builder: (context) => RelocateFolderDialog(from: oldPath, to: picked, preview: preview),
+    );
+    if (go != true || !mounted) return;
 
     setState(() => _busy = true);
     try {
-      final repo = await _foldersRepo();
       final count = await repo.relocateRoot(folderId, picked);
       ref.invalidate(rootsWatchProvider);
       ref.invalidate(scanRootsProvider);

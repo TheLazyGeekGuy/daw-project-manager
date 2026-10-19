@@ -96,6 +96,18 @@ class ProjectTrash {
   Future<StoredMidiClips?> clipsOf(String id) async =>
       StoredMidiClips.tryParse(await (await _clips()).get(id));
 
+  /// Replaces each kept project [change] returns a new value for (null: leave
+  /// it), keeping when it was deleted — so it still expires on the same day.
+  /// Returns how many changed.
+  Future<int> update(MusicProject? Function(MusicProject project) change) async {
+    final projectsBox = await _projects();
+    final changed = <String, MusicProject>{
+      for (final project in projectsBox.values) project.id: ?change(project),
+    };
+    if (changed.isNotEmpty) await projectsBox.putAll(changed);
+    return changed.length;
+  }
+
   /// Takes [ids] out of the trash (restored, or deleted for good).
   Future<void> remove(Iterable<String> ids) async {
     final list = ids.toList();

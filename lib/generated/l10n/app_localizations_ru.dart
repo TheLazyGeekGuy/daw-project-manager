@@ -3298,6 +3298,43 @@ class AppLocalizationsRu extends AppLocalizations {
   }
 
   @override
+  String get relocateFolderAction => 'Переместить';
+
+  @override
+  String get relocateFolderConfirmBody =>
+      'Проекты из этой папки будут найдены в новой, со всеми заметками, задачами, рабочим временем и остальным. На диске ничего не копируется и не перемещается.';
+
+  @override
+  String get relocateFolderFrom => 'Откуда';
+
+  @override
+  String get relocateFolderTo => 'Куда';
+
+  @override
+  String relocateFolderFound(int found, int total) {
+    String _temp0 = intl.Intl.pluralLogic(
+      total,
+      locale: localeName,
+      other: '$found из $total проектов уже в новой папке.',
+      one: '$found из 1 проекта уже в новой папке.',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get relocateFolderSomeMissing =>
+      'Остальные будут отмечены как отсутствующие, пока их файлы не появятся. До тех пор не используйте «Удалить отсутствующие».';
+
+  @override
+  String get relocateFolderNoneFound =>
+      'Там пока нет ни одного. Если файлы ещё загружаются, всё в порядке. Иначе проверьте, что выбрали саму папку, а не ту, что выше или ниже.';
+
+  @override
+  String relocateFolderOverlapsOwn(String path) {
+    return '$path уже является папкой проектов этого профиля или пересекается с ней. Выберите другую папку или сначала удалите ту.';
+  }
+
+  @override
   String get customizeTabs => 'Настроить вкладки';
 
   @override

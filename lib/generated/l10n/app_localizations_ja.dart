@@ -3221,6 +3221,42 @@ class AppLocalizationsJa extends AppLocalizations {
   }
 
   @override
+  String get relocateFolderAction => '移動';
+
+  @override
+  String get relocateFolderConfirmBody =>
+      'このフォルダのプロジェクトを新しいフォルダで探し、メモ、TODO、作業時間などはすべてそのまま残ります。ディスク上では何もコピー・移動されません。';
+
+  @override
+  String get relocateFolderFrom => '移動元';
+
+  @override
+  String get relocateFolderTo => '移動先';
+
+  @override
+  String relocateFolderFound(int found, int total) {
+    String _temp0 = intl.Intl.pluralLogic(
+      total,
+      locale: localeName,
+      other: '$total件中$found件のプロジェクトが新しいフォルダにあります。',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get relocateFolderSomeMissing =>
+      '残りはファイルが揃うまで「見つからない」と表示されます。それまで「見つからない項目を削除」は使わないでください。';
+
+  @override
+  String get relocateFolderNoneFound =>
+      'まだ1件もありません。ファイルをダウンロード中なら問題ありません。そうでなければ、上や下の階層ではなくそのフォルダ自体を選んだか確認してください。';
+
+  @override
+  String relocateFolderOverlapsOwn(String path) {
+    return '$path はすでにこのプロフィールのプロジェクトフォルダか、それと重なっています。別のフォルダを選ぶか、先にそちらを削除してください。';
+  }
+
+  @override
   String get customizeTabs => 'タブのカスタマイズ';
 
   @override

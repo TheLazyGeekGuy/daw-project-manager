@@ -3329,6 +3329,43 @@ class AppLocalizationsFr extends AppLocalizations {
   }
 
   @override
+  String get relocateFolderAction => 'Déplacer';
+
+  @override
+  String get relocateFolderConfirmBody =>
+      'Les projets de ce dossier seront cherchés dans le nouveau, avec leurs notes, tâches, temps de travail et tout le reste. Rien n\'est copié ni déplacé sur le disque.';
+
+  @override
+  String get relocateFolderFrom => 'De';
+
+  @override
+  String get relocateFolderTo => 'Vers';
+
+  @override
+  String relocateFolderFound(int found, int total) {
+    String _temp0 = intl.Intl.pluralLogic(
+      total,
+      locale: localeName,
+      other: '$found projets sur $total sont déjà dans le nouveau dossier.',
+      one: '$found projet sur 1 est déjà dans le nouveau dossier.',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get relocateFolderSomeMissing =>
+      'Les autres apparaîtront comme manquants jusqu\'à ce que leurs fichiers soient là. N\'utilisez pas « Supprimer les manquants » d\'ici là.';
+
+  @override
+  String get relocateFolderNoneFound =>
+      'Aucun n\'y est encore. Si les fichiers sont encore en cours de téléchargement, c\'est normal. Sinon, vérifiez que vous avez choisi le dossier lui-même, pas celui du dessus ou du dessous.';
+
+  @override
+  String relocateFolderOverlapsOwn(String path) {
+    return '$path est déjà un dossier de projets de ce profil, ou en chevauche un. Choisissez un autre dossier, ou retirez d\'abord celui-là.';
+  }
+
+  @override
   String get customizeTabs => 'Personnaliser les onglets';
 
   @override

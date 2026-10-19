@@ -3302,6 +3302,43 @@ class AppLocalizationsPt extends AppLocalizations {
   }
 
   @override
+  String get relocateFolderAction => 'Realocar';
+
+  @override
+  String get relocateFolderConfirmBody =>
+      'Os projetos desta pasta serão procurados na nova, mantendo suas notas, tarefas, tempo de trabalho e todo o resto. Nada é copiado nem movido no disco.';
+
+  @override
+  String get relocateFolderFrom => 'De';
+
+  @override
+  String get relocateFolderTo => 'Para';
+
+  @override
+  String relocateFolderFound(int found, int total) {
+    String _temp0 = intl.Intl.pluralLogic(
+      total,
+      locale: localeName,
+      other: '$found de $total projetos já estão na nova pasta.',
+      one: '$found de 1 projeto já está na nova pasta.',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get relocateFolderSomeMissing =>
+      'Os outros vão aparecer como ausentes até os arquivos estarem lá. Enquanto isso, não use Excluir ausentes.';
+
+  @override
+  String get relocateFolderNoneFound =>
+      'Nenhum está lá ainda. Se os arquivos ainda estão sendo baixados, tudo bem. Se não, confira se você escolheu a própria pasta, não a de cima nem a de baixo.';
+
+  @override
+  String relocateFolderOverlapsOwn(String path) {
+    return '$path já é uma pasta de projetos deste perfil ou se sobrepõe a uma. Escolha outra pasta ou remova aquela primeiro.';
+  }
+
+  @override
   String get customizeTabs => 'Personalizar abas';
 
   @override
