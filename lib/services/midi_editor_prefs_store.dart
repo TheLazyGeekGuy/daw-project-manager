@@ -1,6 +1,7 @@
 import 'package:flutter/foundation.dart';
 import 'package:hive_ce/hive.dart';
 
+import 'midi/input/midi_input.dart';
 import 'player_volume_store.dart';
 
 /// Whether the piano roll sounds notes as they are edited (its "acoustic
@@ -69,6 +70,41 @@ class MidiPianoRollFullScreenStore {
       await box.put(key, on.toString());
     } catch (e) {
       debugPrint('[MidiPianoRollFullScreen] failed to save: $e');
+    }
+  }
+}
+
+/// Which MIDI input the piano roll listens to: none, all, or one by name.
+/// Device-local: it names this machine's hardware — neither synced nor
+/// backed up.
+class MidiInputChoiceStore {
+  const MidiInputChoiceStore._();
+
+  static const String key = 'midi_input_choice';
+  static MidiInputChoice _cached = MidiInputChoice.off;
+
+  static MidiInputChoice get current => _cached;
+
+  @visibleForTesting
+  static set cachedForTest(MidiInputChoice value) => _cached = value;
+
+  static Future<MidiInputChoice> load() async {
+    try {
+      final box = await Hive.openBox<String>(PlayerVolumeStore.boxName);
+      _cached = MidiInputChoice.parse(box.get(key));
+    } catch (e) {
+      debugPrint('[MidiInputChoice] failed to load: $e');
+    }
+    return _cached;
+  }
+
+  static Future<void> save(MidiInputChoice choice) async {
+    _cached = choice;
+    try {
+      final box = await Hive.openBox<String>(PlayerVolumeStore.boxName);
+      await box.put(key, choice.stored);
+    } catch (e) {
+      debugPrint('[MidiInputChoice] failed to save: $e');
     }
   }
 }

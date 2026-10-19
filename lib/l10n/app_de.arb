@@ -4410,5 +4410,17 @@
   "moveToProfileCopyFailed": "Die Kopie stimmte nicht mit dem Original überein, daher wurde nichts entfernt oder verschoben:",
   "foldersProfilePickerLabel": "Profil",
   "foldersProfileActive": "{name} (aktiv)",
-  "foldersEditingOtherProfile": "Du bearbeitest die Ordner von {name}, nicht die des aktiven Profils. Neue Dateien darin erscheinen, sobald du das nächste Mal zu {name} wechselst."
+  "foldersEditingOtherProfile": "Du bearbeitest die Ordner von {name}, nicht die des aktiven Profils. Neue Dateien darin erscheinen, sobald du das nächste Mal zu {name} wechselst.",
+  "midiInput": "MIDI-Eingang",
+  "midiInputOff": "Kein MIDI-Eingang",
+  "midiInputAll": "Alle MIDI-Eingänge",
+  "midiInputNoDevices": "Keine MIDI-Eingänge gefunden",
+  "midiInputListening": "MIDI-Eingang: {names}",
+  "midiInputBusy": "{names} konnte nicht geöffnet werden. Vielleicht verwendet eine andere App ihn.",
+  "midiStepInput": "Schritteingabe: Jede gespielte Note oder jeder Akkord wird am Cursor eingefügt, einen Rasterschritt lang",
+  "midiShortcutsMidiInput": "MIDI-Keyboard",
+  "midiGesturePlayKey": "Eine Taste spielen",
+  "midiShortcutPlayKey": "Spielt die Note mit dem Instrument des Clips",
+  "midiShortcutStepInput": "Bei Schritteingabe: fügt die Note am Cursor ein (zusammen gehaltene Tasten ergeben einen Akkord)",
+  "midiShortcutStepCursor": "Bei Schritteingabe: bewegt den Cursor einen Schritt zurück oder vor"
 }

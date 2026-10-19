@@ -7866,5 +7866,63 @@
         "type": "String"
       }
     }
+  },
+  "midiInput": "MIDI input",
+  "@midiInput": {
+    "description": "Piano roll: tooltip of the MIDI input button while no MIDI keyboard is listened to"
+  },
+  "midiInputOff": "No MIDI input",
+  "@midiInputOff": {
+    "description": "Piano roll MIDI input menu: listen to no MIDI keyboard"
+  },
+  "midiInputAll": "All MIDI inputs",
+  "@midiInputAll": {
+    "description": "Piano roll MIDI input menu: listen to every MIDI keyboard plugged in"
+  },
+  "midiInputNoDevices": "No MIDI inputs found",
+  "@midiInputNoDevices": {
+    "description": "Piano roll MIDI input menu, when no MIDI keyboard or controller is plugged in"
+  },
+  "midiInputListening": "MIDI input: {names}",
+  "@midiInputListening": {
+    "description": "Piano roll: tooltip of the MIDI input button while listening; names are the inputs, comma-separated",
+    "placeholders": {
+      "names": {
+        "type": "String"
+      }
+    }
+  },
+  "midiInputBusy": "Couldn't open {names}. Another app may be using it.",
+  "@midiInputBusy": {
+    "description": "Piano roll: tooltip of the MIDI input button when the chosen input could not be opened (on Windows, usually because a DAW has it)",
+    "placeholders": {
+      "names": {
+        "type": "String"
+      }
+    }
+  },
+  "midiStepInput": "Step input: each note or chord you play goes in at the cursor, one grid step long",
+  "@midiStepInput": {
+    "description": "Piano roll: tooltip of the step input toggle (as in Cubase: notes played on a MIDI keyboard are entered one grid step at a time, timing ignored)"
+  },
+  "midiShortcutsMidiInput": "MIDI keyboard",
+  "@midiShortcutsMidiInput": {
+    "description": "Piano roll shortcut sheet: heading of the section about a MIDI keyboard"
+  },
+  "midiGesturePlayKey": "Play a key",
+  "@midiGesturePlayKey": {
+    "description": "Piano roll shortcut sheet: the gesture of playing a key on a MIDI keyboard"
+  },
+  "midiShortcutPlayKey": "Sounds the note in the clip’s instrument",
+  "@midiShortcutPlayKey": {
+    "description": "Piano roll shortcut sheet: what playing a key on a MIDI keyboard does"
+  },
+  "midiShortcutStepInput": "With step input on: enters the note at the cursor (keys held together make a chord)",
+  "@midiShortcutStepInput": {
+    "description": "Piano roll shortcut sheet: what playing a key on a MIDI keyboard does with step input on"
+  },
+  "midiShortcutStepCursor": "With step input on: moves the cursor a step back or on",
+  "@midiShortcutStepCursor": {
+    "description": "Piano roll shortcut sheet: what the left/right arrow keys do with step input on"
   }
 }

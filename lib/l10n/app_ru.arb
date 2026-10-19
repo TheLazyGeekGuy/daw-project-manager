@@ -4410,5 +4410,17 @@
   "moveToProfileCopyFailed": "Копия не совпала с оригиналом, поэтому ничего не удалено и не перемещено:",
   "foldersProfilePickerLabel": "Профиль",
   "foldersProfileActive": "{name} (активный)",
-  "foldersEditingOtherProfile": "Вы редактируете папки {name}, а не активного профиля. Новые файлы в них появятся, когда вы в следующий раз переключитесь на {name}."
+  "foldersEditingOtherProfile": "Вы редактируете папки {name}, а не активного профиля. Новые файлы в них появятся, когда вы в следующий раз переключитесь на {name}.",
+  "midiInput": "MIDI-вход",
+  "midiInputOff": "Без MIDI-входа",
+  "midiInputAll": "Все MIDI-входы",
+  "midiInputNoDevices": "MIDI-входы не найдены",
+  "midiInputListening": "MIDI-вход: {names}",
+  "midiInputBusy": "Не удалось открыть {names}. Возможно, его использует другое приложение.",
+  "midiStepInput": "Пошаговый ввод: каждая сыгранная нота или аккорд встаёт на курсор, длиной в шаг сетки",
+  "midiShortcutsMidiInput": "MIDI-клавиатура",
+  "midiGesturePlayKey": "Сыграть клавишу",
+  "midiShortcutPlayKey": "Звучит нота инструментом клипа",
+  "midiShortcutStepInput": "При пошаговом вводе: ставит ноту на курсор (клавиши, нажатые вместе, дают аккорд)",
+  "midiShortcutStepCursor": "При пошаговом вводе: сдвигает курсор на шаг назад или вперёд"
 }

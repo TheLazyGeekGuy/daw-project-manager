@@ -7951,4 +7951,47 @@ class AppLocalizationsEn extends AppLocalizations {
   String foldersEditingOtherProfile(String name) {
     return 'You\'re editing $name\'s folders, not the active profile\'s. New files in them show up the next time you switch to $name.';
   }
+
+  @override
+  String get midiInput => 'MIDI input';
+
+  @override
+  String get midiInputOff => 'No MIDI input';
+
+  @override
+  String get midiInputAll => 'All MIDI inputs';
+
+  @override
+  String get midiInputNoDevices => 'No MIDI inputs found';
+
+  @override
+  String midiInputListening(String names) {
+    return 'MIDI input: $names';
+  }
+
+  @override
+  String midiInputBusy(String names) {
+    return 'Couldn\'t open $names. Another app may be using it.';
+  }
+
+  @override
+  String get midiStepInput =>
+      'Step input: each note or chord you play goes in at the cursor, one grid step long';
+
+  @override
+  String get midiShortcutsMidiInput => 'MIDI keyboard';
+
+  @override
+  String get midiGesturePlayKey => 'Play a key';
+
+  @override
+  String get midiShortcutPlayKey => 'Sounds the note in the clip’s instrument';
+
+  @override
+  String get midiShortcutStepInput =>
+      'With step input on: enters the note at the cursor (keys held together make a chord)';
+
+  @override
+  String get midiShortcutStepCursor =>
+      'With step input on: moves the cursor a step back or on';
 }

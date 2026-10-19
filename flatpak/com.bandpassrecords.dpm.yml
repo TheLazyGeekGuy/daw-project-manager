@@ -29,6 +29,13 @@ finish-args:
   - --share=ipc
   - --device=dri
 
+  # MIDI keyboards in the piano roll (lib/services/midi/input/linux_midi_input.dart)
+  # are read through the ALSA sequencer, /dev/snd/seq, which no narrower
+  # --device grants — the same reason other music apps on Flathub that take
+  # MIDI input (MuseScore, LMMS, Ardour) ask for it. Without it the piano
+  # roll simply lists no MIDI inputs; nothing else depends on it.
+  - --device=all
+
   # Deliberately NO --share=network. The two things that would have
   # needed it are both switched off on Linux instead of granted the
   # permission: Google Drive sync (GoogleDriveSyncService.isSupported)

@@ -8014,4 +8014,48 @@ class AppLocalizationsDe extends AppLocalizations {
   String foldersEditingOtherProfile(String name) {
     return 'Du bearbeitest die Ordner von $name, nicht die des aktiven Profils. Neue Dateien darin erscheinen, sobald du das nächste Mal zu $name wechselst.';
   }
+
+  @override
+  String get midiInput => 'MIDI-Eingang';
+
+  @override
+  String get midiInputOff => 'Kein MIDI-Eingang';
+
+  @override
+  String get midiInputAll => 'Alle MIDI-Eingänge';
+
+  @override
+  String get midiInputNoDevices => 'Keine MIDI-Eingänge gefunden';
+
+  @override
+  String midiInputListening(String names) {
+    return 'MIDI-Eingang: $names';
+  }
+
+  @override
+  String midiInputBusy(String names) {
+    return '$names konnte nicht geöffnet werden. Vielleicht verwendet eine andere App ihn.';
+  }
+
+  @override
+  String get midiStepInput =>
+      'Schritteingabe: Jede gespielte Note oder jeder Akkord wird am Cursor eingefügt, einen Rasterschritt lang';
+
+  @override
+  String get midiShortcutsMidiInput => 'MIDI-Keyboard';
+
+  @override
+  String get midiGesturePlayKey => 'Eine Taste spielen';
+
+  @override
+  String get midiShortcutPlayKey =>
+      'Spielt die Note mit dem Instrument des Clips';
+
+  @override
+  String get midiShortcutStepInput =>
+      'Bei Schritteingabe: fügt die Note am Cursor ein (zusammen gehaltene Tasten ergeben einen Akkord)';
+
+  @override
+  String get midiShortcutStepCursor =>
+      'Bei Schritteingabe: bewegt den Cursor einen Schritt zurück oder vor';
 }

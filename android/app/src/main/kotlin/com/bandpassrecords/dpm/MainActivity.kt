@@ -33,6 +33,8 @@ class MainActivity : AudioServiceActivity() {
     override fun configureFlutterEngine(flutterEngine: FlutterEngine) {
         super.configureFlutterEngine(flutterEngine)
         registerAudioConvertChannel(flutterEngine)
+        // MIDI keyboards for the piano roll — see MidiInputBridge.
+        MidiInputBridge(applicationContext).register(flutterEngine.dartExecutor.binaryMessenger)
     }
 
     override fun onDestroy() {

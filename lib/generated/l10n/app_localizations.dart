@@ -13018,6 +13018,78 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'You\'re editing {name}\'s folders, not the active profile\'s. New files in them show up the next time you switch to {name}.'**
   String foldersEditingOtherProfile(String name);
+
+  /// Piano roll: tooltip of the MIDI input button while no MIDI keyboard is listened to
+  ///
+  /// In en, this message translates to:
+  /// **'MIDI input'**
+  String get midiInput;
+
+  /// Piano roll MIDI input menu: listen to no MIDI keyboard
+  ///
+  /// In en, this message translates to:
+  /// **'No MIDI input'**
+  String get midiInputOff;
+
+  /// Piano roll MIDI input menu: listen to every MIDI keyboard plugged in
+  ///
+  /// In en, this message translates to:
+  /// **'All MIDI inputs'**
+  String get midiInputAll;
+
+  /// Piano roll MIDI input menu, when no MIDI keyboard or controller is plugged in
+  ///
+  /// In en, this message translates to:
+  /// **'No MIDI inputs found'**
+  String get midiInputNoDevices;
+
+  /// Piano roll: tooltip of the MIDI input button while listening; names are the inputs, comma-separated
+  ///
+  /// In en, this message translates to:
+  /// **'MIDI input: {names}'**
+  String midiInputListening(String names);
+
+  /// Piano roll: tooltip of the MIDI input button when the chosen input could not be opened (on Windows, usually because a DAW has it)
+  ///
+  /// In en, this message translates to:
+  /// **'Couldn\'t open {names}. Another app may be using it.'**
+  String midiInputBusy(String names);
+
+  /// Piano roll: tooltip of the step input toggle (as in Cubase: notes played on a MIDI keyboard are entered one grid step at a time, timing ignored)
+  ///
+  /// In en, this message translates to:
+  /// **'Step input: each note or chord you play goes in at the cursor, one grid step long'**
+  String get midiStepInput;
+
+  /// Piano roll shortcut sheet: heading of the section about a MIDI keyboard
+  ///
+  /// In en, this message translates to:
+  /// **'MIDI keyboard'**
+  String get midiShortcutsMidiInput;
+
+  /// Piano roll shortcut sheet: the gesture of playing a key on a MIDI keyboard
+  ///
+  /// In en, this message translates to:
+  /// **'Play a key'**
+  String get midiGesturePlayKey;
+
+  /// Piano roll shortcut sheet: what playing a key on a MIDI keyboard does
+  ///
+  /// In en, this message translates to:
+  /// **'Sounds the note in the clip’s instrument'**
+  String get midiShortcutPlayKey;
+
+  /// Piano roll shortcut sheet: what playing a key on a MIDI keyboard does with step input on
+  ///
+  /// In en, this message translates to:
+  /// **'With step input on: enters the note at the cursor (keys held together make a chord)'**
+  String get midiShortcutStepInput;
+
+  /// Piano roll shortcut sheet: what the left/right arrow keys do with step input on
+  ///
+  /// In en, this message translates to:
+  /// **'With step input on: moves the cursor a step back or on'**
+  String get midiShortcutStepCursor;
 }
 
 class _AppLocalizationsDelegate

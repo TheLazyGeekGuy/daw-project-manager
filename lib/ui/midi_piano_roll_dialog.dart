@@ -8,6 +8,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../generated/l10n/app_localizations.dart';
 import '../models/midi_clip.dart';
 import '../providers/providers.dart';
+import '../services/midi/input/midi_input.dart';
+import '../services/midi/input/midi_input_message.dart';
 import '../services/midi_editor_prefs_store.dart';
 import '../utils/mobile_utils.dart';
 import '../utils/musical_scale.dart';
@@ -18,6 +20,8 @@ import 'midi_preview_player.dart';
 import 'widgets/midi_clip_edit_controller.dart';
 import 'widgets/midi_clip_list.dart';
 import 'widgets/midi_clips_section.dart' show midiTempoLabelsOf, synthVoiceName;
+import 'widgets/midi_input_button.dart';
+import 'widgets/midi_step_input.dart';
 import 'widgets/midi_tempo_control.dart';
 import 'widgets/midi_piano_roll.dart';
 import 'widgets/midi_shortcuts_sheet.dart';
@@ -90,6 +94,8 @@ Future<void> showMidiPianoRoll(
           ),
     acousticFeedback: MidiAcousticFeedbackStore.current,
     onAcousticFeedbackChanged: MidiAcousticFeedbackStore.save,
+    midiInputChoice: MidiInputChoiceStore.current,
+    onMidiInputChoiceChanged: MidiInputChoiceStore.save,
     labels: MidiPianoRollWindowLabels(
       roll: MidiPianoRollLabels(
         zoomIn: l10n.midiPianoRollZoomIn,
@@ -140,6 +146,15 @@ Future<void> showMidiPianoRoll(
       shortcuts: l10n.midiShortcuts,
       fullScreen: l10n.midiFullScreen,
       exitFullScreen: l10n.midiExitFullScreen,
+      midiInput: MidiInputLabels(
+        input: l10n.midiInput,
+        off: l10n.midiInputOff,
+        all: l10n.midiInputAll,
+        noDevices: l10n.midiInputNoDevices,
+        listening: l10n.midiInputListening,
+        busy: l10n.midiInputBusy,
+        stepInput: l10n.midiStepInput,
+      ),
     ),
   );
   final mobile = MobileUtils.isMobile();
@@ -292,6 +307,11 @@ List<MidiShortcutSection> midiShortcutSections(
       MidiShortcut([drag], l10n.midiShortcutVelocity),
       MidiShortcut([drag], l10n.midiShortcutLane),
     ]),
+    MidiShortcutSection(l10n.midiShortcutsMidiInput, [
+      MidiShortcut([l10n.midiGesturePlayKey], l10n.midiShortcutPlayKey),
+      MidiShortcut([l10n.midiGesturePlayKey], l10n.midiShortcutStepInput),
+      MidiShortcut(const ['← / →'], l10n.midiShortcutStepCursor),
+    ]),
     MidiShortcutSection(l10n.midiShortcutsEditing, [
       MidiShortcut([ctrl, 'Z'], l10n.midiUndo),
       MidiShortcut([ctrl, shift, 'Z'], l10n.midiRedo),
@@ -349,7 +369,13 @@ class MidiPianoRollWindowLabels {
     this.timeSignature = '',
     this.fullScreen = '',
     this.exitFullScreen = '',
+    this.midiInput,
   });
+
+  /// The MIDI input button's strings; it shows when given, along with
+  /// somewhere to keep the choice
+  /// ([MidiPianoRollWindow.onMidiInputChoiceChanged]).
+  final MidiInputLabels? midiInput;
 
   /// The shortcut sheet button's tooltip.
   final String shortcuts;
@@ -442,6 +468,9 @@ class MidiPianoRollWindow extends StatefulWidget {
     this.timeSignature = TimeSignature.common,
     this.fullScreen,
     this.onFullScreenChanged,
+    this.midiInput,
+    this.midiInputChoice = MidiInputChoice.off,
+    this.onMidiInputChoiceChanged,
   });
 
   /// [base] with a volume control added.
@@ -484,6 +513,9 @@ class MidiPianoRollWindow extends StatefulWidget {
     timeSignature: base.timeSignature,
     fullScreen: fullScreen,
     onFullScreenChanged: onFullScreenChanged,
+    midiInput: base.midiInput,
+    midiInputChoice: base.midiInputChoice,
+    onMidiInputChoiceChanged: base.onMidiInputChoiceChanged,
   );
 
   /// The shared preview volume; the control shows only when all three of
@@ -512,6 +544,15 @@ class MidiPianoRollWindow extends StatefulWidget {
   /// it always does).
   final bool? fullScreen;
   final ValueChanged<bool>? onFullScreenChanged;
+
+  /// Where MIDI keyboards are read from; the platform's own when null.
+  final MidiInputBackend? midiInput;
+
+  /// The MIDI input listened to when the window opens, and where a new
+  /// choice is kept. A keyboard plays the clip's instrument; with step
+  /// input on (editing), it enters notes too — see [MidiStepInput].
+  final MidiInputChoice midiInputChoice;
+  final ValueChanged<MidiInputChoice>? onMidiInputChoiceChanged;
 
   /// Opens the sheet of every shortcut and gesture (also on `?` and F1);
   /// null leaves its button out.
@@ -633,6 +674,130 @@ class _MidiPianoRollWindowState extends State<MidiPianoRollWindow> {
     return () => _auditioner.release(held);
   }
 
+  // --- MIDI input ------------------------------------------------------------
+
+  MidiInputBackend? _ownBackend;
+  MidiInputBackend get _backend =>
+      widget.midiInput ?? (_ownBackend ??= MidiInputBackend.forPlatform());
+
+  late MidiInputChoice _inputChoice = widget.midiInputChoice;
+  MidiInputSession? _input;
+  StreamSubscription<MidiInputMessage>? _inputMessages;
+
+  /// Bumped by every connect and by closing, so an input that finishes
+  /// opening after it was no longer wanted is closed instead of kept.
+  int _inputGeneration = 0;
+
+  /// The keys down on the MIDI keyboard now, lit on the roll's.
+  final ValueNotifier<Set<int>> _played = ValueNotifier(const {});
+
+  /// What lets each key's sound go.
+  final Map<int, VoidCallback> _sounding = {};
+
+  /// Step input switched on — it writes only while editing and stopped.
+  bool _stepInput = false;
+
+  late final MidiStepInput? _step = _editor == null
+      ? null
+      : MidiStepInput(
+          editor: _editor,
+          cursor: () => nearestStepTick(
+            ticksAt(_startFrom ?? Duration.zero, _bpm, _ppq),
+            _editor.stepTicks,
+          ),
+          onCursorChanged: (tick) => setState(
+            () => _startFrom = durationAtTick(tick.toDouble(), _bpm, _ppq),
+          ),
+        );
+
+  /// Whether a note played now goes in: step input on, editing, and the
+  /// clip not playing (or paused) here — its cursor is the resting line.
+  bool get _stepping =>
+      _stepInput && (_editor?.editing ?? false) && !_isOurs && !_preparing;
+
+  /// Listens to [_inputChoice]'s inputs, letting go of any listened to
+  /// before.
+  Future<void> _connectInput() async {
+    final generation = ++_inputGeneration;
+    await _disconnectInput();
+    if (_inputChoice.isOff || !mounted || generation != _inputGeneration) {
+      return;
+    }
+    MidiInputSession? session;
+    try {
+      session = await MidiInputSession.start(_backend, _inputChoice);
+    } catch (e) {
+      debugPrint('[MidiInput] could not listen: $e');
+    }
+    if (!mounted || generation != _inputGeneration) {
+      await session?.close();
+      return;
+    }
+    setState(() => _input = session);
+    _inputMessages = session?.messages.listen(_onMidi);
+  }
+
+  Future<void> _disconnectInput() async {
+    final session = _input;
+    _input = null;
+    final messages = _inputMessages;
+    _inputMessages = null;
+    _letGoOfKeys();
+    // Both at once: the input is let go of straight away, not after the
+    // window's listening has wound down.
+    await Future.wait([?messages?.cancel(), ?session?.close()]);
+  }
+
+  /// Every key still sounding goes quiet, as when its input goes away.
+  void _letGoOfKeys() {
+    for (final letGo in _sounding.values) {
+      letGo();
+    }
+    _sounding.clear();
+    _step?.reset();
+    if (_played.value.isNotEmpty) _played.value = const {};
+  }
+
+  void _setInputChoice(MidiInputChoice choice) {
+    setState(() {
+      _inputChoice = choice;
+      if (choice.isOff) _stepInput = false;
+    });
+    widget.onMidiInputChoiceChanged?.call(choice);
+    _connectInput();
+  }
+
+  void _setStepInput(bool on) {
+    final editor = _editor;
+    if (editor == null) return;
+    setState(() => _stepInput = on);
+    _step?.reset();
+    if (on) editor.editing = true;
+  }
+
+  /// A key played on the MIDI keyboard: it sounds for as long as it's
+  /// held, in the clip's instrument, lit on the roll's keyboard — and, step
+  /// inputting, goes in as a note.
+  void _onMidi(MidiInputMessage message) {
+    if (!mounted) return;
+    final pitch = message.pitch;
+    switch (message.kind) {
+      case MidiInputKind.noteOn:
+        _sounding.remove(pitch)?.call();
+        _sounding[pitch] = _hold(pitch, message.velocity);
+        _played.value = {..._played.value, pitch};
+        if (_stepping) _step?.noteOn(pitch, message.velocity);
+      case MidiInputKind.noteOff:
+        _sounding.remove(pitch)?.call();
+        if (_played.value.contains(pitch)) {
+          _played.value = {..._played.value}..remove(pitch);
+        }
+        _step?.noteOff(pitch);
+      default:
+        break;
+    }
+  }
+
   /// A new instrument: the list hears of it, and a clip playing carries on
   /// from where it is with it (a paused one starts there next time).
   void _setVoice(SynthVoice voice) {
@@ -648,7 +813,14 @@ class _MidiPianoRollWindowState extends State<MidiPianoRollWindow> {
     final old = _bpm;
     final ppq = widget.clip.ppq;
     _restartWith(
-      () => _bpm = bpm,
+      () {
+        // The start (and step input's cursor) stays on the same tick.
+        final from = _startFrom;
+        if (from != null) {
+          _startFrom = durationAtTick(ticksAt(from, old, ppq), bpm, ppq);
+        }
+        _bpm = bpm;
+      },
       at: (position) => durationAtTick(ticksAt(position, old, ppq), bpm, ppq),
     );
   }
@@ -726,12 +898,19 @@ class _MidiPianoRollWindowState extends State<MidiPianoRollWindow> {
     }
     _editor?.addListener(_onEdit);
     FocusManager.instance.addListener(_reclaimKeys);
+    if (!_inputChoice.isOff) _connectInput();
   }
 
   @override
   void dispose() {
     _editor?.removeListener(_onEdit);
     _editor?.dispose();
+    // The inputs go back to other apps (on Windows only one app at a time
+    // can have one), and held keys stop sounding before the auditioner
+    // they sound through goes.
+    _inputGeneration++;
+    _disconnectInput();
+    _played.dispose();
     _ownAuditioner?.dispose();
     FocusManager.instance.removeListener(_reclaimKeys);
     _keys.dispose();
@@ -751,6 +930,8 @@ class _MidiPianoRollWindowState extends State<MidiPianoRollWindow> {
     if (_unsaved != _showedUnsaved) {
       setState(() => _showedUnsaved = _unsaved);
     }
+    // Step input is a way of editing: it ends with editing.
+    if (_stepInput && !_editor!.editing) setState(() => _stepInput = false);
     // What plays must be what is on screen: a finished edit — or an undo
     // back to the clip as opened — takes over from wherever playback is,
     // whichever version was playing. Only an edited version playing used to
@@ -1097,6 +1278,13 @@ class _MidiPianoRollWindowState extends State<MidiPianoRollWindow> {
               shift: true,
             ): () =>
                 _transpose(editor, -12),
+            // Step input's cursor: a step back, or on (a rest).
+            const SingleActivator(LogicalKeyboardKey.arrowLeft): () {
+              if (_stepping) _step?.move(-1);
+            },
+            const SingleActivator(LogicalKeyboardKey.arrowRight): () {
+              if (_stepping) _step?.move(1);
+            },
             // Cubase's tool keys: 1 selects, 8 draws.
             const SingleActivator(LogicalKeyboardKey.digit1): () =>
                 _setTool(editor, MidiEditTool.select),
@@ -1191,6 +1379,7 @@ class _MidiPianoRollWindowState extends State<MidiPianoRollWindow> {
                       onScaleChanged: (s) => _scale = s,
                       onAudition: _audition,
                       onHold: _hold,
+                      playedKeys: _played,
                       acousticFeedback: _feedback,
                       onAcousticFeedbackChanged: editor == null
                           ? null
@@ -1344,6 +1533,30 @@ class _MidiPianoRollWindowState extends State<MidiPianoRollWindow> {
           icon: const Icon(Icons.save_as_outlined),
           color: theme.colorScheme.primary,
           onPressed: _save,
+        ),
+      if (labels.midiInput != null && widget.onMidiInputChoiceChanged != null)
+        MidiInputButton(
+          choice: _inputChoice,
+          listening: [for (final d in _input?.listening ?? const []) d.name],
+          failed: [for (final d in _input?.failed ?? const []) d.name],
+          devices: () async {
+            try {
+              return await _backend.devices();
+            } catch (_) {
+              return const <MidiInputDevice>[];
+            }
+          },
+          onChanged: _setInputChoice,
+          labels: labels.midiInput!,
+        ),
+      if (labels.midiInput != null && _editor != null && !_inputChoice.isOff)
+        IconButton(
+          key: const ValueKey('midi-piano-roll-step-input'),
+          tooltip: labels.midiInput!.stepInput,
+          isSelected: _stepInput,
+          icon: const Icon(Icons.input),
+          color: _stepInput ? theme.colorScheme.primary : null,
+          onPressed: () => _setStepInput(!_stepInput),
         ),
       if (widget.onShowShortcuts != null)
         IconButton(

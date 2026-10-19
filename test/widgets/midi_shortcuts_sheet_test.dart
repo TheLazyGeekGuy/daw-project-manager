@@ -39,6 +39,13 @@ void main() {
           reason: 'Cmd on a Mac');
     });
 
+    test('says what a MIDI keyboard does, step input and its cursor', () {
+      final rows = all(mac: false);
+      expect([for (final s in rows) s.keys.join('+')], contains('← / →'));
+      expect([for (final s in rows) s.action],
+          containsAll([l10n.midiShortcutPlayKey, l10n.midiShortcutStepInput]));
+    });
+
     test('keys are named as a Mac prints them on a Mac', () {
       final mac = [for (final s in all(mac: true)) ...s.keys];
       expect(mac, containsAll(['⌘', '⌥', '⇧', '⌫']));

@@ -1,7 +1,7 @@
 import 'dart:async';
 import 'dart:math' as math;
 
-import 'package:flutter/foundation.dart' show setEquals;
+import 'package:flutter/foundation.dart' show ValueListenable, setEquals;
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
@@ -434,7 +434,12 @@ class MidiPianoRoll extends StatefulWidget {
     this.restTick,
     this.acousticFeedback = false,
     this.onAcousticFeedbackChanged,
+    this.playedKeys,
   });
+
+  /// The keys being played on a MIDI keyboard, drawn pressed like a key
+  /// held down with the mouse.
+  final ValueListenable<Set<int>>? playedKeys;
 
   /// Sounds one note: a key pressed on the keyboard, always, and — with
   /// [acousticFeedback] on — a note added, clicked or dragged to another
@@ -602,7 +607,12 @@ class _MidiPianoRollState extends State<MidiPianoRoll>
     _playhead.value = widget.restTick;
     widget.playback?.addListener(_syncTicker);
     widget.editor?.addListener(_onEdit);
+    widget.playedKeys?.addListener(_onPlayedKeys);
     _syncTicker();
+  }
+
+  void _onPlayedKeys() {
+    if (mounted) setState(() {});
   }
 
   void _onEdit() {
@@ -671,8 +681,13 @@ class _MidiPianoRollState extends State<MidiPianoRoll>
       old.editor?.removeListener(_onEdit);
       widget.editor?.addListener(_onEdit);
     }
+    if (old.playedKeys != widget.playedKeys) {
+      old.playedKeys?.removeListener(_onPlayedKeys);
+      widget.playedKeys?.addListener(_onPlayedKeys);
+    }
     if (old.restTick != widget.restTick && !_ticker.isActive) {
       _playhead.value = _restTick;
+      _keepInView(widget.restTick);
     }
     if (!identical(old.clip, widget.clip)) {
       _range = _rangeFor(_shown);
@@ -690,6 +705,7 @@ class _MidiPianoRollState extends State<MidiPianoRoll>
   void dispose() {
     widget.playback?.removeListener(_syncTicker);
     widget.editor?.removeListener(_onEdit);
+    widget.playedKeys?.removeListener(_onPlayedKeys);
     _ticker.dispose();
     _playhead.dispose();
     _toolCursorAt.dispose();
@@ -753,6 +769,21 @@ class _MidiPianoRollState extends State<MidiPianoRoll>
       );
       if (next != _scrollX) setState(() => _scrollX = next);
     }
+  }
+
+  /// Brings [tick] back into view when it has moved off it — the step
+  /// input cursor walking past the right edge — centred, as following
+  /// playback does. Left alone when it is on screen.
+  void _keepInView(double? tick) {
+    if (tick == null || _view == Size.zero) return;
+    final x = tick * _px;
+    if (x >= _scrollX && x <= _scrollX + _gridWidth) return;
+    final next = followScroll(
+      playheadX: x,
+      viewWidth: _gridWidth,
+      maxScroll: math.max(_maxScrollX, x),
+    );
+    if (next != _scrollX) setState(() => _scrollX = next);
   }
 
   /// The tick under the ruler at [x] (ruler-relative pixels), in the clip.
@@ -1947,7 +1978,10 @@ class _MidiPianoRollState extends State<MidiPianoRoll>
                                 ? widget.editor!.selection
                                 : const {},
                             marquee: _marquee,
-                            pressedKey: _pressedKey,
+                            pressedKeys: {
+                              ?_pressedKey,
+                              ...?widget.playedKeys?.value,
+                            },
                             timeSignature: widget.timeSignature,
                             loopRegion: widget.loopRegion,
                             loopActive: widget.loopActive,
@@ -2369,7 +2403,7 @@ class _RollPainter extends CustomPainter {
     required this.clip,
     this.selected = const {},
     this.marquee,
-    this.pressedKey,
+    this.pressedKeys = const {},
     this.showClipEnd = true,
     this.timeSignature = TimeSignature.common,
     this.loopRegion,
@@ -2397,8 +2431,9 @@ class _RollPainter extends CustomPainter {
   /// The selection box being drawn, if one is.
   final Rect? marquee;
 
-  /// The keyboard key held down, drawn pressed.
-  final int? pressedKey;
+  /// The keyboard keys held down — with the mouse, or on a MIDI keyboard —
+  /// drawn pressed.
+  final Set<int> pressedKeys;
 
   /// The range tool's stretch of time, shaded across every key.
   final MidiTickRange? range;
@@ -2637,7 +2672,7 @@ class _RollPainter extends CustomPainter {
         canvas.drawLine(Offset(blackWidth, mid), Offset(keyboardWidth, mid), seam);
         continue;
       }
-      if (pitch == pressedKey) {
+      if (pressedKeys.contains(pitch)) {
         canvas.drawRect(Rect.fromLTWH(0, y, keyboardWidth, rowHeight), pressedPaint);
       }
       if (whiteKeySeamBelow(pitch)) {
@@ -2658,7 +2693,8 @@ class _RollPainter extends CustomPainter {
         topRight: const Radius.circular(2),
         bottomRight: const Radius.circular(2),
       );
-      canvas.drawRRect(key, pitch == pressedKey ? pressedPaint : blackPaint);
+      canvas.drawRRect(
+          key, pressedKeys.contains(pitch) ? pressedPaint : blackPaint);
       if (rowHeight >= 6) {
         canvas.drawRect(
             Rect.fromLTWH(0, y + 1, blackWidth - 2, rowHeight * 0.25), shine);
@@ -2761,7 +2797,7 @@ class _RollPainter extends CustomPainter {
       old.scale != scale ||
       !setEquals(old.selected, selected) ||
       old.marquee != marquee ||
-      old.pressedKey != pressedKey ||
+      !setEquals(old.pressedKeys, pressedKeys) ||
       old.range != range ||
       old.timeSignature != timeSignature ||
       old.loopRegion != loopRegion ||

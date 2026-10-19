@@ -4410,5 +4410,17 @@
   "moveToProfileCopyFailed": "La copia no coincidía con el original, así que no se quitó ni se movió nada:",
   "foldersProfilePickerLabel": "Perfil",
   "foldersProfileActive": "{name} (activo)",
-  "foldersEditingOtherProfile": "Estás editando las carpetas de {name}, no las del perfil activo. Los archivos nuevos en ellas aparecerán la próxima vez que cambies a {name}."
+  "foldersEditingOtherProfile": "Estás editando las carpetas de {name}, no las del perfil activo. Los archivos nuevos en ellas aparecerán la próxima vez que cambies a {name}.",
+  "midiInput": "Entrada MIDI",
+  "midiInputOff": "Sin entrada MIDI",
+  "midiInputAll": "Todas las entradas MIDI",
+  "midiInputNoDevices": "No se encontraron entradas MIDI",
+  "midiInputListening": "Entrada MIDI: {names}",
+  "midiInputBusy": "No se pudo abrir {names}. Puede que otra aplicación la esté usando.",
+  "midiStepInput": "Entrada por pasos: cada nota o acorde que toques se coloca en el cursor, de un paso de cuadrícula",
+  "midiShortcutsMidiInput": "Teclado MIDI",
+  "midiGesturePlayKey": "Tocar una tecla",
+  "midiShortcutPlayKey": "Suena la nota con el instrumento del clip",
+  "midiShortcutStepInput": "Con la entrada por pasos: coloca la nota en el cursor (las teclas pulsadas a la vez forman un acorde)",
+  "midiShortcutStepCursor": "Con la entrada por pasos: mueve el cursor un paso atrás o adelante"
 }

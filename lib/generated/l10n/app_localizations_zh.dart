@@ -7644,4 +7644,44 @@ class AppLocalizationsZh extends AppLocalizations {
   String foldersEditingOtherProfile(String name) {
     return '你正在编辑 $name 的文件夹，而不是当前配置文件的。其中的新文件会在你下次切换到 $name 时出现。';
   }
+
+  @override
+  String get midiInput => 'MIDI 输入';
+
+  @override
+  String get midiInputOff => '无 MIDI 输入';
+
+  @override
+  String get midiInputAll => '所有 MIDI 输入';
+
+  @override
+  String get midiInputNoDevices => '未找到 MIDI 输入';
+
+  @override
+  String midiInputListening(String names) {
+    return 'MIDI 输入：$names';
+  }
+
+  @override
+  String midiInputBusy(String names) {
+    return '无法打开 $names。可能有其他应用正在使用它。';
+  }
+
+  @override
+  String get midiStepInput => '步进输入：弹奏的每个音符或和弦都会放在光标处，长度为一个网格步长';
+
+  @override
+  String get midiShortcutsMidiInput => 'MIDI 键盘';
+
+  @override
+  String get midiGesturePlayKey => '弹奏一个键';
+
+  @override
+  String get midiShortcutPlayKey => '用片段的乐器发出该音符';
+
+  @override
+  String get midiShortcutStepInput => '步进输入时：在光标处输入音符（同时按住的键组成和弦）';
+
+  @override
+  String get midiShortcutStepCursor => '步进输入时：将光标后退或前进一步';
 }

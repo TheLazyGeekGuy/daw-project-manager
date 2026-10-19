@@ -4410,5 +4410,17 @@
   "moveToProfileCopyFailed": "コピーが元のファイルと一致しなかったため、何も削除・移動していません:",
   "foldersProfilePickerLabel": "プロファイル",
   "foldersProfileActive": "{name}（使用中）",
-  "foldersEditingOtherProfile": "有効なプロファイルではなく、{name} のフォルダを編集しています。その中の新しいファイルは、次に {name} に切り替えたときに表示されます。"
+  "foldersEditingOtherProfile": "有効なプロファイルではなく、{name} のフォルダを編集しています。その中の新しいファイルは、次に {name} に切り替えたときに表示されます。",
+  "midiInput": "MIDI入力",
+  "midiInputOff": "MIDI入力なし",
+  "midiInputAll": "すべてのMIDI入力",
+  "midiInputNoDevices": "MIDI入力が見つかりません",
+  "midiInputListening": "MIDI入力：{names}",
+  "midiInputBusy": "{names}を開けませんでした。ほかのアプリが使用している可能性があります。",
+  "midiStepInput": "ステップ入力：弾いたノートや和音をカーソル位置に、グリッド1ステップの長さで入力します",
+  "midiShortcutsMidiInput": "MIDIキーボード",
+  "midiGesturePlayKey": "鍵盤を弾く",
+  "midiShortcutPlayKey": "クリップの楽器でノートを鳴らす",
+  "midiShortcutStepInput": "ステップ入力中：カーソル位置にノートを入力（同時に押さえた鍵盤は和音になる）",
+  "midiShortcutStepCursor": "ステップ入力中：カーソルを1ステップ戻す／進める"
 }

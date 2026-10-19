@@ -8034,4 +8034,47 @@ class AppLocalizationsRu extends AppLocalizations {
   String foldersEditingOtherProfile(String name) {
     return 'Вы редактируете папки $name, а не активного профиля. Новые файлы в них появятся, когда вы в следующий раз переключитесь на $name.';
   }
+
+  @override
+  String get midiInput => 'MIDI-вход';
+
+  @override
+  String get midiInputOff => 'Без MIDI-входа';
+
+  @override
+  String get midiInputAll => 'Все MIDI-входы';
+
+  @override
+  String get midiInputNoDevices => 'MIDI-входы не найдены';
+
+  @override
+  String midiInputListening(String names) {
+    return 'MIDI-вход: $names';
+  }
+
+  @override
+  String midiInputBusy(String names) {
+    return 'Не удалось открыть $names. Возможно, его использует другое приложение.';
+  }
+
+  @override
+  String get midiStepInput =>
+      'Пошаговый ввод: каждая сыгранная нота или аккорд встаёт на курсор, длиной в шаг сетки';
+
+  @override
+  String get midiShortcutsMidiInput => 'MIDI-клавиатура';
+
+  @override
+  String get midiGesturePlayKey => 'Сыграть клавишу';
+
+  @override
+  String get midiShortcutPlayKey => 'Звучит нота инструментом клипа';
+
+  @override
+  String get midiShortcutStepInput =>
+      'При пошаговом вводе: ставит ноту на курсор (клавиши, нажатые вместе, дают аккорд)';
+
+  @override
+  String get midiShortcutStepCursor =>
+      'При пошаговом вводе: сдвигает курсор на шаг назад или вперёд';
 }

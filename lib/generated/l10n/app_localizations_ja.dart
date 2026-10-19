@@ -7734,4 +7734,44 @@ class AppLocalizationsJa extends AppLocalizations {
   String foldersEditingOtherProfile(String name) {
     return '有効なプロファイルではなく、$name のフォルダを編集しています。その中の新しいファイルは、次に $name に切り替えたときに表示されます。';
   }
+
+  @override
+  String get midiInput => 'MIDI入力';
+
+  @override
+  String get midiInputOff => 'MIDI入力なし';
+
+  @override
+  String get midiInputAll => 'すべてのMIDI入力';
+
+  @override
+  String get midiInputNoDevices => 'MIDI入力が見つかりません';
+
+  @override
+  String midiInputListening(String names) {
+    return 'MIDI入力：$names';
+  }
+
+  @override
+  String midiInputBusy(String names) {
+    return '$namesを開けませんでした。ほかのアプリが使用している可能性があります。';
+  }
+
+  @override
+  String get midiStepInput => 'ステップ入力：弾いたノートや和音をカーソル位置に、グリッド1ステップの長さで入力します';
+
+  @override
+  String get midiShortcutsMidiInput => 'MIDIキーボード';
+
+  @override
+  String get midiGesturePlayKey => '鍵盤を弾く';
+
+  @override
+  String get midiShortcutPlayKey => 'クリップの楽器でノートを鳴らす';
+
+  @override
+  String get midiShortcutStepInput => 'ステップ入力中：カーソル位置にノートを入力（同時に押さえた鍵盤は和音になる）';
+
+  @override
+  String get midiShortcutStepCursor => 'ステップ入力中：カーソルを1ステップ戻す／進める';
 }

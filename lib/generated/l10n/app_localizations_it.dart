@@ -8018,4 +8018,48 @@ class AppLocalizationsIt extends AppLocalizations {
   String foldersEditingOtherProfile(String name) {
     return 'Stai modificando le cartelle di $name, non quelle del profilo attivo. I nuovi file al loro interno compariranno la prossima volta che passi a $name.';
   }
+
+  @override
+  String get midiInput => 'Ingresso MIDI';
+
+  @override
+  String get midiInputOff => 'Nessun ingresso MIDI';
+
+  @override
+  String get midiInputAll => 'Tutti gli ingressi MIDI';
+
+  @override
+  String get midiInputNoDevices => 'Nessun ingresso MIDI trovato';
+
+  @override
+  String midiInputListening(String names) {
+    return 'Ingresso MIDI: $names';
+  }
+
+  @override
+  String midiInputBusy(String names) {
+    return 'Impossibile aprire $names. Forse lo sta usando un’altra app.';
+  }
+
+  @override
+  String get midiStepInput =>
+      'Inserimento a passi: ogni nota o accordo che suoni va al cursore, lungo un passo di griglia';
+
+  @override
+  String get midiShortcutsMidiInput => 'Tastiera MIDI';
+
+  @override
+  String get midiGesturePlayKey => 'Suonare un tasto';
+
+  @override
+  String get midiShortcutPlayKey =>
+      'Fa sentire la nota con lo strumento della clip';
+
+  @override
+  String get midiShortcutStepInput =>
+      'Con l’inserimento a passi: inserisce la nota al cursore (i tasti tenuti insieme formano un accordo)';
+
+  @override
+  String get midiShortcutStepCursor =>
+      'Con l’inserimento a passi: sposta il cursore di un passo indietro o avanti';
 }
