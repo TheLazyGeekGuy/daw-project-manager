@@ -216,10 +216,11 @@ String? upgradeBaselineVersion(
 /// match. A line is searched together with its version number, so a version
 /// query keeps the whole release. A blank query returns [changelog] unchanged.
 ///
-/// Matching is `fuzzyMatchAll`, the same rule the dashboard's project search
-/// uses: every word of the query has to hit the line, as a substring or as
-/// word-anchored chunks ("chilvib" finds "chillout vibes"). One search
-/// behaviour across the app rather than a stricter one here.
+/// Matching is `wordStartMatchAll`: every word of the query has to start a
+/// word of the line ("fix" finds "Fixed", "art" not "Start"). Not the
+/// projects search's `fuzzyMatchAll`, which once ran here too: its fuzzy
+/// fallback suits short names, but on a changelog sentence it found "cue" in
+/// "Cubase" and "note" in "now … the" — three in four of "note"'s hits were noise.
 ///
 /// Searches the text in [localeCode] (with its English fallback), since that
 /// is what is on screen.
@@ -235,7 +236,7 @@ List<ChangelogRelease> filterChangelog(
     // whole of 2.8.0 and "2.8 reaper" narrows to the REAPER line in it.
     final hits = [
       for (final line in release.highlightsFor(localeCode))
-        if (fuzzyMatchAll('${release.version} $line', query)) line,
+        if (wordStartMatchAll('${release.version} $line', query)) line,
     ];
     if (hits.isEmpty) continue;
     results.add(ChangelogRelease(

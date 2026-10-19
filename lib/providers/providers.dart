@@ -55,7 +55,6 @@ import '../models/template_root.dart';
 import '../models/project_event.dart';
 import '../repository/project_repository.dart';
 import '../repository/project_trash.dart';
-import '../utils/search_utils.dart';
 import '../utils/project_midi.dart';
 import '../utils/project_search.dart';
 import '../utils/section_rail_width.dart';
@@ -682,13 +681,11 @@ final projectsProvider = Provider<List<MusicProject>>((ref) {
         if (projectsSearch.trim().isNotEmpty) {
           projects = projects
               .where(
-                (p) => fuzzyMatchAny(
-                  projectSearchFields(
-                    p,
-                    includeTags: searchTags,
-                    customFieldIds: searchFieldIds,
-                  ),
+                (p) => projectMatchesSearch(
+                  p,
                   projectsSearch,
+                  includeTags: searchTags,
+                  customFieldIds: searchFieldIds,
                 ),
               )
               .toList();

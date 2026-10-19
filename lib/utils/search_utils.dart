@@ -127,6 +127,45 @@ bool fuzzyMatchAll(String text, String query) {
   return words.every((w) => fuzzyContains(t, w));
 }
 
+/// True for characters of scripts written without spaces between words (kana
+/// and CJK ideographs), where any character may begin a word.
+bool _isUnspacedScript(int c) =>
+    (c >= 0x3040 && c <= 0x30ff) || // Hiragana, Katakana
+    (c >= 0x3400 && c <= 0x9fff) || // CJK ideographs, Extension A included
+    (c >= 0xf900 && c <= 0xfaff) || // CJK compatibility ideographs
+    (c >= 0xff66 && c <= 0xff9f); // Half-width katakana
+
+/// Returns true when [pattern] occurs in [text] at the start of a word:
+/// "fix" finds "Fixed", "art" does not find "Start". Both arguments are
+/// expected to already be lower-case.
+///
+/// The stricter sibling of [fuzzyContains], for long prose. There the fuzzy
+/// fallback has so many words to build a query out of that most of its hits
+/// are noise: "cue" finds "Cubase", "note" finds "**no**w … **t**h**e**".
+///
+/// A pattern starting with a separator (".mid", "#12") may match anywhere,
+/// and so may anything in or after Japanese or Chinese text, which has no
+/// spaces to mark where a word begins.
+bool wordStartContains(String text, String pattern) {
+  if (pattern.isEmpty) return true;
+  final first = pattern.codeUnitAt(0);
+  final anywhere = !_isWordChar(first) || _isUnspacedScript(first);
+  for (var i = text.indexOf(pattern); i >= 0; i = text.indexOf(pattern, i + 1)) {
+    if (anywhere || i == 0) return true;
+    final before = text.codeUnitAt(i - 1);
+    if (!_isWordChar(before) || _isUnspacedScript(before)) return true;
+  }
+  return false;
+}
+
+/// Splits [query] into words and returns true when every word starts a word
+/// of [text] — see [wordStartContains].
+bool wordStartMatchAll(String text, String query) {
+  final words = _wordsFor(query);
+  final t = text.toLowerCase();
+  return words.every((w) => wordStartContains(t, w));
+}
+
 /// Returns true when [query] matches at least one of [texts].
 ///
 /// Every word of [query] has to match the *same* entry — a query only matches

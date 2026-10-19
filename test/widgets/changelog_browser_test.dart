@@ -230,16 +230,21 @@ void main() {
       expect(find.text('Project templates'), findsOneWidget);
     });
 
-    testWidgets('matches fuzzily, like the dashboard project search',
-        (tester) async {
+    testWidgets('matches where words start, never fuzzily', (tester) async {
       await pumpBrowser(tester);
 
-      // Word-anchored chunks: "parperf" is par|ts per|formers.
-      await tester.enterText(find.byType(TextField), 'parperf');
+      await tester.enterText(find.byType(TextField), 'perf');
       await tester.pumpAndSettle();
 
       expect(find.text('Parts and performers'), findsOneWidget);
       expect(find.textContaining('2.9.0'), findsNothing);
+
+      // par|ts per|formers, the projects search's shorthand, finds nothing:
+      // on long changelog lines it found mostly noise.
+      await tester.enterText(find.byType(TextField), 'parperf');
+      await tester.pumpAndSettle();
+
+      expect(find.text('Parts and performers'), findsNothing);
     });
 
     testWidgets('says so when nothing matches', (tester) async {
