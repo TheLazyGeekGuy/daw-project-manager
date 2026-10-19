@@ -45,6 +45,7 @@ import '../utils/file_launcher.dart';
 import '../utils/mobile_utils.dart';
 import '../utils/relocation_preview.dart';
 import '../utils/root_overlap.dart' show findRootOverlaps;
+import '../services/companion_bridge/companion_install_scan.dart';
 import '../services/companion_bridge/companion_protocol.dart';
 import 'widgets/companion_plugin_settings.dart';
 import '../utils/phase_colors.dart';
@@ -3042,7 +3043,18 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
   /// Settings > DAW plugin. The view is plain (CompanionPluginSettingsView);
   /// this only wires it to the providers and the browser.
   Widget _buildDawPluginSection(AppLocalizations l10n) {
+    final installs = ref.watch(companionInstallsProvider);
     return CompanionPluginSettingsView(
+      installs: installs.value,
+      searching: installs.isLoading,
+      scanAvailable: companionScanAvailable,
+      customFolders: ref.watch(companionCustomFoldersProvider),
+      onSearchAgain: () => ref.invalidate(companionInstallsProvider),
+      onAddFolder: () async {
+        final folder = await FilePicker.getDirectoryPath(dialogTitle: l10n.addFolder);
+        if (folder != null) await ref.read(companionCustomFoldersProvider.notifier).add(folder);
+      },
+      onRemoveFolder: (folder) => ref.read(companionCustomFoldersProvider.notifier).remove(folder),
       sighting: ref.watch(companionSightingProvider),
       latestRelease: ref.watch(companionLatestReleaseProvider),
       platform: Platform.isWindows

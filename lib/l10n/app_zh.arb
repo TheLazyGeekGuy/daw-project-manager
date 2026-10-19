@@ -4457,5 +4457,14 @@
   "companionPluginNotSeen": "这台电脑上还没有见到它。请安装后放在 DAW 的主总线上。",
   "companionPluginUpdateAvailable": "版本 {version} 可用。",
   "companionPluginDownload": "下载 DAW 插件",
-  "companionPluginDownloadUpdate": "下载更新"
+  "companionPluginDownloadUpdate": "下载更新",
+  "companionInstalledTitle": "已安装",
+  "companionInstalledVersion": "版本 {version}",
+  "companionInstalledNone": "在标准插件文件夹中未找到。",
+  "companionInstalledDuplicates": "安装了多个副本，DAW 可能会加载其中任意一个。请只保留一个。",
+  "companionSearchAgain": "重新搜索",
+  "companionSearching": "正在搜索…",
+  "companionCustomFoldersHint": "安装在其他位置？添加该文件夹后，当标准文件夹中没有副本时，应用会在那里查找。",
+  "companionCustomFolderTag": "你的文件夹",
+  "companionScanUnavailable": "Flatpak 版无法查看你的插件文件夹。DAW 加载插件后，它会显示在这里。"
 }

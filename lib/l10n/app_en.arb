@@ -8094,5 +8094,15 @@
     }
   },
   "companionPluginDownload": "Download the DAW plugin",
-  "companionPluginDownloadUpdate": "Download the update"
+  "companionPluginDownloadUpdate": "Download the update",
+  "companionInstalledTitle": "Installed",
+  "companionInstalledVersion": "Version {version}",
+  "@companionInstalledVersion": {"placeholders": {"version": {"type": "String"}}},
+  "companionInstalledNone": "Not found in the standard plug-in folders.",
+  "companionInstalledDuplicates": "More than one copy is installed, so your DAW may load either. Keep only one.",
+  "companionSearchAgain": "Search again",
+  "companionSearching": "Searching…",
+  "companionCustomFoldersHint": "Installed it somewhere else? Add that folder, and the app looks there when the standard folders have no copy.",
+  "companionCustomFolderTag": "your folder",
+  "companionScanUnavailable": "The Flatpak can't look into your plug-in folders. The plugin shows up here once a DAW has loaded it."
 }

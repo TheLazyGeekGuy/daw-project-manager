@@ -8222,4 +8222,37 @@ class AppLocalizationsRu extends AppLocalizations {
 
   @override
   String get companionPluginDownloadUpdate => 'Скачать обновление';
+
+  @override
+  String get companionInstalledTitle => 'Установлено';
+
+  @override
+  String companionInstalledVersion(String version) {
+    return 'Версия $version';
+  }
+
+  @override
+  String get companionInstalledNone =>
+      'Не найден в стандартных папках плагинов.';
+
+  @override
+  String get companionInstalledDuplicates =>
+      'Установлено несколько копий, поэтому DAW может загрузить любую из них. Оставьте только одну.';
+
+  @override
+  String get companionSearchAgain => 'Искать снова';
+
+  @override
+  String get companionSearching => 'Поиск…';
+
+  @override
+  String get companionCustomFoldersHint =>
+      'Установили в другое место? Добавьте эту папку: приложение будет искать в ней, когда в стандартных папках копии нет.';
+
+  @override
+  String get companionCustomFolderTag => 'ваша папка';
+
+  @override
+  String get companionScanUnavailable =>
+      'Flatpak не может заглянуть в ваши папки плагинов. Плагин появится здесь, когда его загрузит DAW.';
 }

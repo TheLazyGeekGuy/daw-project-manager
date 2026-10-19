@@ -7917,4 +7917,36 @@ class AppLocalizationsJa extends AppLocalizations {
 
   @override
   String get companionPluginDownloadUpdate => 'アップデートをダウンロード';
+
+  @override
+  String get companionInstalledTitle => 'インストール済み';
+
+  @override
+  String companionInstalledVersion(String version) {
+    return 'バージョン $version';
+  }
+
+  @override
+  String get companionInstalledNone => '標準のプラグインフォルダーに見つかりません。';
+
+  @override
+  String get companionInstalledDuplicates =>
+      '複数のコピーがインストールされているため、DAW がどちらを読み込むかわかりません。1 つだけ残してください。';
+
+  @override
+  String get companionSearchAgain => '再検索';
+
+  @override
+  String get companionSearching => '検索中…';
+
+  @override
+  String get companionCustomFoldersHint =>
+      '別の場所にインストールしましたか？ そのフォルダーを追加すると、標準フォルダーにコピーがない場合にアプリがそこを探します。';
+
+  @override
+  String get companionCustomFolderTag => '追加したフォルダー';
+
+  @override
+  String get companionScanUnavailable =>
+      'Flatpak 版はプラグインフォルダーを参照できません。DAW がプラグインを読み込むと、ここに表示されます。';
 }

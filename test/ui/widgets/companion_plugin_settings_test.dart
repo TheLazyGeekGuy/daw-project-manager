@@ -1,4 +1,5 @@
 import 'package:daw_project_manager/generated/l10n/app_localizations.dart';
+import 'package:daw_project_manager/services/companion_bridge/companion_install_scan.dart';
 import 'package:daw_project_manager/services/companion_bridge/companion_protocol.dart';
 import 'package:daw_project_manager/ui/widgets/companion_plugin_settings.dart';
 import 'package:flutter/material.dart';
@@ -12,11 +13,21 @@ void main() {
 
   late List<String> opened;
   late List<bool> endChanges, startChanges;
+  late int addFolderTaps, searchAgainTaps;
 
-  Future<void> pump(WidgetTester tester, {CompanionSighting? sighting, CompanionRelease? latest}) async {
+  Future<void> pump(
+    WidgetTester tester, {
+    CompanionSighting? sighting,
+    CompanionRelease? latest,
+    List<CompanionInstall>? installs = const [],
+    bool scanAvailable = true,
+    List<String> customFolders = const [],
+  }) async {
     opened = [];
     endChanges = [];
     startChanges = [];
+    addFolderTaps = 0;
+    searchAgainTaps = 0;
     await tester.pumpWidget(MaterialApp(
       locale: const Locale('en'),
       localizationsDelegates: AppLocalizations.localizationsDelegates,
@@ -32,6 +43,12 @@ void main() {
             onDownload: opened.add,
             onEndSessionChanged: endChanges.add,
             onStartSessionChanged: startChanges.add,
+            installs: installs,
+            scanAvailable: scanAvailable,
+            customFolders: customFolders,
+            onSearchAgain: () => searchAgainTaps++,
+            onAddFolder: () => addFolderTaps++,
+            onRemoveFolder: (_) {},
           ),
         ),
       ),
@@ -67,10 +84,59 @@ void main() {
     expect(opened, [companionReleasesPage]);
   });
 
+  group('installed copies', () {
+    const allUsers = CompanionInstall(r'C:\Program Files\Common Files\VST3\DPM Companion.vst3', CompanionPluginFormat.vst3, '0.1.0');
+    const justMe = CompanionInstall(r'C:\Users\ana\AppData\Local\Programs\Common\VST3\DPM Companion.vst3', CompanionPluginFormat.vst3, '0.1.0');
+
+    testWidgets('each copy shows its format, version and folder; no custom folders offered', (tester) async {
+      await pump(tester, installs: [allUsers]);
+      expect(find.text('VST3  ·  Version 0.1.0'), findsOneWidget);
+      expect(find.text(allUsers.path), findsOneWidget);
+      expect(find.text('Add Folder'), findsNothing);
+      expect(find.textContaining('More than one copy'), findsNothing);
+    });
+
+    testWidgets('two copies of one format are flagged', (tester) async {
+      await pump(tester, installs: [allUsers, justMe]);
+      expect(find.textContaining('More than one copy is installed'), findsOneWidget);
+    });
+
+    testWidgets('nothing in the standard folders: says so and offers the user\'s own', (tester) async {
+      await pump(tester, customFolders: [r'D:\My Plugins']);
+      expect(find.text('Not found in the standard plug-in folders.'), findsOneWidget);
+      expect(find.text(r'D:\My Plugins'), findsOneWidget);
+      await tester.tap(find.text('Add Folder'));
+      await tester.tap(find.text('Search again'));
+      expect(addFolderTaps, 1);
+      expect(searchAgainTaps, 1);
+    });
+
+    testWidgets('a copy found in the user\'s folder keeps those folders on show', (tester) async {
+      const custom = CompanionInstall(r'D:\My Plugins\DPM Companion.vst3', CompanionPluginFormat.vst3, '0.1.0', inCustomFolder: true);
+      await pump(tester, installs: [custom], customFolders: [r'D:\My Plugins']);
+      expect(find.textContaining('your folder'), findsOneWidget);
+      expect(find.text('Add Folder'), findsOneWidget);
+    });
+
+    testWidgets('an installed copy older than the newest release offers the update, even never seen running', (tester) async {
+      await pump(tester, installs: [allUsers], latest: release);
+      expect(find.text('Version 0.2.0 is available.'), findsOneWidget);
+      expect(find.text('Download the update'), findsOneWidget);
+    });
+
+    testWidgets('inside the Flatpak it explains it can\'t look', (tester) async {
+      await pump(tester, installs: null, scanAvailable: false);
+      expect(find.textContaining("The Flatpak can't look"), findsOneWidget);
+      expect(find.text('Search again'), findsNothing);
+    });
+  });
+
   testWidgets('the work session switches report their changes', (tester) async {
     await pump(tester);
-    await tester.tap(find.text('End the session when the DAW closes the project'));
-    await tester.tap(find.text('Start a session when a project opens in the DAW'));
+    for (final label in ['End the session when the DAW closes the project', 'Start a session when a project opens in the DAW']) {
+      await tester.ensureVisible(find.text(label));
+      await tester.tap(find.text(label));
+    }
     expect(endChanges, [false]);
     expect(startChanges, [true]);
   });

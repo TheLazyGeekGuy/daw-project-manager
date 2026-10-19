@@ -66,6 +66,7 @@ import '../models/auto_backup_interval.dart';
 import '../models/pending_folder.dart';
 import '../services/metadata_extractor.dart';
 import '../services/auto_start_service.dart';
+import '../services/companion_bridge/companion_install_scan.dart';
 import '../services/companion_bridge/companion_protocol.dart';
 import '../services/crash_logger.dart';
 
@@ -4901,6 +4902,62 @@ class CompanionLatestReleaseNotifier extends Notifier<CompanionRelease?> {
 final companionLatestReleaseProvider = NotifierProvider<CompanionLatestReleaseNotifier, CompanionRelease?>(
   CompanionLatestReleaseNotifier.new,
 );
+
+/// Folders the user added for finding the plugin, searched only when the
+/// standard plug-in folders have no copy. Device-local: paths of this disk.
+class CompanionCustomFoldersNotifier extends Notifier<List<String>> {
+  static const storageKey = 'companionCustomFolders';
+
+  @override
+  List<String> build() {
+    _load();
+    return const [];
+  }
+
+  Future<void> _load() async {
+    final box = await Hive.openBox<String>('settings');
+    final saved = box.get(storageKey);
+    if (saved == null) return;
+    try {
+      state = [for (final f in jsonDecode(saved) as List) if (f is String) f];
+    } catch (_) {}
+  }
+
+  Future<void> add(String folder) async {
+    if (state.any((f) => f.toLowerCase() == folder.toLowerCase())) return;
+    await _save([...state, folder]);
+  }
+
+  Future<void> remove(String folder) => _save([...state]..remove(folder));
+
+  Future<void> _save(List<String> folders) async {
+    state = folders;
+    final box = await Hive.openBox<String>('settings');
+    await box.put(storageKey, jsonEncode(folders));
+  }
+}
+
+final companionCustomFoldersProvider = NotifierProvider<CompanionCustomFoldersNotifier, List<String>>(
+  CompanionCustomFoldersNotifier.new,
+);
+
+/// The plugin's installed copies: the standard folders, then the user's own
+/// only when those have none. Searched again each time Settings > DAW plugin
+/// opens (autoDispose) and on "Search again" (invalidate). Null where the
+/// folders can't be seen (the Flatpak).
+final companionInstallsProvider = FutureProvider.autoDispose<List<CompanionInstall>?>((ref) async {
+  final custom = ref.watch(companionCustomFoldersProvider);
+  if (!companionScanAvailable) return null;
+  return findCompanionInstalls(
+    standard: await standardCompanionFoldersHere(),
+    customFolders: custom,
+    platform: Platform.isWindows
+        ? CompanionPlatform.windows
+        : Platform.isMacOS
+            ? CompanionPlatform.macOS
+            : CompanionPlatform.linux,
+  );
+});
 
 final companionEndSessionProvider = NotifierProvider<CompanionEndSessionNotifier, bool>(
   CompanionEndSessionNotifier.new,

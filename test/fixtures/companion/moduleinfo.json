@@ -1,0 +1,48 @@
+{
+  "Name": "DPM Companion",
+  "Version": "0.1.0",
+  "Factory Info": {
+    "Vendor": "BandPass Records",
+    "URL": "https://github.com/bandpassrecords/daw-project-manager",
+    "E-Mail": "",
+    "Flags": {
+      "Unicode": true,
+      "Classes Discardable": false,
+      "Component Non Discardable": false,
+    },
+  },
+  "Classes": [
+    {
+      "CID": "ABCDEF019182FAEB426E707244706D63",
+      "Category": "Audio Module Class",
+      "Name": "DPM Companion",
+      "Vendor": "BandPass Records",
+      "Version": "0.1.0",
+      "SDKVersion": "VST 3.8.0",
+      "Sub Categories": [
+        "Fx",
+        "Analyzer",
+      ],
+      "Class Flags": 0,
+      "Cardinality": 2147483647,
+      "Snapshots": [
+      ],
+    },
+    {
+      "CID": "ABCDEF011234ABCD426E707244706D63",
+      "Category": "Component Controller Class",
+      "Name": "DPM Companion",
+      "Vendor": "BandPass Records",
+      "Version": "0.1.0",
+      "SDKVersion": "VST 3.8.0",
+      "Sub Categories": [
+        "Fx",
+        "Analyzer",
+      ],
+      "Class Flags": 0,
+      "Cardinality": 2147483647,
+      "Snapshots": [
+      ],
+    },
+  ],
+}

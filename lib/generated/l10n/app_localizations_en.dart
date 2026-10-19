@@ -8139,4 +8139,37 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get companionPluginDownloadUpdate => 'Download the update';
+
+  @override
+  String get companionInstalledTitle => 'Installed';
+
+  @override
+  String companionInstalledVersion(String version) {
+    return 'Version $version';
+  }
+
+  @override
+  String get companionInstalledNone =>
+      'Not found in the standard plug-in folders.';
+
+  @override
+  String get companionInstalledDuplicates =>
+      'More than one copy is installed, so your DAW may load either. Keep only one.';
+
+  @override
+  String get companionSearchAgain => 'Search again';
+
+  @override
+  String get companionSearching => 'Searching…';
+
+  @override
+  String get companionCustomFoldersHint =>
+      'Installed it somewhere else? Add that folder, and the app looks there when the standard folders have no copy.';
+
+  @override
+  String get companionCustomFolderTag => 'your folder';
+
+  @override
+  String get companionScanUnavailable =>
+      'The Flatpak can\'t look into your plug-in folders. The plugin shows up here once a DAW has loaded it.';
 }

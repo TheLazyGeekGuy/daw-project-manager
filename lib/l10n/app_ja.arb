@@ -4457,5 +4457,14 @@
   "companionPluginNotSeen": "このコンピューターではまだ確認されていません。インストールして、DAW のマスターバスに挿してください。",
   "companionPluginUpdateAvailable": "バージョン {version} が利用できます。",
   "companionPluginDownload": "DAW プラグインをダウンロード",
-  "companionPluginDownloadUpdate": "アップデートをダウンロード"
+  "companionPluginDownloadUpdate": "アップデートをダウンロード",
+  "companionInstalledTitle": "インストール済み",
+  "companionInstalledVersion": "バージョン {version}",
+  "companionInstalledNone": "標準のプラグインフォルダーに見つかりません。",
+  "companionInstalledDuplicates": "複数のコピーがインストールされているため、DAW がどちらを読み込むかわかりません。1 つだけ残してください。",
+  "companionSearchAgain": "再検索",
+  "companionSearching": "検索中…",
+  "companionCustomFoldersHint": "別の場所にインストールしましたか？ そのフォルダーを追加すると、標準フォルダーにコピーがない場合にアプリがそこを探します。",
+  "companionCustomFolderTag": "追加したフォルダー",
+  "companionScanUnavailable": "Flatpak 版はプラグインフォルダーを参照できません。DAW がプラグインを読み込むと、ここに表示されます。"
 }

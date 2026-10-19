@@ -4457,5 +4457,14 @@
   "companionPluginNotSeen": "Aún no se ha visto en este equipo. Instálalo y ponlo en el bus máster de tu DAW.",
   "companionPluginUpdateAvailable": "La versión {version} está disponible.",
   "companionPluginDownload": "Descargar el plugin para la DAW",
-  "companionPluginDownloadUpdate": "Descargar la actualización"
+  "companionPluginDownloadUpdate": "Descargar la actualización",
+  "companionInstalledTitle": "Instalado",
+  "companionInstalledVersion": "Versión {version}",
+  "companionInstalledNone": "No se encontró en las carpetas de plugins estándar.",
+  "companionInstalledDuplicates": "Hay más de una copia instalada, así que tu DAW puede cargar cualquiera. Conserva solo una.",
+  "companionSearchAgain": "Buscar de nuevo",
+  "companionSearching": "Buscando…",
+  "companionCustomFoldersHint": "¿Lo instalaste en otro sitio? Añade esa carpeta y la aplicación buscará allí cuando las carpetas estándar no tengan ninguna copia.",
+  "companionCustomFolderTag": "tu carpeta",
+  "companionScanUnavailable": "El Flatpak no puede mirar en tus carpetas de plugins. El plugin aparecerá aquí cuando una DAW lo haya cargado."
 }

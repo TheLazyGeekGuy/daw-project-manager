@@ -13304,6 +13304,60 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Download the update'**
   String get companionPluginDownloadUpdate;
+
+  /// No description provided for @companionInstalledTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Installed'**
+  String get companionInstalledTitle;
+
+  /// No description provided for @companionInstalledVersion.
+  ///
+  /// In en, this message translates to:
+  /// **'Version {version}'**
+  String companionInstalledVersion(String version);
+
+  /// No description provided for @companionInstalledNone.
+  ///
+  /// In en, this message translates to:
+  /// **'Not found in the standard plug-in folders.'**
+  String get companionInstalledNone;
+
+  /// No description provided for @companionInstalledDuplicates.
+  ///
+  /// In en, this message translates to:
+  /// **'More than one copy is installed, so your DAW may load either. Keep only one.'**
+  String get companionInstalledDuplicates;
+
+  /// No description provided for @companionSearchAgain.
+  ///
+  /// In en, this message translates to:
+  /// **'Search again'**
+  String get companionSearchAgain;
+
+  /// No description provided for @companionSearching.
+  ///
+  /// In en, this message translates to:
+  /// **'Searching…'**
+  String get companionSearching;
+
+  /// No description provided for @companionCustomFoldersHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Installed it somewhere else? Add that folder, and the app looks there when the standard folders have no copy.'**
+  String get companionCustomFoldersHint;
+
+  /// No description provided for @companionCustomFolderTag.
+  ///
+  /// In en, this message translates to:
+  /// **'your folder'**
+  String get companionCustomFolderTag;
+
+  /// No description provided for @companionScanUnavailable.
+  ///
+  /// In en, this message translates to:
+  /// **'The Flatpak can\'t look into your plug-in folders. The plugin shows up here once a DAW has loaded it.'**
+  String get companionScanUnavailable;
 }
 
 class _AppLocalizationsDelegate

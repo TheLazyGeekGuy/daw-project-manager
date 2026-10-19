@@ -7825,4 +7825,35 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get companionPluginDownloadUpdate => '下载更新';
+
+  @override
+  String get companionInstalledTitle => '已安装';
+
+  @override
+  String companionInstalledVersion(String version) {
+    return '版本 $version';
+  }
+
+  @override
+  String get companionInstalledNone => '在标准插件文件夹中未找到。';
+
+  @override
+  String get companionInstalledDuplicates => '安装了多个副本，DAW 可能会加载其中任意一个。请只保留一个。';
+
+  @override
+  String get companionSearchAgain => '重新搜索';
+
+  @override
+  String get companionSearching => '正在搜索…';
+
+  @override
+  String get companionCustomFoldersHint =>
+      '安装在其他位置？添加该文件夹后，当标准文件夹中没有副本时，应用会在那里查找。';
+
+  @override
+  String get companionCustomFolderTag => '你的文件夹';
+
+  @override
+  String get companionScanUnavailable =>
+      'Flatpak 版无法查看你的插件文件夹。DAW 加载插件后，它会显示在这里。';
 }

@@ -4457,5 +4457,14 @@
   "companionPluginNotSeen": "На этом компьютере пока не замечен. Установите его и поставьте на мастер-шину DAW.",
   "companionPluginUpdateAvailable": "Доступна версия {version}.",
   "companionPluginDownload": "Скачать плагин для DAW",
-  "companionPluginDownloadUpdate": "Скачать обновление"
+  "companionPluginDownloadUpdate": "Скачать обновление",
+  "companionInstalledTitle": "Установлено",
+  "companionInstalledVersion": "Версия {version}",
+  "companionInstalledNone": "Не найден в стандартных папках плагинов.",
+  "companionInstalledDuplicates": "Установлено несколько копий, поэтому DAW может загрузить любую из них. Оставьте только одну.",
+  "companionSearchAgain": "Искать снова",
+  "companionSearching": "Поиск…",
+  "companionCustomFoldersHint": "Установили в другое место? Добавьте эту папку: приложение будет искать в ней, когда в стандартных папках копии нет.",
+  "companionCustomFolderTag": "ваша папка",
+  "companionScanUnavailable": "Flatpak не может заглянуть в ваши папки плагинов. Плагин появится здесь, когда его загрузит DAW."
 }
