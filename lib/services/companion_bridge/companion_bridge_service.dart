@@ -142,6 +142,11 @@ class CompanionBridgeService {
   CompanionRelease? _latestRelease;
   DateTime? _nextReleaseCheck;
 
+  // Message ids handled lately, listed in the index as "applied".
+  final List<({String id, DateTime at})> _applied = [];
+  static const appliedKeptFor = Duration(minutes: 30);
+  static const appliedKeptMax = 500;
+
   // Presence: running plugin instances by runId, and what changed this tick.
   final Map<String, CompanionInstance> _instances = {};
   final List<CompanionProjectRef> _hellos = [];
@@ -191,10 +196,13 @@ class CompanionBridgeService {
       _lastTick = now;
 
       await _readHeartbeats();
-      final applied = await processOutbox();
+      final handledBefore = _applied.length;
+      final changed = await processOutbox();
       await _expireStale(now);
       await _decideSession(before);
-      await writeIndex(force: applied > 0);
+      // Rewritten after anything was handled, changed or not: the fresh
+      // "applied" list and generatedAt are the plugin's confirmation.
+      await writeIndex(force: changed > 0 || _applied.length != handledBefore);
     } catch (e) {
       if (kDebugMode) debugPrint('Companion bridge tick failed: $e');
     } finally {
@@ -206,8 +214,14 @@ class CompanionBridgeService {
   /// when [force]d). Returns whether it wrote.
   Future<bool> writeIndex({bool force = false}) async {
     await _refreshLatestRelease();
+    final now = _now();
+    _applied.removeWhere((a) => now.difference(a.at) > appliedKeptFor);
+    if (_applied.length > appliedKeptMax) _applied.removeRange(0, _applied.length - appliedKeptMax);
     final index = buildCompanionIndex(await library.load(),
-        generatedAt: _now(), appVersion: appVersion, latestRelease: _latestRelease);
+        generatedAt: now,
+        appVersion: appVersion,
+        latestRelease: _latestRelease,
+        appliedMessageIds: [for (final a in _applied) a.id]);
     final fingerprint = companionIndexFingerprint(index);
     if (!force && fingerprint == _lastFingerprint && await indexFile.exists()) return false;
 
@@ -275,6 +289,8 @@ class CompanionBridgeService {
           changed++;
           library = await this.library.load();
         }
+        // Handled, whatever came of it: the plugin stops waiting.
+        if (message != null) _applied.add((id: message.id, at: _now()));
       } catch (e) {
         if (kDebugMode) debugPrint('Companion message ${p.basename(file.path)} failed: $e');
       }
@@ -308,6 +324,14 @@ class CompanionBridgeService {
         final found = _find(library, message.project);
         if (found == null) return false;
         final updated = applyCompanionTodoAdd(found.owner, message);
+        if (updated == null) return false;
+        await this.library.saveProject(found.profileId, updated);
+        return true;
+
+      case CompanionNotesSet():
+        final found = _find(library, message.project);
+        if (found == null) return false;
+        final updated = applyCompanionNotesSet(found.owner, message);
         if (updated == null) return false;
         await this.library.saveProject(found.profileId, updated);
         return true;

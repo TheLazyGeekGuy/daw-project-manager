@@ -128,6 +128,7 @@ Map<String, dynamic> buildCompanionIndex(
   required DateTime generatedAt,
   required String appVersion,
   CompanionRelease? latestRelease,
+  List<String> appliedMessageIds = const [],
 }) {
   final projects = <Map<String, dynamic>>[];
 
@@ -142,6 +143,7 @@ Map<String, dynamic> buildCompanionIndex(
         'name': project.displayName,
         'filePath': project.filePath,
         'dawType': project.dawType ?? '',
+        'notes': owner.notes ?? '',
         'todos': [
           for (final todo in owner.todos)
             {
@@ -161,6 +163,8 @@ Map<String, dynamic> buildCompanionIndex(
     'app': {'version': appVersion},
     if (latestRelease != null)
       'companion': {'latestVersion': latestRelease.version, 'releaseUrl': latestRelease.url},
+    // The plugin messages handled lately: how a notes edit learns it arrived.
+    'applied': appliedMessageIds,
     'projects': projects,
   };
 }
@@ -264,6 +268,15 @@ class CompanionTodoSetCompleted extends CompanionMessage {
       {required this.todoId, required this.completed});
 }
 
+/// The project's notes, edited in the plugin: the whole new text and the
+/// text it was edited from.
+class CompanionNotesSet extends CompanionMessage {
+  final String text;
+  final String baseText;
+
+  const CompanionNotesSet(super.id, super.createdAt, super.project, {required this.text, required this.baseText});
+}
+
 class CompanionCaptureReady extends CompanionMessage {
   /// Relative to the bridge folder, forward slashes.
   final String file;
@@ -284,6 +297,12 @@ class CompanionUnknownMessage extends CompanionMessage {
 
 /// Longest to-do text accepted from the plugin (it sends at most 500).
 const int companionMaxTodoLength = 500;
+
+/// Longest notes text accepted from the plugin (it sends at most 20 000).
+const int companionMaxNotesLength = 20000;
+
+/// Put between the app's notes and the plugin's when both changed at once.
+const companionNotesSeparator = '\n\n----------\n';
 
 /// Reads one outbox file. Null when it isn't a message at all.
 /// A time written by the plugin (UTC, "Z"), as the app keeps times: local.
@@ -342,6 +361,14 @@ CompanionMessage? parseCompanionMessage(String text) {
       final completed = payload['completed'];
       if (todoId is! String || completed is! bool) return null;
       return CompanionTodoSetCompleted(id, createdAt, project, todoId: todoId, completed: completed);
+
+    case 'notes.set':
+      final text = payload['text'];
+      final baseText = payload['baseText'];
+      if (text is! String || baseText is! String) return null;
+      return CompanionNotesSet(id, createdAt, project,
+          text: text.length > companionMaxNotesLength ? text.substring(0, companionMaxNotesLength) : text,
+          baseText: baseText);
 
     case 'capture.ready':
       final file = payload['file'];
@@ -507,6 +534,22 @@ CompanionSessionAction? decideCompanionSession({
 
   if (startWhenDawOpens && hellos.isNotEmpty) return StartCompanionSession(hellos.last);
   return null;
+}
+
+/// [owner] with the plugin's notes edit applied, or null when there is
+/// nothing to change. Notes are never silently lost:
+/// - the app's notes still read as the edit began ([CompanionNotesSet.baseText])
+///   → the plugin's text replaces them;
+/// - they changed in the app meanwhile → both are kept: the app's, a
+///   separator line, then the plugin's.
+MusicProject? applyCompanionNotesSet(MusicProject owner, CompanionNotesSet message) {
+  final current = owner.notes ?? '';
+  if (current == message.text) return null;
+
+  final merged = current == message.baseText || current.trim().isEmpty
+      ? message.text
+      : '$current$companionNotesSeparator${message.text}';
+  return merged.isEmpty ? owner.copyWith(clearNotes: true) : owner.copyWith(notes: merged);
 }
 
 /// The plugin's captures are copied here, under the preview-songs folder,
