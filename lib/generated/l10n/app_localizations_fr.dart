@@ -8163,4 +8163,112 @@ class AppLocalizationsFr extends AppLocalizations {
   String midiCalibrated(int ms) {
     return 'Latence d’enregistrement réglée à $ms ms';
   }
+
+  @override
+  String get companionSessionsDescription =>
+      'Avec le plugin DPM Companion dans un projet, l\'application sait quand votre DAW l\'ouvre et le ferme.';
+
+  @override
+  String get companionEndSessionWhenDawCloses =>
+      'Terminer la session quand la DAW ferme le projet';
+
+  @override
+  String get companionEndSessionWhenDawClosesDescription =>
+      'Même après un plantage : la session se termine au moment où la DAW a lâché le projet.';
+
+  @override
+  String get companionStartSessionWhenDawOpens =>
+      'Démarrer une session quand un projet s\'ouvre dans la DAW';
+
+  @override
+  String get companionStartSessionWhenDawOpensDescription =>
+      'Seulement si aucune session n\'est en cours, et seulement pour les projets du profil actif.';
+
+  @override
+  String get companionSessionEndedTitle => 'Session terminée';
+
+  @override
+  String companionSessionEndedClosed(String daw, String project) {
+    return '$daw a fermé $project, la session de travail est donc terminée.';
+  }
+
+  @override
+  String companionSessionEndedNoResponse(String daw, String project) {
+    return 'DPM Companion a cessé de répondre dans $daw, la session de $project s\'est donc terminée au dernier signe de vie. La DAW a peut-être planté ou été fermée brutalement.';
+  }
+
+  @override
+  String get companionUnknownDaw => 'Votre DAW';
+
+  @override
+  String companionSessionEndedSummary(
+    String start,
+    String end,
+    String duration,
+  ) {
+    return '$start–$end · $duration';
+  }
+
+  @override
+  String get companionPluginTabLabel => 'Plugin pour la DAW';
+
+  @override
+  String get companionPluginTitle => 'DPM Companion';
+
+  @override
+  String get companionPluginDescription =>
+      'Un plugin VST3/AU pour votre DAW. Placez-le sur le bus master : il affiche les tâches du projet, enregistre chaque lecture comme chanson d\'aperçu du projet et peut terminer votre session de travail quand la DAW ferme le projet.';
+
+  @override
+  String companionPluginLastSeen(String daw, String version, String date) {
+    return 'Vu pour la dernière fois dans $daw (version $version) le $date.';
+  }
+
+  @override
+  String get companionPluginNotSeen =>
+      'Pas encore vu sur cet ordinateur. Installez-le, puis placez-le sur le bus master de votre DAW.';
+
+  @override
+  String companionPluginUpdateAvailable(String version) {
+    return 'La version $version est disponible.';
+  }
+
+  @override
+  String get companionPluginDownload => 'Télécharger le plugin pour la DAW';
+
+  @override
+  String get companionPluginDownloadUpdate => 'Télécharger la mise à jour';
+
+  @override
+  String get companionInstalledTitle => 'Installé';
+
+  @override
+  String companionInstalledVersion(String version) {
+    return 'Version $version';
+  }
+
+  @override
+  String get companionInstalledNone =>
+      'Introuvable dans les dossiers de plugins standard.';
+
+  @override
+  String get companionInstalledDuplicates =>
+      'Plusieurs copies sont installées : votre DAW peut charger l\'une ou l\'autre. N\'en gardez qu\'une.';
+
+  @override
+  String get companionSearchAgain => 'Rechercher à nouveau';
+
+  @override
+  String get companionSearching => 'Recherche…';
+
+  @override
+  String get companionCustomFoldersHint =>
+      'Installé ailleurs ? Ajoutez ce dossier : l\'application y cherchera quand les dossiers standard n\'en contiennent aucune copie.';
+
+  @override
+  String get companionCustomFolderTag => 'votre dossier';
+
+  @override
+  String get companionScanUnavailable =>
+      'Le Flatpak ne peut pas regarder dans vos dossiers de plugins. Le plugin apparaîtra ici dès qu\'une DAW l\'aura chargé.';
 }

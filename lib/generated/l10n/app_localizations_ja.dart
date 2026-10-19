@@ -7844,4 +7844,109 @@ class AppLocalizationsJa extends AppLocalizations {
   String midiCalibrated(int ms) {
     return '録音レイテンシーを $ms ms に設定しました';
   }
+
+  @override
+  String get companionSessionsDescription =>
+      'プロジェクトに DPM Companion プラグインを入れると、DAW がそのプロジェクトを開いたり閉じたりしたことがアプリに伝わります。';
+
+  @override
+  String get companionEndSessionWhenDawCloses => 'DAW がプロジェクトを閉じたらセッションを終了';
+
+  @override
+  String get companionEndSessionWhenDawClosesDescription =>
+      'クラッシュ後も同様です。セッションは DAW がプロジェクトを手放した時刻で終了します。';
+
+  @override
+  String get companionStartSessionWhenDawOpens => 'DAW でプロジェクトが開かれたらセッションを開始';
+
+  @override
+  String get companionStartSessionWhenDawOpensDescription =>
+      '実行中のセッションがない場合のみ、またアクティブなプロフィールのプロジェクトのみが対象です。';
+
+  @override
+  String get companionSessionEndedTitle => 'セッションが終了しました';
+
+  @override
+  String companionSessionEndedClosed(String daw, String project) {
+    return '$daw が $project を閉じたため、作業セッションを終了しました。';
+  }
+
+  @override
+  String companionSessionEndedNoResponse(String daw, String project) {
+    return '$daw の DPM Companion から応答がなくなったため、$project のセッションを最後に応答があった時刻で終了しました。DAW がクラッシュしたか、強制終了された可能性があります。';
+  }
+
+  @override
+  String get companionUnknownDaw => 'DAW';
+
+  @override
+  String companionSessionEndedSummary(
+    String start,
+    String end,
+    String duration,
+  ) {
+    return '$start–$end · $duration';
+  }
+
+  @override
+  String get companionPluginTabLabel => 'DAW プラグイン';
+
+  @override
+  String get companionPluginTitle => 'DPM Companion';
+
+  @override
+  String get companionPluginDescription =>
+      'DAW 用の VST3/AU プラグインです。マスターバスに挿すと、プロジェクトのタスクを表示し、再生のたびにプロジェクトのプレビュー曲として録音し、DAW がプロジェクトを閉じたときに作業セッションを終了できます。';
+
+  @override
+  String companionPluginLastSeen(String daw, String version, String date) {
+    return '最後に確認: $daw（バージョン $version）、$date。';
+  }
+
+  @override
+  String get companionPluginNotSeen =>
+      'このコンピューターではまだ確認されていません。インストールして、DAW のマスターバスに挿してください。';
+
+  @override
+  String companionPluginUpdateAvailable(String version) {
+    return 'バージョン $version が利用できます。';
+  }
+
+  @override
+  String get companionPluginDownload => 'DAW プラグインをダウンロード';
+
+  @override
+  String get companionPluginDownloadUpdate => 'アップデートをダウンロード';
+
+  @override
+  String get companionInstalledTitle => 'インストール済み';
+
+  @override
+  String companionInstalledVersion(String version) {
+    return 'バージョン $version';
+  }
+
+  @override
+  String get companionInstalledNone => '標準のプラグインフォルダーに見つかりません。';
+
+  @override
+  String get companionInstalledDuplicates =>
+      '複数のコピーがインストールされているため、DAW がどちらを読み込むかわかりません。1 つだけ残してください。';
+
+  @override
+  String get companionSearchAgain => '再検索';
+
+  @override
+  String get companionSearching => '検索中…';
+
+  @override
+  String get companionCustomFoldersHint =>
+      '別の場所にインストールしましたか？ そのフォルダーを追加すると、標準フォルダーにコピーがない場合にアプリがそこを探します。';
+
+  @override
+  String get companionCustomFolderTag => '追加したフォルダー';
+
+  @override
+  String get companionScanUnavailable =>
+      'Flatpak 版はプラグインフォルダーを参照できません。DAW がプラグインを読み込むと、ここに表示されます。';
 }

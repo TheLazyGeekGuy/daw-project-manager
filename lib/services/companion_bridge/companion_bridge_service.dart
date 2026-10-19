@@ -1,0 +1,518 @@
+import 'dart:async';
+import 'dart:convert';
+import 'dart:io';
+
+import 'package:flutter/foundation.dart';
+import 'package:http/http.dart' as http;
+import 'package:path/path.dart' as p;
+
+import '../../models/music_project.dart';
+import '../../utils/app_paths.dart';
+import 'companion_protocol.dart';
+
+/// Where the app reads projects from and saves them to, for the bridge. An
+/// interface so the bridge is tested against plain lists, never Hive.
+abstract class CompanionLibrary {
+  /// Every profile with its projects.
+  Future<List<CompanionProfileProjects>> load();
+
+  /// Saves an edit made on the plugin's behalf, as a user edit (bumped
+  /// `updatedAt`, so it syncs like one).
+  Future<void> saveProject(String profileId, MusicProject project);
+}
+
+/// How the bridge reaches the app's work sessions, for ending a session when
+/// the DAW closes the project and starting one when it opens. An interface
+/// so the decisions are tested without Riverpod or a timer.
+abstract class CompanionSessionHooks {
+  /// The running session's project (in the active profile), or null.
+  CompanionProjectRef? activeSession();
+
+  /// Settings > Work Sessions, device-local.
+  bool get endWhenDawCloses;
+  bool get startWhenDawOpens;
+
+  /// Ends the running session as if it had been ended when the DAW let go
+  /// of its project ([CompanionDeparture.at]), and tells the user why.
+  Future<void> endSession(CompanionDeparture departure);
+
+  /// Starts a session for [project] — when it is in the active profile.
+  Future<void> startSession(CompanionProjectRef project);
+}
+
+/// The bridge folder the DPM Companion plugin shares with this app:
+/// `plugin_bridge` inside the library folder. A pinned or dev library gets
+/// its own, so a test build never talks to plugins working for the stable app.
+Future<String> companionBridgePath() async => p.join(await getLocalAppDataPath(), 'plugin_bridge');
+
+/// Writes `launch.json` just before [project] opens in its DAW, so the plugin
+/// can link to it without asking. Best effort: a failure costs the plugin a
+/// hint, never the launch.
+Future<void> writeCompanionLaunchHint(String profileId, MusicProject project, {String? bridgeDir}) async {
+  try {
+    final dir = bridgeDir ?? await companionBridgePath();
+    final hint = buildCompanionLaunchHint(profileId: profileId, project: project, launchedAt: DateTime.now());
+    await writeFileAtomically(File(p.join(dir, 'launch.json')), jsonEncode(hint));
+  } catch (e) {
+    if (kDebugMode) debugPrint('Companion launch hint not written: $e');
+  }
+}
+
+/// The plugin's newest release on GitHub, or null when it can't be found out.
+Future<CompanionRelease?> fetchLatestCompanionRelease({http.Client? client}) async {
+  final c = client ?? http.Client();
+  try {
+    final response = await c
+        .get(Uri.parse('https://api.github.com/repos/bandpassrecords/dpm-companion/releases/latest'),
+            headers: {'Accept': 'application/vnd.github+json'})
+        .timeout(const Duration(seconds: 10));
+    if (response.statusCode != 200) return null;
+    final json = jsonDecode(response.body);
+    return json is Map<String, dynamic> ? parseCompanionRelease(json) : null;
+  } catch (e) {
+    if (kDebugMode) debugPrint('Companion release check failed: $e');
+    return null;
+  } finally {
+    if (client == null) c.close();
+  }
+}
+
+/// Writes [contents] to a temporary name and renames it over [target], so a
+/// reader (the plugin) never sees half a file.
+Future<void> writeFileAtomically(File target, String contents) async {
+  await target.parent.create(recursive: true);
+  final temp = File('${target.path}.tmp');
+  await temp.writeAsString(contents, flush: true);
+  await temp.rename(target.path);
+}
+
+/// The app's half of the DPM Companion plugin's protocol (docs/PROTOCOL.md in
+/// bandpassrecords/dpm-companion): keeps `index.json` current and applies the
+/// plugin's outbox — new to-dos, ticks and pre-listen captures.
+///
+/// Desktop only. Runs on a timer rather than a file watcher: the folder is
+/// tiny, a tick costs a directory listing, and watchers are unreliable on
+/// network and cloud-synced home folders.
+class CompanionBridgeService {
+  CompanionBridgeService({
+    required this.library,
+    required this.bridgeDir,
+    required this.previewSongsDir,
+    required this.appVersion,
+    DateTime Function()? clock,
+    this.checkLatestRelease,
+    this.releaseChecksAllowed,
+    this.sessions,
+    this.onPluginSeen,
+    this.onLatestRelease,
+  }) : _now = clock ?? DateTime.now;
+
+  /// Every hello and heartbeat from a running plugin, for the DAW plugin
+  /// settings' "last seen" line. Called often: the receiver throttles.
+  final void Function(CompanionSighting sighting)? onPluginSeen;
+
+  /// The newest plugin release whenever it is looked up, or null when
+  /// looking isn't allowed — for the settings' download button.
+  final void Function(CompanionRelease? release)? onLatestRelease;
+
+  /// Null: presence is tracked but never touches a session.
+  final CompanionSessionHooks? sessions;
+
+  final CompanionLibrary library;
+  final String bridgeDir;
+  final String previewSongsDir;
+  final String appVersion;
+  final DateTime Function() _now;
+
+  /// Looks up the plugin's newest release ([fetchLatestCompanionRelease]).
+  /// Null: never look.
+  final Future<CompanionRelease?> Function()? checkLatestRelease;
+
+  /// Whether looking is allowed right now — the user's "check for updates"
+  /// setting, in a build that checks its own updates. Null: always.
+  final Future<bool> Function()? releaseChecksAllowed;
+
+  /// How often the release is looked up again, and how soon after a failure.
+  static const releaseCheckInterval = Duration(hours: 24);
+  static const releaseRetryInterval = Duration(hours: 1);
+
+  Timer? _timer;
+  bool _ticking = false;
+  String? _lastFingerprint;
+  CompanionRelease? _latestRelease;
+  DateTime? _nextReleaseCheck;
+
+  // Message ids handled lately, listed in the index as "applied".
+  final List<({String id, DateTime at})> _applied = [];
+  static const appliedKeptFor = Duration(minutes: 30);
+  static const appliedKeptMax = 500;
+
+  // Presence: running plugin instances by runId, and what changed this tick.
+  final Map<String, CompanionInstance> _instances = {};
+  final List<CompanionProjectRef> _hellos = [];
+  final Map<String, CompanionDeparture> _departures = {};
+  DateTime? _lastTick;
+
+  String get outboxDir => p.join(bridgeDir, 'outbox');
+  String get instancesDir => p.join(bridgeDir, 'instances');
+
+  /// Projects (by [companionKey]) a DAW has open right now.
+  Set<String> get presentProjects =>
+      {for (final i in _instances.values) companionKey(i.project.profileId, i.project.projectId)};
+  String get capturesDir => p.join(bridgeDir, 'captures');
+  String get companionPreviewDir => p.join(previewSongsDir, companionPreviewFolderName);
+  File get indexFile => File(p.join(bridgeDir, 'index.json'));
+
+  void start({Duration interval = const Duration(seconds: 3)}) {
+    _timer?.cancel();
+    unawaited(tick());
+    _timer = Timer.periodic(interval, (_) => unawaited(tick()));
+  }
+
+  void stop() {
+    _timer?.cancel();
+    _timer = null;
+  }
+
+  /// Applies the outbox, then rewrites the index if anything in it changed —
+  /// always after applying a message, since a fresh `generatedAt` is how the
+  /// plugin learns its changes arrived. Never runs twice at once.
+  Future<void> tick() async {
+    if (_ticking) return;
+    _ticking = true;
+    try {
+      final now = _now();
+      final before = presentProjects;
+      _hellos.clear();
+      _departures.clear();
+
+      // Woken from sleep: the plugins slept too, and their heartbeats are as
+      // old as the nap. A fresh grace period, or waking would end the session
+      // at the moment the lid closed.
+      final last = _lastTick;
+      if (last != null && now.difference(last) > companionSleepGap) {
+        _instances.updateAll((_, i) => i.seenAt(now));
+      }
+      _lastTick = now;
+
+      await _readHeartbeats();
+      final handledBefore = _applied.length;
+      final changed = await processOutbox();
+      await _expireStale(now);
+      await _decideSession(before);
+      // Rewritten after anything was handled, changed or not: the fresh
+      // "applied" list and generatedAt are the plugin's confirmation.
+      await writeIndex(force: changed > 0 || _applied.length != handledBefore);
+    } catch (e) {
+      if (kDebugMode) debugPrint('Companion bridge tick failed: $e');
+    } finally {
+      _ticking = false;
+    }
+  }
+
+  /// Writes `index.json` when its content changed since the last write (or
+  /// when [force]d). Returns whether it wrote.
+  Future<bool> writeIndex({bool force = false}) async {
+    await _refreshLatestRelease();
+    final now = _now();
+    _applied.removeWhere((a) => now.difference(a.at) > appliedKeptFor);
+    if (_applied.length > appliedKeptMax) _applied.removeRange(0, _applied.length - appliedKeptMax);
+    final index = buildCompanionIndex(await library.load(),
+        generatedAt: now,
+        appVersion: appVersion,
+        latestRelease: _latestRelease,
+        appliedMessageIds: [for (final a in _applied) a.id]);
+    final fingerprint = companionIndexFingerprint(index);
+    if (!force && fingerprint == _lastFingerprint && await indexFile.exists()) return false;
+
+    await writeFileAtomically(indexFile, jsonEncode(index));
+    _lastFingerprint = fingerprint;
+    return true;
+  }
+
+  /// Looks the plugin's newest release up again when it is due: once a day,
+  /// an hour after a failure. When checks aren't allowed (any more), the
+  /// index stops naming a release, so the plugin stops offering it.
+  Future<void> _refreshLatestRelease() async {
+    final check = checkLatestRelease;
+    if (check == null) return;
+
+    final allowed = releaseChecksAllowed == null || await releaseChecksAllowed!();
+    if (!allowed) {
+      if (_latestRelease != null) onLatestRelease?.call(null);
+      _latestRelease = null;
+      _nextReleaseCheck = null;
+      return;
+    }
+
+    final now = _now();
+    if (_nextReleaseCheck != null && now.isBefore(_nextReleaseCheck!)) return;
+
+    final release = await check();
+    if (release != null) {
+      _latestRelease = release;
+      onLatestRelease?.call(release);
+    }
+    _nextReleaseCheck = now.add(release != null ? releaseCheckInterval : releaseRetryInterval);
+  }
+
+  /// Applies every message in the outbox, oldest first, deleting each once
+  /// handled. Returns how many changed a project.
+  Future<int> processOutbox() async {
+    final dir = Directory(outboxDir);
+    if (!await dir.exists()) return 0;
+
+    final files = await dir
+        .list()
+        .where((e) => e is File && e.path.endsWith('.json'))
+        .cast<File>()
+        .toList();
+    if (files.isEmpty) return 0;
+    // Names start with the UTC time and a sequence number: name order is the
+    // order the plugin wrote them in.
+    files.sort((a, b) => p.basename(a.path).compareTo(p.basename(b.path)));
+
+    var library = await this.library.load();
+    var changed = 0;
+
+    for (final file in files) {
+      final String text;
+      try {
+        text = await file.readAsString();
+      } catch (_) {
+        continue; // still being written by another tool; next tick
+      }
+
+      final message = parseCompanionMessage(text);
+      try {
+        if (message != null && await _apply(message, library)) {
+          changed++;
+          library = await this.library.load();
+        }
+        // Handled, whatever came of it: the plugin stops waiting.
+        if (message != null) _applied.add((id: message.id, at: _now()));
+      } catch (e) {
+        if (kDebugMode) debugPrint('Companion message ${p.basename(file.path)} failed: $e');
+      }
+
+      try {
+        await file.delete();
+      } catch (_) {}
+    }
+
+    return changed;
+  }
+
+  Future<bool> _apply(CompanionMessage message, List<CompanionProfileProjects> library) async {
+    switch (message) {
+      case CompanionHello(:final runId, :final project, :final hostName, :final pluginVersion):
+        if (runId != null && project != null) {
+          _see(CompanionInstance(runId, project, message.createdAt, hostName: hostName, pluginVersion: pluginVersion));
+          _hellos.add(project);
+        }
+        return false;
+
+      case CompanionGoodbye(:final runId):
+        if (runId != null) await _leave(runId, message.createdAt, CompanionDepartureReason.closed);
+        return false;
+
+      case CompanionUnknownMessage(:final type):
+        if (kDebugMode) debugPrint('Companion message of unknown type "$type" dropped');
+        return false;
+
+      case CompanionTodoAdd():
+        final found = _find(library, message.project);
+        if (found == null) return false;
+        final updated = applyCompanionTodoAdd(found.owner, message);
+        if (updated == null) return false;
+        await this.library.saveProject(found.profileId, updated);
+        return true;
+
+      case CompanionNotesSet():
+        final found = _find(library, message.project);
+        if (found == null) return false;
+        final updated = applyCompanionNotesSet(found.owner, message);
+        if (updated == null) return false;
+        await this.library.saveProject(found.profileId, updated);
+        return true;
+
+      case CompanionTodoSetCompleted():
+        final found = _find(library, message.project);
+        if (found == null) return false;
+        final updated = applyCompanionTodoSetCompleted(found.owner, message);
+        if (updated == null) return false;
+        await this.library.saveProject(found.profileId, updated);
+        return true;
+
+      case CompanionCaptureReady():
+        return _adoptCapture(message, library);
+    }
+  }
+
+  /// Records an instance as present, keeping whichever sighting is newer.
+  void _see(CompanionInstance instance) {
+    if (instance.pluginVersion.isNotEmpty) {
+      onPluginSeen?.call(CompanionSighting(instance.pluginVersion, instance.hostName, instance.lastSeen));
+    }
+    final known = _instances[instance.runId];
+    if (known != null && !instance.lastSeen.isAfter(known.lastSeen)) return;
+    _instances[instance.runId] = instance.hostName.isEmpty && known != null
+        ? CompanionInstance(instance.runId, instance.project, instance.lastSeen, hostName: known.hostName)
+        : instance;
+  }
+
+  /// An instance left at [at]: gone from presence, its heartbeat file too.
+  Future<void> _leave(String runId, DateTime at, CompanionDepartureReason reason) async {
+    final instance = _instances.remove(runId);
+    if (instance != null) {
+      final key = companionKey(instance.project.profileId, instance.project.projectId);
+      final previous = _departures[key];
+      if (previous == null || at.isAfter(previous.at)) {
+        _departures[key] = CompanionDeparture(at, reason, hostName: instance.hostName);
+      }
+    }
+    try {
+      final file = File(p.join(instancesDir, '$runId.json'));
+      if (await file.exists()) await file.delete();
+    } catch (_) {}
+  }
+
+  Future<void> _readHeartbeats() async {
+    final dir = Directory(instancesDir);
+    if (!await dir.exists()) return;
+    await for (final entry in dir.list()) {
+      if (entry is! File || !entry.path.endsWith('.json')) continue;
+      try {
+        final instance = parseCompanionHeartbeat(await entry.readAsString());
+        if (instance != null) _see(instance);
+      } catch (_) {} // being rewritten; next tick
+    }
+  }
+
+  /// Instances whose heartbeat went stale died without a goodbye (a crashed
+  /// DAW): they leave at their last heartbeat.
+  Future<void> _expireStale(DateTime now) async {
+    final stale = _instances.values.where((i) => now.difference(i.lastSeen) > companionHeartbeatStale).toList();
+    for (final instance in stale) {
+      await _leave(instance.runId, instance.lastSeen, CompanionDepartureReason.stoppedResponding);
+    }
+  }
+
+  Future<void> _decideSession(Set<String> presentBefore) async {
+    final hooks = sessions;
+    if (hooks == null) return;
+
+    final presentAfter = presentProjects;
+    final active = hooks.activeSession();
+    final activeKeys = active == null ? <String>{} : await _sessionKeys(active);
+
+    final action = decideCompanionSession(
+      activeSessionKeys: activeKeys,
+      presentBefore: presentBefore,
+      presentAfter: presentAfter,
+      departures: _departures,
+      // A hello only counts while its instance is still there: an old one
+      // read after the app was closed for a day starts nothing.
+      hellos: _hellos.where((h) => presentAfter.contains(companionKey(h.profileId, h.projectId))).toList(),
+      endWhenDawCloses: hooks.endWhenDawCloses,
+      startWhenDawOpens: hooks.startWhenDawOpens,
+    );
+
+    switch (action) {
+      case EndCompanionSession(:final departure):
+        await hooks.endSession(departure);
+      case StartCompanionSession(:final project):
+        await hooks.startSession(project);
+      case null:
+        break;
+    }
+  }
+
+  /// The keys a session answers to: its project's, and for a version stack
+  /// every member's — the DAW opens a version, the session is the stack's.
+  Future<Set<String>> _sessionKeys(CompanionProjectRef active) async {
+    final keys = {companionKey(active.profileId, active.projectId)};
+    for (final entry in await library.load()) {
+      if (entry.profile.id != active.profileId) continue;
+      for (final project in entry.projects) {
+        if (project.id == active.projectId && project.isVirtual) {
+          keys.addAll(project.memberProjectIds.map((id) => companionKey(active.profileId, id)));
+        }
+      }
+    }
+    return keys;
+  }
+
+  ({String profileId, MusicProject owner})? _find(
+    List<CompanionProfileProjects> library,
+    CompanionProjectRef? ref,
+  ) {
+    if (ref == null) return null;
+    for (final entry in library) {
+      if (entry.profile.id != ref.profileId) continue;
+      for (final project in entry.projects) {
+        if (project.id == ref.projectId) {
+          return (profileId: entry.profile.id, owner: companionOwnerOf(project, entry.projects));
+        }
+      }
+    }
+    return null;
+  }
+
+  /// Copies a capture into the preview songs and makes it the project's
+  /// preview when [companionMayReplacePreview] allows. The capture file is
+  /// removed either way: the plugin records a new one on the next pass.
+  Future<bool> _adoptCapture(CompanionCaptureReady message, List<CompanionProfileProjects> library) async {
+    final source = File(p.normalize(p.join(bridgeDir, message.file)));
+    // Only files in captures/: a message must not point the app elsewhere.
+    if (!p.isWithin(capturesDir, source.path)) return false;
+    // Gone: superseded by a later capture before the app got to it.
+    if (!await source.exists()) return false;
+
+    try {
+      final found = _find(library, message.project);
+      if (found == null) return false;
+
+      final owner = found.owner;
+      final current = owner.previewSongPath;
+      DateTime? currentModified;
+      if (current != null && current.isNotEmpty && !current.startsWith('drive://')) {
+        final currentFile = File(current);
+        if (await currentFile.exists()) currentModified = await currentFile.lastModified();
+      }
+
+      if (!companionMayReplacePreview(owner,
+          companionPreviewDir: companionPreviewDir,
+          capturedAt: message.capturedAt,
+          currentPreviewModifiedAt: currentModified)) {
+        return false;
+      }
+
+      final destination = File(p.join(companionPreviewDir, owner.id, p.basename(source.path)));
+      await destination.parent.create(recursive: true);
+      await source.copy(destination.path);
+
+      await this.library.saveProject(
+        found.profileId,
+        owner.copyWith(previewSongPath: destination.path, previewSongFileName: p.basename(destination.path)),
+      );
+
+      // The capture it replaces, if no other row still points at it (a
+      // stack and its promoted member can share one preview).
+      if (current != null && p.isWithin(companionPreviewDir, current) && current != destination.path) {
+        final reloaded = await this.library.load();
+        final stillUsed = reloaded.any((e) => e.projects.any((pr) => pr.previewSongPath == current));
+        if (!stillUsed) {
+          try {
+            await File(current).delete();
+          } catch (_) {}
+        }
+      }
+      return true;
+    } finally {
+      try {
+        await source.delete();
+      } catch (_) {}
+    }
+  }
+}

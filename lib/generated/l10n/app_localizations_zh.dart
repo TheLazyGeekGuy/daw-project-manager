@@ -7753,4 +7753,107 @@ class AppLocalizationsZh extends AppLocalizations {
   String midiCalibrated(int ms) {
     return '录制延迟已设为 $ms 毫秒';
   }
+
+  @override
+  String get companionSessionsDescription =>
+      '项目中装有 DPM Companion 插件时，应用会知道你的 DAW 何时打开和关闭该项目。';
+
+  @override
+  String get companionEndSessionWhenDawCloses => 'DAW 关闭项目时结束会话';
+
+  @override
+  String get companionEndSessionWhenDawClosesDescription =>
+      '崩溃后也一样：会话在 DAW 放开该项目的那一刻结束。';
+
+  @override
+  String get companionStartSessionWhenDawOpens => '在 DAW 中打开项目时开始会话';
+
+  @override
+  String get companionStartSessionWhenDawOpensDescription =>
+      '仅在没有正在进行的会话时，并且仅限当前资料中的项目。';
+
+  @override
+  String get companionSessionEndedTitle => '会话已结束';
+
+  @override
+  String companionSessionEndedClosed(String daw, String project) {
+    return '$daw 关闭了 $project，因此其工作会话已结束。';
+  }
+
+  @override
+  String companionSessionEndedNoResponse(String daw, String project) {
+    return '$daw 中的 DPM Companion 停止了响应，因此 $project 的会话在最后一次收到响应时结束。DAW 可能已崩溃或被强制关闭。';
+  }
+
+  @override
+  String get companionUnknownDaw => '你的 DAW';
+
+  @override
+  String companionSessionEndedSummary(
+    String start,
+    String end,
+    String duration,
+  ) {
+    return '$start–$end · $duration';
+  }
+
+  @override
+  String get companionPluginTabLabel => 'DAW 插件';
+
+  @override
+  String get companionPluginTitle => 'DPM Companion';
+
+  @override
+  String get companionPluginDescription =>
+      '适用于 DAW 的 VST3/AU 插件。把它放在主总线上：它会显示项目的待办事项，把每次播放录制为项目的预览歌曲，并可在 DAW 关闭项目时结束你的工作会话。';
+
+  @override
+  String companionPluginLastSeen(String daw, String version, String date) {
+    return '上次见到：$daw（版本 $version），$date。';
+  }
+
+  @override
+  String get companionPluginNotSeen => '这台电脑上还没有见到它。请安装后放在 DAW 的主总线上。';
+
+  @override
+  String companionPluginUpdateAvailable(String version) {
+    return '版本 $version 可用。';
+  }
+
+  @override
+  String get companionPluginDownload => '下载 DAW 插件';
+
+  @override
+  String get companionPluginDownloadUpdate => '下载更新';
+
+  @override
+  String get companionInstalledTitle => '已安装';
+
+  @override
+  String companionInstalledVersion(String version) {
+    return '版本 $version';
+  }
+
+  @override
+  String get companionInstalledNone => '在标准插件文件夹中未找到。';
+
+  @override
+  String get companionInstalledDuplicates => '安装了多个副本，DAW 可能会加载其中任意一个。请只保留一个。';
+
+  @override
+  String get companionSearchAgain => '重新搜索';
+
+  @override
+  String get companionSearching => '正在搜索…';
+
+  @override
+  String get companionCustomFoldersHint =>
+      '安装在其他位置？添加该文件夹后，当标准文件夹中没有副本时，应用会在那里查找。';
+
+  @override
+  String get companionCustomFolderTag => '你的文件夹';
+
+  @override
+  String get companionScanUnavailable =>
+      'Flatpak 版无法查看你的插件文件夹。DAW 加载插件后，它会显示在这里。';
 }
