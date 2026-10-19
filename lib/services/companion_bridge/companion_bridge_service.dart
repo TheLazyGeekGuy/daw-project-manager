@@ -103,7 +103,17 @@ class CompanionBridgeService {
     this.checkLatestRelease,
     this.releaseChecksAllowed,
     this.sessions,
+    this.onPluginSeen,
+    this.onLatestRelease,
   }) : _now = clock ?? DateTime.now;
+
+  /// Every hello and heartbeat from a running plugin, for the DAW plugin
+  /// settings' "last seen" line. Called often: the receiver throttles.
+  final void Function(CompanionSighting sighting)? onPluginSeen;
+
+  /// The newest plugin release whenever it is looked up, or null when
+  /// looking isn't allowed — for the settings' download button.
+  final void Function(CompanionRelease? release)? onLatestRelease;
 
   /// Null: presence is tracked but never touches a session.
   final CompanionSessionHooks? sessions;
@@ -215,6 +225,7 @@ class CompanionBridgeService {
 
     final allowed = releaseChecksAllowed == null || await releaseChecksAllowed!();
     if (!allowed) {
+      if (_latestRelease != null) onLatestRelease?.call(null);
       _latestRelease = null;
       _nextReleaseCheck = null;
       return;
@@ -224,7 +235,10 @@ class CompanionBridgeService {
     if (_nextReleaseCheck != null && now.isBefore(_nextReleaseCheck!)) return;
 
     final release = await check();
-    if (release != null) _latestRelease = release;
+    if (release != null) {
+      _latestRelease = release;
+      onLatestRelease?.call(release);
+    }
     _nextReleaseCheck = now.add(release != null ? releaseCheckInterval : releaseRetryInterval);
   }
 
@@ -275,9 +289,9 @@ class CompanionBridgeService {
 
   Future<bool> _apply(CompanionMessage message, List<CompanionProfileProjects> library) async {
     switch (message) {
-      case CompanionHello(:final runId, :final project, :final hostName):
+      case CompanionHello(:final runId, :final project, :final hostName, :final pluginVersion):
         if (runId != null && project != null) {
-          _see(CompanionInstance(runId, project, message.createdAt, hostName: hostName));
+          _see(CompanionInstance(runId, project, message.createdAt, hostName: hostName, pluginVersion: pluginVersion));
           _hellos.add(project);
         }
         return false;
@@ -313,6 +327,9 @@ class CompanionBridgeService {
 
   /// Records an instance as present, keeping whichever sighting is newer.
   void _see(CompanionInstance instance) {
+    if (instance.pluginVersion.isNotEmpty) {
+      onPluginSeen?.call(CompanionSighting(instance.pluginVersion, instance.hostName, instance.lastSeen));
+    }
     final known = _instances[instance.runId];
     if (known != null && !instance.lastSeen.isAfter(known.lastSeen)) return;
     _instances[instance.runId] = instance.hostName.isEmpty && known != null

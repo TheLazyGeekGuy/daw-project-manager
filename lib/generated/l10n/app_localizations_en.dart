@@ -8066,9 +8066,6 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
-  String get companionSessionsTitle => 'DAW plugin (DPM Companion)';
-
-  @override
   String get companionSessionsDescription =>
       'With the DPM Companion plugin in a project, the app knows when your DAW opens and closes it.';
 
@@ -8112,4 +8109,34 @@ class AppLocalizationsEn extends AppLocalizations {
   ) {
     return '$start–$end · $duration';
   }
+
+  @override
+  String get companionPluginTabLabel => 'DAW plugin';
+
+  @override
+  String get companionPluginTitle => 'DPM Companion';
+
+  @override
+  String get companionPluginDescription =>
+      'A VST3/AU plugin for your DAW. Put it on the master bus: it shows the project\'s to-dos, records each playback pass as the project\'s preview song, and can end your work session when the DAW closes the project.';
+
+  @override
+  String companionPluginLastSeen(String daw, String version, String date) {
+    return 'Last seen in $daw (version $version) on $date.';
+  }
+
+  @override
+  String get companionPluginNotSeen =>
+      'Not seen on this computer yet. Install it, then put it on your DAW\'s master bus.';
+
+  @override
+  String companionPluginUpdateAvailable(String version) {
+    return 'Version $version is available.';
+  }
+
+  @override
+  String get companionPluginDownload => 'Download the DAW plugin';
+
+  @override
+  String get companionPluginDownloadUpdate => 'Download the update';
 }

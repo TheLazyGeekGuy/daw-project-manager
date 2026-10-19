@@ -4440,7 +4440,6 @@
   "midiCalibrate": "Calibrer",
   "midiCalibrating": "Jouez une touche à chaque clic ({done} sur {total})",
   "midiCalibrated": "Latence d’enregistrement réglée à {ms} ms",
-  "companionSessionsTitle": "Plugin pour la DAW (DPM Companion)",
   "companionSessionsDescription": "Avec le plugin DPM Companion dans un projet, l'application sait quand votre DAW l'ouvre et le ferme.",
   "companionEndSessionWhenDawCloses": "Terminer la session quand la DAW ferme le projet",
   "companionEndSessionWhenDawClosesDescription": "Même après un plantage : la session se termine au moment où la DAW a lâché le projet.",
@@ -4450,5 +4449,13 @@
   "companionSessionEndedClosed": "{daw} a fermé {project}, la session de travail est donc terminée.",
   "companionSessionEndedNoResponse": "DPM Companion a cessé de répondre dans {daw}, la session de {project} s'est donc terminée au dernier signe de vie. La DAW a peut-être planté ou été fermée brutalement.",
   "companionUnknownDaw": "Votre DAW",
-  "companionSessionEndedSummary": "{start}–{end} · {duration}"
+  "companionSessionEndedSummary": "{start}–{end} · {duration}",
+  "companionPluginTabLabel": "Plugin pour la DAW",
+  "companionPluginTitle": "DPM Companion",
+  "companionPluginDescription": "Un plugin VST3/AU pour votre DAW. Placez-le sur le bus master : il affiche les tâches du projet, enregistre chaque lecture comme chanson d'aperçu du projet et peut terminer votre session de travail quand la DAW ferme le projet.",
+  "companionPluginLastSeen": "Vu pour la dernière fois dans {daw} (version {version}) le {date}.",
+  "companionPluginNotSeen": "Pas encore vu sur cet ordinateur. Installez-le, puis placez-le sur le bus master de votre DAW.",
+  "companionPluginUpdateAvailable": "La version {version} est disponible.",
+  "companionPluginDownload": "Télécharger le plugin pour la DAW",
+  "companionPluginDownloadUpdate": "Télécharger la mise à jour"
 }

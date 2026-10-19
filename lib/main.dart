@@ -333,6 +333,9 @@ Future<void> _startCompanionBridge(ProviderContainer container) async {
         container,
         onSessionEnded: (ended) => unawaited(_tellSessionEndedByDaw(container, ended)),
       ),
+      // For Settings > DAW plugin: "last seen in …" and the download button.
+      onPluginSeen: (sighting) => unawaited(container.read(companionSightingProvider.notifier).record(sighting)),
+      onLatestRelease: (release) => container.read(companionLatestReleaseProvider.notifier).set(release),
       checkLatestRelease: fetchLatestCompanionRelease,
       releaseChecksAllowed: () async {
         if (!UpdateCheckService.isSupported) return false;

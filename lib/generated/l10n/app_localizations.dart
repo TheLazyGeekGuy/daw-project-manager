@@ -13193,12 +13193,6 @@ abstract class AppLocalizations {
   /// **'Recording latency set to {ms} ms'**
   String midiCalibrated(int ms);
 
-  /// No description provided for @companionSessionsTitle.
-  ///
-  /// In en, this message translates to:
-  /// **'DAW plugin (DPM Companion)'**
-  String get companionSessionsTitle;
-
   /// No description provided for @companionSessionsDescription.
   ///
   /// In en, this message translates to:
@@ -13262,6 +13256,54 @@ abstract class AppLocalizations {
     String end,
     String duration,
   );
+
+  /// No description provided for @companionPluginTabLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'DAW plugin'**
+  String get companionPluginTabLabel;
+
+  /// No description provided for @companionPluginTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'DPM Companion'**
+  String get companionPluginTitle;
+
+  /// No description provided for @companionPluginDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'A VST3/AU plugin for your DAW. Put it on the master bus: it shows the project\'s to-dos, records each playback pass as the project\'s preview song, and can end your work session when the DAW closes the project.'**
+  String get companionPluginDescription;
+
+  /// No description provided for @companionPluginLastSeen.
+  ///
+  /// In en, this message translates to:
+  /// **'Last seen in {daw} (version {version}) on {date}.'**
+  String companionPluginLastSeen(String daw, String version, String date);
+
+  /// No description provided for @companionPluginNotSeen.
+  ///
+  /// In en, this message translates to:
+  /// **'Not seen on this computer yet. Install it, then put it on your DAW\'s master bus.'**
+  String get companionPluginNotSeen;
+
+  /// No description provided for @companionPluginUpdateAvailable.
+  ///
+  /// In en, this message translates to:
+  /// **'Version {version} is available.'**
+  String companionPluginUpdateAvailable(String version);
+
+  /// No description provided for @companionPluginDownload.
+  ///
+  /// In en, this message translates to:
+  /// **'Download the DAW plugin'**
+  String get companionPluginDownload;
+
+  /// No description provided for @companionPluginDownloadUpdate.
+  ///
+  /// In en, this message translates to:
+  /// **'Download the update'**
+  String get companionPluginDownloadUpdate;
 }
 
 class _AppLocalizationsDelegate

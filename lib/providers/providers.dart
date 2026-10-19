@@ -66,6 +66,7 @@ import '../models/auto_backup_interval.dart';
 import '../models/pending_folder.dart';
 import '../services/metadata_extractor.dart';
 import '../services/auto_start_service.dart';
+import '../services/companion_bridge/companion_protocol.dart';
 import '../services/crash_logger.dart';
 
 // Profile Repository Provider
@@ -4849,6 +4850,57 @@ class CompanionStartSessionNotifier extends _StoredSwitchNotifier {
   @override
   bool get defaultValue => false;
 }
+
+/// The last time this computer saw the DPM Companion plugin running, for
+/// Settings > DAW plugin. Device-local (the `settings` box): another
+/// computer has its own DAW and plugin.
+class CompanionSightingNotifier extends Notifier<CompanionSighting?> {
+  static const storageKey = 'companionLastSeen';
+
+  @override
+  CompanionSighting? build() {
+    _load();
+    return null;
+  }
+
+  Future<void> _load() async {
+    final box = await Hive.openBox<String>('settings');
+    final saved = box.get(storageKey);
+    if (saved == null) return;
+    try {
+      state ??= CompanionSighting.fromJson(jsonDecode(saved));
+    } catch (_) {}
+  }
+
+  /// Keeps [sighting] when it is news (see [CompanionSighting.isNewsAfter])
+  /// and not older than what is known — a stale heartbeat read at startup
+  /// mustn't roll the record back.
+  Future<void> record(CompanionSighting sighting) async {
+    final previous = state;
+    if (previous != null && sighting.at.isBefore(previous.at)) return;
+    if (!sighting.isNewsAfter(previous)) return;
+    state = sighting;
+    final box = await Hive.openBox<String>('settings');
+    await box.put(storageKey, jsonEncode(sighting.toJson()));
+  }
+}
+
+final companionSightingProvider = NotifierProvider<CompanionSightingNotifier, CompanionSighting?>(
+  CompanionSightingNotifier.new,
+);
+
+/// The newest plugin release, when the bridge has looked it up (the same
+/// gate as the app's own update check). In memory: looked up again daily.
+class CompanionLatestReleaseNotifier extends Notifier<CompanionRelease?> {
+  @override
+  CompanionRelease? build() => null;
+
+  void set(CompanionRelease? release) => state = release;
+}
+
+final companionLatestReleaseProvider = NotifierProvider<CompanionLatestReleaseNotifier, CompanionRelease?>(
+  CompanionLatestReleaseNotifier.new,
+);
 
 final companionEndSessionProvider = NotifierProvider<CompanionEndSessionNotifier, bool>(
   CompanionEndSessionNotifier.new,

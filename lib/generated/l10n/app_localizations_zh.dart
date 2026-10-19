@@ -7755,9 +7755,6 @@ class AppLocalizationsZh extends AppLocalizations {
   }
 
   @override
-  String get companionSessionsTitle => 'DAW 插件 (DPM Companion)';
-
-  @override
   String get companionSessionsDescription =>
       '项目中装有 DPM Companion 插件时，应用会知道你的 DAW 何时打开和关闭该项目。';
 
@@ -7799,4 +7796,33 @@ class AppLocalizationsZh extends AppLocalizations {
   ) {
     return '$start–$end · $duration';
   }
+
+  @override
+  String get companionPluginTabLabel => 'DAW 插件';
+
+  @override
+  String get companionPluginTitle => 'DPM Companion';
+
+  @override
+  String get companionPluginDescription =>
+      '适用于 DAW 的 VST3/AU 插件。把它放在主总线上：它会显示项目的待办事项，把每次播放录制为项目的预览歌曲，并可在 DAW 关闭项目时结束你的工作会话。';
+
+  @override
+  String companionPluginLastSeen(String daw, String version, String date) {
+    return '上次见到：$daw（版本 $version），$date。';
+  }
+
+  @override
+  String get companionPluginNotSeen => '这台电脑上还没有见到它。请安装后放在 DAW 的主总线上。';
+
+  @override
+  String companionPluginUpdateAvailable(String version) {
+    return '版本 $version 可用。';
+  }
+
+  @override
+  String get companionPluginDownload => '下载 DAW 插件';
+
+  @override
+  String get companionPluginDownloadUpdate => '下载更新';
 }

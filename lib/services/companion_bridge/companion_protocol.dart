@@ -44,9 +44,79 @@ bool companionListsProject(MusicProject project) => !project.isVirtual && !proje
 /// The newest plugin release on GitHub, for the plugin's "Update available".
 class CompanionRelease {
   final String version;
+
+  /// The release page.
   final String url;
 
-  const CompanionRelease(this.version, this.url);
+  /// The installer for each platform, when the release has one.
+  final Map<CompanionPlatform, String> downloads;
+
+  const CompanionRelease(this.version, this.url, {this.downloads = const {}});
+}
+
+/// The desktop platforms the plugin ships installers for.
+enum CompanionPlatform { windows, macOS, linux }
+
+/// Where the plugin's releases live: the fallback when the newest release
+/// isn't known (update checks off, offline, the Flatpak).
+const companionReleasesPage = 'https://github.com/bandpassrecords/dpm-companion/releases/latest';
+
+/// The plugin installer's file name on a release, per platform — the names
+/// the plugin's CI gives them (`packaging/`), version in the middle.
+final Map<CompanionPlatform, RegExp> _installerNames = {
+  CompanionPlatform.windows: RegExp(r'^DPM_Companion_Installer_v[\d.]+\.exe$'),
+  CompanionPlatform.macOS: RegExp(r'^DPM_Companion_macOS_Installer_v[\d.]+\.pkg$'),
+  CompanionPlatform.linux: RegExp(r'^DPM_Companion_Linux_x86_64_v[\d.]+\.tar\.gz$'),
+};
+
+/// What "Download the DAW plugin" opens: this platform's installer from the
+/// newest release, else that release's page, else the releases page.
+String companionDownloadUrl(CompanionRelease? release, CompanionPlatform platform) =>
+    release?.downloads[platform] ?? release?.url ?? companionReleasesPage;
+
+/// Whether [remote] is a strictly newer x.y.z version than [local]. A
+/// version that isn't x.y.z is never newer.
+bool isNewerCompanionVersion(String remote, String local) {
+  List<int>? parse(String v) {
+    final m = RegExp(r'^v?(\d+)\.(\d+)\.(\d+)').firstMatch(v.trim());
+    return m == null ? null : [for (var i = 1; i <= 3; i++) int.parse(m.group(i)!)];
+  }
+
+  final r = parse(remote), l = parse(local);
+  if (r == null || l == null) return false;
+  for (var i = 0; i < 3; i++) {
+    if (r[i] != l[i]) return r[i] > l[i];
+  }
+  return false;
+}
+
+/// The last time this computer saw the plugin running, and which: for the
+/// DAW plugin settings ("last seen in … version …") and its update offer.
+/// Device-local.
+class CompanionSighting {
+  final String version;
+  final String hostName;
+  final DateTime at;
+
+  const CompanionSighting(this.version, this.hostName, this.at);
+
+  Map<String, dynamic> toJson() => {'version': version, 'host': hostName, 'at': at.toUtc().toIso8601String()};
+
+  static CompanionSighting? fromJson(Object? json) {
+    if (json is! Map<String, dynamic>) return null;
+    final version = json['version'], host = json['host'], at = companionTime(json['at']);
+    if (version is! String || version.isEmpty || at == null) return null;
+    return CompanionSighting(version, host is String ? host : '', at);
+  }
+
+  /// Whether this sighting says something [previous] didn't: a version or
+  /// host change, or simply a minute later — so the record stays current
+  /// without being rewritten on every heartbeat.
+  bool isNewsAfter(CompanionSighting? previous) =>
+      previous == null ||
+      version != previous.version ||
+      hostName != previous.hostName ||
+      at.difference(previous.at) >= const Duration(minutes: 1);
 }
 
 /// `index.json`: every profile's projects with the to-dos the app shows for
@@ -103,7 +173,20 @@ CompanionRelease? parseCompanionRelease(Map<String, dynamic> json) {
   if (tag is! String || url is! String) return null;
   final version = tag.replaceFirst(RegExp(r'^v'), '');
   if (!RegExp(r'^\d+\.\d+\.\d+$').hasMatch(version)) return null;
-  return CompanionRelease(version, url);
+
+  final downloads = <CompanionPlatform, String>{};
+  final assets = json['assets'];
+  if (assets is List) {
+    for (final asset in assets) {
+      if (asset is! Map<String, dynamic>) continue;
+      final name = asset['name'], link = asset['browser_download_url'];
+      if (name is! String || link is! String) continue;
+      for (final entry in _installerNames.entries) {
+        if (entry.value.hasMatch(name)) downloads[entry.key] = link;
+      }
+    }
+  }
+  return CompanionRelease(version, url, downloads: downloads);
 }
 
 /// The index without its timestamp, for "did anything change?" — rewriting
@@ -146,12 +229,16 @@ sealed class CompanionMessage {
   /// The DAW it runs in, as the host describes itself ("Steinberg Cubase 13").
   final String hostName;
 
-  const CompanionMessage(this.id, this.createdAt, this.project, {this.runId, this.hostName = ''});
+  /// The plugin's own version.
+  final String pluginVersion;
+
+  const CompanionMessage(this.id, this.createdAt, this.project,
+      {this.runId, this.hostName = '', this.pluginVersion = ''});
 }
 
 /// A plugin instance is running inside a project.
 class CompanionHello extends CompanionMessage {
-  const CompanionHello(super.id, super.createdAt, super.project, {super.runId, super.hostName});
+  const CompanionHello(super.id, super.createdAt, super.project, {super.runId, super.hostName, super.pluginVersion});
 }
 
 /// A plugin instance has left a project: the DAW closed it or quit, the
@@ -227,13 +314,14 @@ CompanionMessage? parseCompanionMessage(String text) {
   final runId = plugin is Map<String, dynamic> && plugin['runId'] is String && (plugin['runId'] as String).isNotEmpty
       ? plugin['runId'] as String
       : null;
+  final pluginVersion = plugin is Map<String, dynamic> && plugin['version'] is String ? plugin['version'] as String : '';
 
   final host = decoded['host'];
   final hostName = host is Map<String, dynamic> && host['name'] is String ? host['name'] as String : '';
 
   switch (type) {
     case 'session.hello':
-      return CompanionHello(id, createdAt, project, runId: runId, hostName: hostName);
+      return CompanionHello(id, createdAt, project, runId: runId, hostName: hostName, pluginVersion: pluginVersion);
 
     case 'session.goodbye':
       return CompanionGoodbye(id, createdAt, project, runId: runId, hostName: hostName);
@@ -312,10 +400,12 @@ class CompanionInstance {
   final CompanionProjectRef project;
   final DateTime lastSeen;
   final String hostName;
+  final String pluginVersion;
 
-  const CompanionInstance(this.runId, this.project, this.lastSeen, {this.hostName = ''});
+  const CompanionInstance(this.runId, this.project, this.lastSeen, {this.hostName = '', this.pluginVersion = ''});
 
-  CompanionInstance seenAt(DateTime time) => CompanionInstance(runId, project, time, hostName: hostName);
+  CompanionInstance seenAt(DateTime time) =>
+      CompanionInstance(runId, project, time, hostName: hostName, pluginVersion: pluginVersion);
 }
 
 /// How an instance left its project.
@@ -353,7 +443,8 @@ CompanionInstance? parseCompanionHeartbeat(String text) {
   if (runId is! String || runId.isEmpty || project == null || lastSeen == null) return null;
   final host = decoded['host'];
   final hostName = host is Map<String, dynamic> && host['name'] is String ? host['name'] as String : '';
-  return CompanionInstance(runId, project, lastSeen, hostName: hostName);
+  final pluginVersion = decoded['pluginVersion'] is String ? decoded['pluginVersion'] as String : '';
+  return CompanionInstance(runId, project, lastSeen, hostName: hostName, pluginVersion: pluginVersion);
 }
 
 /// The key a session is tracked under: profile and id, never id alone.

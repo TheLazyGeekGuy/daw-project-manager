@@ -45,6 +45,8 @@ import '../utils/file_launcher.dart';
 import '../utils/mobile_utils.dart';
 import '../utils/relocation_preview.dart';
 import '../utils/root_overlap.dart' show findRootOverlaps;
+import '../services/companion_bridge/companion_protocol.dart';
+import 'widgets/companion_plugin_settings.dart';
 import '../utils/phase_colors.dart';
 import 'dashboard_page.dart' show appVersion;
 import 'dialogs/daw_launch_command_dialog.dart';
@@ -109,6 +111,8 @@ enum SettingsSection {
   projectFolders,
   // Desktop-only — see the MobileUtils.isDesktop() gate in _sectionOrder().
   dawLaunchCommands,
+  // Desktop-only: the DPM Companion plugin runs in desktop DAWs.
+  dawPlugin,
   mixdownFolders,
   phases,
   workSessions,
@@ -1518,6 +1522,8 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
         // for when the standard "Launch in DAW" fails. Mobile has no DAW to
         // point at.
         if (MobileUtils.isDesktop()) SettingsSection.dawLaunchCommands,
+        // The DPM Companion plugin: to-dos, captures, sessions, its download.
+        if (MobileUtils.isDesktop()) SettingsSection.dawPlugin,
         SettingsSection.mixdownFolders,
         SettingsSection.phases,
         SettingsSection.workSessions,
@@ -1541,6 +1547,8 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
         return SectionNavItem(icon: Icons.folder_outlined, label: l10n.roots);
       case SettingsSection.dawLaunchCommands:
         return SectionNavItem(icon: Icons.terminal_outlined, label: l10n.dawLaunchCommandsTabLabel);
+      case SettingsSection.dawPlugin:
+        return SectionNavItem(icon: Icons.extension_outlined, label: l10n.companionPluginTabLabel);
       case SettingsSection.mixdownFolders:
         return SectionNavItem(icon: Icons.audio_file_outlined, label: l10n.mixdownFoldersTabLabel);
       case SettingsSection.phases:
@@ -1577,6 +1585,8 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
         return _buildProjectFoldersSection;
       case SettingsSection.dawLaunchCommands:
         return _buildDawLaunchCommandsSection;
+      case SettingsSection.dawPlugin:
+        return _buildDawPluginSection;
       case SettingsSection.mixdownFolders:
         return _buildMixdownFoldersSection;
       case SettingsSection.phases:
@@ -1639,6 +1649,10 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
         _SearchEntry(SettingsSection.experimental, Icons.graphic_eq, l10n.samplePackTitle, l10n.samplePackSubtitle),
         if (MobileUtils.isDesktop()) ...[
           _SearchEntry(SettingsSection.dawLaunchCommands, Icons.terminal_outlined, l10n.dawLaunchCommandsTabLabel, l10n.dawLaunchCommandsSectionDescription),
+          _SearchEntry(SettingsSection.dawPlugin, Icons.extension_outlined, l10n.companionPluginTitle, l10n.companionPluginDescription),
+          _SearchEntry(SettingsSection.dawPlugin, Icons.download_outlined, l10n.companionPluginDownload, null),
+          _SearchEntry(SettingsSection.dawPlugin, Icons.bookmark_outlined, l10n.companionEndSessionWhenDawCloses, l10n.companionEndSessionWhenDawClosesDescription),
+          _SearchEntry(SettingsSection.dawPlugin, Icons.bookmark_add_outlined, l10n.companionStartSessionWhenDawOpens, l10n.companionStartSessionWhenDawOpensDescription),
         ],
         _SearchEntry(SettingsSection.mixdownFolders, Icons.audio_file_outlined, l10n.mixdownFoldersTabLabel, l10n.mixdownFoldersSectionDescription),
         _SearchEntry(SettingsSection.mixdownFolders, Icons.folder_open, l10n.previewMixdownFolderTitle, l10n.previewMixdownFolderSubtitle),
@@ -3021,55 +3035,26 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
             child: WorkTimerSection(l10n: l10n),
           ),
         ),
-        // The DPM Companion plugin runs in desktop DAWs only.
-        if (!MobileUtils.isMobile()) ...[
-          const SizedBox(height: 12),
-          _buildCompanionSessionsCard(l10n),
-        ],
       ],
     );
   }
 
-  Widget _buildCompanionSessionsCard(AppLocalizations l10n) {
-    final endOnClose = ref.watch(companionEndSessionProvider);
-    final startOnOpen = ref.watch(companionStartSessionProvider);
-
-    return Card(
-      clipBehavior: Clip.antiAlias,
-      child: Padding(
-        padding: const EdgeInsets.all(16),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Row(
-              children: [
-                const Icon(Icons.extension_outlined),
-                const SizedBox(width: 10),
-                Expanded(
-                  child: Text(l10n.companionSessionsTitle, style: Theme.of(context).textTheme.titleMedium),
-                ),
-              ],
-            ),
-            const SizedBox(height: 4),
-            Text(l10n.companionSessionsDescription, style: Theme.of(context).textTheme.bodySmall),
-            const SizedBox(height: 8),
-            SwitchListTile(
-              contentPadding: EdgeInsets.zero,
-              title: Text(l10n.companionEndSessionWhenDawCloses),
-              subtitle: Text(l10n.companionEndSessionWhenDawClosesDescription),
-              value: endOnClose,
-              onChanged: (v) => ref.read(companionEndSessionProvider.notifier).set(v),
-            ),
-            SwitchListTile(
-              contentPadding: EdgeInsets.zero,
-              title: Text(l10n.companionStartSessionWhenDawOpens),
-              subtitle: Text(l10n.companionStartSessionWhenDawOpensDescription),
-              value: startOnOpen,
-              onChanged: (v) => ref.read(companionStartSessionProvider.notifier).set(v),
-            ),
-          ],
-        ),
-      ),
+  /// Settings > DAW plugin. The view is plain (CompanionPluginSettingsView);
+  /// this only wires it to the providers and the browser.
+  Widget _buildDawPluginSection(AppLocalizations l10n) {
+    return CompanionPluginSettingsView(
+      sighting: ref.watch(companionSightingProvider),
+      latestRelease: ref.watch(companionLatestReleaseProvider),
+      platform: Platform.isWindows
+          ? CompanionPlatform.windows
+          : Platform.isMacOS
+              ? CompanionPlatform.macOS
+              : CompanionPlatform.linux,
+      endSessionWhenDawCloses: ref.watch(companionEndSessionProvider),
+      startSessionWhenDawOpens: ref.watch(companionStartSessionProvider),
+      onDownload: (url) => launchUrl(Uri.parse(url), mode: LaunchMode.externalApplication),
+      onEndSessionChanged: (v) => ref.read(companionEndSessionProvider.notifier).set(v),
+      onStartSessionChanged: (v) => ref.read(companionStartSessionProvider.notifier).set(v),
     );
   }
 

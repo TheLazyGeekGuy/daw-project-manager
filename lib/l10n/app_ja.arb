@@ -4440,7 +4440,6 @@
   "midiCalibrate": "キャリブレーション",
   "midiCalibrating": "クリックごとに鍵盤を弾いてください（{done}／{total}）",
   "midiCalibrated": "録音レイテンシーを {ms} ms に設定しました",
-  "companionSessionsTitle": "DAW プラグイン (DPM Companion)",
   "companionSessionsDescription": "プロジェクトに DPM Companion プラグインを入れると、DAW がそのプロジェクトを開いたり閉じたりしたことがアプリに伝わります。",
   "companionEndSessionWhenDawCloses": "DAW がプロジェクトを閉じたらセッションを終了",
   "companionEndSessionWhenDawClosesDescription": "クラッシュ後も同様です。セッションは DAW がプロジェクトを手放した時刻で終了します。",
@@ -4450,5 +4449,13 @@
   "companionSessionEndedClosed": "{daw} が {project} を閉じたため、作業セッションを終了しました。",
   "companionSessionEndedNoResponse": "{daw} の DPM Companion から応答がなくなったため、{project} のセッションを最後に応答があった時刻で終了しました。DAW がクラッシュしたか、強制終了された可能性があります。",
   "companionUnknownDaw": "DAW",
-  "companionSessionEndedSummary": "{start}–{end} · {duration}"
+  "companionSessionEndedSummary": "{start}–{end} · {duration}",
+  "companionPluginTabLabel": "DAW プラグイン",
+  "companionPluginTitle": "DPM Companion",
+  "companionPluginDescription": "DAW 用の VST3/AU プラグインです。マスターバスに挿すと、プロジェクトのタスクを表示し、再生のたびにプロジェクトのプレビュー曲として録音し、DAW がプロジェクトを閉じたときに作業セッションを終了できます。",
+  "companionPluginLastSeen": "最後に確認: {daw}（バージョン {version}）、{date}。",
+  "companionPluginNotSeen": "このコンピューターではまだ確認されていません。インストールして、DAW のマスターバスに挿してください。",
+  "companionPluginUpdateAvailable": "バージョン {version} が利用できます。",
+  "companionPluginDownload": "DAW プラグインをダウンロード",
+  "companionPluginDownloadUpdate": "アップデートをダウンロード"
 }

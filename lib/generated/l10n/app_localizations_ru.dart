@@ -8149,9 +8149,6 @@ class AppLocalizationsRu extends AppLocalizations {
   }
 
   @override
-  String get companionSessionsTitle => 'Плагин для DAW (DPM Companion)';
-
-  @override
   String get companionSessionsDescription =>
       'Когда плагин DPM Companion есть в проекте, приложение знает, когда ваша DAW открывает и закрывает его.';
 
@@ -8195,4 +8192,34 @@ class AppLocalizationsRu extends AppLocalizations {
   ) {
     return '$start–$end · $duration';
   }
+
+  @override
+  String get companionPluginTabLabel => 'Плагин для DAW';
+
+  @override
+  String get companionPluginTitle => 'DPM Companion';
+
+  @override
+  String get companionPluginDescription =>
+      'Плагин VST3/AU для вашей DAW. Поставьте его на мастер-шину: он показывает задачи проекта, записывает каждое воспроизведение как песню для предпрослушивания проекта и может завершать рабочую сессию, когда DAW закрывает проект.';
+
+  @override
+  String companionPluginLastSeen(String daw, String version, String date) {
+    return 'Последний раз замечен в $daw (версия $version) $date.';
+  }
+
+  @override
+  String get companionPluginNotSeen =>
+      'На этом компьютере пока не замечен. Установите его и поставьте на мастер-шину DAW.';
+
+  @override
+  String companionPluginUpdateAvailable(String version) {
+    return 'Доступна версия $version.';
+  }
+
+  @override
+  String get companionPluginDownload => 'Скачать плагин для DAW';
+
+  @override
+  String get companionPluginDownloadUpdate => 'Скачать обновление';
 }

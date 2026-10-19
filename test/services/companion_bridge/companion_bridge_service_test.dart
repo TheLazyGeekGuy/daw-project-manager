@@ -511,6 +511,60 @@ void main() {
     });
   });
 
+  group('what Settings > DAW plugin shows', () {
+    test('hellos and heartbeats report which plugin version runs in which DAW', () async {
+      final seen = <CompanionSighting>[];
+      final b = CompanionBridgeService(
+        library: library,
+        bridgeDir: bridgeDir,
+        previewSongsDir: previewDir,
+        appVersion: '2.10.0',
+        clock: () => clock,
+        onPluginSeen: seen.add,
+      );
+
+      await drop('session.hello', {}, runId: 'r1', at: clock);
+      await b.tick();
+      expect(seen.single.version, '0.1.0');
+      expect(seen.single.hostName, 'Steinberg Cubase 13');
+
+      final beat = File(p.join(bridgeDir, 'instances', 'r1.json'));
+      await beat.parent.create(recursive: true);
+      await beat.writeAsString(jsonEncode({
+        'runId': 'r1',
+        'pluginVersion': '0.1.0',
+        'lastSeen': clock.add(const Duration(seconds: 10)).toIso8601String(),
+        'project': {'id': 'p1', 'profileId': 'solo'},
+      }));
+      clock = clock.add(const Duration(seconds: 10));
+      await b.tick();
+      expect(seen, hasLength(2));
+    });
+
+    test('the newest release is reported when looked up, and withdrawn when checks go off', () async {
+      final reported = <CompanionRelease?>[];
+      var allowed = true;
+      final b = CompanionBridgeService(
+        library: library,
+        bridgeDir: bridgeDir,
+        previewSongsDir: previewDir,
+        appVersion: '2.10.0',
+        clock: () => clock,
+        checkLatestRelease: () async => const CompanionRelease('0.2.0', 'u'),
+        releaseChecksAllowed: () async => allowed,
+        onLatestRelease: reported.add,
+      );
+
+      await b.writeIndex();
+      expect(reported.single?.version, '0.2.0');
+
+      allowed = false;
+      await b.writeIndex(force: true);
+      expect(reported, hasLength(2));
+      expect(reported.last, isNull);
+    });
+  });
+
   test('the launch hint is written whole', () async {
     await writeCompanionLaunchHint('solo', library.project('solo', 'p1'), bridgeDir: bridgeDir);
     final hint = jsonDecode(await File(p.join(bridgeDir, 'launch.json')).readAsString());
