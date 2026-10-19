@@ -117,6 +117,7 @@ void main() {
     WidgetTester tester, {
     MidiInputChoice choice = MidiInputChoice.all,
     bool editable = true,
+    bool offered = true,
   }) async {
     tester.view.physicalSize = const Size(1400, 800);
     tester.view.devicePixelRatio = 1;
@@ -145,7 +146,7 @@ void main() {
                     auditioner: ear,
                     midiInput: backend,
                     midiInputChoice: choice,
-                    onMidiInputChoiceChanged: choices.add,
+                    onMidiInputChoiceChanged: offered ? choices.add : null,
                     onSaveEdited: editable
                         ? (edit) async {
                             saved.add(edit.clip);
@@ -203,6 +204,19 @@ void main() {
                   find.byKey(const ValueKey('midi-piano-roll-midi-input')))
               .tooltip,
           'MIDI input: Pads');
+      await close(tester);
+    });
+
+    testWidgets('not offered (the Flatpak): no button, nothing opened',
+        (tester) async {
+      // What showMidiPianoRoll passes when MidiInputBackend.isSupported is
+      // false: no choice, nowhere to keep one.
+      await open(tester, choice: MidiInputChoice.off, offered: false);
+      expect(find.byKey(const ValueKey('midi-piano-roll-midi-input')),
+          findsNothing);
+      expect(find.byKey(const ValueKey('midi-piano-roll-step-input')),
+          findsNothing);
+      expect(backend.opened, isEmpty);
       await close(tester);
     });
 

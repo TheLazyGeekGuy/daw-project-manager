@@ -89,13 +89,18 @@ Future<void> showMidiPianoRoll(
               sections: midiShortcutSections(
                 l10n,
                 mac: defaultTargetPlatform == TargetPlatform.macOS,
+                midiInput: MidiInputBackend.isSupported,
               ),
             ),
           ),
     acousticFeedback: MidiAcousticFeedbackStore.current,
     onAcousticFeedbackChanged: MidiAcousticFeedbackStore.save,
-    midiInputChoice: MidiInputChoiceStore.current,
-    onMidiInputChoiceChanged: MidiInputChoiceStore.save,
+    // Not offered inside the Flatpak: no choice, no button, nothing opened.
+    midiInputChoice: MidiInputBackend.isSupported
+        ? MidiInputChoiceStore.current
+        : MidiInputChoice.off,
+    onMidiInputChoiceChanged:
+        MidiInputBackend.isSupported ? MidiInputChoiceStore.save : null,
     labels: MidiPianoRollWindowLabels(
       roll: MidiPianoRollLabels(
         zoomIn: l10n.midiPianoRollZoomIn,
@@ -268,9 +273,12 @@ String? _controllerName(AppLocalizations l10n, int number) => switch (number) {
 
 /// Every shortcut and gesture of the piano roll, for its sheet. Keys are
 /// named the way this platform's keyboard prints them ([mac]: ⌘ ⌥ ⇧ ⌫).
+/// [midiInput]: whether a MIDI keyboard can be played here (not in the
+/// Flatpak), and so whether its section is listed.
 List<MidiShortcutSection> midiShortcutSections(
   AppLocalizations l10n, {
   required bool mac,
+  bool midiInput = true,
 }) {
   final ctrl = mac ? '⌘' : l10n.midiKeyCtrl;
   final alt = mac ? '⌥' : l10n.midiKeyAlt;
@@ -307,11 +315,12 @@ List<MidiShortcutSection> midiShortcutSections(
       MidiShortcut([drag], l10n.midiShortcutVelocity),
       MidiShortcut([drag], l10n.midiShortcutLane),
     ]),
-    MidiShortcutSection(l10n.midiShortcutsMidiInput, [
-      MidiShortcut([l10n.midiGesturePlayKey], l10n.midiShortcutPlayKey),
-      MidiShortcut([l10n.midiGesturePlayKey], l10n.midiShortcutStepInput),
-      MidiShortcut(const ['← / →'], l10n.midiShortcutStepCursor),
-    ]),
+    if (midiInput)
+      MidiShortcutSection(l10n.midiShortcutsMidiInput, [
+        MidiShortcut([l10n.midiGesturePlayKey], l10n.midiShortcutPlayKey),
+        MidiShortcut([l10n.midiGesturePlayKey], l10n.midiShortcutStepInput),
+        MidiShortcut(const ['← / →'], l10n.midiShortcutStepCursor),
+      ]),
     MidiShortcutSection(l10n.midiShortcutsEditing, [
       MidiShortcut([ctrl, 'Z'], l10n.midiUndo),
       MidiShortcut([ctrl, shift, 'Z'], l10n.midiRedo),

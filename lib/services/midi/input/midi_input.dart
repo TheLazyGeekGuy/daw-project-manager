@@ -55,6 +55,21 @@ abstract class MidiInputBackend {
   /// open: it is in [MidiInputConnection.failed].
   Future<MidiInputConnection> open(List<MidiInputDevice> devices);
 
+  /// Whether MIDI input is offered at all: everywhere but inside the
+  /// Flatpak sandbox, which would need `--device=all` to reach the ALSA
+  /// sequencer — a grant the Flathub build deliberately doesn't ask for
+  /// (see flatpak/README.md). Detected by the `/.flatpak-info` marker every
+  /// Flatpak app has, as `GoogleDriveSyncService.isSupported` does.
+  static bool get isSupported => supportedFor(
+        isLinux: Platform.isLinux,
+        inFlatpak: Platform.isLinux && File('/.flatpak-info').existsSync(),
+      );
+
+  /// The decision behind [isSupported], testable without a sandbox.
+  @visibleForTesting
+  static bool supportedFor({required bool isLinux, required bool inFlatpak}) =>
+      !(isLinux && inFlatpak);
+
   /// The backend for the platform the app runs on.
   static MidiInputBackend forPlatform() {
     if (Platform.isWindows) return WindowsMidiInput();

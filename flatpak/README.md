@@ -202,9 +202,11 @@ decision — see its own history for what that covers).
 
 6. Their CI builds it and a human reviewer checks the `finish-args` — be
    ready to justify the D-Bus `--talk-name`s above if asked; the comments
-   already in the manifest cover the reasoning for each. `--device=all` is
-   there for MIDI keyboards in the piano roll alone: the ALSA sequencer
-   (`/dev/snd/seq`) has no narrower `--device`. There's no
+   already in the manifest cover the reasoning for each. There's no
+   `--device=all` either: MIDI keyboards in the piano roll would need it
+   (the ALSA sequencer, `/dev/snd/seq`, has no narrower `--device`), so
+   MIDI input is switched off inside the sandbox
+   (`MidiInputBackend.isSupported`) instead of granted it. There's no
    `--share=network` to justify — both things that would have needed it are
    switched off instead of granted the permission: Drive sync specifically
    inside the Flatpak sandbox (`GoogleDriveSyncService.isSupported`) and the

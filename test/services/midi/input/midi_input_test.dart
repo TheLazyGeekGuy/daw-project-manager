@@ -284,6 +284,24 @@ void main() {
     }, skip: !Platform.isLinux, timeout: const Timeout(Duration(seconds: 20)));
   });
 
+  group('MidiInputBackend.supportedFor', () {
+    test('offered everywhere but inside the Flatpak sandbox', () {
+      // The Flathub build doesn't ask for --device=all, without which the
+      // ALSA sequencer can't be reached: offering MIDI there would only ever
+      // say "no inputs found".
+      expect(MidiInputBackend.supportedFor(isLinux: true, inFlatpak: true),
+          isFalse);
+      expect(MidiInputBackend.supportedFor(isLinux: true, inFlatpak: false),
+          isTrue, reason: 'the tarball and the AppImage have it');
+      expect(MidiInputBackend.supportedFor(isLinux: false, inFlatpak: false),
+          isTrue);
+    });
+
+    test('on the machine running the tests (never a Flatpak), it is', () {
+      expect(MidiInputBackend.isSupported, isTrue);
+    });
+  });
+
   group('MidiInputChoiceStore', () {
     late Directory tempDir;
 

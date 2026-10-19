@@ -39,6 +39,17 @@ void main() {
           reason: 'Cmd on a Mac');
     });
 
+    test('no MIDI keyboard section where MIDI input is not offered', () {
+      final titles = [
+        for (final s in midiShortcutSections(l10n, mac: false, midiInput: false))
+          s.title,
+      ];
+      expect(titles, isNot(contains(l10n.midiShortcutsMidiInput)));
+      expect(
+          [for (final s in midiShortcutSections(l10n, mac: false)) s.title],
+          contains(l10n.midiShortcutsMidiInput));
+    });
+
     test('says what a MIDI keyboard does, step input and its cursor', () {
       final rows = all(mac: false);
       expect([for (final s in rows) s.keys.join('+')], contains('← / →'));
