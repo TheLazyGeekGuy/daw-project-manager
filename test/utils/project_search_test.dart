@@ -2,15 +2,15 @@ import 'package:flutter_test/flutter_test.dart';
 
 import 'package:daw_project_manager/models/music_project.dart';
 import 'package:daw_project_manager/models/project_marker.dart';
+import 'package:daw_project_manager/models/project_part.dart';
 import 'package:daw_project_manager/models/project_stats.dart';
 import 'package:daw_project_manager/utils/project_search.dart';
-import 'package:daw_project_manager/utils/search_utils.dart';
 
 import '../helpers/test_factories.dart';
 
 void main() {
   bool matches(MusicProject project, String query, {bool tags = true}) =>
-      fuzzyMatchAny(projectSearchFields(project, includeTags: tags), query);
+      projectMatchesSearch(project, query, includeTags: tags);
 
   test('finds a project by a plug-in it loads', () {
     final p = TestFactories.makeProject(
@@ -48,5 +48,58 @@ void main() {
     expect(matches(p, 'trap'), isTrue);
     expect(matches(p, 'trap', tags: false), isFalse,
         reason: 'hidden tags must not make a project match');
+  });
+
+  group('names match fuzzily, long free text by word starts', () {
+    test('a name still finds shorthand and the middle of a word', () {
+      final p = TestFactories.makeProject(fileName: 'Chillout Vibes.als');
+      expect(matches(p, 'chilvib'), isTrue);
+      expect(matches(p, 'lout'), isTrue);
+    });
+
+    test('notes no longer match letters picked across their words', () {
+      // fuzzyMatchAll found no|w … t|h|e and c-u-e inside Cubase.
+      final p = TestFactories.makeProject(
+        fileName: 'x.cpr',
+        notes: 'Redo it now with the Cubase template',
+      );
+      expect(matches(p, 'note'), isFalse);
+      expect(matches(p, 'cue'), isFalse);
+      expect(matches(p, 'cub temp'), isTrue);
+      expect(matches(p, 'plate'), isFalse, reason: 'inside "template"');
+    });
+
+    test('notes read from the project file follow the same rule', () {
+      final p = TestFactories.makeProject(
+        fileName: 'x.rpp',
+        projectNotes: 'Now the bridge needs work',
+      );
+      expect(matches(p, 'note'), isFalse);
+      expect(matches(p, 'bridge'), isTrue);
+    });
+
+    test('parts and performers follow the same rule', () {
+      final p = TestFactories.makeProject(
+        fileName: 'x.cpr',
+        parts: const [
+          ProjectPart(id: '1', name: 'Bass', performer: 'Joana'),
+          ProjectPart(id: '2', name: 'Lead vocal', notes: 'double the hook'),
+        ],
+      );
+      expect(matches(p, 'joana'), isTrue);
+      expect(matches(p, 'bass jo'), isTrue);
+      expect(matches(p, 'ana'), isFalse, reason: 'inside "Joana"');
+      // ba|ss jo|ana as fuzzy chunks
+      expect(matches(p, 'bajo'), isFalse);
+    });
+  });
+
+  group('proseMatchesSearch', () {
+    test('needs text, and every word starting a word of it', () {
+      expect(proseMatchesSearch(null, 'x'), isFalse);
+      expect(proseMatchesSearch('', 'x'), isFalse);
+      expect(proseMatchesSearch('needs vocals', 'VOC'), isTrue);
+      expect(proseMatchesSearch('now the', 'note'), isFalse);
+    });
   });
 }

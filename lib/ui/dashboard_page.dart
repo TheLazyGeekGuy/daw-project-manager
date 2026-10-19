@@ -57,6 +57,7 @@ import '../utils/project_tags.dart';
 import '../utils/theme_derivations.dart';
 import '../providers/theme_provider.dart';
 import '../utils/file_launcher.dart';
+import '../utils/project_search.dart';
 import '../utils/search_utils.dart';
 import '../utils/route_observer.dart';
 import '../utils/trina_grid_locale.dart';
@@ -7653,13 +7654,11 @@ class _PlutoProjectsTableState extends ConsumerState<_PlutoProjectsTable>
               !fuzzyMatchAll(project.displayName, currentQuery);
           final isNotesMatch =
               matchedOutsideName &&
-              project.notes != null &&
-              fuzzyMatchAll(project.notes!, currentQuery);
+              proseMatchesSearch(project.notes, currentQuery);
           final isProjectNotesMatch =
               matchedOutsideName &&
               !isNotesMatch &&
-              project.projectNotes != null &&
-              fuzzyMatchAll(project.projectNotes!, currentQuery);
+              proseMatchesSearch(project.projectNotes, currentQuery);
 
           final isNewlyDiscovered = ref
               .watch(recentlyDiscoveredProjectsProvider)
@@ -11259,13 +11258,11 @@ class _MobileProjectsListState extends ConsumerState<_MobileProjectsList> {
                     !fuzzyMatchAll(project.displayName, searchQuery);
                 final isNotesMatch =
                     matchedOutsideName &&
-                    project.notes != null &&
-                    fuzzyMatchAll(project.notes!, searchQuery);
+                    proseMatchesSearch(project.notes, searchQuery);
                 final isProjectNotesMatch =
                     matchedOutsideName &&
                     !isNotesMatch &&
-                    project.projectNotes != null &&
-                    fuzzyMatchAll(project.projectNotes!, searchQuery);
+                    proseMatchesSearch(project.projectNotes, searchQuery);
 
                 return Card(
                   margin: const EdgeInsets.symmetric(

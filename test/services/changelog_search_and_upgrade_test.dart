@@ -40,7 +40,8 @@ void main() {
 
     test('finds matches across several releases', () {
       final hits = filterChangelog(changelog, 'r', localeCode: 'en');
-      expect(hits, hasLength(3));
+      // Not 2.7.4: its only r's are inside "sharing" and "Android".
+      expect(hits.map((r) => r.version), ['2.9.0', '2.8.0']);
     });
 
     test('a version match keeps the whole release', () {
@@ -50,10 +51,54 @@ void main() {
       expect(hits.single.highlightsFor('en'), hasLength(2));
     });
 
-    test('matches the way the dashboard project search does', () {
-      // Word-anchored fuzzy chunks, as in fuzzyMatchAll: bre|adcrumbs ti|tle.
-      final hits = filterChangelog(changelog, 'bretit', localeCode: 'en');
-      expect(hits.single.highlightsFor('en'), ['Breadcrumbs in the title bar']);
+    test('a query word has to start a word of the line', () {
+      expect(filterChangelog(changelog, 'fix', localeCode: 'en'), hasLength(1),
+          reason: '"fix" starts "Fixed"');
+      expect(filterChangelog(changelog, 'aring', localeCode: 'en'), isEmpty,
+          reason: 'only the middle of "sharing"');
+    });
+
+    test('no fuzzy matching, which on long lines found mostly noise', () {
+      // Real lines from the shipped changelog that fuzzyMatchAll matched.
+      final real = [
+        _release('2.9.3', [
+          'On Windows, the update prompt now offers the new installer instead',
+        ]),
+        _release('2.9.2', ['Track counts and plug-ins for Ableton and Cubase']),
+        _release('2.9.0', ['Breadcrumbs in the title bar']),
+      ];
+
+      // no|w … t|h|e
+      expect(filterChangelog(real, 'note', localeCode: 'en'), isEmpty);
+      // c-u-e inside Cubase
+      expect(filterChangelog(real, 'cue', localeCode: 'en'), isEmpty);
+      // bre|adcrumbs ti|tle, the projects search's shorthand
+      expect(filterChangelog(real, 'bretit', localeCode: 'en'), isEmpty);
+    });
+
+    test('a query starting with a separator may match anywhere', () {
+      final hits = filterChangelog(
+        [_release('2.9.2', ['Each clip is saved as clip.mid'])],
+        '.mid',
+        localeCode: 'en',
+      );
+      expect(hits, hasLength(1));
+    });
+
+    test('Japanese and Chinese, written without spaces, match anywhere', () {
+      final translated = [
+        _release('2.9.0', ['Volume is remembered'], extra: {
+          'ja': ['プロジェクトのMIDIクリップを再生'],
+          'zh': ['播放项目的MIDI片段'],
+        }),
+      ];
+
+      expect(filterChangelog(translated, 'クリップ', localeCode: 'ja'),
+          hasLength(1));
+      expect(filterChangelog(translated, 'midi', localeCode: 'ja'),
+          hasLength(1), reason: 'after の, a word may start anywhere');
+      expect(filterChangelog(translated, '片段', localeCode: 'zh'),
+          hasLength(1));
     });
 
     test('every word has to match, in any order', () {

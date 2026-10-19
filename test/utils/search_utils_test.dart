@@ -222,4 +222,63 @@ void main() {
       expect(fuzzyMatchAny([], 'bass'), isFalse);
     });
   });
+
+  group('wordStartContains', () {
+    test('matches at the start of the text or of any word', () {
+      expect(wordStartContains('fixed sharing', 'fix'), isTrue);
+      expect(wordStartContains('fixed sharing', 'shar'), isTrue);
+      expect(wordStartContains('google drive sync', 'drive sync'), isTrue);
+    });
+
+    test('a separator starts a word', () {
+      expect(wordStartContains('plug-ins', 'ins'), isTrue);
+      expect(wordStartContains('(remix)', 'remix'), isTrue);
+      expect(wordStartContains('2.8.0', '8.0'), isTrue);
+    });
+
+    test('never inside a word', () {
+      expect(wordStartContains('start a new clip', 'art'), isFalse);
+      expect(wordStartContains('12.8', '2.8'), isFalse);
+    });
+
+    test('keeps looking past an occurrence inside a word', () {
+      // "art" sits inside "start" before it starts "artwork".
+      expect(wordStartContains('start with artwork', 'art'), isTrue);
+    });
+
+    test('no fuzzy fallback', () {
+      expect(wordStartContains('cubase', 'cue'), isFalse);
+      expect(wordStartContains('now the', 'note'), isFalse);
+      expect(wordStartContains('chillout vibes', 'chilvib'), isFalse);
+    });
+
+    test('a pattern starting with a separator matches anywhere', () {
+      expect(wordStartContains('clip.mid', '.mid'), isTrue);
+    });
+
+    test('in Japanese and Chinese any character may start a word', () {
+      expect(wordStartContains('プロジェクトのクリップ', 'クリップ'), isTrue);
+      expect(wordStartContains('のmidi', 'midi'), isTrue);
+      expect(wordStartContains('播放项目的片段', '片段'), isTrue);
+    });
+
+    test('accented and Cyrillic letters are part of a word', () {
+      expect(wordStartContains('detecção', 'ção'), isFalse);
+      expect(wordStartContains('синхронизация', 'хрон'), isFalse);
+      expect(wordStartContains('синхронизация', 'синх'), isTrue);
+    });
+
+    test('an empty pattern matches', () {
+      expect(wordStartContains('anything', ''), isTrue);
+    });
+  });
+
+  group('wordStartMatchAll', () {
+    test('every query word has to start a word, in any order', () {
+      expect(wordStartMatchAll('Breadcrumbs in the title bar', 'BAR bread'),
+          isTrue);
+      expect(wordStartMatchAll('Breadcrumbs in the title bar', 'bar crumbs'),
+          isFalse);
+    });
+  });
 }
