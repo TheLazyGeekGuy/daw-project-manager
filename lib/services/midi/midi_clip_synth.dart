@@ -55,8 +55,15 @@ class MidiClipSynth {
   /// the sound ringing past its end — release tails, a held pedal — is
   /// folded back onto its start, the way it would ring into the next pass.
   /// Played on repeat, it loops seamlessly, in time.
+  ///
+  /// With [metronome], a click on every beat is mixed in — the first of
+  /// each bar higher — rendered with the notes rather than played beside
+  /// them, so it can never drift from them and loops with them.
   Uint8List renderWav(MidiClip clip,
-      {double? bpm, SynthVoice voice = SynthVoice.keys, bool loop = false}) {
+      {double? bpm,
+      SynthVoice voice = SynthVoice.keys,
+      bool loop = false,
+      Metronome? metronome}) {
     final tempo = (bpm == null || bpm <= 0) ? 120.0 : bpm;
     final secondsPerTick = 60 / tempo / clip.ppq;
     final totalSeconds = durationSeconds(clip, tempo, voice: voice);
@@ -89,6 +96,13 @@ class MidiClipSynth {
         );
         _renderTone(mix, start, held, note.pitch, gain, _patches[voice]!,
             bends: bends);
+      }
+    }
+
+    if (metronome != null) {
+      for (final (tick, accent) in metronome.clicks(clip.lengthTicks)) {
+        final start = (tick * framesPerTick).round();
+        if (start < frames) _renderClick(mix, start, accent: accent);
       }
     }
 
@@ -137,6 +151,23 @@ class MidiClipSynth {
       pcm.setInt16(i * 2, v, Endian.little);
     }
     return _wav(pcm.buffer.asUint8List(), sampleRate);
+  }
+
+  // --- the metronome ---------------------------------------------------------
+
+  /// A click: a short sine ping, a fifth higher on the bar's first beat —
+  /// sharp enough to play against, gone before the next note's attack.
+  void _renderClick(Float64List mix, int start, {required bool accent}) {
+    final sr = sampleRate.toDouble();
+    final frequency = accent ? 1568.0 : 1046.5; // G6, C6.
+    final gain = accent ? 0.32 : 0.22;
+    final length = math.min((0.06 * sr).round(), mix.length - start);
+    final attack = (0.001 * sr).round();
+    for (var i = 0; i < length; i++) {
+      final t = i / sr;
+      final envelope = (i < attack ? i / attack : 1.0) * math.exp(-t * 70);
+      mix[start + i] += gain * envelope * math.sin(2 * math.pi * frequency * t);
+    }
   }
 
   // --- tonal voices --------------------------------------------------------
@@ -689,4 +720,43 @@ class ClipControls {
                 .toDouble(),
           ),
       ];
+}
+
+/// Where a preview's metronome clicks: every [beatTicks], the first of each
+/// [barTicks] accented. [offsetTicks] is how far into the whole clip the
+/// rendered stretch starts — a loop region cut out of it — so the clicks
+/// stay on the clip's own beats.
+class Metronome {
+  const Metronome({
+    required this.beatTicks,
+    required this.barTicks,
+    this.offsetTicks = 0,
+  });
+
+  final int beatTicks;
+  final int barTicks;
+  final int offsetTicks;
+
+  /// Every click in the first [lengthTicks] of the stretch: its tick there,
+  /// and whether it starts a bar.
+  Iterable<(int, bool)> clicks(int lengthTicks) sync* {
+    if (beatTicks <= 0) return;
+    var beat = (offsetTicks / beatTicks).ceil() * beatTicks;
+    for (; beat - offsetTicks < lengthTicks; beat += beatTicks) {
+      yield (beat - offsetTicks, barTicks > 0 && beat % barTicks == 0);
+    }
+  }
+
+  /// Tells renders with different clicks apart in the preview cache.
+  String get cacheKey => 'click$beatTicks-$barTicks-$offsetTicks';
+
+  @override
+  bool operator ==(Object other) =>
+      other is Metronome &&
+      other.beatTicks == beatTicks &&
+      other.barTicks == barTicks &&
+      other.offsetTicks == offsetTicks;
+
+  @override
+  int get hashCode => Object.hash(beatTicks, barTicks, offsetTicks);
 }

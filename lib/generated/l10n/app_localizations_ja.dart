@@ -7777,4 +7777,35 @@ class AppLocalizationsJa extends AppLocalizations {
 
   @override
   String get midiShortcutRulerDoubleClick => 'ルーラーの上：その位置から再生';
+
+  @override
+  String get midiMetronome => 'メトロノーム';
+
+  @override
+  String get midiShortcutMetronome => 'メトロノームのオン／オフ';
+
+  @override
+  String midiRecordLatency(int ms) {
+    return '録音レイテンシー：$ms ms';
+  }
+
+  @override
+  String get midiRecordLatencyTitle => '録音レイテンシー';
+
+  @override
+  String get midiRecordLatencyBody =>
+      '録音したノートをこの分だけ早めに入力し、音が届くまでと鍵盤の入力がアプリに届くまでの遅れを補正します。キャリブレーションでこのコンピューターでの値を測定できます。';
+
+  @override
+  String get midiCalibrate => 'キャリブレーション';
+
+  @override
+  String midiCalibrating(int done, int total) {
+    return 'クリックごとに鍵盤を弾いてください（$done／$total）';
+  }
+
+  @override
+  String midiCalibrated(int ms) {
+    return '録音レイテンシーを $ms ms に設定しました';
+  }
 }

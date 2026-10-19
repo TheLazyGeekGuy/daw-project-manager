@@ -9,8 +9,10 @@ import '../generated/l10n/app_localizations.dart';
 import '../models/midi_clip.dart';
 import '../providers/providers.dart';
 import '../services/midi/input/midi_input.dart';
+import '../services/midi/midi_clip_synth.dart' show Metronome;
 import '../services/midi/input/midi_input_message.dart';
 import '../services/midi_editor_prefs_store.dart';
+import '../utils/midi_recording.dart';
 import '../utils/mobile_utils.dart';
 import '../utils/musical_scale.dart';
 import '../utils/time_signature.dart';
@@ -21,6 +23,7 @@ import 'widgets/midi_clip_edit_controller.dart';
 import 'widgets/midi_clip_list.dart';
 import 'widgets/midi_clips_section.dart' show midiTempoLabelsOf, synthVoiceName;
 import 'widgets/midi_input_button.dart';
+import 'widgets/midi_tool_icons.dart';
 import 'widgets/midi_tempo_control.dart';
 import 'widgets/midi_piano_roll.dart';
 import 'widgets/midi_shortcuts_sheet.dart';
@@ -100,6 +103,10 @@ Future<void> showMidiPianoRoll(
         : MidiInputChoice.off,
     onMidiInputChoiceChanged:
         MidiInputBackend.isSupported ? MidiInputChoiceStore.save : null,
+    metronome: MidiMetronomeStore.current,
+    onMetronomeChanged: MidiMetronomeStore.save,
+    recordLatency: MidiRecordLatencyStore.current,
+    onRecordLatencyChanged: MidiRecordLatencyStore.save,
     labels: MidiPianoRollWindowLabels(
       roll: MidiPianoRollLabels(
         zoomIn: l10n.midiPianoRollZoomIn,
@@ -150,6 +157,7 @@ Future<void> showMidiPianoRoll(
       shortcuts: l10n.midiShortcuts,
       fullScreen: l10n.midiFullScreen,
       exitFullScreen: l10n.midiExitFullScreen,
+      metronome: l10n.midiMetronome,
       midiInput: MidiInputLabels(
         input: l10n.midiInput,
         off: l10n.midiInputOff,
@@ -159,6 +167,14 @@ Future<void> showMidiPianoRoll(
         busy: l10n.midiInputBusy,
         record: l10n.midiRecord,
         stopRecording: l10n.midiStopRecording,
+        latency: l10n.midiRecordLatency,
+        latencyTitle: l10n.midiRecordLatencyTitle,
+        latencyBody: l10n.midiRecordLatencyBody,
+        calibrate: l10n.midiCalibrate,
+        calibrating: l10n.midiCalibrating,
+        calibrated: l10n.midiCalibrated,
+        done: l10n.done,
+        cancel: l10n.cancel,
       ),
     ),
   );
@@ -226,7 +242,8 @@ Future<void> showMidiPianoRoll(
     // Sound with nothing on screen to stop it is the bug this prevents —
     // the clip as opened, or its edited version.
     final edited = MidiPianoRollWindow.editedKeyOf(playerKey);
-    bool ours(String? k) => k == playerKey || k == edited;
+    final calibrating = MidiPianoRollWindow.calibrationKeyOf(playerKey);
+    bool ours(String? k) => k == playerKey || k == edited || k == calibrating;
     if (ours(player.playingKey) || ours(player.preparingKey)) player.stop();
   });
 }
@@ -330,6 +347,7 @@ List<MidiShortcutSection> midiShortcutSections(
       MidiShortcut([click], l10n.midiShortcutKeyboard),
       MidiShortcut([click], l10n.midiShortcutRuler),
       MidiShortcut([l10n.midiGestureDoubleClick], l10n.midiShortcutRulerDoubleClick),
+      MidiShortcut(const ['C'], l10n.midiShortcutMetronome),
       MidiShortcut([ctrl, click], l10n.midiShortcutLoopStart),
       MidiShortcut([alt, click], l10n.midiShortcutLoopEnd),
       MidiShortcut([drag], l10n.midiShortcutLoopDrag),
@@ -378,8 +396,12 @@ class MidiPianoRollWindowLabels {
     this.timeSignature = '',
     this.fullScreen = '',
     this.exitFullScreen = '',
+    this.metronome = '',
     this.midiInput,
   });
+
+  /// The metronome toggle's tooltip; it shows when given.
+  final String metronome;
 
   /// The MIDI input button's strings; it shows when given, along with
   /// somewhere to keep the choice
@@ -480,6 +502,10 @@ class MidiPianoRollWindow extends StatefulWidget {
     this.midiInput,
     this.midiInputChoice = MidiInputChoice.off,
     this.onMidiInputChoiceChanged,
+    this.metronome = false,
+    this.onMetronomeChanged,
+    this.recordLatency = Duration.zero,
+    this.onRecordLatencyChanged,
   });
 
   /// [base] with a volume control added.
@@ -525,6 +551,10 @@ class MidiPianoRollWindow extends StatefulWidget {
     midiInput: base.midiInput,
     midiInputChoice: base.midiInputChoice,
     onMidiInputChoiceChanged: base.onMidiInputChoiceChanged,
+    metronome: base.metronome,
+    onMetronomeChanged: base.onMetronomeChanged,
+    recordLatency: base.recordLatency,
+    onRecordLatencyChanged: base.onRecordLatencyChanged,
   );
 
   /// The shared preview volume; the control shows only when all three of
@@ -562,6 +592,15 @@ class MidiPianoRollWindow extends StatefulWidget {
   /// (an editor needed), it records into the loop region too.
   final MidiInputChoice midiInputChoice;
   final ValueChanged<MidiInputChoice>? onMidiInputChoiceChanged;
+
+  /// Whether the metronome clicks, and where a change is kept.
+  final bool metronome;
+  final ValueChanged<bool>? onMetronomeChanged;
+
+  /// How much earlier recorded notes go in, and where a change is kept
+  /// (see [recordedTick]).
+  final Duration recordLatency;
+  final ValueChanged<Duration>? onRecordLatencyChanged;
 
   /// Opens the sheet of every shortcut and gesture (also on `?` and F1);
   /// null leaves its button out.
@@ -603,6 +642,9 @@ class MidiPianoRollWindow extends StatefulWidget {
 
   /// The player key the edited version of [playerKey]'s clip plays under.
   static String editedKeyOf(String playerKey) => '$playerKey~edit';
+
+  /// The player key calibrating recording latency plays its clicks under.
+  static String calibrationKeyOf(String playerKey) => '$playerKey~calibrate';
 
   @override
   State<MidiPianoRollWindow> createState() => _MidiPianoRollWindowState();
@@ -738,6 +780,15 @@ class _MidiPianoRollWindowState extends State<MidiPianoRollWindow> {
     return ticksAt(position, _bpm, _ppq) + (_playingRegion?.start ?? 0);
   }
 
+  /// Where a key played now goes when recording: [_nowTick], less the
+  /// recording latency.
+  double? get _recordTickNow {
+    final now = _nowTick;
+    if (now == null) return null;
+    return recordedTick(now,
+        latency: _latency, bpm: _bpm, ppq: _ppq, region: _playingRegion);
+  }
+
   bool get _running =>
       _isOurs && !_player.paused && _player.playingKey != null;
 
@@ -752,6 +803,7 @@ class _MidiPianoRollWindowState extends State<MidiPianoRollWindow> {
     }
     final editor = _editor;
     if (editor == null) return;
+    _endCalibration();
     editor.editing = true;
     final region =
         _loopRegion ?? (start: 0, end: _timeSignature.barTicks(_ppq) * 4);
@@ -796,7 +848,7 @@ class _MidiPianoRollWindowState extends State<MidiPianoRollWindow> {
   void _recordNote(int pitch, ({double tick, int velocity}) down) {
     final editor = _editor;
     if (editor == null) return;
-    final now = _nowTick;
+    final now = _recordTickNow;
     final region = _playingRegion;
     var length = now == null ? _ppq / 4 : now - down.tick;
     if (length < 0 && region != null) length = region.end - down.tick;
@@ -814,12 +866,166 @@ class _MidiPianoRollWindowState extends State<MidiPianoRollWindow> {
   /// over): recording ends with it. Looked at once the moment has passed —
   /// a restart stops and starts again in one go, and must not end it.
   void _onPlayer() {
-    if (!_recording) return;
+    if (!_recording && _calibrationTaps == null) return;
     scheduleMicrotask(() {
-      if (mounted && _recording && !_isOurs && !_preparing) {
+      if (!mounted) return;
+      if (_recording && !_isOurs && !_preparing) {
         _stopRecording(restart: false);
       }
+      final key = MidiPianoRollWindow.calibrationKeyOf(widget.playerKey);
+      if (_calibrationTaps != null &&
+          _player.playingKey != key &&
+          _player.preparingKey != key) {
+        setState(() => _calibrationTaps = null);
+      }
     });
+  }
+
+  // --- the metronome ----------------------------------------------------------
+
+  late bool _metronomeOn = widget.metronome;
+
+  /// The clicks for playback of [region] (null: from the clip's start).
+  Metronome? _metronomeFor(MidiTickRange? region) => _metronomeOn
+      ? Metronome(
+          beatTicks: _timeSignature.beatTicks(_ppq),
+          barTicks: _timeSignature.barTicks(_ppq),
+          offsetTicks: region?.start ?? 0,
+        )
+      : null;
+
+  /// Clicking or not: what plays carries on from where it is, with it.
+  void _setMetronome(bool on) {
+    if (on == _metronomeOn) return;
+    widget.onMetronomeChanged?.call(on);
+    _restartWith(() => _metronomeOn = on);
+  }
+
+  // --- recording latency, and measuring it -------------------------------------
+
+  late Duration _latency = widget.recordLatency;
+
+  void _setLatency(Duration latency) {
+    setState(() => _latency = latency);
+    widget.onRecordLatencyChanged?.call(latency);
+  }
+
+  /// Calibrating: the taps so far, where the player said playback was; null
+  /// when not calibrating.
+  List<double>? _calibrationTaps;
+
+  /// What calibrating last measured, shown until dismissed.
+  Duration? _calibrated;
+
+  Future<void> _showLatency() async {
+    final midi = labels.midiInput;
+    if (midi == null) return;
+    final choice = await showDialog<MidiLatencyChoice>(
+      context: context,
+      builder: (_) => MidiLatencyDialog(
+        latency: _latency,
+        labels: midi,
+        maxMs: kMaxRecordLatencyMs,
+      ),
+    );
+    if (choice == null || !mounted) return;
+    if (choice.latency != _latency) _setLatency(choice.latency);
+    if (choice.calibrate) _startCalibration();
+  }
+
+  /// Plays a bar of clicks, looping, for keys to be played along to — see
+  /// [measuredLatency]. Recording, and anything playing here, stops first.
+  void _startCalibration() {
+    _stopRecording(restart: false);
+    if (_isOurs || _preparing) _player.stop();
+    final bar = _timeSignature.barTicks(_ppq);
+    setState(() {
+      _calibrationTaps = [];
+      _calibrated = null;
+    });
+    _player
+        .play(
+          MidiPianoRollWindow.calibrationKeyOf(widget.playerKey),
+          MidiClip(name: 'calibration', ppq: _ppq, lengthTicks: bar, notes: const []),
+          bpm: _bpm,
+          voice: _voice,
+          loop: true,
+          metronome: Metronome(
+              beatTicks: _timeSignature.beatTicks(_ppq), barTicks: bar),
+        )
+        .catchError((Object _) {});
+  }
+
+  void _endCalibration() {
+    if (_calibrationTaps == null) return;
+    final key = MidiPianoRollWindow.calibrationKeyOf(widget.playerKey);
+    if (_player.playingKey == key || _player.preparingKey == key) {
+      _player.stop();
+    }
+    setState(() => _calibrationTaps = null);
+  }
+
+  /// A key played while calibrating: where the clicks had got to. The last
+  /// one asked for sets the latency.
+  void _calibrationTap() {
+    final taps = _calibrationTaps;
+    final key = MidiPianoRollWindow.calibrationKeyOf(widget.playerKey);
+    if (taps == null || _player.playingKey != key || _player.paused) return;
+    final position = _player.positionOf(key);
+    if (position == null) return;
+    setState(() => taps.add(ticksAt(position, _bpm, _ppq)));
+    if (taps.length < kCalibrationTaps) return;
+    final measured = measuredLatency(
+      taps,
+      beatTicks: _timeSignature.beatTicks(_ppq),
+      bpm: _bpm,
+      ppq: _ppq,
+    );
+    _endCalibration();
+    if (measured == null) return;
+    final latency = Duration(
+        milliseconds: measured.inMilliseconds.clamp(0, kMaxRecordLatencyMs));
+    _setLatency(latency);
+    setState(() => _calibrated = latency);
+  }
+
+  /// Under the header while calibrating — how many keys so far — and then
+  /// what it measured, until closed.
+  Widget _calibrationBanner(BuildContext context) {
+    final midi = labels.midiInput!;
+    final taps = _calibrationTaps;
+    final theme = Theme.of(context);
+    return Container(
+      key: const ValueKey('midi-piano-roll-calibration'),
+      margin: const EdgeInsets.only(bottom: 4),
+      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
+      decoration: BoxDecoration(
+        color: theme.colorScheme.secondaryContainer,
+        borderRadius: BorderRadius.circular(8),
+      ),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          MidiToolIcon(MidiToolGlyph.metronome,
+              color: theme.colorScheme.onSecondaryContainer, size: 20),
+          const SizedBox(width: 12),
+          Expanded(
+            child: Text(
+              taps != null
+                  ? midi.calibrating(taps.length, kCalibrationTaps)
+                  : midi.calibrated(_calibrated?.inMilliseconds ?? 0),
+              style: TextStyle(color: theme.colorScheme.onSecondaryContainer),
+            ),
+          ),
+          TextButton(
+            onPressed: taps != null
+                ? _endCalibration
+                : () => setState(() => _calibrated = null),
+            child: Text(taps != null ? midi.cancel : midi.done),
+          ),
+        ],
+      ),
+    );
   }
 
   /// A double-click on the ruler: play from there. Its first click already
@@ -890,7 +1096,8 @@ class _MidiPianoRollWindowState extends State<MidiPianoRollWindow> {
         _sounding.remove(pitch)?.call();
         _sounding[pitch] = _hold(pitch, message.velocity);
         _played.value = {..._played.value, pitch};
-        final tick = _recording ? _nowTick : null;
+        if (_calibrationTaps != null) _calibrationTap();
+        final tick = _recording ? _recordTickNow : null;
         if (tick != null) {
           _recordingKeys[pitch] = (tick: tick, velocity: message.velocity);
         }
@@ -935,7 +1142,12 @@ class _MidiPianoRollWindowState extends State<MidiPianoRollWindow> {
 
   void _setTimeSignature(TimeSignature value) {
     if (value == _timeSignature) return;
-    setState(() => _timeSignature = value);
+    if (_metronomeOn) {
+      // Clicking: what plays starts again, clicking the new beats.
+      _restartWith(() => _timeSignature = value);
+    } else {
+      setState(() => _timeSignature = value);
+    }
     _editor?.timeSignature = value;
   }
 
@@ -950,7 +1162,10 @@ class _MidiPianoRollWindowState extends State<MidiPianoRollWindow> {
     _player.stop();
     _player.startAt(key, at == null ? position : at(position));
     if (!running) return;
-    if (key == _editKey || _activeRegion != null || _openEnded) {
+    if (key == _editKey ||
+        _activeRegion != null ||
+        _openEnded ||
+        _metronomeOn) {
       _playHere();
     } else {
       _playingRegion = null;
@@ -1027,6 +1242,12 @@ class _MidiPianoRollWindowState extends State<MidiPianoRollWindow> {
     _regionRestart?.cancel();
     _recordedTakeOver?.cancel();
     _player.removeListener(_onPlayer);
+    if (_calibrationTaps != null) {
+      final key = MidiPianoRollWindow.calibrationKeyOf(widget.playerKey);
+      if (_player.playingKey == key || _player.preparingKey == key) {
+        _player.stop();
+      }
+    }
     super.dispose();
   }
 
@@ -1138,6 +1359,7 @@ class _MidiPianoRollWindowState extends State<MidiPianoRollWindow> {
           bpm: _bpm,
           voice: _voice,
           takeOver: takeOver,
+          metronome: _metronomeFor(region),
           // Cut to a region it cycles, recording whatever the loop button
           // says; an open-ended draft never does.
           loop: region != null ? true : (openEnded ? false : null),
@@ -1193,7 +1415,9 @@ class _MidiPianoRollWindowState extends State<MidiPianoRollWindow> {
 
   void _start() {
     final from = _startFrom;
-    if (_differs || _activeRegion != null || _openEnded) {
+    // Clicking, the window plays the clip itself: the list's play has no
+    // metronome.
+    if (_differs || _activeRegion != null || _openEnded || _metronomeOn) {
       _playHere(
         from: from == null ? null : _between(from, null, _activeRegion),
       );
@@ -1219,7 +1443,9 @@ class _MidiPianoRollWindowState extends State<MidiPianoRollWindow> {
   Timer? _regionRestart;
 
   void _stopOrRewind() {
-    if (_isOurs || _preparing) {
+    if (_calibrationTaps != null) {
+      _endCalibration();
+    } else if (_isOurs || _preparing) {
       _player.stop();
     } else {
       setState(() => _startFrom = null);
@@ -1259,7 +1485,9 @@ class _MidiPianoRollWindowState extends State<MidiPianoRollWindow> {
   /// Esc: stop this clip if it is playing (or paused, or still rendering),
   /// otherwise close the window.
   void _escape() {
-    if (_isOurs || _preparing) {
+    if (_calibrationTaps != null) {
+      _endCalibration();
+    } else if (_isOurs || _preparing) {
       _player.stop();
     } else {
       Navigator.of(context).maybePop();
@@ -1406,6 +1634,10 @@ class _MidiPianoRollWindowState extends State<MidiPianoRollWindow> {
             const SingleActivator(LogicalKeyboardKey.keyR): () {
               if (_canRecord) _toggleRecording();
             },
+            // The click, as in Cubase.
+            const SingleActivator(LogicalKeyboardKey.keyC): () {
+              if (labels.metronome.isNotEmpty) _setMetronome(!_metronomeOn);
+            },
             // Cubase's tool keys: 1 selects, 8 draws.
             const SingleActivator(LogicalKeyboardKey.digit1): () =>
                 _setTool(editor, MidiEditTool.select),
@@ -1459,6 +1691,9 @@ class _MidiPianoRollWindowState extends State<MidiPianoRollWindow> {
                       stacked: pianoRollHeaderStacked(constraints.maxWidth),
                     ),
                   ),
+                  if (labels.midiInput != null &&
+                      (_calibrationTaps != null || _calibrated != null))
+                    _calibrationBanner(context),
                   Expanded(
                     child: MidiPianoRoll(
                       clip: widget.clip,
@@ -1580,6 +1815,17 @@ class _MidiPianoRollWindowState extends State<MidiPianoRollWindow> {
                 color: _recording ? Colors.red : null,
                 onPressed: _toggleRecording,
               ),
+            if (labels.metronome.isNotEmpty)
+              IconButton(
+                key: const ValueKey('midi-piano-roll-metronome'),
+                tooltip: labels.metronome,
+                isSelected: _metronomeOn,
+                icon: MidiToolIcon(
+                  MidiToolGlyph.metronome,
+                  color: _metronomeOn ? Theme.of(context).colorScheme.primary : null,
+                ),
+                onPressed: () => _setMetronome(!_metronomeOn),
+              ),
           ],
         );
       },
@@ -1683,6 +1929,8 @@ class _MidiPianoRollWindowState extends State<MidiPianoRollWindow> {
           },
           onChanged: _setInputChoice,
           labels: labels.midiInput!,
+          latency: _editor == null ? null : _latency,
+          onLatency: _editor == null ? null : _showLatency,
         ),
       if (widget.onShowShortcuts != null)
         IconButton(

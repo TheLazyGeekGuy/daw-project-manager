@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
 
 /// The piano roll's tool icons Material has no glyph for: the select
-/// tool's mouse pointer, the range tool's text caret and the eraser. Drawn
+/// tool's mouse pointer, the range tool's text caret, the eraser and the
+/// metronome. Drawn
 /// in the icon theme's colour and size, so they sit beside Material icons
 /// as one of them.
-enum MidiToolGlyph { pointer, caret, eraser }
+enum MidiToolGlyph { pointer, caret, eraser, metronome }
 
 class MidiToolIcon extends StatelessWidget {
   const MidiToolIcon(this.glyph, {super.key, this.size, this.color});
@@ -47,6 +48,18 @@ class _GlyphPainter extends CustomPainter {
       ..strokeCap = StrokeCap.round
       ..strokeJoin = StrokeJoin.round;
     switch (glyph) {
+      case MidiToolGlyph.metronome:
+        // The pyramid case, its pendulum swung to the right with its weight.
+        final body = Path()
+          ..moveTo(9.5, 3)
+          ..lineTo(14.5, 3)
+          ..lineTo(19, 21)
+          ..lineTo(5, 21)
+          ..close();
+        canvas.drawPath(body, stroke);
+        canvas.drawLine(const Offset(5.6, 17), const Offset(18.4, 17), stroke);
+        canvas.drawLine(const Offset(12, 17), const Offset(17.5, 6), stroke);
+        canvas.drawCircle(const Offset(15.6, 9.8), 1.6, fill);
       case MidiToolGlyph.pointer:
         // The classic arrow, its tip at the top left.
         final arrow = Path()

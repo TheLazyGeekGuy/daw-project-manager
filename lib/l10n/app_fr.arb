@@ -4423,5 +4423,13 @@
   "midiRecord": "Enregistrer depuis le clavier MIDI : joue la boucle et enregistre ce que vous jouez",
   "midiStopRecording": "Arrêter l’enregistrement",
   "midiShortcutRecord": "Enregistrer depuis le clavier MIDI (joue la boucle ; chaque passage garde ce que vous jouez)",
-  "midiShortcutRulerDoubleClick": "Sur la règle : lire à partir de là"
+  "midiShortcutRulerDoubleClick": "Sur la règle : lire à partir de là",
+  "midiMetronome": "Métronome",
+  "midiShortcutMetronome": "Activer ou désactiver le métronome",
+  "midiRecordLatency": "Latence d’enregistrement : {ms} ms",
+  "midiRecordLatencyTitle": "Latence d’enregistrement",
+  "midiRecordLatencyBody": "Les notes enregistrées sont placées d’autant plus tôt, pour compenser le temps que met le son à vous parvenir et vos touches à atteindre l’application. Calibrez pour la mesurer sur cet ordinateur.",
+  "midiCalibrate": "Calibrer",
+  "midiCalibrating": "Jouez une touche à chaque clic ({done} sur {total})",
+  "midiCalibrated": "Latence d’enregistrement réglée à {ms} ms"
 }

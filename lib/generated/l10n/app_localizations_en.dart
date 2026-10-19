@@ -7996,4 +7996,35 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get midiShortcutRulerDoubleClick => 'On the ruler: play from there';
+
+  @override
+  String get midiMetronome => 'Metronome';
+
+  @override
+  String get midiShortcutMetronome => 'Metronome on or off';
+
+  @override
+  String midiRecordLatency(int ms) {
+    return 'Recording latency: $ms ms';
+  }
+
+  @override
+  String get midiRecordLatencyTitle => 'Recording latency';
+
+  @override
+  String get midiRecordLatencyBody =>
+      'Recorded notes go in this much earlier, to make up for the time the sound takes to reach you and your keys take to reach the app. Calibrate to measure it on this computer.';
+
+  @override
+  String get midiCalibrate => 'Calibrate';
+
+  @override
+  String midiCalibrating(int done, int total) {
+    return 'Play a key on each click ($done of $total)';
+  }
+
+  @override
+  String midiCalibrated(int ms) {
+    return 'Recording latency set to $ms ms';
+  }
 }

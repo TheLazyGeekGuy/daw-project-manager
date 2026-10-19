@@ -801,6 +801,8 @@ Future<void> _main(List<String> args) async {
   await MidiAcousticFeedbackStore.load();
   await MidiPianoRollFullScreenStore.load();
   await MidiInputChoiceStore.load();
+  await MidiMetronomeStore.load();
+  await MidiRecordLatencyStore.load();
   await MidiTreeStateStore.load();
 
   // Decided now, before this run writes a single setting: an empty settings

@@ -8079,4 +8079,35 @@ class AppLocalizationsRu extends AppLocalizations {
 
   @override
   String get midiShortcutRulerDoubleClick => 'На линейке: воспроизвести оттуда';
+
+  @override
+  String get midiMetronome => 'Метроном';
+
+  @override
+  String get midiShortcutMetronome => 'Включить или выключить метроном';
+
+  @override
+  String midiRecordLatency(int ms) {
+    return 'Задержка записи: $ms мс';
+  }
+
+  @override
+  String get midiRecordLatencyTitle => 'Задержка записи';
+
+  @override
+  String get midiRecordLatencyBody =>
+      'Записанные ноты ставятся на столько раньше, чтобы учесть время, за которое звук доходит до вас, а нажатия клавиш — до приложения. Откалибруйте, чтобы измерить её на этом компьютере.';
+
+  @override
+  String get midiCalibrate => 'Откалибровать';
+
+  @override
+  String midiCalibrating(int done, int total) {
+    return 'Нажимайте клавишу на каждый щелчок ($done из $total)';
+  }
+
+  @override
+  String midiCalibrated(int ms) {
+    return 'Задержка записи: $ms мс';
+  }
 }

@@ -7687,4 +7687,35 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get midiShortcutRulerDoubleClick => '在标尺上：从该处播放';
+
+  @override
+  String get midiMetronome => '节拍器';
+
+  @override
+  String get midiShortcutMetronome => '打开或关闭节拍器';
+
+  @override
+  String midiRecordLatency(int ms) {
+    return '录制延迟：$ms 毫秒';
+  }
+
+  @override
+  String get midiRecordLatencyTitle => '录制延迟';
+
+  @override
+  String get midiRecordLatencyBody =>
+      '录制的音符会提前这么多放入，以抵消声音传到你耳中、以及按键传到应用所需的时间。校准即可在这台电脑上测出它。';
+
+  @override
+  String get midiCalibrate => '校准';
+
+  @override
+  String midiCalibrating(int done, int total) {
+    return '每听到一下咔哒声就弹一个键（$done/$total）';
+  }
+
+  @override
+  String midiCalibrated(int ms) {
+    return '录制延迟已设为 $ms 毫秒';
+  }
 }

@@ -52,12 +52,13 @@ void main() {
 
     test('says what a MIDI keyboard does, how to record, and the ruler', () {
       final rows = all(mac: false);
-      expect([for (final s in rows) s.keys.join('+')], contains('R'));
+      expect([for (final s in rows) s.keys.join('+')], containsAll(['R', 'C']));
       expect([for (final s in rows) s.action],
           containsAll([
             l10n.midiShortcutPlayKey,
             l10n.midiShortcutRecord,
             l10n.midiShortcutRulerDoubleClick,
+            l10n.midiShortcutMetronome,
           ]));
     });
 

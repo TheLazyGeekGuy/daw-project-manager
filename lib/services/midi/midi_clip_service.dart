@@ -67,8 +67,9 @@ class MidiClipService {
 
   /// Renders [clip] with [voice] to a WAV in [directory] and returns its
   /// path — one seamless pass when [loop] is set (see
-  /// [MidiClipSynth.renderWav]). Reuses an earlier render of the same clip,
-  /// tempo, voice and loop setting.
+  /// [MidiClipSynth.renderWav]), with a [metronome]'s clicks when given.
+  /// Reuses an earlier render of the same clip, tempo, voice, loop setting
+  /// and clicks.
   /// Bumped whenever the synth sounds different — a voice retuned, a fade
   /// added — so previews cached before are rendered again rather than
   /// played as they were.
@@ -97,16 +98,22 @@ class MidiClipService {
     double? bpm,
     SynthVoice voice = SynthVoice.keys,
     bool loop = false,
+    Metronome? metronome,
     required Directory directory,
   }) async {
     final name = 'preview_v$kPreviewRenderVersion'
         '_${_fnv1a(clip.contentKey)}'
         '_${(bpm ?? 120).toStringAsFixed(2)}_${voice.name}'
-        '${loop ? '_loop' : ''}.wav';
+        '${loop ? '_loop' : ''}'
+        '${metronome == null ? '' : '_${metronome.cacheKey}'}.wav';
     final out = File(p.join(directory.path, name));
     if (await out.exists()) return out.path;
-    final bytes = await Isolate.run(() => const MidiClipSynth()
-        .renderWav(clip, bpm: bpm, voice: voice, loop: loop));
+    final bytes = await Isolate.run(() => const MidiClipSynth().renderWav(
+        clip,
+        bpm: bpm,
+        voice: voice,
+        loop: loop,
+        metronome: metronome));
     await directory.create(recursive: true);
     await out.writeAsBytes(bytes, flush: true);
     return out.path;

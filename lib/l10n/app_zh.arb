@@ -4423,5 +4423,13 @@
   "midiRecord": "从 MIDI 键盘录制：播放循环并录下你弹奏的内容",
   "midiStopRecording": "停止录制",
   "midiShortcutRecord": "从 MIDI 键盘录制（播放循环；每一遍都会保留你弹奏的内容）",
-  "midiShortcutRulerDoubleClick": "在标尺上：从该处播放"
+  "midiShortcutRulerDoubleClick": "在标尺上：从该处播放",
+  "midiMetronome": "节拍器",
+  "midiShortcutMetronome": "打开或关闭节拍器",
+  "midiRecordLatency": "录制延迟：{ms} 毫秒",
+  "midiRecordLatencyTitle": "录制延迟",
+  "midiRecordLatencyBody": "录制的音符会提前这么多放入，以抵消声音传到你耳中、以及按键传到应用所需的时间。校准即可在这台电脑上测出它。",
+  "midiCalibrate": "校准",
+  "midiCalibrating": "每听到一下咔哒声就弹一个键（{done}/{total}）",
+  "midiCalibrated": "录制延迟已设为 {ms} 毫秒"
 }

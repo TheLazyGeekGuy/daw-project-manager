@@ -4423,5 +4423,13 @@
   "midiRecord": "Vom MIDI-Keyboard aufnehmen: spielt den Loop und nimmt auf, was du spielst",
   "midiStopRecording": "Aufnahme beenden",
   "midiShortcutRecord": "Vom MIDI-Keyboard aufnehmen (spielt den Loop; jeder Durchgang behält, was du spielst)",
-  "midiShortcutRulerDoubleClick": "Auf dem Lineal: von dort abspielen"
+  "midiShortcutRulerDoubleClick": "Auf dem Lineal: von dort abspielen",
+  "midiMetronome": "Metronom",
+  "midiShortcutMetronome": "Metronom ein oder aus",
+  "midiRecordLatency": "Aufnahmelatenz: {ms} ms",
+  "midiRecordLatencyTitle": "Aufnahmelatenz",
+  "midiRecordLatencyBody": "Aufgenommene Noten werden um so viel früher eingefügt, als Ausgleich für die Zeit, die der Klang bis zu dir und deine Tasten bis zur App brauchen. Kalibriere, um sie auf diesem Computer zu messen.",
+  "midiCalibrate": "Kalibrieren",
+  "midiCalibrating": "Spiele bei jedem Klick eine Taste ({done} von {total})",
+  "midiCalibrated": "Aufnahmelatenz auf {ms} ms gesetzt"
 }

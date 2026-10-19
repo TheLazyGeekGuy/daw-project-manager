@@ -323,5 +323,20 @@ void main() {
     test('off until something is chosen', () async {
       expect(await MidiInputChoiceStore.load(), MidiInputChoice.off);
     });
+
+    test('the metronome and the recording latency are remembered', () async {
+      MidiMetronomeStore.cachedForTest = false;
+      MidiRecordLatencyStore.cachedForTest = Duration.zero;
+      expect(await MidiMetronomeStore.load(), isFalse, reason: 'off at first');
+      expect(await MidiRecordLatencyStore.load(), Duration.zero);
+
+      await MidiMetronomeStore.save(true);
+      await MidiRecordLatencyStore.save(const Duration(milliseconds: 85));
+      MidiMetronomeStore.cachedForTest = false;
+      MidiRecordLatencyStore.cachedForTest = Duration.zero;
+      expect(await MidiMetronomeStore.load(), isTrue);
+      expect(await MidiRecordLatencyStore.load(),
+          const Duration(milliseconds: 85));
+    });
   });
 }

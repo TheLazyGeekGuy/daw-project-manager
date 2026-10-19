@@ -13096,6 +13096,54 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'On the ruler: play from there'**
   String get midiShortcutRulerDoubleClick;
+
+  /// Piano roll: tooltip of the metronome toggle
+  ///
+  /// In en, this message translates to:
+  /// **'Metronome'**
+  String get midiMetronome;
+
+  /// Piano roll shortcut sheet: what the C key does
+  ///
+  /// In en, this message translates to:
+  /// **'Metronome on or off'**
+  String get midiShortcutMetronome;
+
+  /// Piano roll MIDI input menu: the item opening the recording latency, with its current value
+  ///
+  /// In en, this message translates to:
+  /// **'Recording latency: {ms} ms'**
+  String midiRecordLatency(int ms);
+
+  /// Title of the recording latency dialog
+  ///
+  /// In en, this message translates to:
+  /// **'Recording latency'**
+  String get midiRecordLatencyTitle;
+
+  /// Recording latency dialog: what the setting does
+  ///
+  /// In en, this message translates to:
+  /// **'Recorded notes go in this much earlier, to make up for the time the sound takes to reach you and your keys take to reach the app. Calibrate to measure it on this computer.'**
+  String get midiRecordLatencyBody;
+
+  /// Recording latency dialog: button that measures the latency by playing along to clicks
+  ///
+  /// In en, this message translates to:
+  /// **'Calibrate'**
+  String get midiCalibrate;
+
+  /// Piano roll banner while calibrating recording latency
+  ///
+  /// In en, this message translates to:
+  /// **'Play a key on each click ({done} of {total})'**
+  String midiCalibrating(int done, int total);
+
+  /// Piano roll banner after calibrating recording latency
+  ///
+  /// In en, this message translates to:
+  /// **'Recording latency set to {ms} ms'**
+  String midiCalibrated(int ms);
 }
 
 class _AppLocalizationsDelegate

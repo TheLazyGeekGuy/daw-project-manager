@@ -4423,5 +4423,13 @@
   "midiRecord": "MIDIキーボードから録音：ループを再生し、弾いた内容を記録します",
   "midiStopRecording": "録音を停止",
   "midiShortcutRecord": "MIDIキーボードから録音（ループを再生し、各周回で弾いた内容を残す）",
-  "midiShortcutRulerDoubleClick": "ルーラーの上：その位置から再生"
+  "midiShortcutRulerDoubleClick": "ルーラーの上：その位置から再生",
+  "midiMetronome": "メトロノーム",
+  "midiShortcutMetronome": "メトロノームのオン／オフ",
+  "midiRecordLatency": "録音レイテンシー：{ms} ms",
+  "midiRecordLatencyTitle": "録音レイテンシー",
+  "midiRecordLatencyBody": "録音したノートをこの分だけ早めに入力し、音が届くまでと鍵盤の入力がアプリに届くまでの遅れを補正します。キャリブレーションでこのコンピューターでの値を測定できます。",
+  "midiCalibrate": "キャリブレーション",
+  "midiCalibrating": "クリックごとに鍵盤を弾いてください（{done}／{total}）",
+  "midiCalibrated": "録音レイテンシーを {ms} ms に設定しました"
 }

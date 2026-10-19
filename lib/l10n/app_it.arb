@@ -4423,5 +4423,13 @@
   "midiRecord": "Registra dalla tastiera MIDI: riproduce il loop e registra ciò che suoni",
   "midiStopRecording": "Interrompi la registrazione",
   "midiShortcutRecord": "Registra dalla tastiera MIDI (riproduce il loop; ogni passaggio tiene ciò che suoni)",
-  "midiShortcutRulerDoubleClick": "Sul righello: riproduci da lì"
+  "midiShortcutRulerDoubleClick": "Sul righello: riproduci da lì",
+  "midiMetronome": "Metronomo",
+  "midiShortcutMetronome": "Attiva o disattiva il metronomo",
+  "midiRecordLatency": "Latenza di registrazione: {ms} ms",
+  "midiRecordLatencyTitle": "Latenza di registrazione",
+  "midiRecordLatencyBody": "Le note registrate vengono inserite in anticipo di tanto, per compensare il tempo che il suono impiega a raggiungerti e i tuoi tasti a raggiungere l’app. Calibra per misurarla su questo computer.",
+  "midiCalibrate": "Calibra",
+  "midiCalibrating": "Suona un tasto a ogni clic ({done} di {total})",
+  "midiCalibrated": "Latenza di registrazione impostata a {ms} ms"
 }

@@ -8095,4 +8095,35 @@ class AppLocalizationsFr extends AppLocalizations {
   @override
   String get midiShortcutRulerDoubleClick =>
       'Sur la règle : lire à partir de là';
+
+  @override
+  String get midiMetronome => 'Métronome';
+
+  @override
+  String get midiShortcutMetronome => 'Activer ou désactiver le métronome';
+
+  @override
+  String midiRecordLatency(int ms) {
+    return 'Latence d’enregistrement : $ms ms';
+  }
+
+  @override
+  String get midiRecordLatencyTitle => 'Latence d’enregistrement';
+
+  @override
+  String get midiRecordLatencyBody =>
+      'Les notes enregistrées sont placées d’autant plus tôt, pour compenser le temps que met le son à vous parvenir et vos touches à atteindre l’application. Calibrez pour la mesurer sur cet ordinateur.';
+
+  @override
+  String get midiCalibrate => 'Calibrer';
+
+  @override
+  String midiCalibrating(int done, int total) {
+    return 'Jouez une touche à chaque clic ($done sur $total)';
+  }
+
+  @override
+  String midiCalibrated(int ms) {
+    return 'Latence d’enregistrement réglée à $ms ms';
+  }
 }

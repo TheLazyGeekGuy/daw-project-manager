@@ -4423,5 +4423,13 @@
   "midiRecord": "Grabar desde el teclado MIDI: reproduce el bucle y graba lo que toques",
   "midiStopRecording": "Detener la grabación",
   "midiShortcutRecord": "Grabar desde el teclado MIDI (reproduce el bucle; cada pasada conserva lo que toques)",
-  "midiShortcutRulerDoubleClick": "En la regla: reproducir desde ahí"
+  "midiShortcutRulerDoubleClick": "En la regla: reproducir desde ahí",
+  "midiMetronome": "Metrónomo",
+  "midiShortcutMetronome": "Activar o desactivar el metrónomo",
+  "midiRecordLatency": "Latencia de grabación: {ms} ms",
+  "midiRecordLatencyTitle": "Latencia de grabación",
+  "midiRecordLatencyBody": "Las notas grabadas entran así de antes, para compensar el tiempo que tarda el sonido en llegarte y tus teclas en llegar a la aplicación. Calibra para medirla en este equipo.",
+  "midiCalibrate": "Calibrar",
+  "midiCalibrating": "Toca una tecla en cada clic ({done} de {total})",
+  "midiCalibrated": "Latencia de grabación ajustada a {ms} ms"
 }

@@ -8061,4 +8061,35 @@ class AppLocalizationsDe extends AppLocalizations {
   @override
   String get midiShortcutRulerDoubleClick =>
       'Auf dem Lineal: von dort abspielen';
+
+  @override
+  String get midiMetronome => 'Metronom';
+
+  @override
+  String get midiShortcutMetronome => 'Metronom ein oder aus';
+
+  @override
+  String midiRecordLatency(int ms) {
+    return 'Aufnahmelatenz: $ms ms';
+  }
+
+  @override
+  String get midiRecordLatencyTitle => 'Aufnahmelatenz';
+
+  @override
+  String get midiRecordLatencyBody =>
+      'Aufgenommene Noten werden um so viel früher eingefügt, als Ausgleich für die Zeit, die der Klang bis zu dir und deine Tasten bis zur App brauchen. Kalibriere, um sie auf diesem Computer zu messen.';
+
+  @override
+  String get midiCalibrate => 'Kalibrieren';
+
+  @override
+  String midiCalibrating(int done, int total) {
+    return 'Spiele bei jedem Klick eine Taste ($done von $total)';
+  }
+
+  @override
+  String midiCalibrated(int ms) {
+    return 'Aufnahmelatenz auf $ms ms gesetzt';
+  }
 }

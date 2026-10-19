@@ -4,6 +4,7 @@ import 'package:flutter_test/flutter_test.dart';
 
 import 'package:daw_project_manager/models/midi_clip.dart';
 import 'package:daw_project_manager/services/midi/input/midi_input.dart';
+import 'package:daw_project_manager/services/midi/midi_clip_synth.dart';
 import 'package:daw_project_manager/services/midi/synth_voice.dart';
 import 'package:daw_project_manager/ui/midi_note_auditioner.dart';
 import 'package:daw_project_manager/ui/midi_piano_roll_dialog.dart';
@@ -80,6 +81,7 @@ final _labels = MidiPianoRollWindowLabels(
   stop: 'Stop',
   openProject: 'Project details',
   saveAsNew: 'Save as new clip',
+  metronome: 'Metronome',
   tempo: const MidiTempoLabels(
     unit: 'BPM',
     tooltip: 'Tempo',
@@ -95,6 +97,14 @@ final _labels = MidiPianoRollWindowLabels(
     busy: (names) => 'Busy: $names',
     record: 'Record',
     stopRecording: 'Stop recording',
+    latency: (ms) => 'Latency: $ms ms',
+    latencyTitle: 'Recording latency',
+    latencyBody: 'Moves recorded notes earlier.',
+    calibrate: 'Calibrate',
+    calibrating: (done, total) => 'Tap along: $done of $total',
+    calibrated: (ms) => 'Latency set to $ms ms',
+    done: 'Done',
+    cancel: 'Cancel',
   ),
 );
 
@@ -105,9 +115,13 @@ void main() {
   late List<MidiInputChoice> choices;
   late List<MidiClip> saved;
   late int plays;
+  late List<bool> metronomeChanges;
+  late List<Duration> latencyChanges;
 
   setUp(() {
     plays = 0;
+    metronomeChanges = [];
+    latencyChanges = [];
     player = MidiPreviewPlayer();
     backend = FakeMidiInput([_keyStep, _pads]);
     ear = _Ear();
@@ -121,6 +135,8 @@ void main() {
     MidiInputChoice choice = MidiInputChoice.all,
     bool editable = true,
     bool offered = true,
+    bool metronome = false,
+    Duration latency = Duration.zero,
   }) async {
     tester.view.physicalSize = const Size(1400, 800);
     tester.view.devicePixelRatio = 1;
@@ -150,6 +166,10 @@ void main() {
                     midiInput: backend,
                     midiInputChoice: choice,
                     onMidiInputChoiceChanged: offered ? choices.add : null,
+                    metronome: metronome,
+                    onMetronomeChanged: metronomeChanges.add,
+                    recordLatency: latency,
+                    onRecordLatencyChanged: latencyChanges.add,
                     onSaveEdited: editable
                         ? (edit) async {
                             saved.add(edit.clip);
@@ -501,6 +521,186 @@ void main() {
       expect(before, greaterThan(0));
       expect(tester.widget<MidiPianoRoll>(find.byType(MidiPianoRoll)).restTick,
           closeTo(before, 1));
+    });
+  });
+
+  group('the metronome', () {
+    Future<void> stopPlayback(WidgetTester tester) async {
+      await player.stop();
+      await tester.pump(const Duration(seconds: 1));
+    }
+
+    testWidgets('clicking, what plays carries the clicks, on the clip\'s beats',
+        (tester) async {
+      await open(tester, choice: MidiInputChoice.off, metronome: true);
+      await tester.sendKeyEvent(LogicalKeyboardKey.space);
+      await tester.pump();
+      expect(plays, 0, reason: 'the window plays it: the list has no clicks');
+      expect(player.requestedMetronome,
+          const Metronome(beatTicks: 480, barTicks: 1920));
+      await stopPlayback(tester);
+    });
+
+    testWidgets('off, the list plays the clip as it always did', (tester) async {
+      await open(tester, choice: MidiInputChoice.off);
+      await tester.sendKeyEvent(LogicalKeyboardKey.space);
+      await tester.pump();
+      expect(plays, 1);
+      expect(player.requestedMetronome, isNull);
+      await stopPlayback(tester);
+    });
+
+    testWidgets('its button and C switch it, and are remembered',
+        (tester) async {
+      await open(tester, choice: MidiInputChoice.off);
+      final button = find.byKey(const ValueKey('midi-piano-roll-metronome'));
+      expect(tester.widget<IconButton>(button).isSelected, isFalse);
+      await tester.tap(button);
+      await tester.pump();
+      expect(tester.widget<IconButton>(button).isSelected, isTrue);
+      await tester.sendKeyEvent(LogicalKeyboardKey.keyC);
+      await tester.pump();
+      expect(tester.widget<IconButton>(button).isSelected, isFalse);
+      expect(metronomeChanges, [true, false]);
+    });
+
+    testWidgets('switched on while playing, playback carries on clicking',
+        (tester) async {
+      await open(tester, choice: MidiInputChoice.off);
+      await tester.sendKeyEvent(LogicalKeyboardKey.space);
+      await tester.pump();
+      player.preparingKey = null;
+      player.playingKey = 'k';
+      await player.seek('k', const Duration(milliseconds: 500));
+      player.requestedClip = null;
+      await tester.tap(find.byKey(const ValueKey('midi-piano-roll-metronome')));
+      await tester.pump();
+      expect(player.requestedClip, isNotNull);
+      expect(player.requestedMetronome, isNotNull);
+      expect(player.requestedStart!.inMilliseconds, closeTo(500, 50),
+          reason: 'from where it was');
+      await stopPlayback(tester);
+    });
+
+    testWidgets('recording clicks along with the loop', (tester) async {
+      await open(tester, metronome: true);
+      await record(tester);
+      expect(player.requestedLoop, isTrue);
+      expect(player.requestedMetronome, isNotNull);
+      await stopPlayback(tester);
+    });
+  });
+
+  group('recording latency', () {
+    const ms = Duration(milliseconds: 1);
+
+    Future<void> playheadAt(WidgetTester tester, Duration at) async {
+      player.preparingKey = null;
+      player.playingKey = 'k';
+      await player.seek('k', at);
+    }
+
+    testWidgets('recorded notes go in that much earlier', (tester) async {
+      await open(tester, latency: ms * 100); // 96 ticks at 120 BPM.
+      await record(tester);
+      await playheadAt(tester, ms * 600); // Tick 576: heard as 480.
+      await play(tester, [0x90, 60, 100]);
+      await playheadAt(tester, ms * 850); // Tick 816: heard as 720.
+      await play(tester, [0x80, 60, 0]);
+      final note = tester
+          .widget<MidiPianoRoll>(find.byType(MidiPianoRoll))
+          .editor!
+          .clip
+          .notes
+          .single;
+      expect(note.startTick, closeTo(480, 24));
+      expect(note.lengthTicks, closeTo(240, 24));
+      await player.stop();
+      await tester.pump(const Duration(seconds: 1));
+    });
+
+    Future<void> openLatency(WidgetTester tester) async {
+      await tester.tap(find.byKey(const ValueKey('midi-piano-roll-midi-input')));
+      await tester.pumpAndSettle();
+      await tester.tap(find.text('Latency: 0 ms'));
+      await tester.pumpAndSettle();
+    }
+
+    testWidgets('set from the MIDI input menu', (tester) async {
+      await open(tester);
+      await openLatency(tester);
+      expect(find.text('Recording latency'), findsOneWidget);
+      await tester.drag(
+          find.byKey(const ValueKey('midi-latency-slider')), const Offset(400, 0));
+      await tester.pumpAndSettle();
+      expect(find.text('250 ms'), findsOneWidget);
+      await tester.tap(find.text('Done'));
+      await tester.pumpAndSettle();
+      expect(latencyChanges, [const Duration(milliseconds: 250)]);
+      await close(tester);
+    });
+
+    testWidgets('only offered where there is something to record into',
+        (tester) async {
+      await open(tester, editable: false);
+      await tester.tap(find.byKey(const ValueKey('midi-piano-roll-midi-input')));
+      await tester.pumpAndSettle();
+      expect(find.text('Latency: 0 ms'), findsNothing);
+      await tester.tapAt(Offset.zero);
+      await tester.pumpAndSettle();
+      await close(tester);
+    });
+
+    testWidgets('calibrating: play along to the clicks, and it is measured',
+        (tester) async {
+      await open(tester);
+      await openLatency(tester);
+      await tester.tap(find.text('Calibrate'));
+      await tester.pumpAndSettle();
+      expect(find.text('Tap along: 0 of 8'), findsOneWidget);
+      expect(player.requestedClip!.name, 'calibration');
+      expect(player.requestedLoop, isTrue);
+      expect(player.requestedMetronome, isNotNull);
+
+      // Every beat (half a second at 120 BPM), 50 ms late.
+      player.preparingKey = null;
+      player.playingKey = 'k~calibrate';
+      for (var i = 0; i < 8; i++) {
+        await player.seek('k~calibrate', ms * ((i % 4) * 500 + 50));
+        await play(tester, [0x90, 60, 100]);
+        await play(tester, [0x80, 60, 0]);
+      }
+      await tester.pump(const Duration(seconds: 1));
+      expect(latencyChanges.single.inMilliseconds, closeTo(50, 3));
+      expect(find.textContaining('Latency set to'), findsOneWidget);
+      expect(player.playingKey, isNull, reason: 'the clicks stop');
+      expect(
+          tester
+              .widget<MidiPianoRoll>(find.byType(MidiPianoRoll))
+              .editor!
+              .clip
+              .notes,
+          isEmpty,
+          reason: 'calibrating records nothing');
+      await tester.tap(find.text('Done'));
+      await tester.pump();
+      expect(find.byKey(const ValueKey('midi-piano-roll-calibration')),
+          findsNothing);
+      await close(tester);
+    });
+
+    testWidgets('stop cancels calibrating, and changes nothing',
+        (tester) async {
+      await open(tester);
+      await openLatency(tester);
+      await tester.tap(find.text('Calibrate'));
+      await tester.pumpAndSettle();
+      await tester.tap(find.byKey(const ValueKey('midi-piano-roll-stop')));
+      await tester.pump(const Duration(seconds: 1));
+      expect(find.byKey(const ValueKey('midi-piano-roll-calibration')),
+          findsNothing);
+      expect(latencyChanges, isEmpty);
+      await close(tester);
     });
   });
 }
