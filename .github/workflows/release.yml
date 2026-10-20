@@ -307,6 +307,13 @@ jobs:
       # - name: Run Flutter Upgrade
       #   run: flutter upgrade
 
+      # From 3.0 the macOS app is Apple silicon only. Flutter 3.47 warns on
+      # every build that still includes Intel (x86_64) and says that warning
+      # becomes an error; Intel Macs keep the 2.x releases.
+      - name: Build macOS for Apple silicon only
+        if: matrix.os == 'macos-latest'
+        run: flutter config --enable-macos-arm64-only
+
       - name: Get dependencies
         run: flutter pub get
 
@@ -412,7 +419,27 @@ jobs:
           # DATA_DIR_ARG is empty for tag builds and pins PR builds to their
           # own app-data directory; see the workflow-level env block.
           ${{ matrix.command }} ${EXTRA_ARGS} ${DATA_DIR_ARG}
-      
+
+      # The app's own executable must be arm64 alone: an x86_64 slice there
+      # means the Apple-silicon-only switch above stopped applying. Prebuilt
+      # frameworks may still carry one (only size, not code we run), so those
+      # are reported, not failed.
+      - name: Check the macOS app is Apple silicon only
+        if: matrix.os == 'macos-latest'
+        shell: bash
+        run: |
+          APP="build/macos/Build/Products/Release/DAWProjectManager.app"
+          MAIN_ARCHS=$(lipo -archs "$APP/Contents/MacOS/DAWProjectManager")
+          echo "DAWProjectManager: $MAIN_ARCHS"
+          while IFS= read -r -d '' bin; do
+            archs=$(lipo -archs "$bin" 2>/dev/null) || continue
+            [ "$archs" = "arm64" ] || echo "::warning::$bin still has: $archs"
+          done < <(find "$APP/Contents/Frameworks" -type f -perm +111 -print0)
+          if [ "$MAIN_ARCHS" != "arm64" ]; then
+            echo "::error::the app executable is $MAIN_ARCHS, expected arm64 only"
+            exit 1
+          fi
+
       # 4a. Code Sign macOS App Bundle (for DMG and ZIP) - MUST BE BEFORE ZIP/DMG CREATION
       # Note: If secrets are not set, signing will be skipped (useful for testing)
       - name: Import Signing Certificate
