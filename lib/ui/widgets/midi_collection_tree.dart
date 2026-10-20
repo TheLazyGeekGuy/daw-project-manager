@@ -137,11 +137,11 @@ class _MidiDropZoneState extends State<MidiDropZone> {
             child: widget.child,
           );
         }
-        return DecoratedBox(
-          decoration: BoxDecoration(
-            color: active ? color.withValues(alpha: 0.18) : Colors.transparent,
-            borderRadius: BorderRadius.circular(6),
-          ),
+        // A Material, not a coloured DecoratedBox: a ListTile inside paints
+        // its ink on the nearest Material, and a box in between hid it.
+        return Material(
+          color: active ? color.withValues(alpha: 0.18) : Colors.transparent,
+          borderRadius: BorderRadius.circular(6),
           child: widget.child,
         );
       },
