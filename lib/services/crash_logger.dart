@@ -142,7 +142,7 @@ class CrashLogger {
     ShareResultStatus? status;
     if (nativeFileShareSheetSupported(isMobile: MobileUtils.isMobile())) {
       try {
-        status = (await Share.shareXFiles(files.map((f) => XFile(f.path)).toList())).status;
+        status = (await SharePlus.instance.share(ShareParams(files: files.map((f) => XFile(f.path)).toList()))).status;
       } catch (_) {
         // Falls through to the folder-reveal fallback below.
       }
@@ -152,7 +152,7 @@ class CrashLogger {
     return false;
   }
 
-  /// Whether it's even worth attempting [Share.shareXFiles] for files on
+  /// Whether it's even worth attempting [SharePlus.share] for files on
   /// this platform — true only on mobile (see [shareOrRevealLogFiles]'s doc
   /// comment for why desktop always skips straight to the folder-reveal
   /// fallback instead). Split out as a pure function — exposed for testing

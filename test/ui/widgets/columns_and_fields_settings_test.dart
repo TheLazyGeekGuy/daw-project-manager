@@ -12,6 +12,7 @@ void main() {
   final changedFields = <CustomFieldDefinition>[];
   final edited = <CustomFieldDefinition>[];
   final deleted = <CustomFieldDefinition>[];
+  final columnMoves = <(int, int)>[];
   var added = 0;
 
   setUp(() {
@@ -20,6 +21,7 @@ void main() {
     changedFields.clear();
     edited.clear();
     deleted.clear();
+    columnMoves.clear();
     added = 0;
   });
 
@@ -44,7 +46,7 @@ void main() {
                   visibilityChanges.add('$id=$v'),
               onColumnInReleaseTracksChanged: (id, v) =>
                   tracksChanges.add('$id=$v'),
-              onColumnsReordered: (_, _) {},
+              onColumnsReordered: (from, to) => columnMoves.add((from, to)),
               onResetColumns: () {},
               fields: fields,
               onAddField: () => added++,
@@ -88,6 +90,35 @@ void main() {
     // Over the built-in columns and over the custom fields.
     expect(find.text('Projects'), findsNWidgets(2));
     expect(find.text('Release tracks'), findsNWidgets(2));
+  });
+
+  // Every reorder handler in the app now takes onReorderItem's index: where
+  // the row ends up, counted with it already taken out. With the old
+  // onReorder index this drag reported (0, 3), and handlers subtracted one.
+  testWidgets('a column dragged down two rows reports where it lands',
+      (tester) async {
+    await pump(tester);
+    final layout = normalizeColumnLayout(const []);
+    final row = find.byKey(ValueKey('column-${layout.first.id}'));
+    final handle = find.descendant(
+      of: row,
+      matching: find.byType(ReorderableDragStartListener),
+    );
+    final rowHeight = tester.getSize(row).height;
+
+    final drag = await tester.startGesture(tester.getCenter(handle));
+    for (var i = 0; i < 5; i++) {
+      await drag.moveBy(Offset(0, rowHeight * 2 / 5));
+      await tester.pump();
+    }
+    await drag.up();
+    await tester.pumpAndSettle();
+
+    expect(columnMoves, [(0, 2)]);
+    expect(
+      reorderColumnLayout(layout, 0, 2).map((s) => s.id).take(3),
+      [layout[1].id, layout[2].id, layout[0].id],
+    );
   });
 
   testWidgets('every other row is shaded', (tester) async {

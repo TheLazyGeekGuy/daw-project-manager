@@ -1175,9 +1175,8 @@ class _MusicPlayerPageState extends ConsumerState<MusicPlayerPage>
                       )
                     : ReorderableListView.builder(
                         itemCount: _playlist.length,
-                        onReorder: (oldIndex, newIndex) {
+                        onReorderItem: (oldIndex, newIndex) {
                           setState(() {
-                            if (newIndex > oldIndex) newIndex--;
                             final item = _playlist.removeAt(oldIndex);
                             _playlist.insert(newIndex, item);
                             if (_playlistIndex == oldIndex) {

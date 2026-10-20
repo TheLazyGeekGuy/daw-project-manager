@@ -3144,8 +3144,8 @@ class _PreviewSongPlayerState extends ConsumerState<_PreviewSongPlayer>
         }
 
         // Share the file (default behavior)
-        final result = await Share.shareXFiles(
-          [
+        final result = await SharePlus.instance.share(ShareParams(
+          files: [
             XFile(
               shareFile.path,
               name: shareFileName,
@@ -3153,7 +3153,7 @@ class _PreviewSongPlayerState extends ConsumerState<_PreviewSongPlayer>
             ),
           ],
           text: shareText,
-        );
+        ));
         if (kDebugMode) {
           debugPrint('[preview_share] Share.shareXFiles returned (user completed/dismissed share sheet)');
           debugPrint('[preview_share] ShareResult: status=${result.status} raw=${result.raw}');
@@ -3163,10 +3163,10 @@ class _PreviewSongPlayerState extends ConsumerState<_PreviewSongPlayer>
         if (kDebugMode) {
           debugPrint('[preview_share] non-Android direct share, invoking share sheet...');
         }
-        final result = await Share.shareXFiles(
-          [XFile(fileToShare.path)],
+        final result = await SharePlus.instance.share(ShareParams(
+          files: [XFile(fileToShare.path)],
           text: shareText,
-        );
+        ));
         if (kDebugMode) {
           debugPrint('[preview_share] ShareResult: status=${result.status} raw=${result.raw}');
         }
@@ -3261,12 +3261,12 @@ class _PreviewSongPlayerState extends ConsumerState<_PreviewSongPlayer>
       }
 
       if (!mounted) return;
-      final result = await Share.shareXFiles(
-        [XFile(zipFile.path, name: p.basename(zipFile.path), mimeType: 'application/zip')],
+      final result = await SharePlus.instance.share(ShareParams(
+        files: [XFile(zipFile.path, name: p.basename(zipFile.path), mimeType: 'application/zip')],
         text: AppLocalizations.of(
           context,
         )!.sharePreviewSongZipText(widget.project.displayName),
-      );
+      ));
       if (kDebugMode) {
         debugPrint('[preview_share_zip] Share.shareXFiles returned (user completed/dismissed share sheet)');
         debugPrint('[preview_share_zip] ShareResult: status=${result.status} raw=${result.raw}');

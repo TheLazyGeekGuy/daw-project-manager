@@ -1083,7 +1083,7 @@ class _ReleaseDetailPageState extends ConsumerState<ReleaseDetailPage>
                     padding: const EdgeInsets.symmetric(vertical: 4),
                     buildDefaultDragHandles: false,
                     itemCount: releaseProjects.length,
-                    onReorder: (oldIndex, newIndex) => _handleReorderTrack(release, oldIndex, newIndex),
+                    onReorderItem: (oldIndex, newIndex) => _handleReorderTrack(release, oldIndex, newIndex),
                     itemBuilder: (context, index) => _buildDesktopTrackTile(context, release, releaseProjects[index], index),
                   ),
           ),
@@ -1336,7 +1336,6 @@ class _ReleaseDetailPageState extends ConsumerState<ReleaseDetailPage>
   }
 
   void _handleReorderTrack(Release release, int oldIndex, int newIndex) {
-    if (newIndex > oldIndex) newIndex -= 1;
     final updatedTrackIds = List<String>.from(release.trackIds);
     final moved = updatedTrackIds.removeAt(oldIndex);
     updatedTrackIds.insert(newIndex, moved);
@@ -1631,8 +1630,7 @@ class _ReleaseDetailPageState extends ConsumerState<ReleaseDetailPage>
                       padding: const EdgeInsets.symmetric(vertical: 4),
                       buildDefaultDragHandles: false,
                       itemCount: releaseProjects.length,
-                      onReorder: (oldIndex, newIndex) {
-                        if (newIndex > oldIndex) newIndex -= 1;
+                      onReorderItem: (oldIndex, newIndex) {
                         final updatedTrackIds = List<String>.from(release.trackIds);
                         final moved = updatedTrackIds.removeAt(oldIndex);
                         updatedTrackIds.insert(newIndex, moved);
@@ -1856,10 +1854,6 @@ class _FilesSectionState extends ConsumerState<_FilesSection> {
   }
 
   Future<void> _reorderAudioFiles(int oldIndex, int newIndex) async {
-    if (newIndex > oldIndex) {
-      newIndex -= 1;
-    }
-
     final audioFiles = widget.files.where((f) => f.fileType == 'audio').toList();
     final otherFiles = widget.files.where((f) => f.fileType != 'audio').toList();
 
@@ -1976,7 +1970,7 @@ class _FilesSectionState extends ConsumerState<_FilesSection> {
             shrinkWrap: true,
             physics: const NeverScrollableScrollPhysics(),
             itemCount: audioFiles.length,
-            onReorder: _reorderAudioFiles,
+            onReorderItem: _reorderAudioFiles,
             itemBuilder: (context, index) {
               final file = audioFiles[index];
               final fileExists = File(file.filePath).existsSync();

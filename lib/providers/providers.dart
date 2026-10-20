@@ -2425,10 +2425,10 @@ class CustomFieldDefinitionsNotifier
     ]);
   }
 
-  /// Moves an active field, `ReorderableListView`-style indices.
+  /// Moves an active field from [oldIndex] to [newIndex], counted with the
+  /// field already taken out (`ReorderableListView.onReorderItem`).
   Future<void> reorder(int oldIndex, int newIndex) async {
     final active = activeCustomFields(state);
-    if (newIndex > oldIndex) newIndex--;
     active.insert(newIndex, active.removeAt(oldIndex));
     final renumbered = {
       for (final f in renumberCustomFields(active, DateTime.now())) f.id: f,

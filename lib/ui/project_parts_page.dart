@@ -322,10 +322,9 @@ class _ProjectPartsViewState extends State<ProjectPartsView> {
   }
 
   Future<void> _reorder(MusicProject project, int oldIndex, int newIndex) async {
+    // newIndex is counted with the dragged row already taken out
+    // (onReorderItem), so it is where the row goes.
     final reordered = [...project.parts];
-    // ReorderableListView reports the drop index as if the dragged row were
-    // still in place, so anything moving down lands one slot too far.
-    if (newIndex > oldIndex) newIndex -= 1;
     reordered.insert(newIndex, reordered.removeAt(oldIndex));
     await _save(project, reordered);
   }
@@ -732,7 +731,7 @@ class _ProjectPartsViewState extends State<ProjectPartsView> {
           child: ReorderableListView.builder(
             buildDefaultDragHandles: false,
             itemCount: visible.length,
-            onReorder: (oldIndex, newIndex) =>
+            onReorderItem: (oldIndex, newIndex) =>
                 _reorder(project, oldIndex, newIndex),
             itemBuilder: (context, index) {
               final part = visible[index];

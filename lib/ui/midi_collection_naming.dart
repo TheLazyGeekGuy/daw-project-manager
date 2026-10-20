@@ -174,8 +174,7 @@ class _MidiNamingDialogState extends State<MidiNamingDialog> {
                 shrinkWrap: true,
                 physics: const NeverScrollableScrollPhysics(),
                 buildDefaultDragHandles: false,
-                onReorder: (from, to) => setState(() {
-                  if (to > from) to--;
+                onReorderItem: (from, to) => setState(() {
                   _order.insert(to, _order.removeAt(from));
                 }),
                 children: [

@@ -293,35 +293,29 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
               children: [
                 Text(AppLocalizations.of(context)!.importBackupMessage),
                 const SizedBox(height: 16),
-                RadioListTile<ImportMode>(
-                  title: Text(AppLocalizations.of(context)!.mergeWithCurrentProfile),
-                  value: ImportMode.merge,
+                RadioGroup<ImportMode>(
                   groupValue: selectedMode,
                   onChanged: (value) {
                     setState(() {
                       selectedMode = value;
                     });
                   },
-                ),
-                RadioListTile<ImportMode>(
-                  title: Text(AppLocalizations.of(context)!.replaceCurrentProfile),
-                  value: ImportMode.replace,
-                  groupValue: selectedMode,
-                  onChanged: (value) {
-                    setState(() {
-                      selectedMode = value;
-                    });
-                  },
-                ),
-                RadioListTile<ImportMode>(
-                  title: Text(AppLocalizations.of(context)!.createNewProfileForImport),
-                  value: ImportMode.createNewProfile,
-                  groupValue: selectedMode,
-                  onChanged: (value) {
-                    setState(() {
-                      selectedMode = value;
-                    });
-                  },
+                  child: Column(
+                    children: [
+                      RadioListTile<ImportMode>(
+                        title: Text(AppLocalizations.of(context)!.mergeWithCurrentProfile),
+                        value: ImportMode.merge,
+                      ),
+                      RadioListTile<ImportMode>(
+                        title: Text(AppLocalizations.of(context)!.replaceCurrentProfile),
+                        value: ImportMode.replace,
+                      ),
+                      RadioListTile<ImportMode>(
+                        title: Text(AppLocalizations.of(context)!.createNewProfileForImport),
+                        value: ImportMode.createNewProfile,
+                      ),
+                    ],
+                  ),
                 ),
                 if (selectedMode == ImportMode.createNewProfile) ...[
                   const SizedBox(height: 16),
@@ -2880,8 +2874,7 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
                 physics: const NeverScrollableScrollPhysics(),
                 buildDefaultDragHandles: false,
                 itemCount: phases.length,
-                onReorder: (oldIndex, newIndex) {
-                  if (newIndex > oldIndex) newIndex--;
+                onReorderItem: (oldIndex, newIndex) {
                   final updated = List<String>.from(phases);
                   updated.insert(newIndex, updated.removeAt(oldIndex));
                   _savePhases(updated);

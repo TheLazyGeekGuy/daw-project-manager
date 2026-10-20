@@ -235,14 +235,13 @@ String encodeColumnLayout(List<TableColumnSetting> layout) => jsonEncode([
         {'id': s.id, 'visible': s.visible, 'tracks': s.inReleaseTracks},
     ]);
 
-/// [layout] with the entry at [oldIndex] moved to [newIndex], using
-/// `ReorderableListView`'s convention (newIndex counted before removal).
+/// [layout] with the entry at [oldIndex] moved to [newIndex], counted with
+/// the entry already taken out (`ReorderableListView.onReorderItem`).
 List<TableColumnSetting> reorderColumnLayout(
   List<TableColumnSetting> layout,
   int oldIndex,
   int newIndex,
 ) {
-  if (newIndex > oldIndex) newIndex--;
   final next = [...layout];
   next.insert(newIndex, next.removeAt(oldIndex));
   return next;
