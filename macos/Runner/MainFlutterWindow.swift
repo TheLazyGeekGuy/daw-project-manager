@@ -10,7 +10,7 @@ import ServiceManagement
 /// - macOS 13+: `SMAppService.mainApp`, the supported API — the app shows up
 ///   in System Settings → General → Login Items, where the user can revoke
 ///   it (which is why the Dart side re-reads this state on every launch).
-/// - macOS 10.15–12: a `~/Library/LaunchAgents/<bundle-id>.plist` with
+/// - macOS 12: a `~/Library/LaunchAgents/<bundle-id>.plist` with
 ///   `RunAtLoad`, since `SMAppService` doesn't exist there and the older
 ///   `SMLoginItemSetEnabled` needs a separate bundled helper app.
 ///
