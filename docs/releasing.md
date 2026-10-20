@@ -29,4 +29,12 @@ Then, in about 15 minutes, it attaches to the release:
 
 …runs an iOS compile check, and points the website's download buttons at the new files. Flathub picks the new tag up by itself (its bot opens the PR).
 
-Repository secrets it needs: `DESKTOP_CLIENT_ID`, `DESKTOP_CLIENT_SECRET`, `ANDROID_WEB_CLIENT_ID`, plus the signing ones in [`.github/SIGNING_SETUP.md`](../.github/SIGNING_SETUP.md). Flatpak specifics: [`flatpak/README.md`](../flatpak/README.md).
+Repository secrets it needs (Settings → Secrets and variables → Actions):
+
+| For | Secrets |
+|---|---|
+| Google Drive sign-in (every build but Flatpak) | `DESKTOP_CLIENT_ID`, `DESKTOP_CLIENT_SECRET`, `ANDROID_WEB_CLIENT_ID` — see [Development setup](development.md#google-drive-sign-in-optional) |
+| Android signing | `ANDROID_KEYSTORE_BASE64`, `ANDROID_KEYSTORE_PASSWORD`, `ANDROID_KEY_ALIAS`, `ANDROID_KEY_PASSWORD` |
+| macOS signing and notarization | `APPLE_CERTIFICATE_BASE64`, `APPLE_CERTIFICATE_PASSWORD`, `KEYCHAIN_PASSWORD`, `APPLE_DEVELOPER_ID`, `APPLE_ID`, `APPLE_APP_SPECIFIC_PASSWORD`, `APPLE_TEAM_ID` — how to get each: [`.github/SIGNING_SETUP.md`](../.github/SIGNING_SETUP.md) |
+
+Flatpak specifics: [`flatpak/README.md`](../flatpak/README.md).

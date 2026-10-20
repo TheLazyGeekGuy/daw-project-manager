@@ -52,11 +52,39 @@ flutter run -d windows --dart-define=DPM_DATA_DIR=daw_project_manager_try
 
 ## Google Drive sign-in (optional)
 
-Fill in a Google Cloud OAuth client of your own:
+Only needed to try Drive sync on your own build. In a Google Cloud project with the **Google Drive API** enabled, create these OAuth clients:
+
+| Client type | Gives you |
+|---|---|
+| **Desktop app** | the desktop client ID and client secret |
+| **Web application** | the Android web client ID (Android sign-in passes it as `serverClientId`) |
+
+Write them into `lib/config/oauth_config.dart`, from the repository root:
+
+```powershell
+# Windows (PowerShell)
+.\scripts\inject_oauth_config.ps1 -DesktopClientId "<desktop client id>" -DesktopClientSecret "<desktop client secret>" -AndroidWebClientId "<android web client id>"
+```
 
 ```bash
+# macOS, Linux
 ./scripts/inject_oauth_config.sh -d "<desktop client id>" -s "<desktop client secret>" -a "<android web client id>"
-# Windows: .\scripts\inject_oauth_config.ps1 -DesktopClientId … -DesktopClientSecret … -AndroidWebClientId …
+```
+
+The script always starts again from the template, so run it again to change a value. Then, per platform:
+
+| Platform | Also needed |
+|---|---|
+| Windows, macOS, Linux | nothing: sign-in opens your browser |
+| Android | a third client, type **Android**, for package `com.bandpassrecords.dpm` and the SHA-1 of the key your build is signed with. Without it, sign-in fails with error 10. |
+| iOS | nothing: its client ID is already in `ios/Runner/Info.plist` |
+| Flatpak | skip all of this: Drive sync isn't offered inside the Flatpak sandbox ([why](../flatpak/README.md)) |
+
+A debug build is signed with the debug keystore; its SHA-1:
+
+```bash
+keytool -list -v -keystore ~/.android/debug.keystore -alias androiddebugkey -storepass android
+# Windows: -keystore "%USERPROFILE%\.android\debug.keystore"
 ```
 
 Never commit `oauth_config.dart`. Why a secret is needed at all: [`lib/config/README.md`](../lib/config/README.md).

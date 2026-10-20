@@ -209,8 +209,8 @@ gh release create vX.Y.Z -R bandpassrecords/daw-project-manager \
    - Do this at most twice for the same job, then treat it as real.
 
    **Needs something only the user can do** (a missing or expired secret —
-   see `.github/REQUIRED_SECRETS.md` — a signing certificate, an Apple or
-   Google account problem):
+   `docs/releasing.md` lists every one `release.yml` reads — a signing
+   certificate, an Apple or Google account problem):
    - **Stop.** Report exactly what's needed.
    - Don't delete the release: once they fix it, a `--failed` rerun
      finishes it.
