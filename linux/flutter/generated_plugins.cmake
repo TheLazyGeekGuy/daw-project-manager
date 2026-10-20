@@ -6,6 +6,7 @@ list(APPEND FLUTTER_PLUGIN_LIST
   audioplayers_linux
   desktop_drop
   ffmpeg_kit_flutter_new_audio
+  file_selector_linux
   flutter_secure_storage_linux
   irondash_engine_context
   screen_retriever_linux

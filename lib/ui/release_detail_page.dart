@@ -23,6 +23,7 @@ import 'widgets/desktop_title_bar.dart';
 import '../models/release_file.dart';
 import '../models/music_project.dart';
 import '../providers/providers.dart';
+import '../utils/save_file_dialog.dart';
 import '../utils/app_paths.dart';
 import '../utils/playback_seek.dart';
 import '../utils/route_observer.dart';
@@ -277,10 +278,10 @@ class _ReleaseDetailPageState extends ConsumerState<ReleaseDetailPage>
   }
 
   Future<void> _addFiles(BuildContext context, Release release) async {
-    final result = await FilePicker.pickFiles(allowMultiple: true, type: FileType.any);
-    if (result == null || result.files.isEmpty) return;
+    final result = await FilePicker.pickFiles(type: FileType.any);
+    if (result.isEmpty) return;
     try {
-      final paths = result.files.map((f) => f.path).whereType<String>().toList();
+      final paths = result.map((f) => f.path).whereType<String>().toList();
       await _saveFilesFromPaths(paths, release);
     } catch (e) {
       if (mounted) {
@@ -313,10 +314,9 @@ class _ReleaseDetailPageState extends ConsumerState<ReleaseDetailPage>
 
     // Ask user where to save the ZIP
     final safeName = release.title.replaceAll(RegExp(r'[<>:"/\\|?*]'), '_');
-    final savePath = await FilePicker.saveFile(
-      dialogTitle: AppLocalizations.of(context)!.saveReleaseFilesZip,
+    final savePath = await pickSavePath(
       fileName: '${safeName}_files.zip',
-      type: FileType.any,
+      allowedExtensions: const ['zip'],
     );
 
     if (savePath == null) {
@@ -494,9 +494,9 @@ class _ReleaseDetailPageState extends ConsumerState<ReleaseDetailPage>
       }
       return;
     }
-    final result = await FilePicker.pickFiles(type: FileType.image);
-    if (result != null && result.files.single.path != null) {
-      await _saveArtworkFromPath(result.files.single.path!);
+    final result = await FilePicker.pickFile(type: FileType.image);
+    if (result != null && result.path != null) {
+      await _saveArtworkFromPath(result.path!);
     }
   }
 

@@ -53,7 +53,7 @@ class WindowsMidiInput implements MidiInputBackend {
 
 class _WindowsConnection implements MidiInputConnection {
   final StreamController<MidiInputPacket> _packets = StreamController();
-  final List<({int handle, NativeCallable<_MidiInProcNative> callback})>
+  final List<({HMIDIIN handle, NativeCallable<_MidiInProcNative> callback})>
       _inputs = [];
 
   @override
@@ -70,7 +70,7 @@ class _WindowsConnection implements MidiInputConnection {
       if (bytes.isEmpty) return;
       _packets.add((deviceId: device.id, bytes: Uint8List.fromList(bytes)));
     });
-    final handle = calloc<IntPtr>();
+    final handle = calloc<Pointer>();
     try {
       final r = midiInOpen(handle, index, callback.nativeFunction.address, 0,
           CALLBACK_FUNCTION);
@@ -79,8 +79,9 @@ class _WindowsConnection implements MidiInputConnection {
         callback.close();
         return false;
       }
-      midiInStart(handle.value);
-      _inputs.add((handle: handle.value, callback: callback));
+      final opened = HMIDIIN(handle.value);
+      midiInStart(opened);
+      _inputs.add((handle: opened, callback: callback));
       return true;
     } finally {
       calloc.free(handle);

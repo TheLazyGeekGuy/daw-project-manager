@@ -1,4 +1,6 @@
+import 'dart:convert';
 import 'dart:io';
+import 'dart:typed_data';
 
 import 'package:file_picker/file_picker.dart';
 import 'package:material_ui/material_ui.dart';
@@ -16,6 +18,7 @@ import '../services/project_parts_xlsx_export_service.dart';
 import '../utils/mobile_utils.dart';
 import '../utils/part_status_display.dart';
 import '../utils/search_utils.dart';
+import '../utils/save_file_dialog.dart';
 import 'part_templates_page.dart';
 import 'widgets/desktop_title_bar.dart';
 import 'widgets/part_editor_dialog.dart';
@@ -405,12 +408,12 @@ class _ProjectPartsViewState extends State<ProjectPartsView> {
   Future<void> _importFromSpreadsheet(MusicProject project) async {
     final l10n = AppLocalizations.of(context)!;
     try {
-      final picked = await FilePicker.pickFiles(
+      final picked = await FilePicker.pickFile(
         type: FileType.custom,
         allowedExtensions: PartsSpreadsheetImportService.supportedExtensions,
         dialogTitle: l10n.partsImportPickerTitle,
       );
-      final path = picked?.files.single.path;
+      final path = picked?.path;
       if (path == null) return; // user cancelled
 
       final result = PartsSpreadsheetImportService.importInto(
@@ -455,26 +458,27 @@ class _ProjectPartsViewState extends State<ProjectPartsView> {
       return;
     }
     try {
-      final destPath = await FilePicker.saveFile(
-        dialogTitle: asXlsx ? l10n.exportPartsXlsx : l10n.exportPartsCsv,
-        fileName: asXlsx
-            ? ProjectPartsXlsxExportService.suggestedFileNameFor(project)
-            : ProjectPartsCsvExportService.suggestedFileNameFor(project),
-        type: FileType.custom,
-        allowedExtensions: [asXlsx ? 'xlsx' : 'csv'],
-      );
-      if (destPath == null) return; // user cancelled
-
+      final Uint8List bytes;
       if (asXlsx) {
         final workbook =
             ProjectPartsXlsxExportService.buildWorkbook([project], l10n);
         if (workbook == null) return;
-        await File(destPath).writeAsBytes(workbook);
+        bytes = workbook;
       } else {
-        await File(destPath).writeAsString(
+        bytes = utf8.encode(
           ProjectPartsCsvExportService.formatProject(project, l10n),
         );
       }
+      final destPath = await saveBytesWithDialog(
+        dialogTitle: asXlsx ? l10n.exportPartsXlsx : l10n.exportPartsCsv,
+        fileName: asXlsx
+            ? ProjectPartsXlsxExportService.suggestedFileNameFor(project)
+            : ProjectPartsCsvExportService.suggestedFileNameFor(project),
+        bytes: bytes,
+        type: FileType.custom,
+        allowedExtensions: [asXlsx ? 'xlsx' : 'csv'],
+      );
+      if (destPath == null) return; // user cancelled
 
       if (!mounted) return;
       ScaffoldMessenger.of(context).showAppSnackBar(

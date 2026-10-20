@@ -1,4 +1,3 @@
-import 'dart:io';
 import 'dart:typed_data';
 
 import 'package:file_picker/file_picker.dart';
@@ -344,21 +343,18 @@ Future<void> importMidiFilesFlow(
   final messenger = ScaffoldMessenger.of(context);
   final picked = await FilePicker.pickFiles(
     dialogTitle: l10n.midiImportDialogTitle,
-    allowMultiple: true,
     type: FileType.custom,
     allowedExtensions: const ['mid', 'midi'],
   );
-  if (picked == null || picked.files.isEmpty || !context.mounted) return;
+  if (picked.isEmpty || !context.mounted) return;
 
   final items = <MidiCollectionItem>[];
   final skipped = <String>[];
-  for (final f in picked.files) {
-    Uint8List? bytes = f.bytes;
-    if (bytes == null && f.path != null) {
-      try {
-        bytes = await File(f.path!).readAsBytes();
-      } catch (_) {}
-    }
+  for (final f in picked) {
+    Uint8List? bytes;
+    try {
+      bytes = await f.readAsBytes();
+    } catch (_) {}
     final imported = bytes == null ? null : importMidiFile(bytes, f.name);
     if (imported == null || imported.clips.isEmpty) {
       skipped.add(f.name);

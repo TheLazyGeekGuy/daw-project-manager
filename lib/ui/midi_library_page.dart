@@ -21,6 +21,7 @@ import '../services/midi/midi_file_writer.dart';
 import '../services/midi/synth_voice.dart';
 import '../services/midi_tree_state_store.dart';
 import '../utils/mobile_utils.dart';
+import '../utils/save_file_dialog.dart';
 import '../utils/search_utils.dart';
 import '../utils/time_signature.dart';
 import 'midi_clip_share.dart';
@@ -356,16 +357,15 @@ class _MidiLibraryPageState extends ConsumerState<MidiLibraryPage> {
     final l10n = AppLocalizations.of(context)!;
     final export = _exportOf(e);
     try {
-      final path = await FilePicker.saveFile(
+      final savedTo = await saveBytesWithDialog(
         dialogTitle: l10n.midiClipSave,
         fileName: export.fileName,
+        bytes: export.encode(),
         type: FileType.custom,
         allowedExtensions: ['mid'],
       );
-      if (path == null) return;
-      final target = p.extension(path).isEmpty ? '$path.mid' : path;
-      await MidiClipService.writeMidiFile(export, target);
-      _snack(l10n.midiClipSaved(p.basename(target)));
+      if (savedTo == null) return;
+      _snack(l10n.midiClipSaved(p.basename(savedTo)));
     } catch (err) {
       _snack(l10n.midiClipSaveFailed(err.toString()));
     }

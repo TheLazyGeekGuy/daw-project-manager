@@ -5978,14 +5978,14 @@ Future<void> playProjectPreview(
       ),
     );
     if (!context.mounted || confirmed != true) return;
-    final picked = await FilePicker.pickFiles(
+    final picked = await FilePicker.pickFile(
       type: FileType.custom,
       allowedExtensions: previewAudioExtensions,
       dialogTitle: l10n.selectPreviewSong,
     );
-    if (!context.mounted || picked == null || picked.files.single.path == null)
+    if (!context.mounted || picked == null || picked.path == null)
       return;
-    final newPath = picked.files.single.path!;
+    final newPath = picked.path!;
     final repo = await ref.read(repositoryProvider.future);
     await repo.updateProject(
       project.copyWith(

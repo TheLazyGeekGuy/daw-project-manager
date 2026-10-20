@@ -12,7 +12,8 @@ import '../../models/music_project.dart';
 import '../../providers/providers.dart';
 import '../../utils/app_paths.dart';
 import '../../utils/mobile_utils.dart';
-import '../../utils/project_visuals.dart';
+import '../../utils/project_visuals.dart';
+
 import '../../repository/project_repository.dart';
 import '../../utils/cover_art_refs.dart';
 import '../widgets/project_cover_avatar.dart';
@@ -147,8 +148,8 @@ class _ProjectAppearanceDialogState
   }
 
   Future<void> _pickCover(MusicProject project) async {
-    final result = await FilePicker.pickFiles(type: FileType.image);
-    final picked = result?.files.single.path;
+    final result = await FilePicker.pickFile(type: FileType.image);
+    final picked = result?.path;
     if (picked == null) return;
     await _saveCoverFrom(picked, project);
   }

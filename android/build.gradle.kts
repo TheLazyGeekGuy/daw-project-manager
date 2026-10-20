@@ -53,23 +53,6 @@ subprojects {
         }
     }
 }
-// file_picker 11 stops applying the Kotlin Gradle Plugin on AGP 9, expecting
-// built-in Kotlin, which gradle.properties keeps off. Nothing would compile
-// its Kotlin, and the app's plugin registrant fails to find FilePickerPlugin.
-// Remove this together with android.builtInKotlin=false.
-subprojects {
-    if (name == "file_picker") {
-        pluginManager.withPlugin("com.android.library") {
-            pluginManager.apply("org.jetbrains.kotlin.android")
-            extensions.configure<org.jetbrains.kotlin.gradle.dsl.KotlinAndroidProjectExtension> {
-                compilerOptions {
-                    jvmTarget.set(org.jetbrains.kotlin.gradle.dsl.JvmTarget.JVM_17)
-                }
-            }
-        }
-    }
-}
-
 tasks.register<Delete>("clean") {
     delete(rootProject.layout.buildDirectory)
 }

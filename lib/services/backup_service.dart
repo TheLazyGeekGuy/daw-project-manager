@@ -28,6 +28,7 @@ import '../models/midi_collection.dart';
 import '../repository/profile_repository.dart';
 import 'custom_theme_merge.dart';
 import '../utils/app_paths.dart';
+import '../utils/save_file_dialog.dart';
 
 class BackupService {
   /// The backup [exportBackup] writes, as JSON — everything but the file
@@ -111,8 +112,9 @@ class BackupService {
     return const JsonEncoder.withIndent('  ').convert(backupData);
   }
 
-  /// Exports all data for the current profile to a JSON file
-  static Future<File?> exportBackup({
+  /// Exports all data for the current profile to a JSON file the user picks.
+  /// Returns where it was saved ([savedLocation]), or null if cancelled.
+  static Future<String?> exportBackup({
     required ProjectRepository projectRepo,
     required ProfileRepository profileRepo,
     required String profileId,
@@ -126,20 +128,13 @@ class BackupService {
       );
 
       // Save to file
-      final result = await FilePicker.saveFile(
+      return await saveTextWithDialog(
         dialogTitle: exportDialogTitle ?? 'Export Backup',
         fileName: 'daw_project_manager_backup_${DateTime.now().toIso8601String().split('T')[0]}.json',
+        text: jsonString,
         type: FileType.custom,
         allowedExtensions: ['json'],
       );
-
-      if (result != null) {
-        final file = File(result);
-        await file.writeAsString(jsonString);
-        return file;
-      }
-
-      return null;
     } catch (e) {
       throw Exception('Failed to export backup: $e');
     }
@@ -159,17 +154,18 @@ class BackupService {
   }) async {
     try {
       // Pick backup file
-      final result = await FilePicker.pickFiles(
+      final picked = await FilePicker.pickFile(
         type: FileType.custom,
         allowedExtensions: ['json'],
         dialogTitle: importDialogTitle ?? 'Import Backup',
       );
 
-      if (result == null || result.files.single.path == null) {
+      final pickedPath = picked?.path;
+      if (pickedPath == null) {
         return ImportResult(cancelled: true);
       }
 
-      final file = File(result.files.single.path!);
+      final file = File(pickedPath);
       return await importBackupJson(
         await file.readAsString(),
         projectRepo: projectRepo,

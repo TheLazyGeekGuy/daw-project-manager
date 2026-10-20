@@ -12,6 +12,7 @@ import '../providers/providers.dart';
 import '../utils/app_paths.dart';
 import '../utils/mobile_utils.dart';
 import '../utils/file_launcher.dart';
+import '../utils/save_file_dialog.dart';
 import '../generated/l10n/app_localizations.dart';
 import 'app_snack_bar.dart';
 
@@ -79,10 +80,10 @@ class _ProfileEditPageState extends ConsumerState<ProfileEditPage> {
   }
 
   Future<void> _pickProfilePhoto(Profile profile) async {
-    final result = await FilePicker.pickFiles(type: FileType.image);
-    if (result == null || result.files.single.path == null) return;
+    final result = await FilePicker.pickFile(type: FileType.image);
+    if (result == null || result.path == null) return;
 
-    final sourcePath = result.files.single.path!;
+    final sourcePath = result.path!;
     final sourceFile = File(sourcePath);
 
     if (!await sourceFile.exists()) {
@@ -155,13 +156,13 @@ class _ProfileEditPageState extends ConsumerState<ProfileEditPage> {
     required String assetType,
     required Function(String) onFileSelected,
   }) async {
-    final result = await FilePicker.pickFiles(
+    final result = await FilePicker.pickFile(
       type: assetType == 'image' ? FileType.image : FileType.any,
     );
 
-    if (result == null || result.files.single.path == null) return;
+    if (result == null || result.path == null) return;
 
-    final sourcePath = result.files.single.path!;
+    final sourcePath = result.path!;
     final sourceFile = File(sourcePath);
 
     if (!await sourceFile.exists()) {
@@ -238,16 +239,13 @@ class _ProfileEditPageState extends ConsumerState<ProfileEditPage> {
         return;
       }
 
-      final savePath = await FilePicker.saveFile(
+      final savePath = await saveBytesWithDialog(
         dialogTitle: dialogTitle,
         fileName: suggestedFileName,
-        type: FileType.any,
+        bytes: await sourceFile.readAsBytes(),
       );
 
       if (savePath == null) return; // User cancelled
-
-      final destFile = File(savePath);
-      await sourceFile.copy(destFile.path);
 
       if (mounted) {
         ScaffoldMessenger.of(context).showAppSnackBar(
@@ -264,8 +262,6 @@ class _ProfileEditPageState extends ConsumerState<ProfileEditPage> {
   }
 
   Future<void> _downloadAllFiles(Profile profile) async {
-    final dialogTitle =
-        AppLocalizations.of(context)!.saveAllFilesAsZipDialogTitle;
     final filesToDownload = <MapEntry<String, String>>[];
 
     // Add biography if present
@@ -309,10 +305,9 @@ class _ProfileEditPageState extends ConsumerState<ProfileEditPage> {
     }
 
     final safeName = profile.name.replaceAll(RegExp(r'[<>:"/\\|?*]'), '_');
-    final savePath = await FilePicker.saveFile(
-      dialogTitle: dialogTitle,
+    final savePath = await pickSavePath(
       fileName: '${safeName}_profile_assets.zip',
-      type: FileType.any,
+      allowedExtensions: const ['zip'],
     );
 
     if (savePath == null) return; // User cancelled
@@ -703,14 +698,11 @@ class _ProfileEditPageState extends ConsumerState<ProfileEditPage> {
 
   Future<void> _downloadSelectedFiles(Profile profile, Map<String, String> selectedFiles) async {
     if (selectedFiles.isEmpty) return;
-    final dialogTitle =
-        AppLocalizations.of(context)!.saveSelectedFilesAsZipDialogTitle;
 
     final safeName = profile.name.replaceAll(RegExp(r'[<>:"/\\|?*]'), '_');
-    final savePath = await FilePicker.saveFile(
-      dialogTitle: dialogTitle,
+    final savePath = await pickSavePath(
       fileName: '${safeName}_selected_files.zip',
-      type: FileType.any,
+      allowedExtensions: const ['zip'],
     );
 
     if (savePath == null) return; // User cancelled

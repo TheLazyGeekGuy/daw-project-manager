@@ -201,16 +201,16 @@ class _ProjectTemplatesPageState extends ConsumerState<ProjectTemplatesPage> {
 
   Future<void> _pickMainFile() async {
     final l10n = AppLocalizations.of(context)!;
-    final result = await FilePicker.pickFiles(
+    final result = await FilePicker.pickFile(
       type: FileType.custom,
       allowedExtensions: ScannerService.supportedExtensions
           .map((e) => e.substring(1))
           .toList(),
       dialogTitle: l10n.selectTemplateMainFile,
     );
-    if (!mounted || result == null || result.files.single.path == null) return;
+    if (!mounted || result == null || result.path == null) return;
 
-    final mainFilePath = result.files.single.path!;
+    final mainFilePath = result.path!;
     final nameController = TextEditingController(
       text: p.basenameWithoutExtension(mainFilePath),
     );
