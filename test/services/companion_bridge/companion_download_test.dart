@@ -4,8 +4,8 @@ import 'package:daw_project_manager/services/companion_bridge/companion_protocol
 import 'package:flutter_test/flutter_test.dart';
 
 void main() {
-  const page = 'https://github.com/bandpassrecords/dpm-companion/releases/tag/v0.2.0';
-  String asset(String name) => 'https://github.com/bandpassrecords/dpm-companion/releases/download/v0.2.0/$name';
+  const page = 'https://github.com/bandpassrecords/daw-project-manager-plugin/releases/tag/v0.2.0';
+  String asset(String name) => 'https://github.com/bandpassrecords/daw-project-manager-plugin/releases/download/v0.2.0/$name';
 
   Map<String, dynamic> githubRelease(List<String> assetNames) => {
         'tag_name': 'v0.2.0',
@@ -18,25 +18,35 @@ void main() {
   group('the release\'s installers', () {
     test('each platform gets its installer, never a checksum or a zip', () {
       final release = parseCompanionRelease(githubRelease([
-        'DPM_Companion_Installer_v0.2.0.exe',
-        'DPM_Companion_Installer_v0.2.0.exe.sha256',
-        'DPM_Companion_Windows_VST3_v0.2.0.zip',
-        'DPM_Companion_macOS_Installer_v0.2.0.pkg',
-        'DPM_Companion_macOS_v0.2.0.zip',
-        'DPM_Companion_Linux_x86_64_v0.2.0.tar.gz',
-        'DPM_Companion_Linux_x86_64_v0.2.0.tar.gz.sha256',
+        'DAW_Project_Manager_Plugin_Installer_v0.2.0.exe',
+        'DAW_Project_Manager_Plugin_Installer_v0.2.0.exe.sha256',
+        'DAW_Project_Manager_Plugin_Windows_VST3_v0.2.0.zip',
+        'DAW_Project_Manager_Plugin_macOS_Installer_v0.2.0.pkg',
+        'DAW_Project_Manager_Plugin_macOS_v0.2.0.zip',
+        'DAW_Project_Manager_Plugin_Linux_x86_64_v0.2.0.tar.gz',
+        'DAW_Project_Manager_Plugin_Linux_x86_64_v0.2.0.tar.gz.sha256',
       ]))!;
 
       expect(release.downloads, {
-        CompanionPlatform.windows: asset('DPM_Companion_Installer_v0.2.0.exe'),
-        CompanionPlatform.macOS: asset('DPM_Companion_macOS_Installer_v0.2.0.pkg'),
-        CompanionPlatform.linux: asset('DPM_Companion_Linux_x86_64_v0.2.0.tar.gz'),
+        CompanionPlatform.windows: asset('DAW_Project_Manager_Plugin_Installer_v0.2.0.exe'),
+        CompanionPlatform.macOS: asset('DAW_Project_Manager_Plugin_macOS_Installer_v0.2.0.pkg'),
+        CompanionPlatform.linux: asset('DAW_Project_Manager_Plugin_Linux_x86_64_v0.2.0.tar.gz'),
       });
     });
 
+    test('a release from before the rename still has its installers found', () {
+      final release = parseCompanionRelease(githubRelease([
+        'DPM_Companion_Installer_v0.1.0.exe',
+        'DPM_Companion_macOS_Installer_v0.1.0.pkg',
+        'DPM_Companion_Linux_x86_64_v0.1.0.tar.gz',
+      ]))!;
+      expect(release.downloads.keys, unorderedEquals(CompanionPlatform.values));
+    });
+
     test('the download button opens the installer, else the release page, else the releases page', () {
-      final withWindowsOnly = parseCompanionRelease(githubRelease(['DPM_Companion_Installer_v0.2.0.exe']))!;
-      expect(companionDownloadUrl(withWindowsOnly, CompanionPlatform.windows), asset('DPM_Companion_Installer_v0.2.0.exe'));
+      final withWindowsOnly = parseCompanionRelease(githubRelease(['DAW_Project_Manager_Plugin_Installer_v0.2.0.exe']))!;
+      expect(companionDownloadUrl(withWindowsOnly, CompanionPlatform.windows),
+          asset('DAW_Project_Manager_Plugin_Installer_v0.2.0.exe'));
       expect(companionDownloadUrl(withWindowsOnly, CompanionPlatform.macOS), page);
       expect(companionDownloadUrl(null, CompanionPlatform.linux), companionReleasesPage);
     });
@@ -45,7 +55,7 @@ void main() {
       final release = parseCompanionRelease({
         'tag_name': 'v0.2.0',
         'html_url': page,
-        'assets': ['not a map', {'name': 'DPM_Companion_Installer_v0.2.0.exe'}, 42],
+        'assets': ['not a map', {'name': 'DAW_Project_Manager_Plugin_Installer_v0.2.0.exe'}, 42],
       })!;
       expect(release.downloads, isEmpty);
     });

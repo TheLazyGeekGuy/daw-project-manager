@@ -40,7 +40,7 @@ abstract class CompanionSessionHooks {
   Future<void> startSession(CompanionProjectRef project);
 }
 
-/// The bridge folder the DPM Companion plugin shares with this app:
+/// The bridge folder the DAW Project Manager plugin shares with this app:
 /// `plugin_bridge` inside the library folder. A pinned or dev library gets
 /// its own, so a test build never talks to plugins working for the stable app.
 Future<String> companionBridgePath() async => p.join(await getLocalAppDataPath(), 'plugin_bridge');
@@ -63,7 +63,7 @@ Future<CompanionRelease?> fetchLatestCompanionRelease({http.Client? client}) asy
   final c = client ?? http.Client();
   try {
     final response = await c
-        .get(Uri.parse('https://api.github.com/repos/bandpassrecords/dpm-companion/releases/latest'),
+        .get(Uri.parse('https://api.github.com/repos/bandpassrecords/daw-project-manager-plugin/releases/latest'),
             headers: {'Accept': 'application/vnd.github+json'})
         .timeout(const Duration(seconds: 10));
     if (response.statusCode != 200) return null;
@@ -86,8 +86,8 @@ Future<void> writeFileAtomically(File target, String contents) async {
   await temp.rename(target.path);
 }
 
-/// The app's half of the DPM Companion plugin's protocol (docs/PROTOCOL.md in
-/// bandpassrecords/dpm-companion): keeps `index.json` current and applies the
+/// The app's half of the DAW Project Manager plugin's protocol (docs/PROTOCOL.md
+/// in bandpassrecords/daw-project-manager-plugin): keeps `index.json` current and applies the
 /// plugin's outbox — new to-dos, ticks and pre-listen captures.
 ///
 /// Desktop only. Runs on a timer rather than a file watcher: the folder is

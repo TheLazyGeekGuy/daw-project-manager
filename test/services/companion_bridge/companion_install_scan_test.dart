@@ -65,6 +65,11 @@ void main() {
       expect(companionVersionFromModuleInfo(realModuleInfo), '0.1.0');
     });
 
+    test('the plugin\'s name today and before the rename are both ours', () {
+      expect(companionVersionFromModuleInfo(realModuleInfo.replaceAll('"Name": "DPM Companion"', '"Name": "DAW Project Manager"')),
+          '0.1.0');
+    });
+
     test('another vendor\'s or another plugin\'s bundle is not ours', () {
       expect(companionVersionFromModuleInfo(realModuleInfo.replaceFirst('BandPass Records', 'Someone Else')), isNull);
       expect(companionVersionFromModuleInfo(realModuleInfo.replaceFirst('"Name": "DPM Companion"', '"Name": "Other"')), isNull);
@@ -91,9 +96,10 @@ void main() {
     setUp(() async => tmp = await Directory.systemTemp.createTemp('companion_scan_test'));
     tearDown(() async => tmp.delete(recursive: true));
 
-    Future<String> installAt(String folderName, {String version = '0.1.0', String vendor = 'BandPass Records'}) async {
+    Future<String> installAt(String folderName,
+        {String version = '0.1.0', String vendor = 'BandPass Records', String bundle = companionVst3BundleName}) async {
       final folder = p.join(tmp.path, folderName);
-      final info = File(p.join(folder, companionVst3BundleName, 'Contents', 'Resources', 'moduleinfo.json'));
+      final info = File(p.join(folder, bundle, 'Contents', 'Resources', 'moduleinfo.json'));
       await info.parent.create(recursive: true);
       await info.writeAsString(
           realModuleInfo.replaceAll('"Version": "0.1.0"', '"Version": "$version"').replaceFirst('BandPass Records', vendor));
@@ -113,6 +119,18 @@ void main() {
       expect(found.first.path, p.join(allUsers, companionVst3BundleName));
       expect(hasDuplicateCompanionInstalls(found), isTrue);
       expect(newestInstalledCompanionVersion(found), '0.2.0');
+    });
+
+    test('a copy from before the rename is found, and next to a new one is a duplicate', () async {
+      final folder = await installAt('vst3', bundle: legacyCompanionVst3BundleName);
+      final old = await scanCompanionFolders([vst3(folder)]);
+      expect(old.map((i) => i.path), [p.join(folder, legacyCompanionVst3BundleName)]);
+      expect(hasDuplicateCompanionInstalls(old), isFalse);
+
+      await installAt('vst3', version: '0.2.0');
+      final both = await scanCompanionFolders([vst3(folder)]);
+      expect(both.map((i) => i.version), ['0.2.0', '0.1.0']);
+      expect(hasDuplicateCompanionInstalls(both), isTrue);
     });
 
     test('one folder listed twice is one copy', () async {

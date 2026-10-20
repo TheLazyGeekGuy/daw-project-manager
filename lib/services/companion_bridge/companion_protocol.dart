@@ -6,11 +6,11 @@ import '../../models/music_project.dart';
 import '../../models/profile.dart';
 import '../../models/todo_item.dart';
 
-/// The app's side of the DPM Companion plugin's protocol — the pure part:
+/// The app's side of the DAW Project Manager plugin's protocol — the pure part:
 /// what goes into `index.json`, how the plugin's messages are read, and what
 /// they do to a project. File I/O lives in `companion_bridge_service.dart`.
 ///
-/// The contract is `docs/PROTOCOL.md` in bandpassrecords/dpm-companion; this
+/// The contract is `docs/PROTOCOL.md` in bandpassrecords/daw-project-manager-plugin; this
 /// file and that one change together.
 
 /// `index.json`'s schema. A breaking change gets a new file name, not a new
@@ -59,14 +59,15 @@ enum CompanionPlatform { windows, macOS, linux }
 
 /// Where the plugin's releases live: the fallback when the newest release
 /// isn't known (update checks off, offline, the Flatpak).
-const companionReleasesPage = 'https://github.com/bandpassrecords/dpm-companion/releases/latest';
+const companionReleasesPage = 'https://github.com/bandpassrecords/daw-project-manager-plugin/releases/latest';
 
 /// The plugin installer's file name on a release, per platform — the names
-/// the plugin's CI gives them (`packaging/`), version in the middle.
+/// the plugin's CI gives them (`packaging/`), version in the middle. Releases
+/// up to v0.1.x named them DPM_Companion_….
 final Map<CompanionPlatform, RegExp> _installerNames = {
-  CompanionPlatform.windows: RegExp(r'^DPM_Companion_Installer_v[\d.]+\.exe$'),
-  CompanionPlatform.macOS: RegExp(r'^DPM_Companion_macOS_Installer_v[\d.]+\.pkg$'),
-  CompanionPlatform.linux: RegExp(r'^DPM_Companion_Linux_x86_64_v[\d.]+\.tar\.gz$'),
+  CompanionPlatform.windows: RegExp(r'^(DAW_Project_Manager_Plugin|DPM_Companion)_Installer_v[\d.]+\.exe$'),
+  CompanionPlatform.macOS: RegExp(r'^(DAW_Project_Manager_Plugin|DPM_Companion)_macOS_Installer_v[\d.]+\.pkg$'),
+  CompanionPlatform.linux: RegExp(r'^(DAW_Project_Manager_Plugin|DPM_Companion)_Linux_x86_64_v[\d.]+\.tar\.gz$'),
 };
 
 /// What "Download the DAW plugin" opens: this platform's installer from the
