@@ -4806,7 +4806,7 @@ final sessionModeProvider = NotifierProvider<SessionModeNotifier, bool>(
 );
 
 // ---------------------------------------------------------------------------
-// DPM Companion plugin and work sessions (device-local, like session mode)
+// DAW Project Manager plugin and work sessions (device-local, like session mode)
 // ---------------------------------------------------------------------------
 
 /// A device-local on/off setting kept in the `settings` box.
@@ -4833,7 +4833,7 @@ abstract class _StoredSwitchNotifier extends Notifier<bool> {
   }
 }
 
-/// End the work session when the DAW closes the project the DPM Companion
+/// End the work session when the DAW closes the project the DAW Project Manager
 /// plugin is in. On by default: a session left running overnight is the
 /// problem this solves.
 class CompanionEndSessionNotifier extends _StoredSwitchNotifier {
@@ -4852,7 +4852,7 @@ class CompanionStartSessionNotifier extends _StoredSwitchNotifier {
   bool get defaultValue => false;
 }
 
-/// The last time this computer saw the DPM Companion plugin running, for
+/// The last time this computer saw the DAW Project Manager plugin running, for
 /// Settings > DAW plugin. Device-local (the `settings` box): another
 /// computer has its own DAW and plugin.
 class CompanionSightingNotifier extends Notifier<CompanionSighting?> {

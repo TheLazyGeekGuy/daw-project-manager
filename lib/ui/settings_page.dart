@@ -116,7 +116,7 @@ enum SettingsSection {
   projectFolders,
   // Desktop-only — see the MobileUtils.isDesktop() gate in _sectionOrder().
   dawLaunchCommands,
-  // Desktop-only: the DPM Companion plugin runs in desktop DAWs.
+  // Desktop-only: the DAW Project Manager plugin runs in desktop DAWs.
   dawPlugin,
   mixdownFolders,
   phases,
@@ -1521,7 +1521,7 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
         // for when the standard "Launch in DAW" fails. Mobile has no DAW to
         // point at.
         if (MobileUtils.isDesktop()) SettingsSection.dawLaunchCommands,
-        // The DPM Companion plugin: to-dos, captures, sessions, its download.
+        // The DAW Project Manager plugin: to-dos, captures, sessions, its download.
         if (MobileUtils.isDesktop()) SettingsSection.dawPlugin,
         SettingsSection.mixdownFolders,
         SettingsSection.phases,

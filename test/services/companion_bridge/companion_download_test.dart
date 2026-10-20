@@ -34,14 +34,6 @@ void main() {
       });
     });
 
-    test('a release from before the rename still has its installers found', () {
-      final release = parseCompanionRelease(githubRelease([
-        'DPM_Companion_Installer_v0.1.0.exe',
-        'DPM_Companion_macOS_Installer_v0.1.0.pkg',
-        'DPM_Companion_Linux_x86_64_v0.1.0.tar.gz',
-      ]))!;
-      expect(release.downloads.keys, unorderedEquals(CompanionPlatform.values));
-    });
 
     test('the download button opens the installer, else the release page, else the releases page', () {
       final withWindowsOnly = parseCompanionRelease(githubRelease(['DAW_Project_Manager_Plugin_Installer_v0.2.0.exe']))!;

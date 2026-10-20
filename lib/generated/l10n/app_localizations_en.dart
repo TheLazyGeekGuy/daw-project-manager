@@ -8076,7 +8076,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get companionSessionsDescription =>
-      'With the DPM Companion plugin in a project, the app knows when your DAW opens and closes it.';
+      'With the DAW Project Manager plugin in a project, the app knows when your DAW opens and closes it.';
 
   @override
   String get companionEndSessionWhenDawCloses =>
@@ -8104,7 +8104,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String companionSessionEndedNoResponse(String daw, String project) {
-    return 'DPM Companion stopped responding in $daw, so the session for $project ended when it was last heard from. The DAW may have crashed or been closed abruptly.';
+    return 'The DAW Project Manager plugin stopped responding in $daw, so the session for $project ended when it was last heard from. The DAW may have crashed or been closed abruptly.';
   }
 
   @override
@@ -8123,7 +8123,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get companionPluginTabLabel => 'DAW plugin';
 
   @override
-  String get companionPluginTitle => 'DPM Companion';
+  String get companionPluginTitle => 'DAW Project Manager plugin';
 
   @override
   String get companionPluginDescription =>

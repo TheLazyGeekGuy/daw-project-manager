@@ -8,7 +8,7 @@ import 'package:daw_project_manager/utils/localization_delegates.dart';
 
 /// Settings > DAW plugin, as a plain view: no Hive, no Riverpod.
 void main() {
-  const installer = 'https://github.com/bandpassrecords/dpm-companion/releases/download/v0.2.0/DPM_Companion_Installer_v0.2.0.exe';
+  const installer = 'https://github.com/bandpassrecords/daw-project-manager-plugin/releases/download/v0.2.0/DAW_Project_Manager_Plugin_Installer_v0.2.0.exe';
   const release = CompanionRelease('0.2.0', 'https://github.com/bandpassrecords/dpm-companion/releases/tag/v0.2.0',
       downloads: {CompanionPlatform.windows: installer});
 
@@ -86,8 +86,8 @@ void main() {
   });
 
   group('installed copies', () {
-    const allUsers = CompanionInstall(r'C:\Program Files\Common Files\VST3\DPM Companion.vst3', CompanionPluginFormat.vst3, '0.1.0');
-    const justMe = CompanionInstall(r'C:\Users\ana\AppData\Local\Programs\Common\VST3\DPM Companion.vst3', CompanionPluginFormat.vst3, '0.1.0');
+    const allUsers = CompanionInstall(r'C:\Program Files\Common Files\VST3\DAW Project Manager.vst3', CompanionPluginFormat.vst3, '0.1.0');
+    const justMe = CompanionInstall(r'C:\Users\ana\AppData\Local\Programs\Common\VST3\DAW Project Manager.vst3', CompanionPluginFormat.vst3, '0.1.0');
 
     testWidgets('each copy shows its format, version and folder; no custom folders offered', (tester) async {
       await pump(tester, installs: [allUsers]);
@@ -113,7 +113,7 @@ void main() {
     });
 
     testWidgets('a copy found in the user\'s folder keeps those folders on show', (tester) async {
-      const custom = CompanionInstall(r'D:\My Plugins\DPM Companion.vst3', CompanionPluginFormat.vst3, '0.1.0', inCustomFolder: true);
+      const custom = CompanionInstall(r'D:\My Plugins\DAW Project Manager.vst3', CompanionPluginFormat.vst3, '0.1.0', inCustomFolder: true);
       await pump(tester, installs: [custom], customFolders: [r'D:\My Plugins']);
       expect(find.textContaining('your folder'), findsOneWidget);
       expect(find.text('Add Folder'), findsOneWidget);

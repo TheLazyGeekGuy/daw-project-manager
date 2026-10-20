@@ -313,7 +313,7 @@ Future<void> _runAutoSync(
   }
 }
 
-// The DPM Companion plugin's bridge (desktop only). Like the folder watcher,
+// The DAW Project Manager plugin's bridge (desktop only). Like the folder watcher,
 // it lives here rather than in a page so it runs whatever screen is open,
 // and hidden in the tray too.
 CompanionBridgeService? _companionBridge;
@@ -908,7 +908,7 @@ Future<void> _main(List<String> args) async {
       _startFolderWatcher(container);
     }
 
-    // 4c-3. DPM Companion plugin bridge (desktop only): shares the project
+    // 4c-3. DAW Project Manager plugin bridge (desktop only): shares the project
     // list with the DAW plugin and takes in its to-dos and captures (#118).
     if (!kIsWeb && !MobileUtils.isMobile()) {
       unawaited(_startCompanionBridge(container));

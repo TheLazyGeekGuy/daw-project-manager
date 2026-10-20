@@ -160,7 +160,7 @@ Future<void> launchProjectInDaw(
     return;
   }
 
-  // Tells the DPM Companion plugin which project is about to open, so it
+  // Tells the DAW Project Manager plugin which project is about to open, so it
   // links without asking (#118). Before the launch: the DAW may load the
   // plugin within seconds.
   if (!MobileUtils.isMobile()) {

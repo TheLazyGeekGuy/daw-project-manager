@@ -13208,7 +13208,7 @@ abstract class AppLocalizations {
   /// No description provided for @companionSessionsDescription.
   ///
   /// In en, this message translates to:
-  /// **'With the DPM Companion plugin in a project, the app knows when your DAW opens and closes it.'**
+  /// **'With the DAW Project Manager plugin in a project, the app knows when your DAW opens and closes it.'**
   String get companionSessionsDescription;
 
   /// No description provided for @companionEndSessionWhenDawCloses.
@@ -13250,7 +13250,7 @@ abstract class AppLocalizations {
   /// No description provided for @companionSessionEndedNoResponse.
   ///
   /// In en, this message translates to:
-  /// **'DPM Companion stopped responding in {daw}, so the session for {project} ended when it was last heard from. The DAW may have crashed or been closed abruptly.'**
+  /// **'The DAW Project Manager plugin stopped responding in {daw}, so the session for {project} ended when it was last heard from. The DAW may have crashed or been closed abruptly.'**
   String companionSessionEndedNoResponse(String daw, String project);
 
   /// No description provided for @companionUnknownDaw.
@@ -13278,7 +13278,7 @@ abstract class AppLocalizations {
   /// No description provided for @companionPluginTitle.
   ///
   /// In en, this message translates to:
-  /// **'DPM Companion'**
+  /// **'DAW Project Manager plugin'**
   String get companionPluginTitle;
 
   /// No description provided for @companionPluginDescription.

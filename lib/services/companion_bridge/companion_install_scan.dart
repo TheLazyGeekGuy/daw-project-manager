@@ -26,14 +26,9 @@ class CompanionInstall {
 /// The bundle names the plugin installs as.
 const companionVst3BundleName = 'DAW Project Manager.vst3';
 const companionAuBundleName = 'DAW Project Manager.component';
-
-/// The names it had until v0.1.x, as DPM Companion: copies installed then
-/// still carry them, and are still the plugin.
-const legacyCompanionVst3BundleName = 'DPM Companion.vst3';
-const legacyCompanionAuBundleName = 'DPM Companion.component';
-const _pluginNames = {'DAW Project Manager', 'DPM Companion'};
+const _pluginName = 'DAW Project Manager';
 const _vendor = 'BandPass Records';
-const _bundleId = 'com.bandpassrecords.dpm.companion';
+const _bundleId = 'com.bandpassrecords.dpm.plugin';
 
 /// The folders hosts scan, where the plugin's installers put it — and, on
 /// Windows, wherever the installer recorded it was put ([installerFolder]).
@@ -86,7 +81,7 @@ String? companionVersionFromModuleInfo(String text) {
   final factory = decoded['Factory Info'];
   final vendor = factory is Map<String, dynamic> ? factory['Vendor'] : null;
   final version = decoded['Version'];
-  if (!_pluginNames.contains(decoded['Name']) || vendor != _vendor || version is! String || version.isEmpty) return null;
+  if (decoded['Name'] != _pluginName || vendor != _vendor || version is! String || version.isEmpty) return null;
   return version;
 }
 
@@ -115,8 +110,7 @@ const companionUninstallKeys = [
 ];
 
 /// Looks for the plugin in [folders]: a `DAW Project Manager.vst3` /
-/// `.component` bundle (or one by the old name, `DPM Companion`) whose
-/// metadata says it is ours. Missing or unreadable
+/// `.component` bundle whose metadata says it is ours. Missing or unreadable
 /// folders are skipped.
 Future<List<CompanionInstall>> scanCompanionFolders(
   List<({String folder, CompanionPluginFormat format})> folders, {
@@ -126,24 +120,20 @@ Future<List<CompanionInstall>> scanCompanionFolders(
   final seen = <String>{};
 
   for (final f in folders) {
-    final names = f.format == CompanionPluginFormat.vst3
-        ? [companionVst3BundleName, legacyCompanionVst3BundleName]
-        : [companionAuBundleName, legacyCompanionAuBundleName];
-    for (final name in names) {
-      final bundle = p.normalize(p.join(f.folder, name));
-      if (!seen.add(bundle.toLowerCase())) continue;
-      if (!await Directory(bundle).exists()) continue;
+    final name = f.format == CompanionPluginFormat.vst3 ? companionVst3BundleName : companionAuBundleName;
+    final bundle = p.normalize(p.join(f.folder, name));
+    if (!seen.add(bundle.toLowerCase())) continue;
+    if (!await Directory(bundle).exists()) continue;
 
-      String? version;
-      try {
-        final moduleInfo = File(p.join(bundle, 'Contents', 'Resources', 'moduleinfo.json'));
-        if (await moduleInfo.exists()) version = companionVersionFromModuleInfo(await moduleInfo.readAsString());
-        final plist = File(p.join(bundle, 'Contents', 'Info.plist'));
-        if (version == null && await plist.exists()) version = companionVersionFromInfoPlist(await plist.readAsString());
-      } catch (_) {}
+    String? version;
+    try {
+      final moduleInfo = File(p.join(bundle, 'Contents', 'Resources', 'moduleinfo.json'));
+      if (await moduleInfo.exists()) version = companionVersionFromModuleInfo(await moduleInfo.readAsString());
+      final plist = File(p.join(bundle, 'Contents', 'Info.plist'));
+      if (version == null && await plist.exists()) version = companionVersionFromInfoPlist(await plist.readAsString());
+    } catch (_) {}
 
-      if (version != null) found.add(CompanionInstall(bundle, f.format, version, inCustomFolder: custom));
-    }
+    if (version != null) found.add(CompanionInstall(bundle, f.format, version, inCustomFolder: custom));
   }
   return found;
 }

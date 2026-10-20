@@ -8158,7 +8158,7 @@ class AppLocalizationsRu extends AppLocalizations {
 
   @override
   String get companionSessionsDescription =>
-      'Когда плагин DPM Companion есть в проекте, приложение знает, когда ваша DAW открывает и закрывает его.';
+      'Когда плагин DAW Project Manager есть в проекте, приложение знает, когда ваша DAW открывает и закрывает его.';
 
   @override
   String get companionEndSessionWhenDawCloses =>
@@ -8186,7 +8186,7 @@ class AppLocalizationsRu extends AppLocalizations {
 
   @override
   String companionSessionEndedNoResponse(String daw, String project) {
-    return 'DPM Companion перестал отвечать в $daw, поэтому сессия $project завершена в момент последнего отклика. Возможно, DAW аварийно завершилась или была закрыта принудительно.';
+    return 'Плагин DAW Project Manager перестал отвечать в $daw, поэтому сессия $project завершена в момент последнего отклика. Возможно, DAW аварийно завершилась или была закрыта принудительно.';
   }
 
   @override
@@ -8205,7 +8205,7 @@ class AppLocalizationsRu extends AppLocalizations {
   String get companionPluginTabLabel => 'Плагин для DAW';
 
   @override
-  String get companionPluginTitle => 'DPM Companion';
+  String get companionPluginTitle => 'Плагин DAW Project Manager';
 
   @override
   String get companionPluginDescription =>

@@ -62,12 +62,11 @@ enum CompanionPlatform { windows, macOS, linux }
 const companionReleasesPage = 'https://github.com/bandpassrecords/daw-project-manager-plugin/releases/latest';
 
 /// The plugin installer's file name on a release, per platform — the names
-/// the plugin's CI gives them (`packaging/`), version in the middle. Releases
-/// up to v0.1.x named them DPM_Companion_….
+/// the plugin's CI gives them (`packaging/`), version in the middle.
 final Map<CompanionPlatform, RegExp> _installerNames = {
-  CompanionPlatform.windows: RegExp(r'^(DAW_Project_Manager_Plugin|DPM_Companion)_Installer_v[\d.]+\.exe$'),
-  CompanionPlatform.macOS: RegExp(r'^(DAW_Project_Manager_Plugin|DPM_Companion)_macOS_Installer_v[\d.]+\.pkg$'),
-  CompanionPlatform.linux: RegExp(r'^(DAW_Project_Manager_Plugin|DPM_Companion)_Linux_x86_64_v[\d.]+\.tar\.gz$'),
+  CompanionPlatform.windows: RegExp(r'^DAW_Project_Manager_Plugin_Installer_v[\d.]+\.exe$'),
+  CompanionPlatform.macOS: RegExp(r'^DAW_Project_Manager_Plugin_macOS_Installer_v[\d.]+\.pkg$'),
+  CompanionPlatform.linux: RegExp(r'^DAW_Project_Manager_Plugin_Linux_x86_64_v[\d.]+\.tar\.gz$'),
 };
 
 /// What "Download the DAW plugin" opens: this platform's installer from the
@@ -163,7 +162,7 @@ Map<String, dynamic> buildCompanionIndex(
     'generatedAt': generatedAt.toUtc().toIso8601String(),
     'app': {'version': appVersion},
     if (latestRelease != null)
-      'companion': {'latestVersion': latestRelease.version, 'releaseUrl': latestRelease.url},
+      'plugin': {'latestVersion': latestRelease.version, 'releaseUrl': latestRelease.url},
     // The plugin messages handled lately: how a notes edit learns it arrived.
     'applied': appliedMessageIds,
     'projects': projects,
@@ -555,7 +554,7 @@ MusicProject? applyCompanionNotesSet(MusicProject owner, CompanionNotesSet messa
 
 /// The plugin's captures are copied here, under the preview-songs folder,
 /// so the app knows a preview it set itself from one it didn't.
-const String companionPreviewFolderName = 'companion';
+const String companionPreviewFolderName = 'plugin';
 
 /// Whether a capture may become [owner]'s preview song.
 ///

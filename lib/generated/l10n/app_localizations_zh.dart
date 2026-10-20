@@ -7764,7 +7764,7 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get companionSessionsDescription =>
-      '项目中装有 DPM Companion 插件时，应用会知道你的 DAW 何时打开和关闭该项目。';
+      '项目中装有 DAW Project Manager 插件时，应用会知道你的 DAW 何时打开和关闭该项目。';
 
   @override
   String get companionEndSessionWhenDawCloses => 'DAW 关闭项目时结束会话';
@@ -7790,7 +7790,7 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String companionSessionEndedNoResponse(String daw, String project) {
-    return '$daw 中的 DPM Companion 停止了响应，因此 $project 的会话在最后一次收到响应时结束。DAW 可能已崩溃或被强制关闭。';
+    return '$daw 中的 DAW Project Manager 插件停止了响应，因此 $project 的会话在最后一次收到响应时结束。DAW 可能已崩溃或被强制关闭。';
   }
 
   @override
@@ -7809,7 +7809,7 @@ class AppLocalizationsZh extends AppLocalizations {
   String get companionPluginTabLabel => 'DAW 插件';
 
   @override
-  String get companionPluginTitle => 'DPM Companion';
+  String get companionPluginTitle => 'DAW Project Manager 插件';
 
   @override
   String get companionPluginDescription =>

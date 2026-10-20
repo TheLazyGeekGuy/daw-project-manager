@@ -9,7 +9,7 @@ import 'package:flutter_test/flutter_test.dart';
 import '../helpers/hive_test_helper.dart';
 import '../helpers/test_factories.dart';
 
-/// The DPM Companion bridge ends a session through WorkTimerNotifier.endAt,
+/// The DAW Project Manager bridge ends a session through WorkTimerNotifier.endAt,
 /// with the time the DAW closed the project — not the time the app heard.
 void main() {
   late Directory tempDir;

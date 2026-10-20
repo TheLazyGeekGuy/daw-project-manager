@@ -1,5 +1,5 @@
 {
-  "Name": "DPM Companion",
+  "Name": "DAW Project Manager",
   "Version": "0.1.0",
   "Factory Info": {
     "Vendor": "BandPass Records",
@@ -15,7 +15,7 @@
     {
       "CID": "ABCDEF019182FAEB426E707244706D63",
       "Category": "Audio Module Class",
-      "Name": "DPM Companion",
+      "Name": "DAW Project Manager",
       "Vendor": "BandPass Records",
       "Version": "0.1.0",
       "SDKVersion": "VST 3.8.0",
@@ -31,7 +31,7 @@
     {
       "CID": "ABCDEF011234ABCD426E707244706D63",
       "Category": "Component Controller Class",
-      "Name": "DPM Companion",
+      "Name": "DAW Project Manager",
       "Vendor": "BandPass Records",
       "Version": "0.1.0",
       "SDKVersion": "VST 3.8.0",

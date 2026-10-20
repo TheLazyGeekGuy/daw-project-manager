@@ -5,7 +5,7 @@ import '../../generated/l10n/app_localizations.dart';
 import '../../services/companion_bridge/companion_install_scan.dart';
 import '../../services/companion_bridge/companion_protocol.dart';
 
-/// Settings > DAW plugin: what the DPM Companion plugin is, whether this
+/// Settings > DAW plugin: what the DAW Project Manager plugin is, whether this
 /// computer has seen it, which copies are installed where, where to get it
 /// (or its update), and the work session switches it drives.
 ///

@@ -296,7 +296,7 @@ void main() {
       });
 
       await b.writeIndex();
-      expect((await index(b))['companion']['latestVersion'], '0.2.0');
+      expect((await index(b))['plugin']['latestVersion'], '0.2.0');
 
       clock = clock.add(const Duration(hours: 23));
       await b.writeIndex(force: true);
@@ -316,7 +316,7 @@ void main() {
       clock = clock.add(const Duration(hours: 25));
       await b.writeIndex(force: true);
       expect(calls, 2);
-      expect((await index(b))['companion']['latestVersion'], '0.2.0');
+      expect((await index(b))['plugin']['latestVersion'], '0.2.0');
 
       clock = clock.add(const Duration(minutes: 30));
       await b.writeIndex(force: true);
@@ -335,12 +335,12 @@ void main() {
       }, allowed: () async => allowed);
 
       await b.writeIndex();
-      expect((await index(b)).containsKey('companion'), isTrue);
+      expect((await index(b)).containsKey('plugin'), isTrue);
 
       allowed = false;
       clock = clock.add(const Duration(days: 2));
       expect(await b.writeIndex(), isTrue);   // the release left the index
-      expect((await index(b)).containsKey('companion'), isFalse);
+      expect((await index(b)).containsKey('plugin'), isFalse);
       expect(calls, 1);
     });
   });

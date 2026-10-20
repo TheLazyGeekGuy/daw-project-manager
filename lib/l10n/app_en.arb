@@ -8040,7 +8040,7 @@
       }
     }
   },
-  "companionSessionsDescription": "With the DPM Companion plugin in a project, the app knows when your DAW opens and closes it.",
+  "companionSessionsDescription": "With the DAW Project Manager plugin in a project, the app knows when your DAW opens and closes it.",
   "companionEndSessionWhenDawCloses": "End the session when the DAW closes the project",
   "companionEndSessionWhenDawClosesDescription": "Also after a crash: the session ends at the moment the DAW let go of the project.",
   "companionStartSessionWhenDawOpens": "Start a session when a project opens in the DAW",
@@ -8057,7 +8057,7 @@
       }
     }
   },
-  "companionSessionEndedNoResponse": "DPM Companion stopped responding in {daw}, so the session for {project} ended when it was last heard from. The DAW may have crashed or been closed abruptly.",
+  "companionSessionEndedNoResponse": "The DAW Project Manager plugin stopped responding in {daw}, so the session for {project} ended when it was last heard from. The DAW may have crashed or been closed abruptly.",
   "@companionSessionEndedNoResponse": {
     "placeholders": {
       "daw": {
@@ -8084,7 +8084,7 @@
     }
   },
   "companionPluginTabLabel": "DAW plugin",
-  "companionPluginTitle": "DPM Companion",
+  "companionPluginTitle": "DAW Project Manager plugin",
   "companionPluginDescription": "A VST3/AU plugin for your DAW. Put it on the master bus: it shows the project's to-dos, records each playback pass as the project's preview song, and can end your work session when the DAW closes the project.",
   "companionPluginLastSeen": "Last seen in {daw} (version {version}) on {date}.",
   "@companionPluginLastSeen": {

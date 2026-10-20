@@ -90,11 +90,11 @@ void main() {
           generatedAt: now,
           appVersion: '1',
           latestRelease: const CompanionRelease('0.2.0', 'https://github.com/bandpassrecords/dpm-companion/releases/tag/v0.2.0'));
-      expect(withRelease['companion'], {
+      expect(withRelease['plugin'], {
         'latestVersion': '0.2.0',
         'releaseUrl': 'https://github.com/bandpassrecords/dpm-companion/releases/tag/v0.2.0',
       });
-      expect(buildCompanionIndex(library, generatedAt: now, appVersion: '1').containsKey('companion'), isFalse);
+      expect(buildCompanionIndex(library, generatedAt: now, appVersion: '1').containsKey('plugin'), isFalse);
     });
 
     test('a new release changes the fingerprint, so the index is rewritten', () {
@@ -371,7 +371,7 @@ void main() {
   });
 
   group('companionMayReplacePreview', () {
-    final dir = p.join('data', 'preview_songs', 'companion');
+    final dir = p.join('data', 'preview_songs', 'plugin');
     final captured = DateTime(2026, 10, 18, 12);
 
     test('fills an empty preview, and replaces an earlier capture', () {

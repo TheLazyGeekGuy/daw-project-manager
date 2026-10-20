@@ -7855,7 +7855,7 @@ class AppLocalizationsJa extends AppLocalizations {
 
   @override
   String get companionSessionsDescription =>
-      'プロジェクトに DPM Companion プラグインを入れると、DAW がそのプロジェクトを開いたり閉じたりしたことがアプリに伝わります。';
+      'プロジェクトに DAW Project Manager プラグインを入れると、DAW がそのプロジェクトを開いたり閉じたりしたことがアプリに伝わります。';
 
   @override
   String get companionEndSessionWhenDawCloses => 'DAW がプロジェクトを閉じたらセッションを終了';
@@ -7881,7 +7881,7 @@ class AppLocalizationsJa extends AppLocalizations {
 
   @override
   String companionSessionEndedNoResponse(String daw, String project) {
-    return '$daw の DPM Companion から応答がなくなったため、$project のセッションを最後に応答があった時刻で終了しました。DAW がクラッシュしたか、強制終了された可能性があります。';
+    return '$daw の DAW Project Manager プラグインから応答がなくなったため、$project のセッションを最後に応答があった時刻で終了しました。DAW がクラッシュしたか、強制終了された可能性があります。';
   }
 
   @override
@@ -7900,7 +7900,7 @@ class AppLocalizationsJa extends AppLocalizations {
   String get companionPluginTabLabel => 'DAW プラグイン';
 
   @override
-  String get companionPluginTitle => 'DPM Companion';
+  String get companionPluginTitle => 'DAW Project Manager プラグイン';
 
   @override
   String get companionPluginDescription =>
