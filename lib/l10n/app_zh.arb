@@ -1710,8 +1710,6 @@
   },
   "pressKitFile": "媒体资料包文件",
   "saveFileDialogTitle": "保存文件",
-  "saveAllFilesAsZipDialogTitle": "将所有文件保存为 ZIP",
-  "saveSelectedFilesAsZipDialogTitle": "将所选文件保存为 ZIP",
   "failedToRemovePressKitFile": "无法删除新闻资料袋文件：{error}",
   "@failedToRemovePressKitFile": {
     "description": "Error message when removing press kit file fails",
@@ -3486,7 +3484,6 @@
   "attachmentAlreadyAdded": "该内容已附加到此项目",
   "attachmentExport": "导出",
   "attachmentExportTooltip": "保存附加的文件和链接",
-  "attachmentExportSaveTitle": "保存附件",
   "attachmentExportNothing": "没有可导出的内容",
   "attachmentExporting": "正在导出附件...",
   "attachmentExportSaved": "已保存到：{path}",

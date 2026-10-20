@@ -4259,18 +4259,6 @@ abstract class AppLocalizations {
   /// **'Save File'**
   String get saveFileDialogTitle;
 
-  /// Title of the system save dialog when saving all of a profile's files as one ZIP
-  ///
-  /// In en, this message translates to:
-  /// **'Save All Files as ZIP'**
-  String get saveAllFilesAsZipDialogTitle;
-
-  /// Title of the system save dialog when saving the selected files of a profile as one ZIP
-  ///
-  /// In en, this message translates to:
-  /// **'Save Selected Files as ZIP'**
-  String get saveSelectedFilesAsZipDialogTitle;
-
   /// Error message when removing press kit file fails
   ///
   /// In en, this message translates to:
@@ -8800,12 +8788,6 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Save the attached files and links'**
   String get attachmentExportTooltip;
-
-  /// No description provided for @attachmentExportSaveTitle.
-  ///
-  /// In en, this message translates to:
-  /// **'Save attachments'**
-  String get attachmentExportSaveTitle;
 
   /// No description provided for @attachmentExportNothing.
   ///

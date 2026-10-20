@@ -2534,14 +2534,6 @@
   "@saveFileDialogTitle": {
     "description": "Title of the system save dialog when saving one of a profile's files"
   },
-  "saveAllFilesAsZipDialogTitle": "Save All Files as ZIP",
-  "@saveAllFilesAsZipDialogTitle": {
-    "description": "Title of the system save dialog when saving all of a profile's files as one ZIP"
-  },
-  "saveSelectedFilesAsZipDialogTitle": "Save Selected Files as ZIP",
-  "@saveSelectedFilesAsZipDialogTitle": {
-    "description": "Title of the system save dialog when saving the selected files of a profile as one ZIP"
-  },
   "failedToRemovePressKitFile": "Failed to remove press kit file: {error}",
   "@failedToRemovePressKitFile": {
     "description": "Error message when removing press kit file fails",
@@ -4935,7 +4927,6 @@
   "attachmentAlreadyAdded": "That is already attached to this project",
   "attachmentExport": "Export",
   "attachmentExportTooltip": "Save the attached files and links",
-  "attachmentExportSaveTitle": "Save attachments",
   "attachmentExportNothing": "Nothing to export",
   "attachmentExporting": "Exporting attachments...",
   "attachmentExportSaved": "Saved to: {path}",

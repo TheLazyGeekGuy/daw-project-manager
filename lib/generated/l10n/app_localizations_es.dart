@@ -2562,14 +2562,6 @@ class AppLocalizationsEs extends AppLocalizations {
   String get saveFileDialogTitle => 'Guardar archivo';
 
   @override
-  String get saveAllFilesAsZipDialogTitle =>
-      'Guardar todos los archivos como ZIP';
-
-  @override
-  String get saveSelectedFilesAsZipDialogTitle =>
-      'Guardar los archivos seleccionados como ZIP';
-
-  @override
   String failedToRemovePressKitFile(String error) {
     return 'Error al eliminar archivo de press kit: $error';
   }
@@ -5242,9 +5234,6 @@ class AppLocalizationsEs extends AppLocalizations {
   @override
   String get attachmentExportTooltip =>
       'Guardar los archivos y enlaces adjuntos';
-
-  @override
-  String get attachmentExportSaveTitle => 'Guardar adjuntos';
 
   @override
   String get attachmentExportNothing => 'No hay nada que exportar';

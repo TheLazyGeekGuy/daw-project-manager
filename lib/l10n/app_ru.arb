@@ -1710,8 +1710,6 @@
   },
   "pressKitFile": "Файл пресс-кита",
   "saveFileDialogTitle": "Сохранить файл",
-  "saveAllFilesAsZipDialogTitle": "Сохранить все файлы в ZIP",
-  "saveSelectedFilesAsZipDialogTitle": "Сохранить выбранные файлы в ZIP",
   "failedToRemovePressKitFile": "Не удалось удалить файл пресс-кита: {error}",
   "@failedToRemovePressKitFile": {
     "description": "Error message when removing press kit file fails",
@@ -3486,7 +3484,6 @@
   "attachmentAlreadyAdded": "Это уже прикреплено к проекту",
   "attachmentExport": "Экспорт",
   "attachmentExportTooltip": "Сохранить прикреплённые файлы и ссылки",
-  "attachmentExportSaveTitle": "Сохранить вложения",
   "attachmentExportNothing": "Нечего экспортировать",
   "attachmentExporting": "Экспорт вложений...",
   "attachmentExportSaved": "Сохранено: {path}",

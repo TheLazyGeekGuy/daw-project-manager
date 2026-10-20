@@ -1710,8 +1710,6 @@
   },
   "pressKitFile": "プレスキットのファイル",
   "saveFileDialogTitle": "ファイルを保存",
-  "saveAllFilesAsZipDialogTitle": "すべてのファイルを ZIP で保存",
-  "saveSelectedFilesAsZipDialogTitle": "選択したファイルを ZIP で保存",
   "failedToRemovePressKitFile": "プレスキットファイルを削除できませんでした: {error}",
   "@failedToRemovePressKitFile": {
     "description": "Error message when removing press kit file fails",
@@ -3486,7 +3484,6 @@
   "attachmentAlreadyAdded": "すでにこのプロジェクトに添付されています",
   "attachmentExport": "書き出し",
   "attachmentExportTooltip": "添付ファイルとリンクを保存",
-  "attachmentExportSaveTitle": "添付を保存",
   "attachmentExportNothing": "書き出すものがありません",
   "attachmentExporting": "添付を書き出しています...",
   "attachmentExportSaved": "保存先: {path}",

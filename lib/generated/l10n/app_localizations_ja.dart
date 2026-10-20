@@ -2488,12 +2488,6 @@ class AppLocalizationsJa extends AppLocalizations {
   String get saveFileDialogTitle => 'ファイルを保存';
 
   @override
-  String get saveAllFilesAsZipDialogTitle => 'すべてのファイルを ZIP で保存';
-
-  @override
-  String get saveSelectedFilesAsZipDialogTitle => '選択したファイルを ZIP で保存';
-
-  @override
   String failedToRemovePressKitFile(String error) {
     return 'プレスキットファイルを削除できませんでした: $error';
   }
@@ -5072,9 +5066,6 @@ class AppLocalizationsJa extends AppLocalizations {
 
   @override
   String get attachmentExportTooltip => '添付ファイルとリンクを保存';
-
-  @override
-  String get attachmentExportSaveTitle => '添付を保存';
 
   @override
   String get attachmentExportNothing => '書き出すものがありません';

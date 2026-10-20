@@ -1710,8 +1710,6 @@
   },
   "pressKitFile": "Pressemappen-Datei",
   "saveFileDialogTitle": "Datei speichern",
-  "saveAllFilesAsZipDialogTitle": "Alle Dateien als ZIP speichern",
-  "saveSelectedFilesAsZipDialogTitle": "Ausgewählte Dateien als ZIP speichern",
   "failedToRemovePressKitFile": "Pressemappe-Datei konnte nicht entfernt werden: {error}",
   "@failedToRemovePressKitFile": {
     "description": "Error message when removing press kit file fails",
@@ -3486,7 +3484,6 @@
   "attachmentAlreadyAdded": "Das ist bereits an dieses Projekt angehängt",
   "attachmentExport": "Exportieren",
   "attachmentExportTooltip": "Angehängte Dateien und Links speichern",
-  "attachmentExportSaveTitle": "Anhänge speichern",
   "attachmentExportNothing": "Nichts zu exportieren",
   "attachmentExporting": "Anhänge werden exportiert...",
   "attachmentExportSaved": "Gespeichert unter: {path}",

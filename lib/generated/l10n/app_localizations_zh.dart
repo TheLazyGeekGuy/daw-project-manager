@@ -2463,12 +2463,6 @@ class AppLocalizationsZh extends AppLocalizations {
   String get saveFileDialogTitle => '保存文件';
 
   @override
-  String get saveAllFilesAsZipDialogTitle => '将所有文件保存为 ZIP';
-
-  @override
-  String get saveSelectedFilesAsZipDialogTitle => '将所选文件保存为 ZIP';
-
-  @override
   String failedToRemovePressKitFile(String error) {
     return '无法删除新闻资料袋文件：$error';
   }
@@ -5017,9 +5011,6 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get attachmentExportTooltip => '保存附加的文件和链接';
-
-  @override
-  String get attachmentExportSaveTitle => '保存附件';
 
   @override
   String get attachmentExportNothing => '没有可导出的内容';

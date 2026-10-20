@@ -2572,14 +2572,6 @@ class AppLocalizationsFr extends AppLocalizations {
   String get saveFileDialogTitle => 'Enregistrer le fichier';
 
   @override
-  String get saveAllFilesAsZipDialogTitle =>
-      'Enregistrer tous les fichiers en ZIP';
-
-  @override
-  String get saveSelectedFilesAsZipDialogTitle =>
-      'Enregistrer les fichiers sélectionnés en ZIP';
-
-  @override
   String failedToRemovePressKitFile(String error) {
     return 'Échec de la suppression du fichier de presse : $error';
   }
@@ -5256,9 +5248,6 @@ class AppLocalizationsFr extends AppLocalizations {
   @override
   String get attachmentExportTooltip =>
       'Enregistrer les fichiers et liens joints';
-
-  @override
-  String get attachmentExportSaveTitle => 'Enregistrer les pièces jointes';
 
   @override
   String get attachmentExportNothing => 'Rien à exporter';
