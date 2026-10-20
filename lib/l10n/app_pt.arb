@@ -2112,6 +2112,14 @@
       }
     }
   },
+  "byLabel": "por {label}",
+  "@byLabel": {
+    "placeholders": {
+      "label": {
+        "type": "String"
+      }
+    }
+  },
   "versionLabel": "Versão {version}",
   "@versionLabel": {
     "placeholders": {

@@ -16,6 +16,7 @@ import '../utils/mobile_utils.dart';
 import 'dashboard_page.dart' show DashboardPage;
 import 'widgets/language_switcher.dart';
 import 'theme_labels.dart';
+import 'widgets/label_credit.dart';
 import 'widgets/theme_preview_card.dart';
 import 'app_snack_bar.dart';
 import 'dialogs/root_overlap_dialog.dart';
@@ -237,6 +238,9 @@ class _WizardStep extends StatelessWidget {
   /// Drawn in place of [icon] — the app's own logo on the welcome page.
   final Widget? art;
   final String title;
+
+  /// A line right under [title] — the label's credit on the welcome page.
+  final Widget? byline;
   final String? subtitle;
   final Widget child;
   final double iconSize;
@@ -248,6 +252,7 @@ class _WizardStep extends StatelessWidget {
     this.icon,
     this.art,
     required this.title,
+    this.byline,
     this.subtitle,
     required this.child,
     this.iconSize = 64,
@@ -276,6 +281,10 @@ class _WizardStep extends StatelessWidget {
                   textAlign: TextAlign.center,
                 ),
               ),
+              if (byline != null) ...[
+                const SizedBox(height: 4),
+                Center(child: byline),
+              ],
               if (subtitle != null) ...[
                 const SizedBox(height: 10),
                 Center(
@@ -316,6 +325,7 @@ class _WelcomePage extends StatelessWidget {
         filterQuality: FilterQuality.medium,
       ),
       title: l10n.onboardingWelcomeTitle,
+      byline: const LabelCredit(),
       subtitle: l10n.onboardingWelcomeBody,
       child: _FeatureList(theme: theme, l10n: l10n),
     );

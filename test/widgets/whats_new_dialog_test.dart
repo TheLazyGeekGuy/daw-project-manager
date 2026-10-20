@@ -177,4 +177,27 @@ void main() {
     expect(tester.takeException(), isNull);
     expect(find.text('Uma mudança'), findsOneWidget);
   });
+
+  testWidgets('signs off with the label, after the highlights', (tester) async {
+    await _pumpView(tester, releases: [_release('2.9.0', ['A change'])]);
+
+    final credit = find.text('by BandPass Records');
+    expect(credit, findsOneWidget);
+    expect(
+      tester.getTopLeft(credit).dy,
+      greaterThan(tester.getTopLeft(find.text('A change')).dy),
+    );
+  });
+
+  testWidgets("translates the credit but never the label's name",
+      (tester) async {
+    await _pumpView(
+      tester,
+      releases: [_release('2.9.0', ['A change'])],
+      locale: const Locale('de'),
+      localeCode: 'de',
+    );
+
+    expect(find.text('von BandPass Records'), findsOneWidget);
+  });
 }

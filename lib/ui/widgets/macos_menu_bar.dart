@@ -12,6 +12,7 @@ import '../../providers/theme_provider.dart';
 import '../../main.dart' show navigatorKey, quitApp;
 import '../dashboard_page.dart' show appVersion;
 import '../theme_labels.dart';
+import 'label_credit.dart';
 import 'language_switcher.dart';
 import 'quit_confirm_dialog.dart';
 import 'shortcuts_help_dialog.dart';
@@ -215,7 +216,7 @@ class _AboutDialog extends StatelessWidget {
           ),
           const SizedBox(height: 8),
           Text(
-            '© ${DateTime.now().year} Bandpass Records',
+            '© ${DateTime.now().year} $kLabelName',
             style: Theme.of(context).textTheme.bodySmall,
             textAlign: TextAlign.center,
           ),

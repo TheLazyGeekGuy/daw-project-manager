@@ -3049,6 +3049,11 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
+  String byLabel(String label) {
+    return 'by $label';
+  }
+
+  @override
   String versionLabel(String version) {
     return 'Version $version';
   }

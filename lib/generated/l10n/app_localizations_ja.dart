@@ -2982,6 +2982,11 @@ class AppLocalizationsJa extends AppLocalizations {
   }
 
   @override
+  String byLabel(String label) {
+    return '$label 制作';
+  }
+
+  @override
   String versionLabel(String version) {
     return 'バージョン $version';
   }

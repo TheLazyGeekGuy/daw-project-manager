@@ -2088,6 +2088,14 @@
       }
     }
   },
+  "byLabel": "{label} 出品",
+  "@byLabel": {
+    "placeholders": {
+      "label": {
+        "type": "String"
+      }
+    }
+  },
   "versionLabel": "版本 {version}",
   "@versionLabel": {
     "placeholders": {

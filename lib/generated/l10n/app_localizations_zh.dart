@@ -2953,6 +2953,11 @@ class AppLocalizationsZh extends AppLocalizations {
   }
 
   @override
+  String byLabel(String label) {
+    return '$label 出品';
+  }
+
+  @override
   String versionLabel(String version) {
     return '版本 $version';
   }

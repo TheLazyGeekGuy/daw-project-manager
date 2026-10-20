@@ -4,6 +4,7 @@ import 'package:material_ui/material_ui.dart';
 
 import '../../generated/l10n/app_localizations.dart';
 import '../../services/changelog_service.dart';
+import 'label_credit.dart';
 
 /// Shows the "What's New" dialog for [releases]. No-op when there is nothing
 /// to show, so callers don't have to check first.
@@ -111,6 +112,8 @@ class WhatsNewView extends StatelessWidget {
                 ChangelogHighlightRow(text: text),
               const SizedBox(height: 10),
             ],
+            const Center(child: LabelCredit()),
+            const SizedBox(height: 12),
           ],
         ),
       ),

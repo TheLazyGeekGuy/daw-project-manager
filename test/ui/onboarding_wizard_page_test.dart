@@ -85,6 +85,16 @@ void main() {
     expect(find.byIcon(Icons.music_note), findsNothing, reason: 'not a generic note');
   });
 
+  testWidgets('the welcome page credits the label right under its title', (tester) async {
+    final l10n = await pumpWizard(tester);
+    final credit = find.text('by BandPass Records');
+    expect(credit, findsOneWidget);
+    final title = find.text(l10n.onboardingWelcomeTitle);
+    final body = find.text(l10n.onboardingWelcomeBody);
+    expect(tester.getTopLeft(credit).dy, greaterThan(tester.getTopLeft(title).dy));
+    expect(tester.getTopLeft(credit).dy, lessThan(tester.getTopLeft(body).dy));
+  });
+
   testWidgets('a step picks the project page layout, each shown as a preview', (tester) async {
     final l10n = await pumpWizard(tester);
     for (var i = 0; i < 4; i++) {

@@ -2088,6 +2088,14 @@
       }
     }
   },
+  "byLabel": "от {label}",
+  "@byLabel": {
+    "placeholders": {
+      "label": {
+        "type": "String"
+      }
+    }
+  },
   "versionLabel": "Версия {version}",
   "@versionLabel": {
     "placeholders": {

@@ -2088,6 +2088,14 @@
       }
     }
   },
+  "byLabel": "{label} 制作",
+  "@byLabel": {
+    "placeholders": {
+      "label": {
+        "type": "String"
+      }
+    }
+  },
   "versionLabel": "バージョン {version}",
   "@versionLabel": {
     "placeholders": {

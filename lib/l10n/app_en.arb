@@ -2996,6 +2996,15 @@
       }
     }
   },
+  "byLabel": "by {label}",
+  "@byLabel": {
+    "description": "Credit under the app's name: the record label that makes it. {label} is the label's name, never translated.",
+    "placeholders": {
+      "label": {
+        "type": "String"
+      }
+    }
+  },
   "versionLabel": "Version {version}",
   "@versionLabel": {
     "placeholders": {

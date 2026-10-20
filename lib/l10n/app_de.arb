@@ -2088,6 +2088,14 @@
       }
     }
   },
+  "byLabel": "von {label}",
+  "@byLabel": {
+    "placeholders": {
+      "label": {
+        "type": "String"
+      }
+    }
+  },
   "versionLabel": "Version {version}",
   "@versionLabel": {
     "placeholders": {

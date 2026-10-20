@@ -79,6 +79,7 @@ import 'widgets/license_dialog.dart';
 import 'widgets/shortcuts_help_dialog.dart';
 import 'widgets/update_available_dialog.dart';
 import 'widgets/changelog_browser.dart';
+import 'widgets/label_credit.dart';
 import 'app_snack_bar.dart';
 import '../repository/midi_collection_store.dart';
 import '../services/midi/midi_collection_export.dart';
@@ -3322,9 +3323,16 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
       children: [
         Padding(
           padding: const EdgeInsets.only(bottom: 12),
-          child: Text(
-            l10n.changelogSectionSubtitle,
-            style: Theme.of(context).textTheme.bodySmall,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                l10n.changelogSectionSubtitle,
+                style: Theme.of(context).textTheme.bodySmall,
+              ),
+              const SizedBox(height: 2),
+              const LabelCredit(textAlign: TextAlign.start),
+            ],
           ),
         ),
         FutureBuilder<List<ChangelogRelease>>(
@@ -3376,7 +3384,7 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
                 ),
                 const SizedBox(height: 8),
                 Text(
-                  '© ${DateTime.now().year} Bandpass Records',
+                  '© ${DateTime.now().year} $kLabelName',
                   style: Theme.of(context).textTheme.bodySmall,
                 ),
                 const SizedBox(height: 16),

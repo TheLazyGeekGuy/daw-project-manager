@@ -3053,6 +3053,11 @@ class AppLocalizationsRu extends AppLocalizations {
   }
 
   @override
+  String byLabel(String label) {
+    return 'от $label';
+  }
+
+  @override
   String versionLabel(String version) {
     return 'Версия $version';
   }

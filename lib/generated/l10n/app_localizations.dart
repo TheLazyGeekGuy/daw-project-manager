@@ -5153,6 +5153,12 @@ abstract class AppLocalizations {
   /// **'DAW Project Manager {version}'**
   String appTitleWithVersion(String version);
 
+  /// Credit under the app's name: the record label that makes it. {label} is the label's name, never translated.
+  ///
+  /// In en, this message translates to:
+  /// **'by {label}'**
+  String byLabel(String label);
+
   /// No description provided for @versionLabel.
   ///
   /// In en, this message translates to:
