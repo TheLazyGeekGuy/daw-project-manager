@@ -2,8 +2,8 @@ import 'package:material_ui/material_ui.dart';
 import 'package:intl/intl.dart';
 
 import '../../generated/l10n/app_localizations.dart';
-import '../../services/companion_bridge/companion_install_scan.dart';
-import '../../services/companion_bridge/companion_protocol.dart';
+import '../../services/plugin_bridge/plugin_install_scan.dart';
+import '../../services/plugin_bridge/plugin_protocol.dart';
 
 /// Settings > DAW plugin: what the DAW Project Manager plugin is, whether this
 /// computer has seen it, which copies are installed where, where to get it
@@ -11,8 +11,8 @@ import '../../services/companion_bridge/companion_protocol.dart';
 ///
 /// Plain values and callbacks — no Riverpod, no Hive — so it can be
 /// widget-tested; the settings page wires it up.
-class CompanionPluginSettingsView extends StatelessWidget {
-  const CompanionPluginSettingsView({
+class DpmPluginSettingsView extends StatelessWidget {
+  const DpmPluginSettingsView({
     super.key,
     required this.sighting,
     required this.latestRelease,
@@ -31,9 +31,9 @@ class CompanionPluginSettingsView extends StatelessWidget {
     this.onRemoveFolder,
   });
 
-  final CompanionSighting? sighting;
-  final CompanionRelease? latestRelease;
-  final CompanionPlatform platform;
+  final DpmPluginSighting? sighting;
+  final DpmPluginRelease? latestRelease;
+  final DpmPluginPlatform platform;
   final bool endSessionWhenDawCloses;
   final bool startSessionWhenDawOpens;
   final ValueChanged<String> onDownload;
@@ -42,7 +42,7 @@ class CompanionPluginSettingsView extends StatelessWidget {
 
   /// The installed copies found on disk; null while searching or where the
   /// folders can't be seen.
-  final List<CompanionInstall>? installs;
+  final List<DpmPluginInstall>? installs;
   final bool searching;
 
   /// False inside the Flatpak, whose sandbox can't see the plug-in folders.
@@ -57,12 +57,12 @@ class CompanionPluginSettingsView extends StatelessWidget {
   /// The version this computer has: the newest installed copy, else the one
   /// last seen running.
   String? get installedVersion =>
-      newestInstalledCompanionVersion(installs ?? const []) ?? sighting?.version;
+      newestInstalledDpmPluginVersion(installs ?? const []) ?? sighting?.version;
 
   /// A newer release than the version this computer has.
   bool get updateAvailable {
     final have = installedVersion, latest = latestRelease;
-    return have != null && latest != null && isNewerCompanionVersion(latest.version, have);
+    return have != null && latest != null && isNewerDpmPluginVersion(latest.version, have);
   }
 
   @override
@@ -72,9 +72,9 @@ class CompanionPluginSettingsView extends StatelessWidget {
     final seen = sighting;
 
     final status = seen == null
-        ? l10n.companionPluginNotSeen
-        : l10n.companionPluginLastSeen(
-            seen.hostName.trim().isEmpty ? l10n.companionUnknownDaw : seen.hostName.trim(),
+        ? l10n.dpmPluginNotSeen
+        : l10n.dpmPluginLastSeen(
+            seen.hostName.trim().isEmpty ? l10n.dpmPluginUnknownDaw : seen.hostName.trim(),
             seen.version,
             DateFormat.yMMMd(Localizations.localeOf(context).toString()).add_Hm().format(seen.at.toLocal()),
           );
@@ -93,11 +93,11 @@ class CompanionPluginSettingsView extends StatelessWidget {
                   children: [
                     const Icon(Icons.extension_outlined),
                     const SizedBox(width: 10),
-                    Expanded(child: Text(l10n.companionPluginTitle, style: theme.textTheme.titleMedium)),
+                    Expanded(child: Text(l10n.dpmPluginTitle, style: theme.textTheme.titleMedium)),
                   ],
                 ),
                 const SizedBox(height: 4),
-                Text(l10n.companionPluginDescription, style: theme.textTheme.bodySmall),
+                Text(l10n.dpmPluginDescription, style: theme.textTheme.bodySmall),
                 const SizedBox(height: 16),
                 Row(
                   children: [
@@ -118,15 +118,15 @@ class CompanionPluginSettingsView extends StatelessWidget {
                     children: [
                       Icon(Icons.system_update_alt_outlined, size: 18, color: theme.colorScheme.tertiary),
                       const SizedBox(width: 8),
-                      Expanded(child: Text(l10n.companionPluginUpdateAvailable(latestRelease!.version))),
+                      Expanded(child: Text(l10n.dpmPluginUpdateAvailable(latestRelease!.version))),
                     ],
                   ),
                 ],
                 const SizedBox(height: 16),
                 FilledButton.icon(
                   icon: const Icon(Icons.download_outlined),
-                  label: Text(updateAvailable ? l10n.companionPluginDownloadUpdate : l10n.companionPluginDownload),
-                  onPressed: () => onDownload(companionDownloadUrl(latestRelease, platform)),
+                  label: Text(updateAvailable ? l10n.dpmPluginDownloadUpdate : l10n.dpmPluginDownload),
+                  onPressed: () => onDownload(dpmPluginDownloadUrl(latestRelease, platform)),
                 ),
               ],
             ),
@@ -148,19 +148,19 @@ class CompanionPluginSettingsView extends StatelessWidget {
                   ],
                 ),
                 const SizedBox(height: 4),
-                Text(l10n.companionSessionsDescription, style: theme.textTheme.bodySmall),
+                Text(l10n.dpmPluginSessionsDescription, style: theme.textTheme.bodySmall),
                 const SizedBox(height: 8),
                 SwitchListTile(
                   contentPadding: EdgeInsets.zero,
-                  title: Text(l10n.companionEndSessionWhenDawCloses),
-                  subtitle: Text(l10n.companionEndSessionWhenDawClosesDescription),
+                  title: Text(l10n.dpmPluginEndSessionWhenDawCloses),
+                  subtitle: Text(l10n.dpmPluginEndSessionWhenDawClosesDescription),
                   value: endSessionWhenDawCloses,
                   onChanged: onEndSessionChanged,
                 ),
                 SwitchListTile(
                   contentPadding: EdgeInsets.zero,
-                  title: Text(l10n.companionStartSessionWhenDawOpens),
-                  subtitle: Text(l10n.companionStartSessionWhenDawOpensDescription),
+                  title: Text(l10n.dpmPluginStartSessionWhenDawOpens),
+                  subtitle: Text(l10n.dpmPluginStartSessionWhenDawOpensDescription),
                   value: startSessionWhenDawOpens,
                   onChanged: onStartSessionChanged,
                 ),
@@ -179,23 +179,23 @@ class CompanionPluginSettingsView extends StatelessWidget {
 class _InstalledCopies extends StatelessWidget {
   const _InstalledCopies({required this.view, required this.l10n});
 
-  final CompanionPluginSettingsView view;
+  final DpmPluginSettingsView view;
   final AppLocalizations l10n;
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final installs = view.installs ?? const <CompanionInstall>[];
+    final installs = view.installs ?? const <DpmPluginInstall>[];
     final foundInStandard = installs.any((i) => !i.inCustomFolder);
 
     Widget searchAgain() => TextButton.icon(
           icon: const Icon(Icons.refresh, size: 18),
-          label: Text(l10n.companionSearchAgain),
+          label: Text(l10n.dpmPluginSearchAgain),
           onPressed: view.searching ? null : view.onSearchAgain,
         );
 
     if (!view.scanAvailable) {
-      return Text(l10n.companionScanUnavailable, style: theme.textTheme.bodySmall);
+      return Text(l10n.dpmPluginScanUnavailable, style: theme.textTheme.bodySmall);
     }
 
     return Column(
@@ -203,39 +203,39 @@ class _InstalledCopies extends StatelessWidget {
       children: [
         Row(
           children: [
-            Expanded(child: Text(l10n.companionInstalledTitle, style: theme.textTheme.titleSmall)),
+            Expanded(child: Text(l10n.dpmPluginInstalledTitle, style: theme.textTheme.titleSmall)),
             if (view.searching)
               Padding(
                 padding: const EdgeInsets.only(right: 8),
-                child: Text(l10n.companionSearching, style: theme.textTheme.bodySmall),
+                child: Text(l10n.dpmPluginSearching, style: theme.textTheme.bodySmall),
               )
             else
               searchAgain(),
           ],
         ),
         if (!view.searching && installs.isEmpty)
-          Text(l10n.companionInstalledNone, style: theme.textTheme.bodyMedium),
+          Text(l10n.dpmPluginInstalledNone, style: theme.textTheme.bodyMedium),
         for (final install in installs)
           ListTile(
             dense: true,
             contentPadding: EdgeInsets.zero,
-            leading: Icon(install.format == CompanionPluginFormat.au ? Icons.apple : Icons.extension_outlined, size: 20),
-            title: Text('${install.format == CompanionPluginFormat.au ? 'AU' : 'VST3'}  ·  '
-                '${l10n.companionInstalledVersion(install.version)}'),
-            subtitle: Text(install.inCustomFolder ? '${install.path}  ·  ${l10n.companionCustomFolderTag}' : install.path),
+            leading: Icon(install.format == DpmPluginFormat.au ? Icons.apple : Icons.extension_outlined, size: 20),
+            title: Text('${install.format == DpmPluginFormat.au ? 'AU' : 'VST3'}  ·  '
+                '${l10n.dpmPluginInstalledVersion(install.version)}'),
+            subtitle: Text(install.inCustomFolder ? '${install.path}  ·  ${l10n.dpmPluginCustomFolderTag}' : install.path),
           ),
-        if (hasDuplicateCompanionInstalls(installs))
+        if (hasDuplicateDpmPluginInstalls(installs))
           Row(
             children: [
               Icon(Icons.warning_amber_rounded, size: 18, color: theme.colorScheme.error),
               const SizedBox(width: 8),
-              Expanded(child: Text(l10n.companionInstalledDuplicates, style: theme.textTheme.bodySmall)),
+              Expanded(child: Text(l10n.dpmPluginInstalledDuplicates, style: theme.textTheme.bodySmall)),
             ],
           ),
         // The user's own folders: only when the standard ones have no copy.
         if (!view.searching && !foundInStandard) ...[
           const SizedBox(height: 8),
-          Text(l10n.companionCustomFoldersHint, style: theme.textTheme.bodySmall),
+          Text(l10n.dpmPluginCustomFoldersHint, style: theme.textTheme.bodySmall),
           for (final folder in view.customFolders)
             ListTile(
               dense: true,

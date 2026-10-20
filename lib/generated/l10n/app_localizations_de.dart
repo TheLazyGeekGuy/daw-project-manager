@@ -8139,43 +8139,43 @@ class AppLocalizationsDe extends AppLocalizations {
   }
 
   @override
-  String get companionSessionsDescription =>
+  String get dpmPluginSessionsDescription =>
       'Mit dem DAW Project Manager-Plugin in einem Projekt weiß die App, wann Ihre DAW es öffnet und schließt.';
 
   @override
-  String get companionEndSessionWhenDawCloses =>
+  String get dpmPluginEndSessionWhenDawCloses =>
       'Sitzung beenden, wenn die DAW das Projekt schließt';
 
   @override
-  String get companionEndSessionWhenDawClosesDescription =>
+  String get dpmPluginEndSessionWhenDawClosesDescription =>
       'Auch nach einem Absturz: Die Sitzung endet in dem Moment, in dem die DAW das Projekt losgelassen hat.';
 
   @override
-  String get companionStartSessionWhenDawOpens =>
+  String get dpmPluginStartSessionWhenDawOpens =>
       'Sitzung starten, wenn ein Projekt in der DAW geöffnet wird';
 
   @override
-  String get companionStartSessionWhenDawOpensDescription =>
+  String get dpmPluginStartSessionWhenDawOpensDescription =>
       'Nur wenn keine Sitzung läuft, und nur für Projekte des aktiven Profils.';
 
   @override
-  String get companionSessionEndedTitle => 'Sitzung beendet';
+  String get dpmPluginSessionEndedTitle => 'Sitzung beendet';
 
   @override
-  String companionSessionEndedClosed(String daw, String project) {
+  String dpmPluginSessionEndedClosed(String daw, String project) {
     return '$daw hat $project geschlossen, daher wurde die Arbeitssitzung beendet.';
   }
 
   @override
-  String companionSessionEndedNoResponse(String daw, String project) {
+  String dpmPluginSessionEndedNoResponse(String daw, String project) {
     return 'Das DAW Project Manager-Plugin hat in $daw nicht mehr geantwortet, daher wurde die Sitzung für $project zu dem Zeitpunkt beendet, an dem es sich zuletzt gemeldet hat. Die DAW ist möglicherweise abgestürzt oder wurde abrupt geschlossen.';
   }
 
   @override
-  String get companionUnknownDaw => 'Ihre DAW';
+  String get dpmPluginUnknownDaw => 'Ihre DAW';
 
   @override
-  String companionSessionEndedSummary(
+  String dpmPluginSessionEndedSummary(
     String start,
     String end,
     String duration,
@@ -8184,65 +8184,65 @@ class AppLocalizationsDe extends AppLocalizations {
   }
 
   @override
-  String get companionPluginTabLabel => 'DAW-Plugin';
+  String get dpmPluginTabLabel => 'DAW-Plugin';
 
   @override
-  String get companionPluginTitle => 'DAW Project Manager-Plugin';
+  String get dpmPluginTitle => 'DAW Project Manager-Plugin';
 
   @override
-  String get companionPluginDescription =>
+  String get dpmPluginDescription =>
       'Ein VST3/AU-Plugin für Ihre DAW. Legen Sie es auf den Master-Bus: Es zeigt die Aufgaben des Projekts, nimmt jeden Wiedergabedurchlauf als Vorschau-Song des Projekts auf und kann Ihre Arbeitssitzung beenden, wenn die DAW das Projekt schließt.';
 
   @override
-  String companionPluginLastSeen(String daw, String version, String date) {
+  String dpmPluginLastSeen(String daw, String version, String date) {
     return 'Zuletzt gesehen in $daw (Version $version) am $date.';
   }
 
   @override
-  String get companionPluginNotSeen =>
+  String get dpmPluginNotSeen =>
       'Auf diesem Computer noch nicht gesehen. Installieren Sie es und legen Sie es auf den Master-Bus Ihrer DAW.';
 
   @override
-  String companionPluginUpdateAvailable(String version) {
+  String dpmPluginUpdateAvailable(String version) {
     return 'Version $version ist verfügbar.';
   }
 
   @override
-  String get companionPluginDownload => 'DAW-Plugin herunterladen';
+  String get dpmPluginDownload => 'DAW-Plugin herunterladen';
 
   @override
-  String get companionPluginDownloadUpdate => 'Update herunterladen';
+  String get dpmPluginDownloadUpdate => 'Update herunterladen';
 
   @override
-  String get companionInstalledTitle => 'Installiert';
+  String get dpmPluginInstalledTitle => 'Installiert';
 
   @override
-  String companionInstalledVersion(String version) {
+  String dpmPluginInstalledVersion(String version) {
     return 'Version $version';
   }
 
   @override
-  String get companionInstalledNone =>
+  String get dpmPluginInstalledNone =>
       'In den Standard-Plugin-Ordnern nicht gefunden.';
 
   @override
-  String get companionInstalledDuplicates =>
+  String get dpmPluginInstalledDuplicates =>
       'Es ist mehr als eine Kopie installiert, daher lädt Ihre DAW möglicherweise eine beliebige davon. Behalten Sie nur eine.';
 
   @override
-  String get companionSearchAgain => 'Erneut suchen';
+  String get dpmPluginSearchAgain => 'Erneut suchen';
 
   @override
-  String get companionSearching => 'Suche läuft…';
+  String get dpmPluginSearching => 'Suche läuft…';
 
   @override
-  String get companionCustomFoldersHint =>
+  String get dpmPluginCustomFoldersHint =>
       'Woanders installiert? Fügen Sie den Ordner hinzu; die App sucht dort, wenn die Standardordner keine Kopie enthalten.';
 
   @override
-  String get companionCustomFolderTag => 'Ihr Ordner';
+  String get dpmPluginCustomFolderTag => 'Ihr Ordner';
 
   @override
-  String get companionScanUnavailable =>
+  String get dpmPluginScanUnavailable =>
       'Das Flatpak kann nicht in Ihre Plugin-Ordner schauen. Das Plugin erscheint hier, sobald eine DAW es geladen hat.';
 }

@@ -2,8 +2,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../models/music_project.dart';
 import '../../providers/providers.dart';
-import 'companion_bridge_service.dart';
-import 'companion_protocol.dart';
+import 'plugin_bridge_service.dart';
+import 'plugin_protocol.dart';
 
 /// The bridge's view of the real library: every profile, each through
 /// [repositoryForProfileProvider] — the active profile's own repository when
@@ -11,18 +11,18 @@ import 'companion_protocol.dart';
 ///
 /// Opening a profile's repository keeps its boxes resident for the session,
 /// the same accepted tradeoff Settings > Project folders makes.
-class RepositoryCompanionLibrary implements CompanionLibrary {
-  RepositoryCompanionLibrary(this.container);
+class RepositoryDpmPluginLibrary implements DpmPluginLibrary {
+  RepositoryDpmPluginLibrary(this.container);
 
   final ProviderContainer container;
 
   @override
-  Future<List<CompanionProfileProjects>> load() async {
+  Future<List<DpmPluginProfileProjects>> load() async {
     final profiles = await container.read(profileRepositoryProvider.future);
-    final result = <CompanionProfileProjects>[];
+    final result = <DpmPluginProfileProjects>[];
     for (final profile in profiles.getAllProfiles()) {
       final repo = await container.read(repositoryForProfileProvider(profile.id).future);
-      result.add(CompanionProfileProjects(profile, repo.getAllProjects()));
+      result.add(DpmPluginProfileProjects(profile, repo.getAllProjects()));
     }
     return result;
   }

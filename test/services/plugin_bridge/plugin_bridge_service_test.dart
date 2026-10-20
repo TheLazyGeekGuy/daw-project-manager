@@ -3,8 +3,8 @@ import 'dart:io';
 
 import 'package:daw_project_manager/models/music_project.dart';
 import 'package:daw_project_manager/models/profile.dart';
-import 'package:daw_project_manager/services/companion_bridge/companion_bridge_service.dart';
-import 'package:daw_project_manager/services/companion_bridge/companion_protocol.dart';
+import 'package:daw_project_manager/services/plugin_bridge/plugin_bridge_service.dart';
+import 'package:daw_project_manager/services/plugin_bridge/plugin_protocol.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:path/path.dart' as p;
 
@@ -12,15 +12,15 @@ import '../../helpers/test_factories.dart';
 
 /// An in-memory library: the bridge's whole conversation with the plugin is
 /// tested against a temp folder and plain lists, no Hive.
-class FakeLibrary implements CompanionLibrary {
+class FakeLibrary implements DpmPluginLibrary {
   FakeLibrary(this.profiles);
 
   final Map<Profile, List<MusicProject>> profiles;
   final saves = <(String, MusicProject)>[];
 
   @override
-  Future<List<CompanionProfileProjects>> load() async =>
-      [for (final e in profiles.entries) CompanionProfileProjects(e.key, List.of(e.value))];
+  Future<List<DpmPluginProfileProjects>> load() async =>
+      [for (final e in profiles.entries) DpmPluginProfileProjects(e.key, List.of(e.value))];
 
   @override
   Future<void> saveProject(String profileId, MusicProject project) async {
@@ -35,13 +35,13 @@ class FakeLibrary implements CompanionLibrary {
 }
 
 /// Records what the bridge asks of the work sessions.
-class FakeHooks implements CompanionSessionHooks {
-  CompanionProjectRef? active;
-  final departures = <CompanionDeparture>[];
+class FakeHooks implements DpmPluginSessionHooks {
+  DpmPluginProjectRef? active;
+  final departures = <DpmPluginDeparture>[];
   // In UTC to compare with the UTC test clock (Dart: equal moments in two
   // zones are not ==). The app itself is handed local times.
   List<DateTime> get ended => [for (final d in departures) d.at.toUtc()];
-  final started = <CompanionProjectRef>[];
+  final started = <DpmPluginProjectRef>[];
 
   @override
   bool endWhenDawCloses = true;
@@ -49,16 +49,16 @@ class FakeHooks implements CompanionSessionHooks {
   bool startWhenDawOpens = false;
 
   @override
-  CompanionProjectRef? activeSession() => active;
+  DpmPluginProjectRef? activeSession() => active;
 
   @override
-  Future<void> endSession(CompanionDeparture departure) async {
+  Future<void> endSession(DpmPluginDeparture departure) async {
     departures.add(departure);
     active = null;
   }
 
   @override
-  Future<void> startSession(CompanionProjectRef project) async {
+  Future<void> startSession(DpmPluginProjectRef project) async {
     started.add(project);
     active = project;
   }
@@ -69,7 +69,7 @@ void main() {
   late String bridgeDir;
   late String previewDir;
   late FakeLibrary library;
-  late CompanionBridgeService bridge;
+  late DpmPluginBridgeService bridge;
   var clock = DateTime.utc(2026, 10, 18, 12);
 
   final solo = Profile(id: 'solo', name: 'Solo', createdAt: DateTime(2025));
@@ -102,7 +102,7 @@ void main() {
   }
 
   setUp(() async {
-    tmp = await Directory.systemTemp.createTemp('companion_bridge_test');
+    tmp = await Directory.systemTemp.createTemp('plugin_bridge_test');
     bridgeDir = p.join(tmp.path, 'plugin_bridge');
     previewDir = p.join(tmp.path, 'preview_songs');
     sequence = 0;
@@ -116,7 +116,7 @@ void main() {
       // The same id in another profile: must never be touched by solo's messages.
       duo: [TestFactories.makeProject(id: 'p1', fileName: 'Duo copy.cpr')],
     });
-    bridge = CompanionBridgeService(
+    bridge = DpmPluginBridgeService(
       library: library,
       bridgeDir: bridgeDir,
       previewSongsDir: previewDir,
@@ -216,7 +216,7 @@ void main() {
 
       expect(await bridge.processOutbox(), 1);
       final preview = library.project('solo', 'p1').previewSongPath!;
-      expect(p.isWithin(bridge.companionPreviewDir, preview), isTrue);
+      expect(p.isWithin(bridge.dpmPluginPreviewDir, preview), isTrue);
       expect(await File(preview).readAsString(), 'flac');
       expect(library.project('solo', 'p1').previewSongFileName, 'Teardrop_20261018-120000.flac');
       expect(await source.exists(), isFalse);
@@ -272,10 +272,10 @@ void main() {
   });
 
   group('plugin updates', () {
-    const release = CompanionRelease('0.2.0', 'https://github.com/bandpassrecords/dpm-companion/releases/tag/v0.2.0');
+    const release = DpmPluginRelease('0.2.0', 'https://github.com/bandpassrecords/daw-project-manager-plugin/releases/tag/v0.2.0');
 
-    CompanionBridgeService withChecker(Future<CompanionRelease?> Function() check, {Future<bool> Function()? allowed}) =>
-        CompanionBridgeService(
+    DpmPluginBridgeService withChecker(Future<DpmPluginRelease?> Function() check, {Future<bool> Function()? allowed}) =>
+        DpmPluginBridgeService(
           library: library,
           bridgeDir: bridgeDir,
           previewSongsDir: previewDir,
@@ -285,7 +285,7 @@ void main() {
           releaseChecksAllowed: allowed,
         );
 
-    Future<Map<String, dynamic>> index(CompanionBridgeService b) async =>
+    Future<Map<String, dynamic>> index(DpmPluginBridgeService b) async =>
         jsonDecode(await b.indexFile.readAsString()) as Map<String, dynamic>;
 
     test('the release is looked up once a day and written into the index', () async {
@@ -308,7 +308,7 @@ void main() {
     });
 
     test('a failed lookup is retried an hour later and keeps the last known release', () async {
-      final answers = <CompanionRelease?>[release, null, null];
+      final answers = <DpmPluginRelease?>[release, null, null];
       var calls = 0;
       final b = withChecker(() async => answers[calls++]);
 
@@ -347,11 +347,11 @@ void main() {
 
   group('work sessions follow the DAW', () {
     late FakeHooks hooks;
-    late CompanionBridgeService b;
+    late DpmPluginBridgeService b;
 
     setUp(() {
       hooks = FakeHooks();
-      b = CompanionBridgeService(
+      b = DpmPluginBridgeService(
         library: library,
         bridgeDir: bridgeDir,
         previewSongsDir: previewDir,
@@ -378,7 +378,7 @@ void main() {
     }
 
     test('closing the project in the DAW ends the session at the goodbye\'s time', () async {
-      hooks.active = const CompanionProjectRef('solo', 'p1');
+      hooks.active = const DpmPluginProjectRef('solo', 'p1');
       await drop('session.hello', {}, runId: 'r1', at: clock);
       await b.tick();
       expect(b.presentProjects, {'solo/p1'});
@@ -389,14 +389,14 @@ void main() {
       await after(const Duration(minutes: 41));
 
       expect(hooks.ended, [closedAt]);
-      expect(hooks.departures.single.reason, CompanionDepartureReason.closed);
+      expect(hooks.departures.single.reason, DpmPluginDepartureReason.closed);
       expect(hooks.departures.single.hostName, 'Steinberg Cubase 13');
       expect(hooks.departures.single.at.isUtc, isFalse);
       expect(b.presentProjects, isEmpty);
     });
 
     test('a crashed DAW ends the session at its last heartbeat, once it is stale', () async {
-      hooks.active = const CompanionProjectRef('solo', 'p1');
+      hooks.active = const DpmPluginProjectRef('solo', 'p1');
       await heartbeat('r1', clock);
       await b.tick();
       final lastBeat = clock.add(const Duration(minutes: 5));
@@ -412,12 +412,12 @@ void main() {
         await after(const Duration(seconds: 3));
       }
       expect(hooks.ended, [lastBeat]);
-      expect(hooks.departures.single.reason, CompanionDepartureReason.stoppedResponding);
+      expect(hooks.departures.single.reason, DpmPluginDepartureReason.stoppedResponding);
       expect(File(p.join(bridgeDir, 'instances', 'r1.json')).existsSync(), isFalse);
     });
 
     test('waking from sleep is not a crash', () async {
-      hooks.active = const CompanionProjectRef('solo', 'p1');
+      hooks.active = const DpmPluginProjectRef('solo', 'p1');
       await heartbeat('r1', clock);
       await b.tick();
 
@@ -432,7 +432,7 @@ void main() {
     });
 
     test('the session ends only when the last instance in the project leaves', () async {
-      hooks.active = const CompanionProjectRef('solo', 'p1');
+      hooks.active = const DpmPluginProjectRef('solo', 'p1');
       await drop('session.hello', {}, runId: 'master-bus', at: clock);
       await drop('session.hello', {}, runId: 'vocal-bus', at: clock);
       await b.tick();
@@ -447,7 +447,7 @@ void main() {
     });
 
     test('a session the DAW never had the project open for is left alone', () async {
-      hooks.active = const CompanionProjectRef('solo', 'p1');
+      hooks.active = const DpmPluginProjectRef('solo', 'p1');
       await drop('session.hello', {}, runId: 'r1', projectId: 'v1', at: clock);
       await b.tick();
       await drop('session.goodbye', {}, runId: 'r1', projectId: 'v1', at: clock);
@@ -456,7 +456,7 @@ void main() {
     });
 
     test('a stack\'s session ends when the version the DAW had open closes', () async {
-      hooks.active = const CompanionProjectRef('solo', 'stack');
+      hooks.active = const DpmPluginProjectRef('solo', 'stack');
       await drop('session.hello', {}, runId: 'r1', projectId: 'v1', at: clock);
       await b.tick();
       await drop('session.goodbye', {}, runId: 'r1', projectId: 'v1', at: clock);
@@ -465,7 +465,7 @@ void main() {
     });
 
     test('with the setting off, closing the DAW changes nothing', () async {
-      hooks.active = const CompanionProjectRef('solo', 'p1');
+      hooks.active = const DpmPluginProjectRef('solo', 'p1');
       hooks.endWhenDawCloses = false;
       await drop('session.hello', {}, runId: 'r1', at: clock);
       await b.tick();
@@ -492,7 +492,7 @@ void main() {
     test('without any sign of the plugin, no session is ever ended', () async {
       // Someone who does not use the plugin at all: hours of ticks, a sleep,
       // nothing in the bridge folder. The session must run untouched.
-      hooks.active = const CompanionProjectRef('solo', 'p1');
+      hooks.active = const DpmPluginProjectRef('solo', 'p1');
       for (var i = 0; i < 200; i++) {
         await after(const Duration(seconds: 3));
       }
@@ -503,7 +503,7 @@ void main() {
     });
 
     test('a leftover heartbeat from a crash long ago ends nothing and is cleared', () async {
-      hooks.active = const CompanionProjectRef('solo', 'p1');
+      hooks.active = const DpmPluginProjectRef('solo', 'p1');
       await heartbeat('old', clock.subtract(const Duration(days: 3)));
       await b.tick();
       expect(hooks.ended, isEmpty);
@@ -513,8 +513,8 @@ void main() {
 
   group('what Settings > DAW plugin shows', () {
     test('hellos and heartbeats report which plugin version runs in which DAW', () async {
-      final seen = <CompanionSighting>[];
-      final b = CompanionBridgeService(
+      final seen = <DpmPluginSighting>[];
+      final b = DpmPluginBridgeService(
         library: library,
         bridgeDir: bridgeDir,
         previewSongsDir: previewDir,
@@ -542,15 +542,15 @@ void main() {
     });
 
     test('the newest release is reported when looked up, and withdrawn when checks go off', () async {
-      final reported = <CompanionRelease?>[];
+      final reported = <DpmPluginRelease?>[];
       var allowed = true;
-      final b = CompanionBridgeService(
+      final b = DpmPluginBridgeService(
         library: library,
         bridgeDir: bridgeDir,
         previewSongsDir: previewDir,
         appVersion: '2.10.0',
         clock: () => clock,
-        checkLatestRelease: () async => const CompanionRelease('0.2.0', 'u'),
+        checkLatestRelease: () async => const DpmPluginRelease('0.2.0', 'u'),
         releaseChecksAllowed: () async => allowed,
         onLatestRelease: reported.add,
       );
@@ -566,7 +566,7 @@ void main() {
   });
 
   test('the launch hint is written whole', () async {
-    await writeCompanionLaunchHint('solo', library.project('solo', 'p1'), bridgeDir: bridgeDir);
+    await writeDpmPluginLaunchHint('solo', library.project('solo', 'p1'), bridgeDir: bridgeDir);
     final hint = jsonDecode(await File(p.join(bridgeDir, 'launch.json')).readAsString());
     expect(hint['projectId'], 'p1');
     expect(hint['profileId'], 'solo');

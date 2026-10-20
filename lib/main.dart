@@ -61,10 +61,10 @@ import 'ui/widgets/update_available_dialog.dart';
 import 'providers/theme_provider.dart';
 import 'utils/route_observer.dart';
 import 'ui/app_snack_bar.dart';
-import 'services/companion_bridge/companion_bridge_service.dart';
-import 'services/companion_bridge/repository_companion_library.dart';
-import 'services/companion_bridge/riverpod_companion_session_hooks.dart';
-import 'ui/dialogs/companion_session_ended_dialog.dart';
+import 'services/plugin_bridge/plugin_bridge_service.dart';
+import 'services/plugin_bridge/repository_plugin_library.dart';
+import 'services/plugin_bridge/riverpod_plugin_session_hooks.dart';
+import 'ui/dialogs/plugin_session_ended_dialog.dart';
 
 // Global navigator key for deep linking
 final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
@@ -102,7 +102,7 @@ ProviderContainer? _appContainer;
 /// hung until the user manually reopened the window.)
 Future<void> quitApp() async {
   _autoBackupTimer?.cancel();
-  _companionBridge?.stop();
+  _dpmPluginBridge?.stop();
   _folderWatcherRepoSub?.close();
   await _folderWatcherRootsSub?.cancel();
   await _folderWatcherChangesSub?.cancel();
@@ -316,37 +316,37 @@ Future<void> _runAutoSync(
 // The DAW Project Manager plugin's bridge (desktop only). Like the folder watcher,
 // it lives here rather than in a page so it runs whatever screen is open,
 // and hidden in the tray too.
-CompanionBridgeService? _companionBridge;
+DpmPluginBridgeService? _dpmPluginBridge;
 
-Future<void> _startCompanionBridge(ProviderContainer container) async {
+Future<void> _startDpmPluginBridge(ProviderContainer container) async {
   try {
     const appVersion = String.fromEnvironment('APP_VERSION', defaultValue: '0.0.0');
-    final bridge = CompanionBridgeService(
-      library: RepositoryCompanionLibrary(container),
-      bridgeDir: await companionBridgePath(),
+    final bridge = DpmPluginBridgeService(
+      library: RepositoryDpmPluginLibrary(container),
+      bridgeDir: await dpmPluginBridgePath(),
       previewSongsDir: await getPreviewSongsPath(),
       appVersion: appVersion,
       // The plugin's "Update available" follows the app's own update check:
       // the same setting, and off where the app doesn't check itself
       // (Flatpak has no network; see UpdateCheckService.isSupported).
-      sessions: RiverpodCompanionSessionHooks(
+      sessions: RiverpodDpmPluginSessionHooks(
         container,
         onSessionEnded: (ended) => unawaited(_tellSessionEndedByDaw(container, ended)),
       ),
       // For Settings > DAW plugin: "last seen in …" and the download button.
-      onPluginSeen: (sighting) => unawaited(container.read(companionSightingProvider.notifier).record(sighting)),
-      onLatestRelease: (release) => container.read(companionLatestReleaseProvider.notifier).set(release),
-      checkLatestRelease: fetchLatestCompanionRelease,
+      onPluginSeen: (sighting) => unawaited(container.read(dpmPluginSightingProvider.notifier).record(sighting)),
+      onLatestRelease: (release) => container.read(dpmPluginLatestReleaseProvider.notifier).set(release),
+      checkLatestRelease: fetchLatestDpmPluginRelease,
       releaseChecksAllowed: () async {
         if (!UpdateCheckService.isSupported) return false;
         final box = await Hive.openBox<String>('app_settings');
         return box.get('checkForUpdates') == 'true';
       },
     );
-    _companionBridge = bridge;
+    _dpmPluginBridge = bridge;
     bridge.start();
   } catch (e) {
-    if (kDebugMode) print('Companion bridge not started: $e');
+    if (kDebugMode) print('Plugin bridge not started: $e');
   }
 }
 
@@ -354,8 +354,8 @@ Future<void> _startCompanionBridge(ProviderContainer container) async {
 /// a dialog with its summary, waiting for whenever the window is next seen,
 /// and a notification when the window isn't in front (hidden in the tray, or
 /// behind the DAW — which is where the user is when they close a project).
-Future<void> _tellSessionEndedByDaw(ProviderContainer container, CompanionSessionEnded ended) async {
-  _runWithNavigatorContext((context) => showCompanionSessionEndedDialog(context, ended));
+Future<void> _tellSessionEndedByDaw(ProviderContainer container, DpmPluginSessionEnded ended) async {
+  _runWithNavigatorContext((context) => showDpmPluginSessionEndedDialog(context, ended));
 
   var inFront = false;
   try {
@@ -366,8 +366,8 @@ Future<void> _tellSessionEndedByDaw(ProviderContainer container, CompanionSessio
   final l10n = lookupAppLocalizations(container.read(localeProvider));
   try {
     await DeadlineNotificationService().showWorkTimerNotification(
-      l10n.companionSessionEndedTitle,
-      '${companionSessionSummary(l10n, ended)}\n${companionSessionEndedReason(l10n, ended)}',
+      l10n.dpmPluginSessionEndedTitle,
+      '${dpmPluginSessionSummary(l10n, ended)}\n${dpmPluginSessionEndedReason(l10n, ended)}',
     );
   } catch (_) {}
 }
@@ -911,7 +911,7 @@ Future<void> _main(List<String> args) async {
     // 4c-3. DAW Project Manager plugin bridge (desktop only): shares the project
     // list with the DAW plugin and takes in its to-dos and captures (#118).
     if (!kIsWeb && !MobileUtils.isMobile()) {
-      unawaited(_startCompanionBridge(container));
+      unawaited(_startDpmPluginBridge(container));
     }
 
     // 4d. Schedule deadline notifications (Android only)

@@ -6,7 +6,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../generated/l10n/app_localizations.dart';
 import '../models/music_project.dart';
 import '../providers/providers.dart';
-import '../services/companion_bridge/companion_bridge_service.dart';
+import '../services/plugin_bridge/plugin_bridge_service.dart';
 import '../utils/file_launcher.dart';
 import '../utils/mobile_utils.dart';
 import 'dialogs/daw_launch_command_dialog.dart';
@@ -165,7 +165,7 @@ Future<void> launchProjectInDaw(
   // plugin within seconds.
   if (!MobileUtils.isMobile()) {
     final profile = await ref.read(currentProfileProvider.future);
-    if (profile != null) await writeCompanionLaunchHint(profile.id, project);
+    if (profile != null) await writeDpmPluginLaunchHint(profile.id, project);
     if (!context.mounted) return;
   }
 

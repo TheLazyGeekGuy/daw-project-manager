@@ -1,7 +1,7 @@
 import 'dart:convert';
 
 import 'package:daw_project_manager/models/profile.dart';
-import 'package:daw_project_manager/services/companion_bridge/companion_protocol.dart';
+import 'package:daw_project_manager/services/plugin_bridge/plugin_protocol.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:path/path.dart' as p;
 
@@ -12,10 +12,10 @@ void main() {
   final duo = Profile(id: 'duo', name: 'Crawler & Friends', createdAt: DateTime(2025));
   final now = DateTime.utc(2026, 10, 18, 12);
 
-  group('buildCompanionIndex', () {
+  group('buildDpmPluginIndex', () {
     test('lists every profile\'s projects with their to-dos', () {
-      final index = buildCompanionIndex([
-        CompanionProfileProjects(solo, [
+      final index = buildDpmPluginIndex([
+        DpmPluginProfileProjects(solo, [
           TestFactories.makeProject(
             id: 'p1',
             filePath: p.join('music', 'Teardrop.cpr'),
@@ -24,7 +24,7 @@ void main() {
             todos: [TestFactories.makeTodo(id: 't1', text: 'Fix kick')],
           ),
         ]),
-        CompanionProfileProjects(duo, [
+        DpmPluginProfileProjects(duo, [
           TestFactories.makeProject(id: 'p2', fileName: 'Bounce.flp', dawType: null),
         ]),
       ], generatedAt: now, appVersion: '2.10.0');
@@ -60,8 +60,8 @@ void main() {
       final v2 = TestFactories.makeProject(id: 'v2', fileName: 'Song v2.als', stackId: 'stack');
       final archived = TestFactories.makeProject(id: 'old', archivePath: p.join('archive', 'old.zip'));
 
-      final projects = buildCompanionIndex([
-        CompanionProfileProjects(solo, [stack, v1, v2, archived]),
+      final projects = buildDpmPluginIndex([
+        DpmPluginProfileProjects(solo, [stack, v1, v2, archived]),
       ], generatedAt: now, appVersion: '1')['projects'] as List;
 
       expect(projects.map((e) => e['id']), ['v1', 'v2']);
@@ -71,56 +71,56 @@ void main() {
     });
 
     test('the fingerprint ignores the time, so an unchanged library is not rewritten', () {
-      final library = [CompanionProfileProjects(solo, [TestFactories.makeProject(id: 'p1')])];
-      final a = buildCompanionIndex(library, generatedAt: now, appVersion: '1');
-      final b = buildCompanionIndex(library, generatedAt: now.add(const Duration(minutes: 5)), appVersion: '1');
-      expect(companionIndexFingerprint(a), companionIndexFingerprint(b));
+      final library = [DpmPluginProfileProjects(solo, [TestFactories.makeProject(id: 'p1')])];
+      final a = buildDpmPluginIndex(library, generatedAt: now, appVersion: '1');
+      final b = buildDpmPluginIndex(library, generatedAt: now.add(const Duration(minutes: 5)), appVersion: '1');
+      expect(dpmPluginIndexFingerprint(a), dpmPluginIndexFingerprint(b));
 
-      final c = buildCompanionIndex([
-        CompanionProfileProjects(solo, [TestFactories.makeProject(id: 'p1', todos: [TestFactories.makeTodo()])]),
+      final c = buildDpmPluginIndex([
+        DpmPluginProfileProjects(solo, [TestFactories.makeProject(id: 'p1', todos: [TestFactories.makeTodo()])]),
       ], generatedAt: now, appVersion: '1');
-      expect(companionIndexFingerprint(c), isNot(companionIndexFingerprint(a)));
+      expect(dpmPluginIndexFingerprint(c), isNot(dpmPluginIndexFingerprint(a)));
     });
   });
 
   group('plugin releases', () {
     test('the index names the newest release when one is known', () {
-      final library = [CompanionProfileProjects(solo, [])];
-      final withRelease = buildCompanionIndex(library,
+      final library = [DpmPluginProfileProjects(solo, [])];
+      final withRelease = buildDpmPluginIndex(library,
           generatedAt: now,
           appVersion: '1',
-          latestRelease: const CompanionRelease('0.2.0', 'https://github.com/bandpassrecords/dpm-companion/releases/tag/v0.2.0'));
+          latestRelease: const DpmPluginRelease('0.2.0', 'https://github.com/bandpassrecords/daw-project-manager-plugin/releases/tag/v0.2.0'));
       expect(withRelease['plugin'], {
         'latestVersion': '0.2.0',
-        'releaseUrl': 'https://github.com/bandpassrecords/dpm-companion/releases/tag/v0.2.0',
+        'releaseUrl': 'https://github.com/bandpassrecords/daw-project-manager-plugin/releases/tag/v0.2.0',
       });
-      expect(buildCompanionIndex(library, generatedAt: now, appVersion: '1').containsKey('plugin'), isFalse);
+      expect(buildDpmPluginIndex(library, generatedAt: now, appVersion: '1').containsKey('plugin'), isFalse);
     });
 
     test('a new release changes the fingerprint, so the index is rewritten', () {
-      final library = [CompanionProfileProjects(solo, [])];
-      final before = buildCompanionIndex(library, generatedAt: now, appVersion: '1');
-      final after = buildCompanionIndex(library,
-          generatedAt: now, appVersion: '1', latestRelease: const CompanionRelease('0.2.0', 'u'));
-      expect(companionIndexFingerprint(after), isNot(companionIndexFingerprint(before)));
+      final library = [DpmPluginProfileProjects(solo, [])];
+      final before = buildDpmPluginIndex(library, generatedAt: now, appVersion: '1');
+      final after = buildDpmPluginIndex(library,
+          generatedAt: now, appVersion: '1', latestRelease: const DpmPluginRelease('0.2.0', 'u'));
+      expect(dpmPluginIndexFingerprint(after), isNot(dpmPluginIndexFingerprint(before)));
     });
 
     test('GitHub\'s latest-release answer is read', () {
-      final release = parseCompanionRelease({
+      final release = parseDpmPluginRelease({
         'tag_name': 'v0.2.0',
-        'html_url': 'https://github.com/bandpassrecords/dpm-companion/releases/tag/v0.2.0',
+        'html_url': 'https://github.com/bandpassrecords/daw-project-manager-plugin/releases/tag/v0.2.0',
       })!;
       expect(release.version, '0.2.0');
-      expect(release.url, 'https://github.com/bandpassrecords/dpm-companion/releases/tag/v0.2.0');
+      expect(release.url, 'https://github.com/bandpassrecords/daw-project-manager-plugin/releases/tag/v0.2.0');
 
-      expect(parseCompanionRelease({'tag_name': 'nightly', 'html_url': 'u'}), isNull);
-      expect(parseCompanionRelease({'tag_name': 'v1.2', 'html_url': 'u'}), isNull);
-      expect(parseCompanionRelease({'html_url': 'u'}), isNull);
+      expect(parseDpmPluginRelease({'tag_name': 'nightly', 'html_url': 'u'}), isNull);
+      expect(parseDpmPluginRelease({'tag_name': 'v1.2', 'html_url': 'u'}), isNull);
+      expect(parseDpmPluginRelease({'html_url': 'u'}), isNull);
     });
   });
 
   test('the launch hint names the project, its profile and when it opened', () {
-    final hint = buildCompanionLaunchHint(
+    final hint = buildDpmPluginLaunchHint(
       profileId: 'solo',
       project: TestFactories.makeProject(id: 'p1', filePath: p.join('music', 'a.cpr')),
       launchedAt: now,
@@ -133,7 +133,7 @@ void main() {
     });
   });
 
-  group('parseCompanionMessage', () {
+  group('parseDpmPluginMessage', () {
     String message(String type, Map<String, dynamic> payload, {Object? project = const {'id': 'p1', 'profileId': 'solo'}}) =>
         jsonEncode({
           'schema': 1,
@@ -147,13 +147,13 @@ void main() {
         });
 
     test('reads a new to-do, as one trimmed line', () {
-      final m = parseCompanionMessage(message('todo.add', {
+      final m = parseDpmPluginMessage(message('todo.add', {
         'todoId': 't9',
         'text': '  [01:23]  Vocal\ttoo loud \n',
         'createdAt': '2026-10-18T12:00:04.000Z',
       }));
-      expect(m, isA<CompanionTodoAdd>());
-      final add = m as CompanionTodoAdd;
+      expect(m, isA<DpmPluginTodoAdd>());
+      final add = m as DpmPluginTodoAdd;
       expect(add.project!.profileId, 'solo');
       expect(add.project!.projectId, 'p1');
       expect(add.todoId, 't9');
@@ -162,42 +162,42 @@ void main() {
     });
 
     test('reads a tick, a capture and a hello', () {
-      final tick = parseCompanionMessage(message('todo.setCompleted', {'todoId': 't1', 'completed': true}));
-      expect((tick as CompanionTodoSetCompleted).completed, isTrue);
+      final tick = parseDpmPluginMessage(message('todo.setCompleted', {'todoId': 't1', 'completed': true}));
+      expect((tick as DpmPluginTodoSetCompleted).completed, isTrue);
 
-      final capture = parseCompanionMessage(message('capture.ready', {
+      final capture = parseDpmPluginMessage(message('capture.ready', {
         'file': 'captures/Song_1.flac',
         'durationSeconds': 60,
         'capturedAt': '2026-10-18T12:00:00.000Z',
       }));
-      expect((capture as CompanionCaptureReady).file, 'captures/Song_1.flac');
+      expect((capture as DpmPluginCaptureReady).file, 'captures/Song_1.flac');
       expect(capture.durationSeconds, 60.0);
 
-      expect(parseCompanionMessage(message('session.hello', {'linkedByUser': true})), isA<CompanionHello>());
+      expect(parseDpmPluginMessage(message('session.hello', {'linkedByUser': true})), isA<DpmPluginHello>());
     });
 
     test('an unlinked message has no project', () {
-      final m = parseCompanionMessage(message('capture.ready', {'file': 'captures/x.flac'}, project: null));
+      final m = parseDpmPluginMessage(message('capture.ready', {'file': 'captures/x.flac'}, project: null));
       expect(m!.project, isNull);
     });
 
     test('an unknown type is kept as unknown, to be dropped', () {
-      final m = parseCompanionMessage(message('marker.add', {}));
-      expect((m as CompanionUnknownMessage).type, 'marker.add');
+      final m = parseDpmPluginMessage(message('marker.add', {}));
+      expect((m as DpmPluginUnknownMessage).type, 'marker.add');
     });
 
     test('garbage and incomplete messages are not messages', () {
-      expect(parseCompanionMessage('not json'), isNull);
-      expect(parseCompanionMessage('[1,2]'), isNull);
-      expect(parseCompanionMessage(jsonEncode({'type': 'todo.add'})), isNull);
-      expect(parseCompanionMessage(message('todo.add', {'todoId': 't1', 'text': '   '})), isNull);
-      expect(parseCompanionMessage(message('todo.add', {'text': 'no id'})), isNull);
-      expect(parseCompanionMessage(message('todo.setCompleted', {'todoId': 't1', 'completed': 'yes'})), isNull);
+      expect(parseDpmPluginMessage('not json'), isNull);
+      expect(parseDpmPluginMessage('[1,2]'), isNull);
+      expect(parseDpmPluginMessage(jsonEncode({'type': 'todo.add'})), isNull);
+      expect(parseDpmPluginMessage(message('todo.add', {'todoId': 't1', 'text': '   '})), isNull);
+      expect(parseDpmPluginMessage(message('todo.add', {'text': 'no id'})), isNull);
+      expect(parseDpmPluginMessage(message('todo.setCompleted', {'todoId': 't1', 'completed': 'yes'})), isNull);
     });
 
     test('an over-long to-do is cut', () {
-      final m = parseCompanionMessage(message('todo.add', {'todoId': 't1', 'text': 'a' * 900})) as CompanionTodoAdd;
-      expect(m.text.length, companionMaxTodoLength);
+      final m = parseDpmPluginMessage(message('todo.add', {'todoId': 't1', 'text': 'a' * 900})) as DpmPluginTodoAdd;
+      expect(m.text.length, dpmPluginMaxTodoLength);
     });
   });
 
@@ -205,19 +205,19 @@ void main() {
     test('every time from the plugin is local, as the app keeps times', () {
       // The plugin writes UTC with a Z. Kept as UTC, a session once showed as
       // 12:51-10:52 two hours east of UTC.
-      expect(companionTime('2026-10-18T10:52:00.000Z')!.isUtc, isFalse);
-      expect(companionTime('2026-10-18T10:52:00.000Z'), DateTime.utc(2026, 10, 18, 10, 52).toLocal());
-      final m = parseCompanionMessage(jsonEncode({
+      expect(dpmPluginTime('2026-10-18T10:52:00.000Z')!.isUtc, isFalse);
+      expect(dpmPluginTime('2026-10-18T10:52:00.000Z'), DateTime.utc(2026, 10, 18, 10, 52).toLocal());
+      final m = parseDpmPluginMessage(jsonEncode({
         'id': 'm1',
         'type': 'todo.add',
         'createdAt': '2026-10-18T10:52:00.000Z',
         'project': {'id': 'p1', 'profileId': 'solo'},
         'payload': {'todoId': 't1', 'text': 'x', 'createdAt': '2026-10-18T10:51:00.000Z'},
-      })) as CompanionTodoAdd;
+      })) as DpmPluginTodoAdd;
       expect(m.createdAt.isUtc, isFalse);
       expect(m.todoCreatedAt.isUtc, isFalse);
       expect(
-        parseCompanionHeartbeat(jsonEncode({
+        parseDpmPluginHeartbeat(jsonEncode({
           'runId': 'r',
           'lastSeen': '2026-10-18T10:52:00.000Z',
           'project': {'id': 'p1', 'profileId': 'solo'},
@@ -236,18 +236,18 @@ void main() {
             'project': {'id': 'p1', 'profileId': 'solo'},
             'payload': {},
           });
-      final hello = parseCompanionMessage(msg('session.hello'))!;
-      final goodbye = parseCompanionMessage(msg('session.goodbye'))!;
-      expect(hello, isA<CompanionHello>());
+      final hello = parseDpmPluginMessage(msg('session.hello'))!;
+      final goodbye = parseDpmPluginMessage(msg('session.goodbye'))!;
+      expect(hello, isA<DpmPluginHello>());
       expect(hello.runId, 'run-1');
-      expect(goodbye, isA<CompanionGoodbye>());
+      expect(goodbye, isA<DpmPluginGoodbye>());
       expect(goodbye.runId, 'run-1');
       expect(goodbye.createdAt, DateTime.utc(2026, 10, 18, 12, 42).toLocal());
       expect(goodbye.hostName, 'Steinberg Cubase 13');
     });
 
     test('a heartbeat names the instance, its project and when it was last seen', () {
-      final beat = parseCompanionHeartbeat(jsonEncode({
+      final beat = parseDpmPluginHeartbeat(jsonEncode({
         'schema': 1,
         'runId': 'run-1',
         'lastSeen': '2026-10-18T12:41:50.000Z',
@@ -257,24 +257,24 @@ void main() {
       expect(beat.project.projectId, 'p1');
       expect(beat.lastSeen, DateTime.utc(2026, 10, 18, 12, 41, 50).toLocal());
 
-      expect(parseCompanionHeartbeat('{'), isNull);
-      expect(parseCompanionHeartbeat(jsonEncode({'runId': 'r', 'lastSeen': 'x', 'project': null})), isNull);
+      expect(parseDpmPluginHeartbeat('{'), isNull);
+      expect(parseDpmPluginHeartbeat(jsonEncode({'runId': 'r', 'lastSeen': 'x', 'project': null})), isNull);
     });
   });
 
-  group('decideCompanionSession', () {
+  group('decideDpmPluginSession', () {
     final left = DateTime.utc(2026, 10, 18, 12, 42);
-    CompanionDeparture closedAt(DateTime at) => CompanionDeparture(at, CompanionDepartureReason.closed);
-    CompanionSessionAction? decide({
+    DpmPluginDeparture closedAt(DateTime at) => DpmPluginDeparture(at, DpmPluginDepartureReason.closed);
+    DpmPluginSessionAction? decide({
       Set<String> active = const {'solo/p1'},
       Set<String> before = const {'solo/p1'},
       Set<String> after = const {},
-      Map<String, CompanionDeparture>? departed,
-      List<CompanionProjectRef> hellos = const [],
+      Map<String, DpmPluginDeparture>? departed,
+      List<DpmPluginProjectRef> hellos = const [],
       bool end = true,
       bool start = false,
     }) =>
-        decideCompanionSession(
+        decideDpmPluginSession(
           activeSessionKeys: active,
           presentBefore: before,
           presentAfter: after,
@@ -286,8 +286,8 @@ void main() {
 
     test('the DAW letting go of the session\'s project ends it, when it left', () {
       final action = decide();
-      expect(action, isA<EndCompanionSession>());
-      expect((action as EndCompanionSession).at, left);
+      expect(action, isA<EndDpmPluginSession>());
+      expect((action as EndDpmPluginSession).at, left);
     });
 
     test('nothing ends while another instance is still in the project', () {
@@ -313,28 +313,28 @@ void main() {
         before: {'solo/v1', 'solo/v2'},
         departed: {'solo/v1': closedAt(left), 'solo/v2': closedAt(later)},
       );
-      expect((action as EndCompanionSession).at, later);
+      expect((action as EndDpmPluginSession).at, later);
 
       expect(decide(active: {'solo/stack', 'solo/v1', 'solo/v2'}, before: {'solo/v1', 'solo/v2'}, after: {'solo/v2'},
           departed: {'solo/v1': closedAt(left)}), isNull);
     });
 
     test('a hello starts a session only when asked to, and never over a running one', () {
-      const opened = CompanionProjectRef('solo', 'p9');
+      const opened = DpmPluginProjectRef('solo', 'p9');
       expect(decide(active: {}, before: {}, hellos: [opened]), isNull);
       final start = decide(active: {}, before: {}, hellos: [opened], start: true);
-      expect((start as StartCompanionSession).project.projectId, 'p9');
+      expect((start as StartDpmPluginSession).project.projectId, 'p9');
       expect(decide(after: {'solo/p1'}, hellos: [opened], start: true), isNull);
     });
   });
 
   group('applying to-do messages', () {
-    final add = CompanionTodoAdd('m1', now, const CompanionProjectRef('solo', 'p1'),
+    final add = DpmPluginTodoAdd('m1', now, const DpmPluginProjectRef('solo', 'p1'),
         todoId: 't9', text: 'Automate the filter', todoCreatedAt: now);
 
     test('a new to-do keeps the plugin\'s id, so the plugin can see it arrived', () {
       final project = TestFactories.makeProject(todos: [TestFactories.makeTodo(id: 't1')]);
-      final updated = applyCompanionTodoAdd(project, add)!;
+      final updated = applyDpmPluginTodoAdd(project, add)!;
       expect(updated.todos.map((t) => t.id), ['t1', 't9']);
       expect(updated.todos.last.text, 'Automate the filter');
       expect(updated.todos.last.completed, isFalse);
@@ -342,20 +342,20 @@ void main() {
     });
 
     test('applying the same add twice changes nothing', () {
-      final once = applyCompanionTodoAdd(TestFactories.makeProject(todos: []), add)!;
-      expect(applyCompanionTodoAdd(once, add), isNull);
+      final once = applyDpmPluginTodoAdd(TestFactories.makeProject(todos: []), add)!;
+      expect(applyDpmPluginTodoAdd(once, add), isNull);
     });
 
     test('a tick sets completed; a repeat or a deleted to-do changes nothing', () {
       final project = TestFactories.makeProject(todos: [TestFactories.makeTodo(id: 't1')]);
-      final tick = CompanionTodoSetCompleted('m2', now, null, todoId: 't1', completed: true);
+      final tick = DpmPluginTodoSetCompleted('m2', now, null, todoId: 't1', completed: true);
 
-      final ticked = applyCompanionTodoSetCompleted(project, tick)!;
+      final ticked = applyDpmPluginTodoSetCompleted(project, tick)!;
       expect(ticked.todos.single.completed, isTrue);
-      expect(applyCompanionTodoSetCompleted(ticked, tick), isNull);
+      expect(applyDpmPluginTodoSetCompleted(ticked, tick), isNull);
 
-      final gone = CompanionTodoSetCompleted('m3', now, null, todoId: 'deleted', completed: true);
-      expect(applyCompanionTodoSetCompleted(project, gone), isNull);
+      final gone = DpmPluginTodoSetCompleted('m3', now, null, todoId: 'deleted', completed: true);
+      expect(applyDpmPluginTodoSetCompleted(project, gone), isNull);
     });
 
     test('a stack member\'s to-dos are its stack\'s', () {
@@ -364,22 +364,22 @@ void main() {
       final loose = TestFactories.makeProject(id: 'p1');
       final orphan = TestFactories.makeProject(id: 'v9', stackId: 'gone');
 
-      expect(companionOwnerOf(member, [stack, member, loose]).id, 'stack');
-      expect(companionOwnerOf(loose, [stack, member, loose]).id, 'p1');
-      expect(companionOwnerOf(orphan, [stack, orphan]).id, 'v9');
+      expect(dpmPluginOwnerOf(member, [stack, member, loose]).id, 'stack');
+      expect(dpmPluginOwnerOf(loose, [stack, member, loose]).id, 'p1');
+      expect(dpmPluginOwnerOf(orphan, [stack, orphan]).id, 'v9');
     });
   });
 
-  group('companionMayReplacePreview', () {
+  group('dpmPluginMayReplacePreview', () {
     final dir = p.join('data', 'preview_songs', 'plugin');
     final captured = DateTime(2026, 10, 18, 12);
 
     test('fills an empty preview, and replaces an earlier capture', () {
-      expect(companionMayReplacePreview(TestFactories.makeProject(), companionPreviewDir: dir, capturedAt: captured), isTrue);
+      expect(dpmPluginMayReplacePreview(TestFactories.makeProject(), dpmPluginPreviewDir: dir, capturedAt: captured), isTrue);
       expect(
-        companionMayReplacePreview(
+        dpmPluginMayReplacePreview(
           TestFactories.makeProject(previewSongPath: p.join(dir, 'p1', 'old.flac')),
-          companionPreviewDir: dir,
+          dpmPluginPreviewDir: dir,
           capturedAt: captured,
         ),
         isTrue,
@@ -389,8 +389,8 @@ void main() {
     test('never replaces a preview the user picked', () {
       final picked = TestFactories.makeProject(previewSongPath: p.join('music', 'Final Master.wav'));
       expect(
-        companionMayReplacePreview(picked,
-            companionPreviewDir: dir, capturedAt: captured, currentPreviewModifiedAt: DateTime(2020)),
+        dpmPluginMayReplacePreview(picked,
+            dpmPluginPreviewDir: dir, capturedAt: captured, currentPreviewModifiedAt: DateTime(2020)),
         isFalse,
       );
     });
@@ -400,16 +400,16 @@ void main() {
       final project = TestFactories.makeProject(previewSongPath: mixdown, previewSongAutoPath: mixdown);
 
       expect(
-        companionMayReplacePreview(project,
-            companionPreviewDir: dir, capturedAt: captured, currentPreviewModifiedAt: DateTime(2026, 3, 1)),
+        dpmPluginMayReplacePreview(project,
+            dpmPluginPreviewDir: dir, capturedAt: captured, currentPreviewModifiedAt: DateTime(2026, 3, 1)),
         isTrue,
       );
       expect(
-        companionMayReplacePreview(project,
-            companionPreviewDir: dir, capturedAt: captured, currentPreviewModifiedAt: DateTime(2026, 10, 18, 13)),
+        dpmPluginMayReplacePreview(project,
+            dpmPluginPreviewDir: dir, capturedAt: captured, currentPreviewModifiedAt: DateTime(2026, 10, 18, 13)),
         isFalse,
       );
-      expect(companionMayReplacePreview(project, companionPreviewDir: dir, capturedAt: captured), isFalse);
+      expect(dpmPluginMayReplacePreview(project, dpmPluginPreviewDir: dir, capturedAt: captured), isFalse);
     });
   });
 }

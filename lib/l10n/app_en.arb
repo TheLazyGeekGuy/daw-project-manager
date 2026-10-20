@@ -8040,14 +8040,14 @@
       }
     }
   },
-  "companionSessionsDescription": "With the DAW Project Manager plugin in a project, the app knows when your DAW opens and closes it.",
-  "companionEndSessionWhenDawCloses": "End the session when the DAW closes the project",
-  "companionEndSessionWhenDawClosesDescription": "Also after a crash: the session ends at the moment the DAW let go of the project.",
-  "companionStartSessionWhenDawOpens": "Start a session when a project opens in the DAW",
-  "companionStartSessionWhenDawOpensDescription": "Only when no session is running, and only for projects of the active profile.",
-  "companionSessionEndedTitle": "Session ended",
-  "companionSessionEndedClosed": "{daw} closed {project}, so its work session ended.",
-  "@companionSessionEndedClosed": {
+  "dpmPluginSessionsDescription": "With the DAW Project Manager plugin in a project, the app knows when your DAW opens and closes it.",
+  "dpmPluginEndSessionWhenDawCloses": "End the session when the DAW closes the project",
+  "dpmPluginEndSessionWhenDawClosesDescription": "Also after a crash: the session ends at the moment the DAW let go of the project.",
+  "dpmPluginStartSessionWhenDawOpens": "Start a session when a project opens in the DAW",
+  "dpmPluginStartSessionWhenDawOpensDescription": "Only when no session is running, and only for projects of the active profile.",
+  "dpmPluginSessionEndedTitle": "Session ended",
+  "dpmPluginSessionEndedClosed": "{daw} closed {project}, so its work session ended.",
+  "@dpmPluginSessionEndedClosed": {
     "placeholders": {
       "daw": {
         "type": "String"
@@ -8057,8 +8057,8 @@
       }
     }
   },
-  "companionSessionEndedNoResponse": "The DAW Project Manager plugin stopped responding in {daw}, so the session for {project} ended when it was last heard from. The DAW may have crashed or been closed abruptly.",
-  "@companionSessionEndedNoResponse": {
+  "dpmPluginSessionEndedNoResponse": "The DAW Project Manager plugin stopped responding in {daw}, so the session for {project} ended when it was last heard from. The DAW may have crashed or been closed abruptly.",
+  "@dpmPluginSessionEndedNoResponse": {
     "placeholders": {
       "daw": {
         "type": "String"
@@ -8068,9 +8068,9 @@
       }
     }
   },
-  "companionUnknownDaw": "Your DAW",
-  "companionSessionEndedSummary": "{start}–{end} · {duration}",
-  "@companionSessionEndedSummary": {
+  "dpmPluginUnknownDaw": "Your DAW",
+  "dpmPluginSessionEndedSummary": "{start}–{end} · {duration}",
+  "@dpmPluginSessionEndedSummary": {
     "placeholders": {
       "start": {
         "type": "String"
@@ -8083,11 +8083,11 @@
       }
     }
   },
-  "companionPluginTabLabel": "DAW plugin",
-  "companionPluginTitle": "DAW Project Manager plugin",
-  "companionPluginDescription": "A VST3/AU plugin for your DAW. Put it on the master bus: it shows the project's to-dos, records each playback pass as the project's preview song, and can end your work session when the DAW closes the project.",
-  "companionPluginLastSeen": "Last seen in {daw} (version {version}) on {date}.",
-  "@companionPluginLastSeen": {
+  "dpmPluginTabLabel": "DAW plugin",
+  "dpmPluginTitle": "DAW Project Manager plugin",
+  "dpmPluginDescription": "A VST3/AU plugin for your DAW. Put it on the master bus: it shows the project's to-dos, records each playback pass as the project's preview song, and can end your work session when the DAW closes the project.",
+  "dpmPluginLastSeen": "Last seen in {daw} (version {version}) on {date}.",
+  "@dpmPluginLastSeen": {
     "placeholders": {
       "daw": {
         "type": "String"
@@ -8100,25 +8100,25 @@
       }
     }
   },
-  "companionPluginNotSeen": "Not seen on this computer yet. Install it, then put it on your DAW's master bus.",
-  "companionPluginUpdateAvailable": "Version {version} is available.",
-  "@companionPluginUpdateAvailable": {
+  "dpmPluginNotSeen": "Not seen on this computer yet. Install it, then put it on your DAW's master bus.",
+  "dpmPluginUpdateAvailable": "Version {version} is available.",
+  "@dpmPluginUpdateAvailable": {
     "placeholders": {
       "version": {
         "type": "String"
       }
     }
   },
-  "companionPluginDownload": "Download the DAW plugin",
-  "companionPluginDownloadUpdate": "Download the update",
-  "companionInstalledTitle": "Installed",
-  "companionInstalledVersion": "Version {version}",
-  "@companionInstalledVersion": {"placeholders": {"version": {"type": "String"}}},
-  "companionInstalledNone": "Not found in the standard plug-in folders.",
-  "companionInstalledDuplicates": "More than one copy is installed, so your DAW may load either. Keep only one.",
-  "companionSearchAgain": "Search again",
-  "companionSearching": "Searching…",
-  "companionCustomFoldersHint": "Installed it somewhere else? Add that folder, and the app looks there when the standard folders have no copy.",
-  "companionCustomFolderTag": "your folder",
-  "companionScanUnavailable": "The Flatpak can't look into your plug-in folders. The plugin shows up here once a DAW has loaded it."
+  "dpmPluginDownload": "Download the DAW plugin",
+  "dpmPluginDownloadUpdate": "Download the update",
+  "dpmPluginInstalledTitle": "Installed",
+  "dpmPluginInstalledVersion": "Version {version}",
+  "@dpmPluginInstalledVersion": {"placeholders": {"version": {"type": "String"}}},
+  "dpmPluginInstalledNone": "Not found in the standard plug-in folders.",
+  "dpmPluginInstalledDuplicates": "More than one copy is installed, so your DAW may load either. Keep only one.",
+  "dpmPluginSearchAgain": "Search again",
+  "dpmPluginSearching": "Searching…",
+  "dpmPluginCustomFoldersHint": "Installed it somewhere else? Add that folder, and the app looks there when the standard folders have no copy.",
+  "dpmPluginCustomFolderTag": "your folder",
+  "dpmPluginScanUnavailable": "The Flatpak can't look into your plug-in folders. The plugin shows up here once a DAW has loaded it."
 }

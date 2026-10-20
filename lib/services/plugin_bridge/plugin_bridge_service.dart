@@ -8,13 +8,13 @@ import 'package:path/path.dart' as p;
 
 import '../../models/music_project.dart';
 import '../../utils/app_paths.dart';
-import 'companion_protocol.dart';
+import 'plugin_protocol.dart';
 
 /// Where the app reads projects from and saves them to, for the bridge. An
 /// interface so the bridge is tested against plain lists, never Hive.
-abstract class CompanionLibrary {
+abstract class DpmPluginLibrary {
   /// Every profile with its projects.
-  Future<List<CompanionProfileProjects>> load();
+  Future<List<DpmPluginProfileProjects>> load();
 
   /// Saves an edit made on the plugin's behalf, as a user edit (bumped
   /// `updatedAt`, so it syncs like one).
@@ -24,42 +24,42 @@ abstract class CompanionLibrary {
 /// How the bridge reaches the app's work sessions, for ending a session when
 /// the DAW closes the project and starting one when it opens. An interface
 /// so the decisions are tested without Riverpod or a timer.
-abstract class CompanionSessionHooks {
+abstract class DpmPluginSessionHooks {
   /// The running session's project (in the active profile), or null.
-  CompanionProjectRef? activeSession();
+  DpmPluginProjectRef? activeSession();
 
   /// Settings > Work Sessions, device-local.
   bool get endWhenDawCloses;
   bool get startWhenDawOpens;
 
   /// Ends the running session as if it had been ended when the DAW let go
-  /// of its project ([CompanionDeparture.at]), and tells the user why.
-  Future<void> endSession(CompanionDeparture departure);
+  /// of its project ([DpmPluginDeparture.at]), and tells the user why.
+  Future<void> endSession(DpmPluginDeparture departure);
 
   /// Starts a session for [project] — when it is in the active profile.
-  Future<void> startSession(CompanionProjectRef project);
+  Future<void> startSession(DpmPluginProjectRef project);
 }
 
 /// The bridge folder the DAW Project Manager plugin shares with this app:
 /// `plugin_bridge` inside the library folder. A pinned or dev library gets
 /// its own, so a test build never talks to plugins working for the stable app.
-Future<String> companionBridgePath() async => p.join(await getLocalAppDataPath(), 'plugin_bridge');
+Future<String> dpmPluginBridgePath() async => p.join(await getLocalAppDataPath(), 'plugin_bridge');
 
 /// Writes `launch.json` just before [project] opens in its DAW, so the plugin
 /// can link to it without asking. Best effort: a failure costs the plugin a
 /// hint, never the launch.
-Future<void> writeCompanionLaunchHint(String profileId, MusicProject project, {String? bridgeDir}) async {
+Future<void> writeDpmPluginLaunchHint(String profileId, MusicProject project, {String? bridgeDir}) async {
   try {
-    final dir = bridgeDir ?? await companionBridgePath();
-    final hint = buildCompanionLaunchHint(profileId: profileId, project: project, launchedAt: DateTime.now());
+    final dir = bridgeDir ?? await dpmPluginBridgePath();
+    final hint = buildDpmPluginLaunchHint(profileId: profileId, project: project, launchedAt: DateTime.now());
     await writeFileAtomically(File(p.join(dir, 'launch.json')), jsonEncode(hint));
   } catch (e) {
-    if (kDebugMode) debugPrint('Companion launch hint not written: $e');
+    if (kDebugMode) debugPrint('Plugin launch hint not written: $e');
   }
 }
 
 /// The plugin's newest release on GitHub, or null when it can't be found out.
-Future<CompanionRelease?> fetchLatestCompanionRelease({http.Client? client}) async {
+Future<DpmPluginRelease?> fetchLatestDpmPluginRelease({http.Client? client}) async {
   final c = client ?? http.Client();
   try {
     final response = await c
@@ -68,9 +68,9 @@ Future<CompanionRelease?> fetchLatestCompanionRelease({http.Client? client}) asy
         .timeout(const Duration(seconds: 10));
     if (response.statusCode != 200) return null;
     final json = jsonDecode(response.body);
-    return json is Map<String, dynamic> ? parseCompanionRelease(json) : null;
+    return json is Map<String, dynamic> ? parseDpmPluginRelease(json) : null;
   } catch (e) {
-    if (kDebugMode) debugPrint('Companion release check failed: $e');
+    if (kDebugMode) debugPrint('Plugin release check failed: $e');
     return null;
   } finally {
     if (client == null) c.close();
@@ -93,8 +93,8 @@ Future<void> writeFileAtomically(File target, String contents) async {
 /// Desktop only. Runs on a timer rather than a file watcher: the folder is
 /// tiny, a tick costs a directory listing, and watchers are unreliable on
 /// network and cloud-synced home folders.
-class CompanionBridgeService {
-  CompanionBridgeService({
+class DpmPluginBridgeService {
+  DpmPluginBridgeService({
     required this.library,
     required this.bridgeDir,
     required this.previewSongsDir,
@@ -109,24 +109,24 @@ class CompanionBridgeService {
 
   /// Every hello and heartbeat from a running plugin, for the DAW plugin
   /// settings' "last seen" line. Called often: the receiver throttles.
-  final void Function(CompanionSighting sighting)? onPluginSeen;
+  final void Function(DpmPluginSighting sighting)? onPluginSeen;
 
   /// The newest plugin release whenever it is looked up, or null when
   /// looking isn't allowed — for the settings' download button.
-  final void Function(CompanionRelease? release)? onLatestRelease;
+  final void Function(DpmPluginRelease? release)? onLatestRelease;
 
   /// Null: presence is tracked but never touches a session.
-  final CompanionSessionHooks? sessions;
+  final DpmPluginSessionHooks? sessions;
 
-  final CompanionLibrary library;
+  final DpmPluginLibrary library;
   final String bridgeDir;
   final String previewSongsDir;
   final String appVersion;
   final DateTime Function() _now;
 
-  /// Looks up the plugin's newest release ([fetchLatestCompanionRelease]).
+  /// Looks up the plugin's newest release ([fetchLatestDpmPluginRelease]).
   /// Null: never look.
-  final Future<CompanionRelease?> Function()? checkLatestRelease;
+  final Future<DpmPluginRelease?> Function()? checkLatestRelease;
 
   /// Whether looking is allowed right now — the user's "check for updates"
   /// setting, in a build that checks its own updates. Null: always.
@@ -139,7 +139,7 @@ class CompanionBridgeService {
   Timer? _timer;
   bool _ticking = false;
   String? _lastFingerprint;
-  CompanionRelease? _latestRelease;
+  DpmPluginRelease? _latestRelease;
   DateTime? _nextReleaseCheck;
 
   // Message ids handled lately, listed in the index as "applied".
@@ -148,19 +148,19 @@ class CompanionBridgeService {
   static const appliedKeptMax = 500;
 
   // Presence: running plugin instances by runId, and what changed this tick.
-  final Map<String, CompanionInstance> _instances = {};
-  final List<CompanionProjectRef> _hellos = [];
-  final Map<String, CompanionDeparture> _departures = {};
+  final Map<String, DpmPluginInstance> _instances = {};
+  final List<DpmPluginProjectRef> _hellos = [];
+  final Map<String, DpmPluginDeparture> _departures = {};
   DateTime? _lastTick;
 
   String get outboxDir => p.join(bridgeDir, 'outbox');
   String get instancesDir => p.join(bridgeDir, 'instances');
 
-  /// Projects (by [companionKey]) a DAW has open right now.
+  /// Projects (by [dpmPluginKey]) a DAW has open right now.
   Set<String> get presentProjects =>
-      {for (final i in _instances.values) companionKey(i.project.profileId, i.project.projectId)};
+      {for (final i in _instances.values) dpmPluginKey(i.project.profileId, i.project.projectId)};
   String get capturesDir => p.join(bridgeDir, 'captures');
-  String get companionPreviewDir => p.join(previewSongsDir, companionPreviewFolderName);
+  String get dpmPluginPreviewDir => p.join(previewSongsDir, dpmPluginPreviewFolderName);
   File get indexFile => File(p.join(bridgeDir, 'index.json'));
 
   void start({Duration interval = const Duration(seconds: 3)}) {
@@ -190,7 +190,7 @@ class CompanionBridgeService {
       // old as the nap. A fresh grace period, or waking would end the session
       // at the moment the lid closed.
       final last = _lastTick;
-      if (last != null && now.difference(last) > companionSleepGap) {
+      if (last != null && now.difference(last) > dpmPluginSleepGap) {
         _instances.updateAll((_, i) => i.seenAt(now));
       }
       _lastTick = now;
@@ -204,7 +204,7 @@ class CompanionBridgeService {
       // "applied" list and generatedAt are the plugin's confirmation.
       await writeIndex(force: changed > 0 || _applied.length != handledBefore);
     } catch (e) {
-      if (kDebugMode) debugPrint('Companion bridge tick failed: $e');
+      if (kDebugMode) debugPrint('Plugin bridge tick failed: $e');
     } finally {
       _ticking = false;
     }
@@ -217,12 +217,12 @@ class CompanionBridgeService {
     final now = _now();
     _applied.removeWhere((a) => now.difference(a.at) > appliedKeptFor);
     if (_applied.length > appliedKeptMax) _applied.removeRange(0, _applied.length - appliedKeptMax);
-    final index = buildCompanionIndex(await library.load(),
+    final index = buildDpmPluginIndex(await library.load(),
         generatedAt: now,
         appVersion: appVersion,
         latestRelease: _latestRelease,
         appliedMessageIds: [for (final a in _applied) a.id]);
-    final fingerprint = companionIndexFingerprint(index);
+    final fingerprint = dpmPluginIndexFingerprint(index);
     if (!force && fingerprint == _lastFingerprint && await indexFile.exists()) return false;
 
     await writeFileAtomically(indexFile, jsonEncode(index));
@@ -283,7 +283,7 @@ class CompanionBridgeService {
         continue; // still being written by another tool; next tick
       }
 
-      final message = parseCompanionMessage(text);
+      final message = parseDpmPluginMessage(text);
       try {
         if (message != null && await _apply(message, library)) {
           changed++;
@@ -292,7 +292,7 @@ class CompanionBridgeService {
         // Handled, whatever came of it: the plugin stops waiting.
         if (message != null) _applied.add((id: message.id, at: _now()));
       } catch (e) {
-        if (kDebugMode) debugPrint('Companion message ${p.basename(file.path)} failed: $e');
+        if (kDebugMode) debugPrint('Plugin message ${p.basename(file.path)} failed: $e');
       }
 
       try {
@@ -303,72 +303,72 @@ class CompanionBridgeService {
     return changed;
   }
 
-  Future<bool> _apply(CompanionMessage message, List<CompanionProfileProjects> library) async {
+  Future<bool> _apply(DpmPluginMessage message, List<DpmPluginProfileProjects> library) async {
     switch (message) {
-      case CompanionHello(:final runId, :final project, :final hostName, :final pluginVersion):
+      case DpmPluginHello(:final runId, :final project, :final hostName, :final pluginVersion):
         if (runId != null && project != null) {
-          _see(CompanionInstance(runId, project, message.createdAt, hostName: hostName, pluginVersion: pluginVersion));
+          _see(DpmPluginInstance(runId, project, message.createdAt, hostName: hostName, pluginVersion: pluginVersion));
           _hellos.add(project);
         }
         return false;
 
-      case CompanionGoodbye(:final runId):
-        if (runId != null) await _leave(runId, message.createdAt, CompanionDepartureReason.closed);
+      case DpmPluginGoodbye(:final runId):
+        if (runId != null) await _leave(runId, message.createdAt, DpmPluginDepartureReason.closed);
         return false;
 
-      case CompanionUnknownMessage(:final type):
-        if (kDebugMode) debugPrint('Companion message of unknown type "$type" dropped');
+      case DpmPluginUnknownMessage(:final type):
+        if (kDebugMode) debugPrint('Plugin message of unknown type "$type" dropped');
         return false;
 
-      case CompanionTodoAdd():
+      case DpmPluginTodoAdd():
         final found = _find(library, message.project);
         if (found == null) return false;
-        final updated = applyCompanionTodoAdd(found.owner, message);
+        final updated = applyDpmPluginTodoAdd(found.owner, message);
         if (updated == null) return false;
         await this.library.saveProject(found.profileId, updated);
         return true;
 
-      case CompanionNotesSet():
+      case DpmPluginNotesSet():
         final found = _find(library, message.project);
         if (found == null) return false;
-        final updated = applyCompanionNotesSet(found.owner, message);
+        final updated = applyDpmPluginNotesSet(found.owner, message);
         if (updated == null) return false;
         await this.library.saveProject(found.profileId, updated);
         return true;
 
-      case CompanionTodoSetCompleted():
+      case DpmPluginTodoSetCompleted():
         final found = _find(library, message.project);
         if (found == null) return false;
-        final updated = applyCompanionTodoSetCompleted(found.owner, message);
+        final updated = applyDpmPluginTodoSetCompleted(found.owner, message);
         if (updated == null) return false;
         await this.library.saveProject(found.profileId, updated);
         return true;
 
-      case CompanionCaptureReady():
+      case DpmPluginCaptureReady():
         return _adoptCapture(message, library);
     }
   }
 
   /// Records an instance as present, keeping whichever sighting is newer.
-  void _see(CompanionInstance instance) {
+  void _see(DpmPluginInstance instance) {
     if (instance.pluginVersion.isNotEmpty) {
-      onPluginSeen?.call(CompanionSighting(instance.pluginVersion, instance.hostName, instance.lastSeen));
+      onPluginSeen?.call(DpmPluginSighting(instance.pluginVersion, instance.hostName, instance.lastSeen));
     }
     final known = _instances[instance.runId];
     if (known != null && !instance.lastSeen.isAfter(known.lastSeen)) return;
     _instances[instance.runId] = instance.hostName.isEmpty && known != null
-        ? CompanionInstance(instance.runId, instance.project, instance.lastSeen, hostName: known.hostName)
+        ? DpmPluginInstance(instance.runId, instance.project, instance.lastSeen, hostName: known.hostName)
         : instance;
   }
 
   /// An instance left at [at]: gone from presence, its heartbeat file too.
-  Future<void> _leave(String runId, DateTime at, CompanionDepartureReason reason) async {
+  Future<void> _leave(String runId, DateTime at, DpmPluginDepartureReason reason) async {
     final instance = _instances.remove(runId);
     if (instance != null) {
-      final key = companionKey(instance.project.profileId, instance.project.projectId);
+      final key = dpmPluginKey(instance.project.profileId, instance.project.projectId);
       final previous = _departures[key];
       if (previous == null || at.isAfter(previous.at)) {
-        _departures[key] = CompanionDeparture(at, reason, hostName: instance.hostName);
+        _departures[key] = DpmPluginDeparture(at, reason, hostName: instance.hostName);
       }
     }
     try {
@@ -383,7 +383,7 @@ class CompanionBridgeService {
     await for (final entry in dir.list()) {
       if (entry is! File || !entry.path.endsWith('.json')) continue;
       try {
-        final instance = parseCompanionHeartbeat(await entry.readAsString());
+        final instance = parseDpmPluginHeartbeat(await entry.readAsString());
         if (instance != null) _see(instance);
       } catch (_) {} // being rewritten; next tick
     }
@@ -392,9 +392,9 @@ class CompanionBridgeService {
   /// Instances whose heartbeat went stale died without a goodbye (a crashed
   /// DAW): they leave at their last heartbeat.
   Future<void> _expireStale(DateTime now) async {
-    final stale = _instances.values.where((i) => now.difference(i.lastSeen) > companionHeartbeatStale).toList();
+    final stale = _instances.values.where((i) => now.difference(i.lastSeen) > dpmPluginHeartbeatStale).toList();
     for (final instance in stale) {
-      await _leave(instance.runId, instance.lastSeen, CompanionDepartureReason.stoppedResponding);
+      await _leave(instance.runId, instance.lastSeen, DpmPluginDepartureReason.stoppedResponding);
     }
   }
 
@@ -406,22 +406,22 @@ class CompanionBridgeService {
     final active = hooks.activeSession();
     final activeKeys = active == null ? <String>{} : await _sessionKeys(active);
 
-    final action = decideCompanionSession(
+    final action = decideDpmPluginSession(
       activeSessionKeys: activeKeys,
       presentBefore: presentBefore,
       presentAfter: presentAfter,
       departures: _departures,
       // A hello only counts while its instance is still there: an old one
       // read after the app was closed for a day starts nothing.
-      hellos: _hellos.where((h) => presentAfter.contains(companionKey(h.profileId, h.projectId))).toList(),
+      hellos: _hellos.where((h) => presentAfter.contains(dpmPluginKey(h.profileId, h.projectId))).toList(),
       endWhenDawCloses: hooks.endWhenDawCloses,
       startWhenDawOpens: hooks.startWhenDawOpens,
     );
 
     switch (action) {
-      case EndCompanionSession(:final departure):
+      case EndDpmPluginSession(:final departure):
         await hooks.endSession(departure);
-      case StartCompanionSession(:final project):
+      case StartDpmPluginSession(:final project):
         await hooks.startSession(project);
       case null:
         break;
@@ -430,13 +430,13 @@ class CompanionBridgeService {
 
   /// The keys a session answers to: its project's, and for a version stack
   /// every member's — the DAW opens a version, the session is the stack's.
-  Future<Set<String>> _sessionKeys(CompanionProjectRef active) async {
-    final keys = {companionKey(active.profileId, active.projectId)};
+  Future<Set<String>> _sessionKeys(DpmPluginProjectRef active) async {
+    final keys = {dpmPluginKey(active.profileId, active.projectId)};
     for (final entry in await library.load()) {
       if (entry.profile.id != active.profileId) continue;
       for (final project in entry.projects) {
         if (project.id == active.projectId && project.isVirtual) {
-          keys.addAll(project.memberProjectIds.map((id) => companionKey(active.profileId, id)));
+          keys.addAll(project.memberProjectIds.map((id) => dpmPluginKey(active.profileId, id)));
         }
       }
     }
@@ -444,15 +444,15 @@ class CompanionBridgeService {
   }
 
   ({String profileId, MusicProject owner})? _find(
-    List<CompanionProfileProjects> library,
-    CompanionProjectRef? ref,
+    List<DpmPluginProfileProjects> library,
+    DpmPluginProjectRef? ref,
   ) {
     if (ref == null) return null;
     for (final entry in library) {
       if (entry.profile.id != ref.profileId) continue;
       for (final project in entry.projects) {
         if (project.id == ref.projectId) {
-          return (profileId: entry.profile.id, owner: companionOwnerOf(project, entry.projects));
+          return (profileId: entry.profile.id, owner: dpmPluginOwnerOf(project, entry.projects));
         }
       }
     }
@@ -460,9 +460,9 @@ class CompanionBridgeService {
   }
 
   /// Copies a capture into the preview songs and makes it the project's
-  /// preview when [companionMayReplacePreview] allows. The capture file is
+  /// preview when [dpmPluginMayReplacePreview] allows. The capture file is
   /// removed either way: the plugin records a new one on the next pass.
-  Future<bool> _adoptCapture(CompanionCaptureReady message, List<CompanionProfileProjects> library) async {
+  Future<bool> _adoptCapture(DpmPluginCaptureReady message, List<DpmPluginProfileProjects> library) async {
     final source = File(p.normalize(p.join(bridgeDir, message.file)));
     // Only files in captures/: a message must not point the app elsewhere.
     if (!p.isWithin(capturesDir, source.path)) return false;
@@ -481,14 +481,14 @@ class CompanionBridgeService {
         if (await currentFile.exists()) currentModified = await currentFile.lastModified();
       }
 
-      if (!companionMayReplacePreview(owner,
-          companionPreviewDir: companionPreviewDir,
+      if (!dpmPluginMayReplacePreview(owner,
+          dpmPluginPreviewDir: dpmPluginPreviewDir,
           capturedAt: message.capturedAt,
           currentPreviewModifiedAt: currentModified)) {
         return false;
       }
 
-      final destination = File(p.join(companionPreviewDir, owner.id, p.basename(source.path)));
+      final destination = File(p.join(dpmPluginPreviewDir, owner.id, p.basename(source.path)));
       await destination.parent.create(recursive: true);
       await source.copy(destination.path);
 
@@ -499,7 +499,7 @@ class CompanionBridgeService {
 
       // The capture it replaces, if no other row still points at it (a
       // stack and its promoted member can share one preview).
-      if (current != null && p.isWithin(companionPreviewDir, current) && current != destination.path) {
+      if (current != null && p.isWithin(dpmPluginPreviewDir, current) && current != destination.path) {
         final reloaded = await this.library.load();
         final stillUsed = reloaded.any((e) => e.projects.any((pr) => pr.previewSongPath == current));
         if (!stillUsed) {

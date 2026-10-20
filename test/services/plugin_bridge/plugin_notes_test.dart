@@ -3,20 +3,20 @@ import 'dart:io';
 
 import 'package:daw_project_manager/models/music_project.dart';
 import 'package:daw_project_manager/models/profile.dart';
-import 'package:daw_project_manager/services/companion_bridge/companion_bridge_service.dart';
-import 'package:daw_project_manager/services/companion_bridge/companion_protocol.dart';
+import 'package:daw_project_manager/services/plugin_bridge/plugin_bridge_service.dart';
+import 'package:daw_project_manager/services/plugin_bridge/plugin_protocol.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:path/path.dart' as p;
 
 import '../../helpers/test_factories.dart';
 
-class _Library implements CompanionLibrary {
+class _Library implements DpmPluginLibrary {
   _Library(this.profile, this.projects);
   final Profile profile;
   final List<MusicProject> projects;
 
   @override
-  Future<List<CompanionProfileProjects>> load() async => [CompanionProfileProjects(profile, List.of(projects))];
+  Future<List<DpmPluginProfileProjects>> load() async => [DpmPluginProfileProjects(profile, List.of(projects))];
 
   @override
   Future<void> saveProject(String profileId, MusicProject project) async {
@@ -28,54 +28,54 @@ class _Library implements CompanionLibrary {
 
 void main() {
   final now = DateTime.utc(2026, 10, 19, 12);
-  CompanionNotesSet edit(String text, String base) =>
-      CompanionNotesSet('m1', now, const CompanionProjectRef('solo', 'p1'), text: text, baseText: base);
+  DpmPluginNotesSet edit(String text, String base) =>
+      DpmPluginNotesSet('m1', now, const DpmPluginProjectRef('solo', 'p1'), text: text, baseText: base);
 
   group('applying a notes edit', () {
     test('an edit of what the app has replaces it', () {
       final project = TestFactories.makeProject(notes: 'Kick too loud');
-      expect(applyCompanionNotesSet(project, edit('Kick fixed', 'Kick too loud'))!.notes, 'Kick fixed');
+      expect(applyDpmPluginNotesSet(project, edit('Kick fixed', 'Kick too loud'))!.notes, 'Kick fixed');
     });
 
     test('the same text again changes nothing — a replay is harmless', () {
       final project = TestFactories.makeProject(notes: 'Kick fixed');
-      expect(applyCompanionNotesSet(project, edit('Kick fixed', 'Kick too loud')), isNull);
+      expect(applyDpmPluginNotesSet(project, edit('Kick fixed', 'Kick too loud')), isNull);
     });
 
     test('changed in both places: both are kept, the app\'s first', () {
       final project = TestFactories.makeProject(notes: 'Kick too loud\nBass: more sub');
-      final merged = applyCompanionNotesSet(project, edit('Kick fixed', 'Kick too loud'))!.notes;
-      expect(merged, 'Kick too loud\nBass: more sub${companionNotesSeparator}Kick fixed');
+      final merged = applyDpmPluginNotesSet(project, edit('Kick fixed', 'Kick too loud'))!.notes;
+      expect(merged, 'Kick too loud\nBass: more sub${dpmPluginNotesSeparator}Kick fixed');
     });
 
     test('empty notes in the app take the plugin\'s text as is', () {
-      expect(applyCompanionNotesSet(TestFactories.makeProject(), edit('First note', 'stale base'))!.notes, 'First note');
+      expect(applyDpmPluginNotesSet(TestFactories.makeProject(), edit('First note', 'stale base'))!.notes, 'First note');
     });
 
     test('clearing the notes in the plugin clears them in the app', () {
       final project = TestFactories.makeProject(notes: 'Old');
-      expect(applyCompanionNotesSet(project, edit('', 'Old'))!.notes, isNull);
+      expect(applyDpmPluginNotesSet(project, edit('', 'Old'))!.notes, isNull);
     });
   });
 
   test('notes.set is read, its text capped', () {
-    final m = parseCompanionMessage(jsonEncode({
+    final m = parseDpmPluginMessage(jsonEncode({
       'id': 'op-1',
       'type': 'notes.set',
       'createdAt': '2026-10-19T12:00:00.000Z',
       'project': {'id': 'p1', 'profileId': 'solo'},
       'payload': {'text': 'a' * 30000, 'baseText': 'b'},
-    })) as CompanionNotesSet;
+    })) as DpmPluginNotesSet;
     expect(m.id, 'op-1');
-    expect(m.text.length, companionMaxNotesLength);
+    expect(m.text.length, dpmPluginMaxNotesLength);
     expect(m.baseText, 'b');
-    expect(parseCompanionMessage(jsonEncode({'id': 'x', 'type': 'notes.set', 'payload': {'text': 1}})), isNull);
+    expect(parseDpmPluginMessage(jsonEncode({'id': 'x', 'type': 'notes.set', 'payload': {'text': 1}})), isNull);
   });
 
   test('the index carries each project\'s notes (a member\'s: its stack\'s) and the applied ids', () {
     final solo = Profile(id: 'solo', name: 'Solo', createdAt: DateTime(2025));
-    final index = buildCompanionIndex([
-      CompanionProfileProjects(solo, [
+    final index = buildDpmPluginIndex([
+      DpmPluginProfileProjects(solo, [
         TestFactories.makeProject(id: 'p1', notes: 'Own notes'),
         TestFactories.makeProject(id: 'stack', isVirtual: true, memberProjectIds: ['v1'], notes: 'Shared notes'),
         TestFactories.makeProject(id: 'v1', stackId: 'stack', notes: 'Dormant'),
@@ -91,18 +91,18 @@ void main() {
   group('through the bridge', () {
     late Directory tmp;
     late _Library library;
-    late CompanionBridgeService bridge;
+    late DpmPluginBridgeService bridge;
     var clock = now;
 
     setUp(() async {
-      tmp = await Directory.systemTemp.createTemp('companion_notes_test');
+      tmp = await Directory.systemTemp.createTemp('plugin_notes_test');
       clock = now;
       library = _Library(Profile(id: 'solo', name: 'Solo', createdAt: DateTime(2025)), [
         TestFactories.makeProject(id: 'p1', notes: 'Vocals: comp verse 2'),
         TestFactories.makeProject(id: 'stack', isVirtual: true, memberProjectIds: ['v1'], notes: 'Shared'),
         TestFactories.makeProject(id: 'v1', stackId: 'stack'),
       ]);
-      bridge = CompanionBridgeService(
+      bridge = DpmPluginBridgeService(
         library: library,
         bridgeDir: p.join(tmp.path, 'plugin_bridge'),
         previewSongsDir: p.join(tmp.path, 'preview'),

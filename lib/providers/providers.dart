@@ -66,8 +66,8 @@ import '../models/auto_backup_interval.dart';
 import '../models/pending_folder.dart';
 import '../services/metadata_extractor.dart';
 import '../services/auto_start_service.dart';
-import '../services/companion_bridge/companion_install_scan.dart';
-import '../services/companion_bridge/companion_protocol.dart';
+import '../services/plugin_bridge/plugin_install_scan.dart';
+import '../services/plugin_bridge/plugin_protocol.dart';
 import '../services/crash_logger.dart';
 
 // Profile Repository Provider
@@ -4836,18 +4836,18 @@ abstract class _StoredSwitchNotifier extends Notifier<bool> {
 /// End the work session when the DAW closes the project the DAW Project Manager
 /// plugin is in. On by default: a session left running overnight is the
 /// problem this solves.
-class CompanionEndSessionNotifier extends _StoredSwitchNotifier {
+class DpmPluginEndSessionNotifier extends _StoredSwitchNotifier {
   @override
-  String get storageKey => 'companionEndSessionWhenDawCloses';
+  String get storageKey => 'dpmPluginEndSessionWhenDawCloses';
   @override
   bool get defaultValue => true;
 }
 
 /// Start a work session when a project with the plugin opens in the DAW.
 /// Off by default: starting the clock is a choice some people make by hand.
-class CompanionStartSessionNotifier extends _StoredSwitchNotifier {
+class DpmPluginStartSessionNotifier extends _StoredSwitchNotifier {
   @override
-  String get storageKey => 'companionStartSessionWhenDawOpens';
+  String get storageKey => 'dpmPluginStartSessionWhenDawOpens';
   @override
   bool get defaultValue => false;
 }
@@ -4855,11 +4855,11 @@ class CompanionStartSessionNotifier extends _StoredSwitchNotifier {
 /// The last time this computer saw the DAW Project Manager plugin running, for
 /// Settings > DAW plugin. Device-local (the `settings` box): another
 /// computer has its own DAW and plugin.
-class CompanionSightingNotifier extends Notifier<CompanionSighting?> {
-  static const storageKey = 'companionLastSeen';
+class DpmPluginSightingNotifier extends Notifier<DpmPluginSighting?> {
+  static const storageKey = 'dpmPluginLastSeen';
 
   @override
-  CompanionSighting? build() {
+  DpmPluginSighting? build() {
     _load();
     return null;
   }
@@ -4869,14 +4869,14 @@ class CompanionSightingNotifier extends Notifier<CompanionSighting?> {
     final saved = box.get(storageKey);
     if (saved == null) return;
     try {
-      state ??= CompanionSighting.fromJson(jsonDecode(saved));
+      state ??= DpmPluginSighting.fromJson(jsonDecode(saved));
     } catch (_) {}
   }
 
-  /// Keeps [sighting] when it is news (see [CompanionSighting.isNewsAfter])
+  /// Keeps [sighting] when it is news (see [DpmPluginSighting.isNewsAfter])
   /// and not older than what is known — a stale heartbeat read at startup
   /// mustn't roll the record back.
-  Future<void> record(CompanionSighting sighting) async {
+  Future<void> record(DpmPluginSighting sighting) async {
     final previous = state;
     if (previous != null && sighting.at.isBefore(previous.at)) return;
     if (!sighting.isNewsAfter(previous)) return;
@@ -4886,27 +4886,27 @@ class CompanionSightingNotifier extends Notifier<CompanionSighting?> {
   }
 }
 
-final companionSightingProvider = NotifierProvider<CompanionSightingNotifier, CompanionSighting?>(
-  CompanionSightingNotifier.new,
+final dpmPluginSightingProvider = NotifierProvider<DpmPluginSightingNotifier, DpmPluginSighting?>(
+  DpmPluginSightingNotifier.new,
 );
 
 /// The newest plugin release, when the bridge has looked it up (the same
 /// gate as the app's own update check). In memory: looked up again daily.
-class CompanionLatestReleaseNotifier extends Notifier<CompanionRelease?> {
+class DpmPluginLatestReleaseNotifier extends Notifier<DpmPluginRelease?> {
   @override
-  CompanionRelease? build() => null;
+  DpmPluginRelease? build() => null;
 
-  void set(CompanionRelease? release) => state = release;
+  void set(DpmPluginRelease? release) => state = release;
 }
 
-final companionLatestReleaseProvider = NotifierProvider<CompanionLatestReleaseNotifier, CompanionRelease?>(
-  CompanionLatestReleaseNotifier.new,
+final dpmPluginLatestReleaseProvider = NotifierProvider<DpmPluginLatestReleaseNotifier, DpmPluginRelease?>(
+  DpmPluginLatestReleaseNotifier.new,
 );
 
 /// Folders the user added for finding the plugin, searched only when the
 /// standard plug-in folders have no copy. Device-local: paths of this disk.
-class CompanionCustomFoldersNotifier extends Notifier<List<String>> {
-  static const storageKey = 'companionCustomFolders';
+class DpmPluginCustomFoldersNotifier extends Notifier<List<String>> {
+  static const storageKey = 'dpmPluginCustomFolders';
 
   @override
   List<String> build() {
@@ -4937,34 +4937,34 @@ class CompanionCustomFoldersNotifier extends Notifier<List<String>> {
   }
 }
 
-final companionCustomFoldersProvider = NotifierProvider<CompanionCustomFoldersNotifier, List<String>>(
-  CompanionCustomFoldersNotifier.new,
+final dpmPluginCustomFoldersProvider = NotifierProvider<DpmPluginCustomFoldersNotifier, List<String>>(
+  DpmPluginCustomFoldersNotifier.new,
 );
 
 /// The plugin's installed copies: the standard folders, then the user's own
 /// only when those have none. Searched again each time Settings > DAW plugin
 /// opens (autoDispose) and on "Search again" (invalidate). Null where the
 /// folders can't be seen (the Flatpak).
-final companionInstallsProvider = FutureProvider.autoDispose<List<CompanionInstall>?>((ref) async {
-  final custom = ref.watch(companionCustomFoldersProvider);
-  if (!companionScanAvailable) return null;
-  return findCompanionInstalls(
-    standard: await standardCompanionFoldersHere(),
+final dpmPluginInstallsProvider = FutureProvider.autoDispose<List<DpmPluginInstall>?>((ref) async {
+  final custom = ref.watch(dpmPluginCustomFoldersProvider);
+  if (!dpmPluginScanAvailable) return null;
+  return findDpmPluginInstalls(
+    standard: await standardDpmPluginFoldersHere(),
     customFolders: custom,
     platform: Platform.isWindows
-        ? CompanionPlatform.windows
+        ? DpmPluginPlatform.windows
         : Platform.isMacOS
-            ? CompanionPlatform.macOS
-            : CompanionPlatform.linux,
+            ? DpmPluginPlatform.macOS
+            : DpmPluginPlatform.linux,
   );
 });
 
-final companionEndSessionProvider = NotifierProvider<CompanionEndSessionNotifier, bool>(
-  CompanionEndSessionNotifier.new,
+final dpmPluginEndSessionProvider = NotifierProvider<DpmPluginEndSessionNotifier, bool>(
+  DpmPluginEndSessionNotifier.new,
 );
 
-final companionStartSessionProvider = NotifierProvider<CompanionStartSessionNotifier, bool>(
-  CompanionStartSessionNotifier.new,
+final dpmPluginStartSessionProvider = NotifierProvider<DpmPluginStartSessionNotifier, bool>(
+  DpmPluginStartSessionNotifier.new,
 );
 
 // ---------------------------------------------------------------------------
@@ -5296,7 +5296,7 @@ class WorkTimerNotifier extends Notifier<int> {
   }
 
   /// Ends the running session as if "End session" had been pressed at [end]
-  /// — when the DAW companion plugin reports the project closed, which may
+  /// — when the DAW plugin reports the project closed, which may
   /// be a while before the app hears of it (a crashed DAW's heartbeat takes a
   /// minute and a half to go stale).
   ///

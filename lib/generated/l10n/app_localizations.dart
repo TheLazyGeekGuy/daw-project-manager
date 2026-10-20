@@ -13205,171 +13205,171 @@ abstract class AppLocalizations {
   /// **'Recording latency set to {ms} ms'**
   String midiCalibrated(int ms);
 
-  /// No description provided for @companionSessionsDescription.
+  /// No description provided for @dpmPluginSessionsDescription.
   ///
   /// In en, this message translates to:
   /// **'With the DAW Project Manager plugin in a project, the app knows when your DAW opens and closes it.'**
-  String get companionSessionsDescription;
+  String get dpmPluginSessionsDescription;
 
-  /// No description provided for @companionEndSessionWhenDawCloses.
+  /// No description provided for @dpmPluginEndSessionWhenDawCloses.
   ///
   /// In en, this message translates to:
   /// **'End the session when the DAW closes the project'**
-  String get companionEndSessionWhenDawCloses;
+  String get dpmPluginEndSessionWhenDawCloses;
 
-  /// No description provided for @companionEndSessionWhenDawClosesDescription.
+  /// No description provided for @dpmPluginEndSessionWhenDawClosesDescription.
   ///
   /// In en, this message translates to:
   /// **'Also after a crash: the session ends at the moment the DAW let go of the project.'**
-  String get companionEndSessionWhenDawClosesDescription;
+  String get dpmPluginEndSessionWhenDawClosesDescription;
 
-  /// No description provided for @companionStartSessionWhenDawOpens.
+  /// No description provided for @dpmPluginStartSessionWhenDawOpens.
   ///
   /// In en, this message translates to:
   /// **'Start a session when a project opens in the DAW'**
-  String get companionStartSessionWhenDawOpens;
+  String get dpmPluginStartSessionWhenDawOpens;
 
-  /// No description provided for @companionStartSessionWhenDawOpensDescription.
+  /// No description provided for @dpmPluginStartSessionWhenDawOpensDescription.
   ///
   /// In en, this message translates to:
   /// **'Only when no session is running, and only for projects of the active profile.'**
-  String get companionStartSessionWhenDawOpensDescription;
+  String get dpmPluginStartSessionWhenDawOpensDescription;
 
-  /// No description provided for @companionSessionEndedTitle.
+  /// No description provided for @dpmPluginSessionEndedTitle.
   ///
   /// In en, this message translates to:
   /// **'Session ended'**
-  String get companionSessionEndedTitle;
+  String get dpmPluginSessionEndedTitle;
 
-  /// No description provided for @companionSessionEndedClosed.
+  /// No description provided for @dpmPluginSessionEndedClosed.
   ///
   /// In en, this message translates to:
   /// **'{daw} closed {project}, so its work session ended.'**
-  String companionSessionEndedClosed(String daw, String project);
+  String dpmPluginSessionEndedClosed(String daw, String project);
 
-  /// No description provided for @companionSessionEndedNoResponse.
+  /// No description provided for @dpmPluginSessionEndedNoResponse.
   ///
   /// In en, this message translates to:
   /// **'The DAW Project Manager plugin stopped responding in {daw}, so the session for {project} ended when it was last heard from. The DAW may have crashed or been closed abruptly.'**
-  String companionSessionEndedNoResponse(String daw, String project);
+  String dpmPluginSessionEndedNoResponse(String daw, String project);
 
-  /// No description provided for @companionUnknownDaw.
+  /// No description provided for @dpmPluginUnknownDaw.
   ///
   /// In en, this message translates to:
   /// **'Your DAW'**
-  String get companionUnknownDaw;
+  String get dpmPluginUnknownDaw;
 
-  /// No description provided for @companionSessionEndedSummary.
+  /// No description provided for @dpmPluginSessionEndedSummary.
   ///
   /// In en, this message translates to:
   /// **'{start}–{end} · {duration}'**
-  String companionSessionEndedSummary(
+  String dpmPluginSessionEndedSummary(
     String start,
     String end,
     String duration,
   );
 
-  /// No description provided for @companionPluginTabLabel.
+  /// No description provided for @dpmPluginTabLabel.
   ///
   /// In en, this message translates to:
   /// **'DAW plugin'**
-  String get companionPluginTabLabel;
+  String get dpmPluginTabLabel;
 
-  /// No description provided for @companionPluginTitle.
+  /// No description provided for @dpmPluginTitle.
   ///
   /// In en, this message translates to:
   /// **'DAW Project Manager plugin'**
-  String get companionPluginTitle;
+  String get dpmPluginTitle;
 
-  /// No description provided for @companionPluginDescription.
+  /// No description provided for @dpmPluginDescription.
   ///
   /// In en, this message translates to:
   /// **'A VST3/AU plugin for your DAW. Put it on the master bus: it shows the project\'s to-dos, records each playback pass as the project\'s preview song, and can end your work session when the DAW closes the project.'**
-  String get companionPluginDescription;
+  String get dpmPluginDescription;
 
-  /// No description provided for @companionPluginLastSeen.
+  /// No description provided for @dpmPluginLastSeen.
   ///
   /// In en, this message translates to:
   /// **'Last seen in {daw} (version {version}) on {date}.'**
-  String companionPluginLastSeen(String daw, String version, String date);
+  String dpmPluginLastSeen(String daw, String version, String date);
 
-  /// No description provided for @companionPluginNotSeen.
+  /// No description provided for @dpmPluginNotSeen.
   ///
   /// In en, this message translates to:
   /// **'Not seen on this computer yet. Install it, then put it on your DAW\'s master bus.'**
-  String get companionPluginNotSeen;
+  String get dpmPluginNotSeen;
 
-  /// No description provided for @companionPluginUpdateAvailable.
+  /// No description provided for @dpmPluginUpdateAvailable.
   ///
   /// In en, this message translates to:
   /// **'Version {version} is available.'**
-  String companionPluginUpdateAvailable(String version);
+  String dpmPluginUpdateAvailable(String version);
 
-  /// No description provided for @companionPluginDownload.
+  /// No description provided for @dpmPluginDownload.
   ///
   /// In en, this message translates to:
   /// **'Download the DAW plugin'**
-  String get companionPluginDownload;
+  String get dpmPluginDownload;
 
-  /// No description provided for @companionPluginDownloadUpdate.
+  /// No description provided for @dpmPluginDownloadUpdate.
   ///
   /// In en, this message translates to:
   /// **'Download the update'**
-  String get companionPluginDownloadUpdate;
+  String get dpmPluginDownloadUpdate;
 
-  /// No description provided for @companionInstalledTitle.
+  /// No description provided for @dpmPluginInstalledTitle.
   ///
   /// In en, this message translates to:
   /// **'Installed'**
-  String get companionInstalledTitle;
+  String get dpmPluginInstalledTitle;
 
-  /// No description provided for @companionInstalledVersion.
+  /// No description provided for @dpmPluginInstalledVersion.
   ///
   /// In en, this message translates to:
   /// **'Version {version}'**
-  String companionInstalledVersion(String version);
+  String dpmPluginInstalledVersion(String version);
 
-  /// No description provided for @companionInstalledNone.
+  /// No description provided for @dpmPluginInstalledNone.
   ///
   /// In en, this message translates to:
   /// **'Not found in the standard plug-in folders.'**
-  String get companionInstalledNone;
+  String get dpmPluginInstalledNone;
 
-  /// No description provided for @companionInstalledDuplicates.
+  /// No description provided for @dpmPluginInstalledDuplicates.
   ///
   /// In en, this message translates to:
   /// **'More than one copy is installed, so your DAW may load either. Keep only one.'**
-  String get companionInstalledDuplicates;
+  String get dpmPluginInstalledDuplicates;
 
-  /// No description provided for @companionSearchAgain.
+  /// No description provided for @dpmPluginSearchAgain.
   ///
   /// In en, this message translates to:
   /// **'Search again'**
-  String get companionSearchAgain;
+  String get dpmPluginSearchAgain;
 
-  /// No description provided for @companionSearching.
+  /// No description provided for @dpmPluginSearching.
   ///
   /// In en, this message translates to:
   /// **'Searching…'**
-  String get companionSearching;
+  String get dpmPluginSearching;
 
-  /// No description provided for @companionCustomFoldersHint.
+  /// No description provided for @dpmPluginCustomFoldersHint.
   ///
   /// In en, this message translates to:
   /// **'Installed it somewhere else? Add that folder, and the app looks there when the standard folders have no copy.'**
-  String get companionCustomFoldersHint;
+  String get dpmPluginCustomFoldersHint;
 
-  /// No description provided for @companionCustomFolderTag.
+  /// No description provided for @dpmPluginCustomFolderTag.
   ///
   /// In en, this message translates to:
   /// **'your folder'**
-  String get companionCustomFolderTag;
+  String get dpmPluginCustomFolderTag;
 
-  /// No description provided for @companionScanUnavailable.
+  /// No description provided for @dpmPluginScanUnavailable.
   ///
   /// In en, this message translates to:
   /// **'The Flatpak can\'t look into your plug-in folders. The plugin shows up here once a DAW has loaded it.'**
-  String get companionScanUnavailable;
+  String get dpmPluginScanUnavailable;
 }
 
 class _AppLocalizationsDelegate

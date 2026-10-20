@@ -7854,41 +7854,41 @@ class AppLocalizationsJa extends AppLocalizations {
   }
 
   @override
-  String get companionSessionsDescription =>
+  String get dpmPluginSessionsDescription =>
       'プロジェクトに DAW Project Manager プラグインを入れると、DAW がそのプロジェクトを開いたり閉じたりしたことがアプリに伝わります。';
 
   @override
-  String get companionEndSessionWhenDawCloses => 'DAW がプロジェクトを閉じたらセッションを終了';
+  String get dpmPluginEndSessionWhenDawCloses => 'DAW がプロジェクトを閉じたらセッションを終了';
 
   @override
-  String get companionEndSessionWhenDawClosesDescription =>
+  String get dpmPluginEndSessionWhenDawClosesDescription =>
       'クラッシュ後も同様です。セッションは DAW がプロジェクトを手放した時刻で終了します。';
 
   @override
-  String get companionStartSessionWhenDawOpens => 'DAW でプロジェクトが開かれたらセッションを開始';
+  String get dpmPluginStartSessionWhenDawOpens => 'DAW でプロジェクトが開かれたらセッションを開始';
 
   @override
-  String get companionStartSessionWhenDawOpensDescription =>
+  String get dpmPluginStartSessionWhenDawOpensDescription =>
       '実行中のセッションがない場合のみ、またアクティブなプロフィールのプロジェクトのみが対象です。';
 
   @override
-  String get companionSessionEndedTitle => 'セッションが終了しました';
+  String get dpmPluginSessionEndedTitle => 'セッションが終了しました';
 
   @override
-  String companionSessionEndedClosed(String daw, String project) {
+  String dpmPluginSessionEndedClosed(String daw, String project) {
     return '$daw が $project を閉じたため、作業セッションを終了しました。';
   }
 
   @override
-  String companionSessionEndedNoResponse(String daw, String project) {
+  String dpmPluginSessionEndedNoResponse(String daw, String project) {
     return '$daw の DAW Project Manager プラグインから応答がなくなったため、$project のセッションを最後に応答があった時刻で終了しました。DAW がクラッシュしたか、強制終了された可能性があります。';
   }
 
   @override
-  String get companionUnknownDaw => 'DAW';
+  String get dpmPluginUnknownDaw => 'DAW';
 
   @override
-  String companionSessionEndedSummary(
+  String dpmPluginSessionEndedSummary(
     String start,
     String end,
     String duration,
@@ -7897,64 +7897,64 @@ class AppLocalizationsJa extends AppLocalizations {
   }
 
   @override
-  String get companionPluginTabLabel => 'DAW プラグイン';
+  String get dpmPluginTabLabel => 'DAW プラグイン';
 
   @override
-  String get companionPluginTitle => 'DAW Project Manager プラグイン';
+  String get dpmPluginTitle => 'DAW Project Manager プラグイン';
 
   @override
-  String get companionPluginDescription =>
+  String get dpmPluginDescription =>
       'DAW 用の VST3/AU プラグインです。マスターバスに挿すと、プロジェクトのタスクを表示し、再生のたびにプロジェクトのプレビュー曲として録音し、DAW がプロジェクトを閉じたときに作業セッションを終了できます。';
 
   @override
-  String companionPluginLastSeen(String daw, String version, String date) {
+  String dpmPluginLastSeen(String daw, String version, String date) {
     return '最後に確認: $daw（バージョン $version）、$date。';
   }
 
   @override
-  String get companionPluginNotSeen =>
+  String get dpmPluginNotSeen =>
       'このコンピューターではまだ確認されていません。インストールして、DAW のマスターバスに挿してください。';
 
   @override
-  String companionPluginUpdateAvailable(String version) {
+  String dpmPluginUpdateAvailable(String version) {
     return 'バージョン $version が利用できます。';
   }
 
   @override
-  String get companionPluginDownload => 'DAW プラグインをダウンロード';
+  String get dpmPluginDownload => 'DAW プラグインをダウンロード';
 
   @override
-  String get companionPluginDownloadUpdate => 'アップデートをダウンロード';
+  String get dpmPluginDownloadUpdate => 'アップデートをダウンロード';
 
   @override
-  String get companionInstalledTitle => 'インストール済み';
+  String get dpmPluginInstalledTitle => 'インストール済み';
 
   @override
-  String companionInstalledVersion(String version) {
+  String dpmPluginInstalledVersion(String version) {
     return 'バージョン $version';
   }
 
   @override
-  String get companionInstalledNone => '標準のプラグインフォルダーに見つかりません。';
+  String get dpmPluginInstalledNone => '標準のプラグインフォルダーに見つかりません。';
 
   @override
-  String get companionInstalledDuplicates =>
+  String get dpmPluginInstalledDuplicates =>
       '複数のコピーがインストールされているため、DAW がどちらを読み込むかわかりません。1 つだけ残してください。';
 
   @override
-  String get companionSearchAgain => '再検索';
+  String get dpmPluginSearchAgain => '再検索';
 
   @override
-  String get companionSearching => '検索中…';
+  String get dpmPluginSearching => '検索中…';
 
   @override
-  String get companionCustomFoldersHint =>
+  String get dpmPluginCustomFoldersHint =>
       '別の場所にインストールしましたか？ そのフォルダーを追加すると、標準フォルダーにコピーがない場合にアプリがそこを探します。';
 
   @override
-  String get companionCustomFolderTag => '追加したフォルダー';
+  String get dpmPluginCustomFolderTag => '追加したフォルダー';
 
   @override
-  String get companionScanUnavailable =>
+  String get dpmPluginScanUnavailable =>
       'Flatpak 版はプラグインフォルダーを参照できません。DAW がプラグインを読み込むと、ここに表示されます。';
 }
