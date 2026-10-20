@@ -22,7 +22,8 @@ class LinuxMidiInput implements MidiInputBackend {
   Future<List<MidiInputDevice>> devices() async {
     try {
       final alsa = _Alsa.open();
-      return alsa.withSeq(_kOpenInput, alsa.inputs) ?? const [];
+      return alsa.withSeq<List<MidiInputDevice>>(_kOpenInput, alsa.inputs) ??
+          const [];
     } catch (e) {
       debugPrint('[MidiInput] ALSA unavailable: $e');
       return const [];

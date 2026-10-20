@@ -51,11 +51,11 @@ dependencies:
   xml: ^6.6.1
   path_provider: ^2.1.1
   archive: ^4.0.7
-  audioplayers: ^6.0.0
+  audioplayers: ^6.8.1
   just_audio: ^0.9.42
   just_audio_background: ^0.0.1-beta.12
   audio_service: ^0.18.15
-  desktop_drop: ^0.7.0
+  desktop_drop: ^0.8.4
   # Canonical-maintained typed wrapper around org.freedesktop.portal.*,
   # used by lib/services/linux_portal_notifier.dart to show notifications
   # via the portal instead of flutter_local_notifications' Linux backend
