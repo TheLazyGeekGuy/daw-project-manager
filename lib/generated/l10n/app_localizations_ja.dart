@@ -7662,6 +7662,12 @@ class AppLocalizationsJa extends AppLocalizations {
   String get moveToProfileMenu => 'プロファイルへ移動…';
 
   @override
+  String get projectMenuFiles => 'ファイル';
+
+  @override
+  String get projectMenuUpdate => '情報を更新';
+
+  @override
   String moveToProfileTitle(String name) {
     return '「$name」を別のプロファイルへ移動';
   }

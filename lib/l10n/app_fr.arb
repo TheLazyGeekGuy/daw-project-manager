@@ -4393,6 +4393,8 @@
   "scanFolderOverlapBody": "Chaque profil garde sa propre copie de chaque projet qu’il trouve : ceux-ci apparaîtraient dans les deux, avec des notes, tâches et temps de travail séparés. Pour donner un morceau à un autre profil, utilisez plutôt « Déplacer vers un profil… ».",
   "scanFolderOverlapAddAnyway": "Ajouter quand même",
   "moveToProfileMenu": "Déplacer vers un profil…",
+  "projectMenuFiles": "Fichiers",
+  "projectMenuUpdate": "Mettre à jour les infos",
   "moveToProfileTitle": "Déplacer « {name} » vers un autre profil",
   "moveToProfileVersions": "{count, plural, =1{Sa version part avec lui, comme un seul morceau.} other{Les {count} versions partent ensemble, comme un seul morceau.}}",
   "moveToProfileTarget": "Profil",

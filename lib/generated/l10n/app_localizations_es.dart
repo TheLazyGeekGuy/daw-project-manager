@@ -7950,6 +7950,12 @@ class AppLocalizationsEs extends AppLocalizations {
   String get moveToProfileMenu => 'Mover a perfil…';
 
   @override
+  String get projectMenuFiles => 'Archivos';
+
+  @override
+  String get projectMenuUpdate => 'Actualizar datos';
+
+  @override
   String moveToProfileTitle(String name) {
     return 'Mover «$name» a otro perfil';
   }

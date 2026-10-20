@@ -7872,6 +7872,12 @@ class AppLocalizationsEn extends AppLocalizations {
   String get moveToProfileMenu => 'Move to profile…';
 
   @override
+  String get projectMenuFiles => 'Files';
+
+  @override
+  String get projectMenuUpdate => 'Update details';
+
+  @override
   String moveToProfileTitle(String name) {
     return 'Move \"$name\" to another profile';
   }

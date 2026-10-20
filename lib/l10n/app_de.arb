@@ -4393,6 +4393,8 @@
   "scanFolderOverlapBody": "Jedes Profil führt von jedem gefundenen Projekt eine eigene Kopie, diese würden also in beiden erscheinen, mit getrennten Notizen, Aufgaben und Arbeitszeiten. Um einen Song einem anderen Profil zu geben, nutze stattdessen „In Profil verschieben…“.",
   "scanFolderOverlapAddAnyway": "Trotzdem hinzufügen",
   "moveToProfileMenu": "In Profil verschieben…",
+  "projectMenuFiles": "Dateien",
+  "projectMenuUpdate": "Details aktualisieren",
   "moveToProfileTitle": "„{name}“ in ein anderes Profil verschieben",
   "moveToProfileVersions": "{count, plural, =1{Die Version kommt mit, als ein Song.} other{Alle {count} Versionen ziehen zusammen um, als ein Song.}}",
   "moveToProfileTarget": "Profil",

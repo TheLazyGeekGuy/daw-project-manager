@@ -7573,6 +7573,12 @@ class AppLocalizationsZh extends AppLocalizations {
   String get moveToProfileMenu => '移动到配置文件…';
 
   @override
+  String get projectMenuFiles => '文件';
+
+  @override
+  String get projectMenuUpdate => '更新信息';
+
+  @override
   String moveToProfileTitle(String name) {
     return '将“$name”移动到另一个配置文件';
   }

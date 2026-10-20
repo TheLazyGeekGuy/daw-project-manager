@@ -4393,6 +4393,8 @@
   "scanFolderOverlapBody": "Ogni profilo tiene una propria copia di ogni progetto che trova, quindi questi comparirebbero in entrambi, con note, attività e tempo di lavoro separati. Per dare un brano a un altro profilo usa invece «Sposta in un profilo…».",
   "scanFolderOverlapAddAnyway": "Aggiungi comunque",
   "moveToProfileMenu": "Sposta in un profilo…",
+  "projectMenuFiles": "File",
+  "projectMenuUpdate": "Aggiorna dati",
   "moveToProfileTitle": "Sposta «{name}» in un altro profilo",
   "moveToProfileVersions": "{count, plural, =1{La sua versione si sposta con lui, come un solo brano.} other{Tutte le {count} versioni si spostano insieme, come un solo brano.}}",
   "moveToProfileTarget": "Profilo",

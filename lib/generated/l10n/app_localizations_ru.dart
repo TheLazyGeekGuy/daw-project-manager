@@ -7947,6 +7947,12 @@ class AppLocalizationsRu extends AppLocalizations {
   String get moveToProfileMenu => 'Переместить в профиль…';
 
   @override
+  String get projectMenuFiles => 'Файлы';
+
+  @override
+  String get projectMenuUpdate => 'Обновить данные';
+
+  @override
   String moveToProfileTitle(String name) {
     return 'Переместить «$name» в другой профиль';
   }

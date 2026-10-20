@@ -4393,6 +4393,8 @@
   "scanFolderOverlapBody": "每个配置文件都会为找到的项目各保留一份副本，所以它们会同时出现在两边，备注、待办和工作时间各自独立。要把一首歌交给另一个配置文件，请改用“移动到配置文件…”。",
   "scanFolderOverlapAddAnyway": "仍然添加",
   "moveToProfileMenu": "移动到配置文件…",
+  "projectMenuFiles": "文件",
+  "projectMenuUpdate": "更新信息",
   "moveToProfileTitle": "将“{name}”移动到另一个配置文件",
   "moveToProfileVersions": "{count, plural, other{全部 {count} 个版本会作为一首歌一起移动。}}",
   "moveToProfileTarget": "配置文件",

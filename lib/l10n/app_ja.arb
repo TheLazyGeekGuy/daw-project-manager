@@ -4393,6 +4393,8 @@
   "scanFolderOverlapBody": "プロファイルごとに見つけたプロジェクトのコピーを別々に持つため、これらは両方に表示され、メモ、ToDo、作業時間も別々になります。曲を別のプロファイルに渡すには、代わりに「プロファイルへ移動…」を使ってください。",
   "scanFolderOverlapAddAnyway": "それでも追加",
   "moveToProfileMenu": "プロファイルへ移動…",
+  "projectMenuFiles": "ファイル",
+  "projectMenuUpdate": "情報を更新",
   "moveToProfileTitle": "「{name}」を別のプロファイルへ移動",
   "moveToProfileVersions": "{count, plural, other{{count} 個のバージョンすべてが1曲としてまとめて移動します。}}",
   "moveToProfileTarget": "プロファイル",

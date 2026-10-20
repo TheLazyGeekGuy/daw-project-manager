@@ -6,6 +6,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../generated/l10n/app_localizations.dart';
 import '../models/music_project.dart';
 import '../providers/providers.dart';
+import '../services/google_drive_sync_service.dart';
 import '../services/metadata_extractor.dart';
 import '../services/mixdown_detector_service.dart';
 import '../services/scanner_service.dart';
@@ -20,6 +21,7 @@ import 'profile_move_actions.dart';
 import 'recently_deleted_actions.dart';
 import 'session_actions.dart';
 import 'app_snack_bar.dart';
+import 'widgets/anchored_menu.dart';
 
 /// The right-click menu on a project, and the three navigation actions it
 /// shares with the rest of the dashboard.
@@ -121,220 +123,27 @@ Future<void> showProjectContextMenu({
     project.filePath,
   );
 
-  final result = await showMenu<String>(
+  final preview = effectivePreviewPathFor(project);
+  final result = await showAnchoredMenu<String>(
     context: context,
-    position: RelativeRect.fromLTRB(
-      position.dx,
-      position.dy,
-      position.dx,
-      position.dy,
+    position: position,
+    style: MenuStyle(
+      backgroundColor: WidgetStatePropertyAll(Theme.of(context).cardColor),
     ),
-    items: [
-      PopupMenuItem<String>(
-        value: sessionMode
-            ? (isSubscribed ? 'endSession' : 'startSession')
-            : 'launch',
-        child: Row(
-          children: [
-            Icon(
-              sessionMode
-                  ? (isSubscribed
-                        ? Icons.bookmark
-                        : Icons.bookmark_add_outlined)
-                  : Icons.open_in_new,
-              size: 20,
-            ),
-            const SizedBox(width: 8),
-            Text(
-              sessionMode
-                  ? (isSubscribed ? l10n.endSession : l10n.startSession)
-                  : l10n.tooltipLaunchInDaw,
-            ),
-          ],
-        ),
-      ),
-      // Card-only: the label is drawn on the card's generated cover, so
-      // offering it on a grid row would point at something not on screen.
-      if (includeCardOptions)
-        PopupMenuItem<String>(
-          value: 'cardInitials',
-          child: Row(
-            children: [
-              const Icon(Icons.text_fields, size: 20),
-              const SizedBox(width: 8),
-              Text(l10n.cardInitialsTitle),
-            ],
-          ),
-        ),
-      PopupMenuItem<String>(
-        value: 'view',
-        child: Row(
-          children: [
-            const Icon(Icons.assignment, size: 20),
-            const SizedBox(width: 8),
-            Text(l10n.tooltipViewDetails),
-          ],
-        ),
-      ),
-      PopupMenuItem<String>(
-        value: 'openFolder',
-        child: Row(
-          children: [
-            const Icon(Icons.folder_open, size: 20),
-            const SizedBox(width: 8),
-            Text(l10n.openFolder),
-          ],
-        ),
-      ),
-      // Moving and archiving (#88, #116). A stack has no files of its own —
-      // its versions do — so both are offered only on a real project, and its
-      // versions are moved or archived from their own rows.
-      if (!project.isVirtual) ...[
-        PopupMenuItem<String>(
-          value: 'move',
-          child: Row(
-            children: [
-              const Icon(Icons.drive_file_move_outline, size: 20),
-              const SizedBox(width: 8),
-              Text(l10n.moveProjectButtonLabel),
-            ],
-          ),
-        ),
-        PopupMenuItem<String>(
-          value: project.isArchived ? 'restore' : 'archive',
-          child: Row(
-            children: [
-              Icon(
-                project.isArchived
-                    ? Icons.unarchive_outlined
-                    : Icons.archive_outlined,
-                size: 20,
-              ),
-              const SizedBox(width: 8),
-              Text(
-                project.isArchived
-                    ? l10n.restoreProjectButtonLabel
-                    : l10n.archiveProjectButtonLabel,
-              ),
-            ],
-          ),
-        ),
-        // Only worth offering while the files are still here: with nothing to
-        // bring back, throwing the zip away would strand the project.
-        if (project.isArchived && projectFileExists(project))
-          PopupMenuItem<String>(
-            value: 'discardArchive',
-            child: Row(
-              children: [
-                Icon(
-                  Icons.delete_sweep_outlined,
-                  size: 20,
-                  color: Colors.red.shade300,
-                ),
-                const SizedBox(width: 8),
-                Text(l10n.discardArchiveButtonLabel),
-              ],
-            ),
-          ),
-      ],
-      // Delete into Recently deleted (Settings > Project folders). Not on a
-      // stack — its shared details live on its row, and unstacking is the
-      // way out — nor on an archived project, the one row pointing at its
-      // zip.
-      // To another artist's profile: a song moves whole, a version with its
-      // stack (see planProfileMove).
-      if (!project.isArchived)
-        PopupMenuItem<String>(
-          value: 'moveToProfile',
-          child: Row(
-            children: [
-              const Icon(Icons.switch_account_outlined, size: 20),
-              const SizedBox(width: 8),
-              Text(l10n.moveToProfileMenu),
-            ],
-          ),
-        ),
-      if (!project.isVirtual && !project.isArchived)
-        PopupMenuItem<String>(
-          value: 'delete',
-          child: Row(
-            children: [
-              Icon(Icons.delete_outline, size: 20, color: Colors.red.shade300),
-              const SizedBox(width: 8),
-              Text(l10n.deleteProjectMenu),
-            ],
-          ),
-        ),
-      PopupMenuItem<String>(
-        value: project.hidden ? 'unhide' : 'hide',
-        child: Row(
-          children: [
-            Icon(
-              project.hidden ? Icons.visibility : Icons.visibility_off,
-              size: 20,
-              color: project.hidden
-                  ? Colors.green.shade300
-                  : Colors.red.shade300,
-            ),
-            const SizedBox(width: 8),
-            Text(project.hidden ? l10n.unhide : l10n.hide),
-          ],
-        ),
-      ),
-      if (File(project.filePath).existsSync() ||
-          Directory(project.filePath).existsSync())
-        PopupMenuItem<String>(
-          value: 'refresh',
-          child: Row(
-            children: [
-              const Icon(Icons.refresh, size: 20),
-              const SizedBox(width: 8),
-              Text(l10n.refreshProject),
-            ],
-          ),
-        ),
-      if (File(project.filePath).existsSync() ||
-          Directory(project.filePath).existsSync())
-        PopupMenuItem<String>(
-          value: 'extractMetadata',
-          enabled: extractionSupported,
-          child: Tooltip(
-            message: extractionSupported
-                ? ''
-                : l10n.metadataExtractionNotSupportedForDaw,
-            child: Row(
-              children: [
-                const Icon(Icons.search, size: 20),
-                const SizedBox(width: 8),
-                Text(l10n.extractMetadata),
-              ],
-            ),
-          ),
-        ),
-      PopupMenuItem<String>(
-        value: 'restoreFromDrive',
-        child: Row(
-          children: [
-            const Icon(Icons.cloud_download, size: 20),
-            const SizedBox(width: 8),
-            Text(l10n.restoreProjectFromDrive),
-          ],
-        ),
-      ),
-      if (effectivePreviewPathFor(project) != null &&
-          !effectivePreviewPathFor(project)!.startsWith('drive://'))
-        PopupMenuItem<String>(
-          value: 'share',
-          child: Row(
-            children: [
-              const Icon(Icons.share, size: 20),
-              const SizedBox(width: 8),
-              Text(l10n.sharePreviewSong),
-            ],
-          ),
-        ),
-    ],
-    color: Theme.of(context).cardColor,
+    builder: (choose) => projectMenuChildren(
+      l10n: l10n,
+      project: project,
+      choose: choose,
+      sessionMode: sessionMode,
+      isSubscribed: isSubscribed,
+      includeCardOptions: includeCardOptions,
+      filesPresent: File(project.filePath).existsSync() ||
+          Directory(project.filePath).existsSync(),
+      extractionSupported: extractionSupported,
+      archivedFilesPresent: project.isArchived && projectFileExists(project),
+      driveRestoreOffered: GoogleDriveSyncService.isSupported,
+      previewShareable: preview != null && !preview.startsWith('drive://'),
+    ),
   );
 
   if (result != null && context.mounted) {
@@ -522,4 +331,125 @@ Future<void> showProjectContextMenu({
         break;
     }
   }
+}
+
+/// The project menu's entries, from plain values so it can be tested without
+/// Riverpod or the file system. Every entry calls [choose] with the value
+/// [showProjectContextMenu] acts on.
+///
+/// The everyday actions sit at the top, the rest in two submenus that open
+/// on hover (Files: move, archive; Update details: re-reading the project),
+/// and Delete last, on its own.
+List<Widget> projectMenuChildren({
+  required AppLocalizations l10n,
+  required MusicProject project,
+  required void Function(String value) choose,
+  required bool sessionMode,
+  required bool isSubscribed,
+  required bool includeCardOptions,
+  required bool filesPresent,
+  required bool extractionSupported,
+  required bool archivedFilesPresent,
+  required bool driveRestoreOffered,
+  required bool previewShareable,
+}) {
+  Widget item(
+    String value,
+    IconData icon,
+    String label, {
+    Color? iconColor,
+    bool enabled = true,
+    String? whyNot,
+  }) =>
+      MenuItemButton(
+        key: ValueKey('project-menu-$value'),
+        leadingIcon: Icon(icon, size: 20, color: iconColor),
+        onPressed: enabled ? () => choose(value) : null,
+        child: whyNot == null || enabled
+            ? Text(label)
+            : Tooltip(message: whyNot, child: Text(label)),
+      );
+
+  Widget submenu(String key, IconData icon, String label, List<Widget> items) =>
+      SubmenuButton(
+        key: ValueKey('project-menu-$key'),
+        leadingIcon: Icon(icon, size: 20),
+        // Long enough that crossing it on the way to an item below doesn't
+        // open it; short enough that resting on it does.
+        hoverOpenDelay: const Duration(milliseconds: 150),
+        animated: true,
+        menuChildren: items,
+        child: Text(label),
+      );
+
+  // Moving and archiving (#88, #116). A stack has no files of its own — its
+  // versions do — so both are offered only on a real project, and its
+  // versions are moved or archived from their own rows.
+  final files = [
+    if (!project.isVirtual) ...[
+      item('move', Icons.drive_file_move_outline, l10n.moveProjectButtonLabel),
+      project.isArchived
+          ? item('restore', Icons.unarchive_outlined,
+              l10n.restoreProjectButtonLabel)
+          : item('archive', Icons.archive_outlined,
+              l10n.archiveProjectButtonLabel),
+      // Only worth offering while the files are still here: with nothing to
+      // bring back, throwing the zip away would strand the project.
+      if (archivedFilesPresent)
+        item('discardArchive', Icons.delete_sweep_outlined,
+            l10n.discardArchiveButtonLabel,
+            iconColor: Colors.red.shade300),
+    ],
+  ];
+  final update = [
+    if (filesPresent) ...[
+      item('refresh', Icons.refresh, l10n.refreshProject),
+      item('extractMetadata', Icons.search, l10n.extractMetadata,
+          enabled: extractionSupported,
+          whyNot: l10n.metadataExtractionNotSupportedForDaw),
+    ],
+    // Drive isn't offered inside Flatpak (GoogleDriveSyncService.isSupported).
+    if (driveRestoreOffered)
+      item('restoreFromDrive', Icons.cloud_download,
+          l10n.restoreProjectFromDrive),
+  ];
+
+  return [
+    sessionMode
+        ? item(
+            isSubscribed ? 'endSession' : 'startSession',
+            isSubscribed ? Icons.bookmark : Icons.bookmark_add_outlined,
+            isSubscribed ? l10n.endSession : l10n.startSession)
+        : item('launch', Icons.open_in_new, l10n.tooltipLaunchInDaw),
+    item('view', Icons.assignment, l10n.tooltipViewDetails),
+    item('openFolder', Icons.folder_open, l10n.openFolder),
+    if (previewShareable) item('share', Icons.share, l10n.sharePreviewSong),
+    const Divider(height: 1),
+    if (files.isNotEmpty)
+      submenu('files', Icons.folder_copy_outlined, l10n.projectMenuFiles, files),
+    if (update.isNotEmpty)
+      submenu('update', Icons.sync, l10n.projectMenuUpdate, update),
+    // Card-only: the label is drawn on the card's generated cover, so
+    // offering it on a grid row would point at something not on screen.
+    if (includeCardOptions)
+      item('cardInitials', Icons.text_fields, l10n.cardInitialsTitle),
+    project.hidden
+        ? item('unhide', Icons.visibility, l10n.unhide,
+            iconColor: Colors.green.shade300)
+        : item('hide', Icons.visibility_off, l10n.hide,
+            iconColor: Colors.red.shade300),
+    // To another artist's profile: a song moves whole, a version with its
+    // stack (see planProfileMove).
+    if (!project.isArchived)
+      item('moveToProfile', Icons.switch_account_outlined,
+          l10n.moveToProfileMenu),
+    // Delete into Recently deleted (Settings > Project folders). Not on a
+    // stack — its shared details live on its row, and unstacking is the way
+    // out — nor on an archived project, the one row pointing at its zip.
+    if (!project.isVirtual && !project.isArchived) ...[
+      const Divider(height: 1),
+      item('delete', Icons.delete_outline, l10n.deleteProjectMenu,
+          iconColor: Colors.red.shade300),
+    ],
+  ];
 }

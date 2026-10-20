@@ -4417,6 +4417,8 @@
   "scanFolderOverlapBody": "Cada perfil guarda sua própria cópia de cada projeto que encontra, então eles apareceriam nos dois, com anotações, tarefas e tempo de trabalho separados. Para passar uma música para outro perfil, use \"Mover para perfil…\" nela.",
   "scanFolderOverlapAddAnyway": "Adicionar mesmo assim",
   "moveToProfileMenu": "Mover para perfil…",
+  "projectMenuFiles": "Arquivos",
+  "projectMenuUpdate": "Atualizar dados",
   "moveToProfileTitle": "Mover \"{name}\" para outro perfil",
   "moveToProfileVersions": "{count, plural, =1{A versão vai junto, como uma só música.} other{Todas as {count} versões vão juntas, como uma só música.}}",
   "moveToProfileTarget": "Perfil",

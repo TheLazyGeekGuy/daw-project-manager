@@ -12911,6 +12911,18 @@ abstract class AppLocalizations {
   /// **'Move to profile…'**
   String get moveToProfileMenu;
 
+  /// Project right-click menu: submenu holding move, archive and restore
+  ///
+  /// In en, this message translates to:
+  /// **'Files'**
+  String get projectMenuFiles;
+
+  /// Project right-click menu: submenu holding refresh, extract metadata and restore from Drive
+  ///
+  /// In en, this message translates to:
+  /// **'Update details'**
+  String get projectMenuUpdate;
+
   /// No description provided for @moveToProfileTitle.
   ///
   /// In en, this message translates to:

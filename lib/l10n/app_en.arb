@@ -7810,6 +7810,14 @@
   "scanFolderOverlapBody": "Each profile keeps its own copy of every project it finds, so these would appear in both, with separate notes, to-dos and work time. To give a song to another profile, use \"Move to profile…\" on it instead.",
   "scanFolderOverlapAddAnyway": "Add anyway",
   "moveToProfileMenu": "Move to profile…",
+  "projectMenuFiles": "Files",
+  "@projectMenuFiles": {
+    "description": "Project right-click menu: submenu holding move, archive and restore"
+  },
+  "projectMenuUpdate": "Update details",
+  "@projectMenuUpdate": {
+    "description": "Project right-click menu: submenu holding refresh, extract metadata and restore from Drive"
+  },
   "moveToProfileTitle": "Move \"{name}\" to another profile",
   "@moveToProfileTitle": {
     "placeholders": {
