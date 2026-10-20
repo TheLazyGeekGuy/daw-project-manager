@@ -2,7 +2,7 @@ import 'dart:io';
 
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/foundation.dart' show kDebugMode;
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:flutter/services.dart' show LogicalKeyboardKey;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:hive_ce/hive.dart';
@@ -201,16 +201,16 @@ class _ProjectTemplatesPageState extends ConsumerState<ProjectTemplatesPage> {
 
   Future<void> _pickMainFile() async {
     final l10n = AppLocalizations.of(context)!;
-    final result = await FilePicker.pickFiles(
+    final result = await FilePicker.pickFile(
       type: FileType.custom,
       allowedExtensions: ScannerService.supportedExtensions
           .map((e) => e.substring(1))
           .toList(),
       dialogTitle: l10n.selectTemplateMainFile,
     );
-    if (!mounted || result == null || result.files.single.path == null) return;
+    if (!mounted || result == null || result.path == null) return;
 
-    final mainFilePath = result.files.single.path!;
+    final mainFilePath = result.path!;
     final nameController = TextEditingController(
       text: p.basenameWithoutExtension(mainFilePath),
     );

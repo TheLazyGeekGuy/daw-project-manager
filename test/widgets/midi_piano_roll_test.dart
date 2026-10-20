@@ -1,5 +1,5 @@
 import 'package:flutter/gestures.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -11,6 +11,7 @@ import 'package:daw_project_manager/ui/midi_preview_player.dart';
 import 'package:daw_project_manager/ui/widgets/midi_clip_edit_controller.dart';
 import 'package:daw_project_manager/ui/widgets/midi_piano_roll.dart';
 import 'package:daw_project_manager/utils/musical_scale.dart';
+import 'package:daw_project_manager/utils/localization_delegates.dart';
 
 String _laneName(MidiLane lane) => lane.isVelocity
     ? 'Velocity'
@@ -148,6 +149,32 @@ void main() {
       expect(snapLaneValue(bend, 9500), 9500);
       expect(snapLaneValue(const MidiLane.of(MidiEventKind.controller, 1), 64),
           64);
+    });
+
+    test('a pen press maps onto velocity; a mouse or finger has none', () {
+      PointerDownEvent press(PointerDeviceKind kind, double pressure,
+              {double min = 0, double max = 1}) =>
+          PointerDownEvent(
+              kind: kind,
+              pressure: pressure,
+              pressureMin: min,
+              pressureMax: max);
+      expect(penVelocity(press(PointerDeviceKind.stylus, 0)), 1);
+      expect(penVelocity(press(PointerDeviceKind.stylus, 0.5)), 64);
+      expect(penVelocity(press(PointerDeviceKind.stylus, 1)), 127);
+      expect(penVelocity(press(PointerDeviceKind.invertedStylus, 1)), 127,
+          reason: 'the eraser end of a pen presses as well');
+      expect(penVelocity(press(PointerDeviceKind.stylus, 1.4)), 127,
+          reason: 'clamped: some pens overshoot their own maximum');
+      expect(
+          penVelocity(press(PointerDeviceKind.stylus, 300, min: 0, max: 1024)),
+          38,
+          reason: 'measured within the range the pen reports');
+      expect(penVelocity(press(PointerDeviceKind.stylus, 1, min: 1, max: 1)),
+          isNull,
+          reason: 'a pen with no pressure range drags velocity like a mouse');
+      expect(penVelocity(press(PointerDeviceKind.mouse, 1)), isNull);
+      expect(penVelocity(press(PointerDeviceKind.touch, 1)), isNull);
     });
 
     test('out of scale: only with a scale, by pitch class', () {
@@ -680,7 +707,7 @@ void main() {
       final player = MidiPreviewPlayer();
       addTearDown(player.dispose);
       await tester.pumpWidget(ProviderScope(child: MaterialApp(
-        localizationsDelegates: AppLocalizations.localizationsDelegates,
+        localizationsDelegates: appLocalizationsDelegates,
         supportedLocales: AppLocalizations.supportedLocales,
         home: Scaffold(
           body: Builder(
@@ -717,7 +744,7 @@ void main() {
       var toggles = 0;
       // The window reads the shared preview volume, so it needs a scope.
       await tester.pumpWidget(ProviderScope(child: MaterialApp(
-        localizationsDelegates: AppLocalizations.localizationsDelegates,
+        localizationsDelegates: appLocalizationsDelegates,
         supportedLocales: AppLocalizations.supportedLocales,
         home: Scaffold(
           body: Builder(

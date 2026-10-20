@@ -1,8 +1,9 @@
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 import 'package:daw_project_manager/generated/l10n/app_localizations.dart';
 import 'package:daw_project_manager/ui/dialogs/bulk_tags_dialog.dart';
+import 'package:daw_project_manager/utils/localization_delegates.dart';
 
 /// #109 — tagging many projects at once from the bulk-actions bar. The dialog
 /// only reports what was picked; the dashboard does the writing.
@@ -19,7 +20,7 @@ void main() {
   }) async {
     await tester.pumpWidget(
       MaterialApp(
-        localizationsDelegates: AppLocalizations.localizationsDelegates,
+        localizationsDelegates: appLocalizationsDelegates,
         supportedLocales: AppLocalizations.supportedLocales,
         home: Scaffold(
           body: Builder(

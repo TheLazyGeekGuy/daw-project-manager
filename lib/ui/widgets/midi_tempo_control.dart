@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 
 /// Tempos the preview accepts. Below 20 a bar lasts longer than most
 /// previews; above 400 notes smear into each other.

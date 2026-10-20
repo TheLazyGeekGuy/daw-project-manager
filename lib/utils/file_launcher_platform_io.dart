@@ -6,7 +6,6 @@
 // compile this file; the plugin often compiles on all platforms with no-op
 // native code on non-macOS.
 
-import 'dart:ffi';
 import 'dart:io';
 
 import 'package:ffi/ffi.dart';
@@ -92,14 +91,14 @@ bool _shellExecuteOpen(String path) {
   final file = path.toNativeUtf16();
   try {
     final result = win32.ShellExecute(
-      0,
-      operation,
-      file,
-      nullptr,
-      nullptr,
+      null,
+      win32.PCWSTR(operation),
+      win32.PCWSTR(file),
+      null,
+      null,
       win32.SW_SHOWNORMAL,
     );
-    return result > 32;
+    return result.address > 32;
   } finally {
     calloc.free(operation);
     calloc.free(file);

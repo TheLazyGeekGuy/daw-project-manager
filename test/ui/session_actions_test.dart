@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 
@@ -6,6 +6,7 @@ import 'package:daw_project_manager/generated/l10n/app_localizations.dart';
 import 'package:daw_project_manager/models/music_project.dart';
 import 'package:daw_project_manager/providers/providers.dart';
 import 'package:daw_project_manager/ui/session_actions.dart';
+import 'package:daw_project_manager/utils/localization_delegates.dart';
 
 import '../helpers/test_factories.dart';
 
@@ -27,7 +28,7 @@ Future<void> _pumpHost(WidgetTester tester) async {
         workTimerProvider.overrideWith(_FakeWorkTimerNotifier.new),
       ],
       child: MaterialApp(
-        localizationsDelegates: AppLocalizations.localizationsDelegates,
+        localizationsDelegates: appLocalizationsDelegates,
         supportedLocales: AppLocalizations.supportedLocales,
         home: Scaffold(
           body: Consumer(

@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 
 import '../../generated/l10n/app_localizations.dart';
 import '../../models/custom_field.dart';
@@ -164,7 +164,7 @@ class ColumnsAndFieldsSettings extends StatelessWidget {
                     physics: const NeverScrollableScrollPhysics(),
                     buildDefaultDragHandles: false,
                     itemCount: columns.length,
-                    onReorder: onColumnsReordered,
+                    onReorderItem: onColumnsReordered,
                     itemBuilder: (context, index) {
                       final column = columns[index];
                       return StripedRow(
@@ -253,7 +253,7 @@ class ColumnsAndFieldsSettings extends StatelessWidget {
                       physics: const NeverScrollableScrollPhysics(),
                       buildDefaultDragHandles: false,
                       itemCount: fields.length,
-                      onReorder: onFieldsReordered,
+                      onReorderItem: onFieldsReordered,
                       itemBuilder: (context, index) {
                         final field = fields[index];
                         final typeLabel = field.type == CustomFieldType.number

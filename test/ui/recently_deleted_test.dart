@@ -1,6 +1,6 @@
 import 'dart:io';
 
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'package:path/path.dart' as p;
@@ -10,6 +10,7 @@ import 'package:daw_project_manager/repository/project_trash.dart';
 import 'package:daw_project_manager/ui/dialogs/delete_project_dialog.dart';
 import 'package:daw_project_manager/ui/recently_deleted_actions.dart' show pathAScanWouldFind;
 import 'package:daw_project_manager/ui/widgets/recently_deleted_card.dart';
+import 'package:daw_project_manager/utils/localization_delegates.dart';
 
 import '../helpers/test_factories.dart';
 
@@ -17,7 +18,7 @@ void main() {
   setUpAll(() => initializeDateFormatting('en'));
 
   Widget app(Widget child) => MaterialApp(
-        localizationsDelegates: AppLocalizations.localizationsDelegates,
+        localizationsDelegates: appLocalizationsDelegates,
         supportedLocales: AppLocalizations.supportedLocales,
         home: Scaffold(body: SingleChildScrollView(child: child)),
       );

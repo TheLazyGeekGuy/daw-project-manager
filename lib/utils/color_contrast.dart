@@ -1,6 +1,6 @@
 import 'dart:math' as math;
 
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 
 /// WCAG 2.1 relative luminance of an opaque sRGB color.
 double relativeLuminance(Color color) {

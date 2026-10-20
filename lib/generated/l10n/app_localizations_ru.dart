@@ -2546,13 +2546,6 @@ class AppLocalizationsRu extends AppLocalizations {
   String get saveFileDialogTitle => 'Сохранить файл';
 
   @override
-  String get saveAllFilesAsZipDialogTitle => 'Сохранить все файлы в ZIP';
-
-  @override
-  String get saveSelectedFilesAsZipDialogTitle =>
-      'Сохранить выбранные файлы в ZIP';
-
-  @override
   String failedToRemovePressKitFile(String error) {
     return 'Не удалось удалить файл пресс-кита: $error';
   }
@@ -5217,9 +5210,6 @@ class AppLocalizationsRu extends AppLocalizations {
       'Сохранить прикреплённые файлы и ссылки';
 
   @override
-  String get attachmentExportSaveTitle => 'Сохранить вложения';
-
-  @override
   String get attachmentExportNothing => 'Нечего экспортировать';
 
   @override
@@ -6648,6 +6638,9 @@ class AppLocalizationsRu extends AppLocalizations {
   String get midiGestureDrag => 'Перетаскивание';
 
   @override
+  String get midiGesturePen => 'Стилус';
+
+  @override
   String get midiGestureWheel => 'Колесо мыши';
 
   @override
@@ -6656,6 +6649,10 @@ class AppLocalizationsRu extends AppLocalizations {
   @override
   String get midiShortcutPencilTool =>
       'Карандаш: щелчок добавляет ноту; протяните вбок, чтобы удлинить, вверх или вниз — громкость; щелчок по ноте выделяет её';
+
+  @override
+  String get midiShortcutPenPressure =>
+      'Рисование стилусом: чем сильнее нажим, тем громче нота';
 
   @override
   String get midiShortcutDoubleClick =>
@@ -7938,6 +7935,12 @@ class AppLocalizationsRu extends AppLocalizations {
 
   @override
   String get moveToProfileMenu => 'Переместить в профиль…';
+
+  @override
+  String get projectMenuFiles => 'Файлы';
+
+  @override
+  String get projectMenuUpdate => 'Обновить данные';
 
   @override
   String moveToProfileTitle(String name) {

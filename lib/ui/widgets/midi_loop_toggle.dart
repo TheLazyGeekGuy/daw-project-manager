@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 
 /// The repeat button next to a MIDI preview's volume: lit while previews
 /// loop. One setting for every preview, so every copy of this button shows

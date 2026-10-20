@@ -3,7 +3,7 @@ import '../services/app_audio_focus.dart';
 import '../utils/mobile_utils.dart';
 import '../utils/search_utils.dart';
 import 'package:flutter/foundation.dart' show kDebugMode;
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:audioplayers/audioplayers.dart';
 import '../models/playlist.dart';
@@ -352,11 +352,8 @@ class _PlaylistsPageState extends ConsumerState<PlaylistsPage> {
                   child: ReorderableListView.builder(
                     shrinkWrap: true,
                     itemCount: orderedProjectIds.length,
-                    onReorder: (oldIndex, newIndex) {
+                    onReorderItem: (oldIndex, newIndex) {
                       setDialogState(() {
-                        if (newIndex > oldIndex) {
-                          newIndex -= 1;
-                        }
                         final projectId = orderedProjectIds.removeAt(oldIndex);
                         orderedProjectIds.insert(newIndex, projectId);
                       });
@@ -1297,11 +1294,8 @@ class _PlaylistPlayerPageState extends ConsumerState<PlaylistPlayerPage> {
           Expanded(
             child: ReorderableListView.builder(
               itemCount: _playlistItems.length,
-              onReorder: (oldIndex, newIndex) {
+              onReorderItem: (oldIndex, newIndex) {
                 setState(() {
-                  if (newIndex > oldIndex) {
-                    newIndex -= 1;
-                  }
                   final item = _playlistItems.removeAt(oldIndex);
                   _playlistItems.insert(newIndex, item);
                   
@@ -1593,11 +1587,8 @@ class _EditPlaylistFormState extends ConsumerState<_EditPlaylistForm> {
         Expanded(
           child: ReorderableListView.builder(
             itemCount: _orderedProjectIds.length,
-            onReorder: (oldIndex, newIndex) {
+            onReorderItem: (oldIndex, newIndex) {
               setState(() {
-                if (newIndex > oldIndex) {
-                  newIndex -= 1;
-                }
                 final projectId = _orderedProjectIds.removeAt(oldIndex);
                 _orderedProjectIds.insert(newIndex, projectId);
               });

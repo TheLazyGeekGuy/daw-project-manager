@@ -2488,12 +2488,6 @@ class AppLocalizationsJa extends AppLocalizations {
   String get saveFileDialogTitle => 'ファイルを保存';
 
   @override
-  String get saveAllFilesAsZipDialogTitle => 'すべてのファイルを ZIP で保存';
-
-  @override
-  String get saveSelectedFilesAsZipDialogTitle => '選択したファイルを ZIP で保存';
-
-  @override
   String failedToRemovePressKitFile(String error) {
     return 'プレスキットファイルを削除できませんでした: $error';
   }
@@ -5074,9 +5068,6 @@ class AppLocalizationsJa extends AppLocalizations {
   String get attachmentExportTooltip => '添付ファイルとリンクを保存';
 
   @override
-  String get attachmentExportSaveTitle => '添付を保存';
-
-  @override
   String get attachmentExportNothing => '書き出すものがありません';
 
   @override
@@ -6458,6 +6449,9 @@ class AppLocalizationsJa extends AppLocalizations {
   String get midiGestureDrag => 'ドラッグ';
 
   @override
+  String get midiGesturePen => 'ペン';
+
+  @override
   String get midiGestureWheel => 'ホイール';
 
   @override
@@ -6466,6 +6460,9 @@ class AppLocalizationsJa extends AppLocalizations {
   @override
   String get midiShortcutPencilTool =>
       '鉛筆：クリックでノートを追加。横にドラッグで長く、上下でベロシティ。ノートをクリックすると選択';
+
+  @override
+  String get midiShortcutPenPressure => 'ペンで描く：強く押すほどベロシティが上がります';
 
   @override
   String get midiShortcutDoubleClick =>
@@ -7654,6 +7651,12 @@ class AppLocalizationsJa extends AppLocalizations {
 
   @override
   String get moveToProfileMenu => 'プロファイルへ移動…';
+
+  @override
+  String get projectMenuFiles => 'ファイル';
+
+  @override
+  String get projectMenuUpdate => '情報を更新';
 
   @override
   String moveToProfileTitle(String name) {

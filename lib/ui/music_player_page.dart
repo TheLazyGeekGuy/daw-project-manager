@@ -1,6 +1,6 @@
 import 'dart:math' as math;
 
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:path/path.dart' as p;
 
@@ -1175,9 +1175,8 @@ class _MusicPlayerPageState extends ConsumerState<MusicPlayerPage>
                       )
                     : ReorderableListView.builder(
                         itemCount: _playlist.length,
-                        onReorder: (oldIndex, newIndex) {
+                        onReorderItem: (oldIndex, newIndex) {
                           setState(() {
-                            if (newIndex > oldIndex) newIndex--;
                             final item = _playlist.removeAt(oldIndex);
                             _playlist.insert(newIndex, item);
                             if (_playlistIndex == oldIndex) {

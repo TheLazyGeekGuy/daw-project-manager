@@ -2554,13 +2554,6 @@ class AppLocalizationsIt extends AppLocalizations {
   String get saveFileDialogTitle => 'Salva file';
 
   @override
-  String get saveAllFilesAsZipDialogTitle => 'Salva tutti i file come ZIP';
-
-  @override
-  String get saveSelectedFilesAsZipDialogTitle =>
-      'Salva i file selezionati come ZIP';
-
-  @override
   String failedToRemovePressKitFile(String error) {
     return 'Impossibile rimuovere il file press kit: $error';
   }
@@ -5229,9 +5222,6 @@ class AppLocalizationsIt extends AppLocalizations {
   String get attachmentExportTooltip => 'Salva i file e i link allegati';
 
   @override
-  String get attachmentExportSaveTitle => 'Salva allegati';
-
-  @override
   String get attachmentExportNothing => 'Niente da esportare';
 
   @override
@@ -6663,6 +6653,9 @@ class AppLocalizationsIt extends AppLocalizations {
   String get midiGestureDrag => 'Trascina';
 
   @override
+  String get midiGesturePen => 'Penna';
+
+  @override
   String get midiGestureWheel => 'Rotellina';
 
   @override
@@ -6671,6 +6664,10 @@ class AppLocalizationsIt extends AppLocalizations {
   @override
   String get midiShortcutPencilTool =>
       'Matita: clic per aggiungere una nota; trascina di lato per allungarla, su o giù per la velocity; un clic su una nota la seleziona';
+
+  @override
+  String get midiShortcutPenPressure =>
+      'Disegnare con la penna: più premi, più forte suona la nota';
 
   @override
   String get midiShortcutDoubleClick =>
@@ -7927,6 +7924,12 @@ class AppLocalizationsIt extends AppLocalizations {
 
   @override
   String get moveToProfileMenu => 'Sposta in un profilo…';
+
+  @override
+  String get projectMenuFiles => 'File';
+
+  @override
+  String get projectMenuUpdate => 'Aggiorna dati';
 
   @override
   String moveToProfileTitle(String name) {

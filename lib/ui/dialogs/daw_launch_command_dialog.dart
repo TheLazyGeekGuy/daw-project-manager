@@ -1,5 +1,5 @@
 import 'package:file_picker/file_picker.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../generated/l10n/app_localizations.dart';
@@ -103,15 +103,15 @@ class _DawLaunchCommandDialogState
 
   Future<void> _browse() async {
     final l10n = AppLocalizations.of(context)!;
-    final result = await FilePicker.pickFiles(
+    final result = await FilePicker.pickFile(
       type: FileType.any,
       dialogTitle: l10n.dawLaunchCommandDialogBrowseButton,
     );
-    if (!mounted || result == null || result.files.single.path == null) {
+    if (!mounted || result == null || result.path == null) {
       return;
     }
     setState(() {
-      _pathController.text = result.files.single.path!;
+      _pathController.text = result.path!;
       _errorText = null;
     });
   }

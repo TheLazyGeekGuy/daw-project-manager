@@ -1,5 +1,5 @@
 import 'package:flutter/gestures.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 
 /// The smallest height either pane of a [ResizableVerticalSplit] may shrink
 /// to — enough for a section header and a row or two.

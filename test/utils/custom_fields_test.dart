@@ -257,7 +257,7 @@ void main() {
     test('reorder follows ReorderableListView indices', () {
       final layout = normalizeColumnLayout(const []);
 
-      final moved = reorderColumnLayout(layout, 0, 3);
+      final moved = reorderColumnLayout(layout, 0, 2);
 
       expect(moved.map((s) => s.id).take(3), ['dawType', 'bpm', 'status']);
     });

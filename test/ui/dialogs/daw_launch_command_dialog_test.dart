@@ -1,9 +1,10 @@
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 import 'package:daw_project_manager/generated/l10n/app_localizations.dart';
 import 'package:daw_project_manager/ui/dialogs/daw_launch_command_dialog.dart';
+import 'package:daw_project_manager/utils/localization_delegates.dart';
 
 /// The "configure a DAW executable" dialog now opens in three modes. These
 /// pin which explanatory banner each mode shows — the rest of its logic
@@ -19,7 +20,7 @@ void main() {
     await tester.pumpWidget(
       ProviderScope(
         child: MaterialApp(
-          localizationsDelegates: AppLocalizations.localizationsDelegates,
+          localizationsDelegates: appLocalizationsDelegates,
           supportedLocales: AppLocalizations.supportedLocales,
           home: Scaffold(
             body: Builder(

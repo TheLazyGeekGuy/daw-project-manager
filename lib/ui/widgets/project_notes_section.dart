@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 
 /// The notes blocks shown in the music players: what the user typed, and what
 /// was read out of the DAW project file.

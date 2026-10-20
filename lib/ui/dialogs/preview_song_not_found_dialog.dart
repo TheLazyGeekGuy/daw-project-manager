@@ -1,5 +1,5 @@
 import 'package:file_picker/file_picker.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:path/path.dart' as p;
 
@@ -189,12 +189,12 @@ Future<RecoveredPreview?> recoverMissingPreviewSong(
       );
 
     case PreviewNotFoundAction.selectNew:
-      final result = await FilePicker.pickFiles(
+      final result = await FilePicker.pickFile(
         type: FileType.custom,
         allowedExtensions: previewAudioExtensions,
         dialogTitle: l10n.selectPreviewSong,
       );
-      final newPath = result?.files.single.path;
+      final newPath = result?.path;
       if (newPath == null) return null;
 
       final repo = await ref.read(repositoryProvider.future);

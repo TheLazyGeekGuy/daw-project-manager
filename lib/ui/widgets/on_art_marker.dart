@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 
 /// Small markers drawn in the projects grid's Name cell, where a row's cover
 /// art or accent colour bleeds in underneath (see `ProjectCoverBleed`).

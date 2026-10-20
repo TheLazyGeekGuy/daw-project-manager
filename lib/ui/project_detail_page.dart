@@ -2,7 +2,7 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -33,6 +33,7 @@ import '../services/player_volume_store.dart';
 import '../utils/project_tags.dart';
 import '../utils/track_duration.dart';
 import '../utils/file_launcher.dart';
+import '../utils/save_file_dialog.dart';
 import '../utils/playback_seek.dart';
 import '../utils/route_observer.dart';
 import '../generated/l10n/app_localizations.dart';
@@ -240,13 +241,8 @@ class _ProjectDetailPageState extends ConsumerState<ProjectDetailPage> {
     final messenger = ScaffoldMessenger.of(context);
     final result = await FilePicker.pickFiles(
       dialogTitle: l10n.attachmentPickFileTitle,
-      allowMultiple: true,
     );
-    final picked = result?.files
-            .map((f) => f.path)
-            .whereType<String>()
-            .toList() ??
-        const <String>[];
+    final picked = result.map((f) => f.path).whereType<String>().toList();
     if (picked.isEmpty) return;
 
     final existingTargets =
@@ -375,10 +371,9 @@ class _ProjectDetailPageState extends ConsumerState<ProjectDetailPage> {
       return;
     }
 
-    final savePath = await FilePicker.saveFile(
-      dialogTitle: l10n.attachmentExportSaveTitle,
+    final savePath = await pickSavePath(
       fileName: plan.suggestedFileName(project.displayName),
-      type: FileType.any,
+      allowedExtensions: const ['zip'],
     );
     if (savePath == null || !mounted) return;
 
@@ -905,15 +900,14 @@ class _ProjectDetailPageState extends ConsumerState<ProjectDetailPage> {
     final l10n = AppLocalizations.of(context)!;
     try {
       final text = ProjectTextExportService.formatProject(project, l10n);
-      final destPath = await FilePicker.saveFile(
+      final destPath = await saveTextWithDialog(
         dialogTitle: l10n.exportProjectInfo,
         fileName: ProjectTextExportService.suggestedFileNameFor(project),
+        text: text,
         type: FileType.custom,
         allowedExtensions: ['txt'],
       );
       if (destPath == null) return; // user cancelled
-
-      await File(destPath).writeAsString(text);
 
       if (mounted) {
         ScaffoldMessenger.of(context).showAppSnackBar(
@@ -2857,13 +2851,13 @@ class _PreviewSongPlayerState extends ConsumerState<_PreviewSongPlayer>
                 setState(() => _replacedPreviewPath = found);
                 await _playOnCurrentPlatform(found);
               case PreviewNotFoundAction.selectNew:
-                final result = await FilePicker.pickFiles(
+                final result = await FilePicker.pickFile(
                   type: FileType.custom,
                   allowedExtensions: previewAudioExtensions,
                   dialogTitle: l10n.selectPreviewSong,
                 );
                 if (!mounted) return;
-                final newPath = result?.files.single.path;
+                final newPath = result?.path;
                 if (newPath == null) return;
                 setState(() => _replacedPreviewPath = newPath);
                 await widget.onSongChanged(newPath);
@@ -3144,8 +3138,8 @@ class _PreviewSongPlayerState extends ConsumerState<_PreviewSongPlayer>
         }
 
         // Share the file (default behavior)
-        final result = await Share.shareXFiles(
-          [
+        final result = await SharePlus.instance.share(ShareParams(
+          files: [
             XFile(
               shareFile.path,
               name: shareFileName,
@@ -3153,7 +3147,7 @@ class _PreviewSongPlayerState extends ConsumerState<_PreviewSongPlayer>
             ),
           ],
           text: shareText,
-        );
+        ));
         if (kDebugMode) {
           debugPrint('[preview_share] Share.shareXFiles returned (user completed/dismissed share sheet)');
           debugPrint('[preview_share] ShareResult: status=${result.status} raw=${result.raw}');
@@ -3163,10 +3157,10 @@ class _PreviewSongPlayerState extends ConsumerState<_PreviewSongPlayer>
         if (kDebugMode) {
           debugPrint('[preview_share] non-Android direct share, invoking share sheet...');
         }
-        final result = await Share.shareXFiles(
-          [XFile(fileToShare.path)],
+        final result = await SharePlus.instance.share(ShareParams(
+          files: [XFile(fileToShare.path)],
           text: shareText,
-        );
+        ));
         if (kDebugMode) {
           debugPrint('[preview_share] ShareResult: status=${result.status} raw=${result.raw}');
         }
@@ -3261,12 +3255,12 @@ class _PreviewSongPlayerState extends ConsumerState<_PreviewSongPlayer>
       }
 
       if (!mounted) return;
-      final result = await Share.shareXFiles(
-        [XFile(zipFile.path, name: p.basename(zipFile.path), mimeType: 'application/zip')],
+      final result = await SharePlus.instance.share(ShareParams(
+        files: [XFile(zipFile.path, name: p.basename(zipFile.path), mimeType: 'application/zip')],
         text: AppLocalizations.of(
           context,
         )!.sharePreviewSongZipText(widget.project.displayName),
-      );
+      ));
       if (kDebugMode) {
         debugPrint('[preview_share_zip] Share.shareXFiles returned (user completed/dismissed share sheet)');
         debugPrint('[preview_share_zip] ShareResult: status=${result.status} raw=${result.raw}');
@@ -3321,16 +3315,15 @@ class _PreviewSongPlayerState extends ConsumerState<_PreviewSongPlayer>
       final originalName = widget.project.previewShareFileName ?? p.basename(songPath);
       final ext = p.extension(songPath).replaceFirst('.', '');
 
-      final destPath = await FilePicker.saveFile(
+      final destPath = await saveBytesWithDialog(
         dialogTitle: l10n.saveCopy,
         fileName: originalName,
+        bytes: await sourceFile.readAsBytes(),
         type: FileType.custom,
         allowedExtensions: [ext.isNotEmpty ? ext : 'mp3'],
       );
 
       if (destPath == null) return; // user cancelled
-
-      await sourceFile.copy(destPath);
 
       if (mounted) {
         ScaffoldMessenger.of(context).showAppSnackBar(
@@ -3354,17 +3347,17 @@ class _PreviewSongPlayerState extends ConsumerState<_PreviewSongPlayer>
     final l10n = AppLocalizations.of(context)!;
 
     try {
-      final result = await FilePicker.pickFiles(
+      final result = await FilePicker.pickFile(
         type: FileType.custom,
         allowedExtensions: previewAudioExtensions,
         dialogTitle: l10n.selectPreviewSong,
       );
 
-      if (result == null || result.files.isEmpty || result.files.single.path == null) {
+      if (result == null || result.path == null) {
         return;
       }
 
-      final source = File(result.files.single.path!);
+      final source = File(result.path!);
       if (!await source.exists()) {
         if (mounted) {
           ScaffoldMessenger.of(context).showAppSnackBar(
@@ -3382,7 +3375,7 @@ class _PreviewSongPlayerState extends ConsumerState<_PreviewSongPlayer>
       }
 
       final originalName =
-          result.files.single.name.isNotEmpty ? result.files.single.name : p.basename(source.path);
+          result.name.isNotEmpty ? result.name : p.basename(source.path);
       final destPath = p.join(destDir.path, originalName);
       await source.copy(destPath);
 
@@ -3967,13 +3960,13 @@ class _PreviewSongPlayerState extends ConsumerState<_PreviewSongPlayer>
                         children: [
                           ElevatedButton.icon(
                             onPressed: () async {
-                              final result = await FilePicker.pickFiles(
+                              final result = await FilePicker.pickFile(
                                 type: FileType.custom,
                                 allowedExtensions: previewAudioExtensions,
                                 dialogTitle: AppLocalizations.of(context)!.selectPreviewSong,
                               );
-                              if (result != null && result.files.single.path != null) {
-                                widget.onSongChanged(result.files.single.path!);
+                              if (result != null && result.path != null) {
+                                widget.onSongChanged(result.path!);
                               }
                             },
                             icon: const Icon(Icons.audio_file),

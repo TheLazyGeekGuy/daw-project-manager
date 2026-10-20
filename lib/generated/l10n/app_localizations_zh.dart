@@ -2463,12 +2463,6 @@ class AppLocalizationsZh extends AppLocalizations {
   String get saveFileDialogTitle => '保存文件';
 
   @override
-  String get saveAllFilesAsZipDialogTitle => '将所有文件保存为 ZIP';
-
-  @override
-  String get saveSelectedFilesAsZipDialogTitle => '将所选文件保存为 ZIP';
-
-  @override
   String failedToRemovePressKitFile(String error) {
     return '无法删除新闻资料袋文件：$error';
   }
@@ -5019,9 +5013,6 @@ class AppLocalizationsZh extends AppLocalizations {
   String get attachmentExportTooltip => '保存附加的文件和链接';
 
   @override
-  String get attachmentExportSaveTitle => '保存附件';
-
-  @override
   String get attachmentExportNothing => '没有可导出的内容';
 
   @override
@@ -6385,6 +6376,9 @@ class AppLocalizationsZh extends AppLocalizations {
   String get midiGestureDrag => '拖动';
 
   @override
+  String get midiGesturePen => '触控笔';
+
+  @override
   String get midiGestureWheel => '滚轮';
 
   @override
@@ -6392,6 +6386,9 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get midiShortcutPencilTool => '铅笔：单击添加音符；横向拖动可延长，上下拖动调整力度；单击音符将其选中';
+
+  @override
+  String get midiShortcutPenPressure => '用触控笔绘制：按得越用力，音符力度越大';
 
   @override
   String get midiShortcutDoubleClick =>
@@ -7565,6 +7562,12 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get moveToProfileMenu => '移动到配置文件…';
+
+  @override
+  String get projectMenuFiles => '文件';
+
+  @override
+  String get projectMenuUpdate => '更新信息';
 
   @override
   String moveToProfileTitle(String name) {

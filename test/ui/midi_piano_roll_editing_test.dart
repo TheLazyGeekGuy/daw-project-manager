@@ -1,5 +1,5 @@
 import 'package:flutter/gestures.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
 
@@ -603,6 +603,63 @@ void main() {
       await tester.pumpAndSettle();
       await save(tester);
       expect(saved.single.$1.notes.single.pitch, 61);
+    });
+
+    testWidgets('a pen plays the note as hard as it pressed', (tester) async {
+      await open(tester);
+      await startEditing(tester);
+      await pickPencil(tester);
+      final g = grid(tester);
+      final from = Offset(g.left + g.width * 0.5 + 2, g.center.dy);
+      final pen = await tester.createGesture(
+          kind: PointerDeviceKind.stylus, pointer: 77);
+      PointerMoveEvent move(Offset at, double pressure) => PointerMoveEvent(
+          pointer: 77,
+          kind: PointerDeviceKind.stylus,
+          position: at,
+          buttons: kPrimaryButton,
+          pressure: pressure,
+          pressureMin: 0,
+          pressureMax: 1);
+      // Touching down lightly, pressing hard on the way across, easing off
+      // at the end: the hardest press is how the note plays.
+      await pen.downWithCustomEvent(
+          from,
+          PointerDownEvent(
+              pointer: 77,
+              kind: PointerDeviceKind.stylus,
+              position: from,
+              buttons: kPrimaryButton,
+              pressure: 0.3,
+              pressureMin: 0,
+              pressureMax: 1));
+      await tester.pump();
+      await pen.updateWithCustomEvent(
+          move(from + Offset(g.width / 16, -30), 0.9));
+      await tester.pump();
+      await pen.updateWithCustomEvent(
+          move(from + Offset(g.width / 8, 40), 0.2));
+      await tester.pump();
+      await pen.up();
+      await tester.pumpAndSettle();
+      await save(tester);
+      final drawn = saved.single.$1.notes.last;
+      expect(drawn.velocity, 1 + (0.9 * 126).round(),
+          reason: 'the hardest press, not the drag up and down');
+      expect((drawn.startTick, drawn.lengthTicks), (960, 360),
+          reason: 'dragging across still sets the length');
+    });
+
+    testWidgets('a mouse still sets velocity by dragging up and down',
+        (tester) async {
+      await open(tester);
+      await startEditing(tester);
+      await pickPencil(tester);
+      final g = grid(tester);
+      await dragFrom(tester, Offset(g.left + g.width * 0.5 + 2, g.center.dy),
+          const Offset(0, -40));
+      await save(tester);
+      expect(saved.single.$1.notes.last.velocity, greaterThan(100));
     });
 
     testWidgets('1 goes back to selecting: a click adds nothing',

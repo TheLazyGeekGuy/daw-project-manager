@@ -4,7 +4,7 @@ import 'package:desktop_drop/desktop_drop.dart';
 
 import 'package:file_picker/file_picker.dart';
 import 'package:path_provider/path_provider.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -23,6 +23,7 @@ import 'widgets/desktop_title_bar.dart';
 import '../models/release_file.dart';
 import '../models/music_project.dart';
 import '../providers/providers.dart';
+import '../utils/save_file_dialog.dart';
 import '../utils/app_paths.dart';
 import '../utils/playback_seek.dart';
 import '../utils/route_observer.dart';
@@ -277,10 +278,10 @@ class _ReleaseDetailPageState extends ConsumerState<ReleaseDetailPage>
   }
 
   Future<void> _addFiles(BuildContext context, Release release) async {
-    final result = await FilePicker.pickFiles(allowMultiple: true, type: FileType.any);
-    if (result == null || result.files.isEmpty) return;
+    final result = await FilePicker.pickFiles(type: FileType.any);
+    if (result.isEmpty) return;
     try {
-      final paths = result.files.map((f) => f.path).whereType<String>().toList();
+      final paths = result.map((f) => f.path).whereType<String>().toList();
       await _saveFilesFromPaths(paths, release);
     } catch (e) {
       if (mounted) {
@@ -313,10 +314,9 @@ class _ReleaseDetailPageState extends ConsumerState<ReleaseDetailPage>
 
     // Ask user where to save the ZIP
     final safeName = release.title.replaceAll(RegExp(r'[<>:"/\\|?*]'), '_');
-    final savePath = await FilePicker.saveFile(
-      dialogTitle: AppLocalizations.of(context)!.saveReleaseFilesZip,
+    final savePath = await pickSavePath(
       fileName: '${safeName}_files.zip',
-      type: FileType.any,
+      allowedExtensions: const ['zip'],
     );
 
     if (savePath == null) {
@@ -494,9 +494,9 @@ class _ReleaseDetailPageState extends ConsumerState<ReleaseDetailPage>
       }
       return;
     }
-    final result = await FilePicker.pickFiles(type: FileType.image);
-    if (result != null && result.files.single.path != null) {
-      await _saveArtworkFromPath(result.files.single.path!);
+    final result = await FilePicker.pickFile(type: FileType.image);
+    if (result != null && result.path != null) {
+      await _saveArtworkFromPath(result.path!);
     }
   }
 
@@ -1083,7 +1083,7 @@ class _ReleaseDetailPageState extends ConsumerState<ReleaseDetailPage>
                     padding: const EdgeInsets.symmetric(vertical: 4),
                     buildDefaultDragHandles: false,
                     itemCount: releaseProjects.length,
-                    onReorder: (oldIndex, newIndex) => _handleReorderTrack(release, oldIndex, newIndex),
+                    onReorderItem: (oldIndex, newIndex) => _handleReorderTrack(release, oldIndex, newIndex),
                     itemBuilder: (context, index) => _buildDesktopTrackTile(context, release, releaseProjects[index], index),
                   ),
           ),
@@ -1336,7 +1336,6 @@ class _ReleaseDetailPageState extends ConsumerState<ReleaseDetailPage>
   }
 
   void _handleReorderTrack(Release release, int oldIndex, int newIndex) {
-    if (newIndex > oldIndex) newIndex -= 1;
     final updatedTrackIds = List<String>.from(release.trackIds);
     final moved = updatedTrackIds.removeAt(oldIndex);
     updatedTrackIds.insert(newIndex, moved);
@@ -1631,8 +1630,7 @@ class _ReleaseDetailPageState extends ConsumerState<ReleaseDetailPage>
                       padding: const EdgeInsets.symmetric(vertical: 4),
                       buildDefaultDragHandles: false,
                       itemCount: releaseProjects.length,
-                      onReorder: (oldIndex, newIndex) {
-                        if (newIndex > oldIndex) newIndex -= 1;
+                      onReorderItem: (oldIndex, newIndex) {
                         final updatedTrackIds = List<String>.from(release.trackIds);
                         final moved = updatedTrackIds.removeAt(oldIndex);
                         updatedTrackIds.insert(newIndex, moved);
@@ -1856,10 +1854,6 @@ class _FilesSectionState extends ConsumerState<_FilesSection> {
   }
 
   Future<void> _reorderAudioFiles(int oldIndex, int newIndex) async {
-    if (newIndex > oldIndex) {
-      newIndex -= 1;
-    }
-
     final audioFiles = widget.files.where((f) => f.fileType == 'audio').toList();
     final otherFiles = widget.files.where((f) => f.fileType != 'audio').toList();
 
@@ -1976,7 +1970,7 @@ class _FilesSectionState extends ConsumerState<_FilesSection> {
             shrinkWrap: true,
             physics: const NeverScrollableScrollPhysics(),
             itemCount: audioFiles.length,
-            onReorder: _reorderAudioFiles,
+            onReorderItem: _reorderAudioFiles,
             itemBuilder: (context, index) {
               final file = audioFiles[index];
               final fileExists = File(file.filePath).existsSync();

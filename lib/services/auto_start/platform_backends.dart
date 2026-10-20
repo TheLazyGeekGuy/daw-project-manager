@@ -63,15 +63,11 @@ class _WindowsRunKeyBackend implements AutoStartBackend {
   T? _open<T>(
     String path,
     T? Function(RegistryKey key) body, {
-    AccessRights access = AccessRights.readOnly,
+    RegistryAccess access = RegistryAccess.read,
   }) {
     final RegistryKey key;
     try {
-      key = Registry.openPath(
-        RegistryHive.currentUser,
-        path: path,
-        desiredAccessRights: access,
-      );
+      key = CURRENT_USER.open(path, config: RegistryOpenConfig(access: access));
     } catch (_) {
       return null;
     }
@@ -83,22 +79,20 @@ class _WindowsRunKeyBackend implements AutoStartBackend {
   }
 
   void _write(String path, void Function(RegistryKey key) body) {
-    final root = Registry.currentUser;
-    final key = root.createKey(path);
+    final key = CURRENT_USER.create(path);
     try {
       body(key);
     } finally {
       key.close();
-      root.close();
     }
   }
 
   @override
   Future<AutoStartStatus> status() async {
-    final value = _open(_runPath, (k) => k.getStringValue(kAutoStartAppName));
+    final value = _open(_runPath, (k) => k.getString(kAutoStartAppName));
     if (value == null) return AutoStartStatus.off;
     final approval =
-        _open(_approvedPath, (k) => k.getBinaryValue(kAutoStartAppName));
+        _open(_approvedPath, (k) => k.getBinary(kAutoStartAppName));
     final registeredExe = windowsRunCommandExecutable(value);
     return classifyRegistration(
       present: true,
@@ -116,16 +110,16 @@ class _WindowsRunKeyBackend implements AutoStartBackend {
   @override
   Future<bool> enable() async {
     _write(_runPath, (k) {
-      k.createValue(RegistryValue.string(
+      k.setValue(
         kAutoStartAppName,
-        windowsRunCommand(_exe, minimized: _minimized),
-      ));
+        StringValue(windowsRunCommand(_exe, minimized: _minimized)),
+      );
     });
     // An even first byte is "allowed" — this clears a switch-off made in
     // Task Manager, which is what turning the setting on in the app means.
     final approved = Uint8List(12)..[0] = 2;
     _write(_approvedPath, (k) {
-      k.createValue(RegistryValue.binary(kAutoStartAppName, approved));
+      k.setValue(kAutoStartAppName, BinaryValue(approved));
     });
     return true;
   }
@@ -137,11 +131,11 @@ class _WindowsRunKeyBackend implements AutoStartBackend {
         path,
         (k) {
           if (k.getValue(kAutoStartAppName) != null) {
-            k.deleteValue(kAutoStartAppName);
+            k.removeValue(kAutoStartAppName);
           }
           return null;
         },
-        access: AccessRights.allAccess,
+        access: RegistryAccess.all,
       );
     }
     return true;
@@ -190,13 +184,13 @@ class _WindowsStartupShortcutBackend implements AutoStartBackend {
     // A missing key (no item was ever switched off) reads as allowed.
     final RegistryKey key;
     try {
-      key = Registry.openPath(RegistryHive.currentUser, path: _approvedPath);
+      key = CURRENT_USER.open(_approvedPath);
     } catch (_) {
       return false;
     }
     try {
       return startupApprovalDisables(
-          key.getBinaryValue('$kAutoStartAppName.lnk'));
+          key.getBinary('$kAutoStartAppName.lnk'));
     } finally {
       key.close();
     }

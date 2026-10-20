@@ -1,6 +1,6 @@
 import 'dart:async';
 
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:path/path.dart' as p;
 
@@ -8,6 +8,7 @@ import 'package:daw_project_manager/generated/l10n/app_localizations.dart';
 import 'package:daw_project_manager/models/music_project.dart';
 import 'package:daw_project_manager/services/midi/melodic_midi_reading.dart';
 import 'package:daw_project_manager/ui/widgets/midi_read_dialogs.dart';
+import 'package:daw_project_manager/utils/localization_delegates.dart';
 
 import '../helpers/test_factories.dart';
 
@@ -18,7 +19,7 @@ MusicProject _p(int i) => TestFactories.makeProject(
     );
 
 Widget _app(Widget Function(BuildContext) body) => MaterialApp(
-      localizationsDelegates: AppLocalizations.localizationsDelegates,
+      localizationsDelegates: appLocalizationsDelegates,
       supportedLocales: AppLocalizations.supportedLocales,
       home: Builder(builder: body),
     );

@@ -1,4 +1,9 @@
-import 'package:flutter/material.dart';
+// trina_grid's menu API is typed with the SDK's bundled Material library, so
+// its entries must be that library's PopupMenuEntry, not material_ui's. Only
+// those three types come from it; drop this once trina_grid moves over.
+import 'package:flutter/material.dart' as sdk_material
+    show PopupMenuDivider, PopupMenuEntry, PopupMenuItem;
+import 'package:material_ui/material_ui.dart';
 import 'package:trina_grid/trina_grid.dart';
 
 import '../../generated/l10n/app_localizations.dart';
@@ -14,7 +19,7 @@ class FitAllColumnsMenuDelegate implements TrinaColumnMenuDelegate<dynamic> {
   static const String _menuFitAll = 'fitAll';
 
   @override
-  List<PopupMenuEntry<dynamic>> buildMenuItems({
+  List<sdk_material.PopupMenuEntry<dynamic>> buildMenuItems({
     required TrinaGridStateManager stateManager,
     required TrinaColumn column,
   }) {
@@ -28,8 +33,8 @@ class FitAllColumnsMenuDelegate implements TrinaColumnMenuDelegate<dynamic> {
         : 'Auto-resize columns';
     return [
       ...defaults,
-      const PopupMenuDivider(),
-      PopupMenuItem<String>(
+      const sdk_material.PopupMenuDivider(),
+      sdk_material.PopupMenuItem<String>(
         value: _menuFitAll,
         child: Row(
           children: [

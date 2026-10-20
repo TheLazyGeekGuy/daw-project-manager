@@ -85,7 +85,7 @@ void main() {
         await notifier.upsert(CustomFieldDefinition(id: id, name: id));
       }
 
-      await notifier.reorder(0, 3);
+      await notifier.reorder(0, 2);
 
       expect(container.read(activeCustomFieldsProvider).map((f) => f.id),
           ['b', 'c', 'a']);

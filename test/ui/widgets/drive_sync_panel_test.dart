@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 import 'package:daw_project_manager/generated/l10n/app_localizations.dart';
@@ -7,6 +7,7 @@ import 'package:daw_project_manager/models/drive_sync_status.dart';
 import 'package:daw_project_manager/ui/google_drive_sync_page.dart'
     show DriveSyncStatusGlyph, driveSyncStatusTooltip;
 import 'package:daw_project_manager/ui/widgets/drive_sync_panel.dart';
+import 'package:daw_project_manager/utils/localization_delegates.dart';
 
 void main() {
   final now = DateTime(2026, 10, 15, 12);
@@ -26,7 +27,7 @@ void main() {
     addTearDown(tester.view.reset);
     await tester.pumpWidget(MaterialApp(
       locale: locale,
-      localizationsDelegates: AppLocalizations.localizationsDelegates,
+      localizationsDelegates: appLocalizationsDelegates,
       supportedLocales: AppLocalizations.supportedLocales,
       home: Scaffold(
         body: SingleChildScrollView(

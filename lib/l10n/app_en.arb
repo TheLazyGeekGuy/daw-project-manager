@@ -2534,14 +2534,6 @@
   "@saveFileDialogTitle": {
     "description": "Title of the system save dialog when saving one of a profile's files"
   },
-  "saveAllFilesAsZipDialogTitle": "Save All Files as ZIP",
-  "@saveAllFilesAsZipDialogTitle": {
-    "description": "Title of the system save dialog when saving all of a profile's files as one ZIP"
-  },
-  "saveSelectedFilesAsZipDialogTitle": "Save Selected Files as ZIP",
-  "@saveSelectedFilesAsZipDialogTitle": {
-    "description": "Title of the system save dialog when saving the selected files of a profile as one ZIP"
-  },
   "failedToRemovePressKitFile": "Failed to remove press kit file: {error}",
   "@failedToRemovePressKitFile": {
     "description": "Error message when removing press kit file fails",
@@ -4935,7 +4927,6 @@
   "attachmentAlreadyAdded": "That is already attached to this project",
   "attachmentExport": "Export",
   "attachmentExportTooltip": "Save the attached files and links",
-  "attachmentExportSaveTitle": "Save attachments",
   "attachmentExportNothing": "Nothing to export",
   "attachmentExporting": "Exporting attachments...",
   "attachmentExportSaved": "Saved to: {path}",
@@ -6467,6 +6458,10 @@
   "@midiGestureDrag": {
     "description": "Shortcut sheet keycap: dragging with the mouse"
   },
+  "midiGesturePen": "Pen",
+  "@midiGesturePen": {
+    "description": "Shortcut sheet keycap: drawing with a pen (stylus)"
+  },
   "midiGestureWheel": "Wheel",
   "@midiGestureWheel": {
     "description": "Shortcut sheet keycap: the mouse wheel"
@@ -6478,6 +6473,10 @@
   "midiShortcutPencilTool": "Pencil: click to add a note — drag across to lengthen it, up or down for how hard it plays; a click on a note selects it",
   "@midiShortcutPencilTool": {
     "description": "Shortcut sheet action"
+  },
+  "midiShortcutPenPressure": "Drawing with a pen: the harder you press, the louder the note",
+  "@midiShortcutPenPressure": {
+    "description": "Shortcut sheet action: a pen sets a drawn note's velocity by pressure"
   },
   "midiShortcutDoubleClick": "On empty space: add a note (hold and drag: across for length, up or down for velocity; Ctrl: off the grid). On a note: delete it",
   "@midiShortcutDoubleClick": {
@@ -7802,6 +7801,14 @@
   "scanFolderOverlapBody": "Each profile keeps its own copy of every project it finds, so these would appear in both, with separate notes, to-dos and work time. To give a song to another profile, use \"Move to profile…\" on it instead.",
   "scanFolderOverlapAddAnyway": "Add anyway",
   "moveToProfileMenu": "Move to profile…",
+  "projectMenuFiles": "Files",
+  "@projectMenuFiles": {
+    "description": "Project right-click menu: submenu holding move, archive and restore"
+  },
+  "projectMenuUpdate": "Update details",
+  "@projectMenuUpdate": {
+    "description": "Project right-click menu: submenu holding refresh, extract metadata and restore from Drive"
+  },
   "moveToProfileTitle": "Move \"{name}\" to another profile",
   "@moveToProfileTitle": {
     "placeholders": {

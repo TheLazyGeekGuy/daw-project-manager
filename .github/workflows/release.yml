@@ -40,7 +40,7 @@ concurrency:
 
 # Variáveis de Configuração
 env:
-  FLUTTER_BASE_VERSION: 3.41.9
+  FLUTTER_BASE_VERSION: 3.47.7
   # Pinned instead of tracking flatpak-flutter's master, so an upstream
   # change there (e.g. a cargokit patch that stops applying, see the long
   # discussion on Flathub PR #9573) can't break this build with zero

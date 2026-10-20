@@ -1,12 +1,12 @@
 import 'dart:async';
 import 'dart:convert' show jsonDecode, jsonEncode, utf8;
 import 'dart:math' show sqrt;
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:flutter/services.dart' show LogicalKeyboardKey, MethodChannel;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter/foundation.dart';
-import 'package:flutter_localizations/flutter_localizations.dart';
 import 'generated/l10n/app_localizations.dart';
+import 'utils/localization_delegates.dart';
 import 'dart:io'
     show
         Platform,
@@ -1391,12 +1391,7 @@ class _DawProjectManagerAppState extends ConsumerState<DawProjectManagerApp>
       navigatorKey: navigatorKey,
       title: 'DAW Project Manager',
       theme: themeData,
-      localizationsDelegates: const [
-        AppLocalizations.delegate,
-        GlobalMaterialLocalizations.delegate,
-        GlobalWidgetsLocalizations.delegate,
-        GlobalCupertinoLocalizations.delegate,
-      ],
+      localizationsDelegates: appLocalizationsDelegates,
       supportedLocales: const [
         Locale('en', ''),
         Locale('pt', ''),
@@ -1411,25 +1406,30 @@ class _DawProjectManagerAppState extends ConsumerState<DawProjectManagerApp>
       locale: currentLocale,
       // MacOSMenuBar must build with a context that has localizations — placing
       // it in builder ensures it runs after MaterialApp installs its delegates.
-      builder: (context, child) => Shortcuts(
-        shortcuts: const {
-          // macOS: Cmd+← (standard back in macOS apps)
-          SingleActivator(LogicalKeyboardKey.arrowLeft, meta: true):
-              _BackIntent(),
-          // Windows / Linux: Alt+← (standard back in browsers and file managers)
-          SingleActivator(LogicalKeyboardKey.arrowLeft, alt: true):
-              _BackIntent(),
-        },
-        child: Actions(
-          actions: {
-            _BackIntent: CallbackAction<_BackIntent>(
-              onInvoke: (_) {
-                navigatorKey.currentState?.maybePop();
-                return null;
-              },
-            ),
+      // The bridge hands this app's theme and localizations to the
+      // dependencies still built on the SDK's bundled Material library
+      // (trina_grid among them), which look them up from context.
+      builder: (context, child) => MaterialUiCompatibilityBridge(
+        child: Shortcuts(
+          shortcuts: const {
+            // macOS: Cmd+← (standard back in macOS apps)
+            SingleActivator(LogicalKeyboardKey.arrowLeft, meta: true):
+                _BackIntent(),
+            // Windows / Linux: Alt+← (standard back in browsers and file managers)
+            SingleActivator(LogicalKeyboardKey.arrowLeft, alt: true):
+                _BackIntent(),
           },
-          child: MacOSMenuBar(child: child ?? const SizedBox()),
+          child: Actions(
+            actions: {
+              _BackIntent: CallbackAction<_BackIntent>(
+                onInvoke: (_) {
+                  navigatorKey.currentState?.maybePop();
+                  return null;
+                },
+              ),
+            },
+            child: MacOSMenuBar(child: child ?? const SizedBox()),
+          ),
         ),
       ),
       navigatorObservers: [appRouteObserver],

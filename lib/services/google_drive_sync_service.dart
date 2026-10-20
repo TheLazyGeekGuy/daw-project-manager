@@ -980,7 +980,7 @@ class GoogleDriveSyncService {
             throw const DesktopSignInException(DesktopSignInFailure.timedOut),
       );
       if (code == null || code.isEmpty) return null;
-      return _exchangeDesktopCode(code);
+      return await _exchangeDesktopCode(code);
     } finally {
       if (identical(_pendingDesktopCode, codeCompleter)) _pendingDesktopCode = null;
       await server?.close(force: true);

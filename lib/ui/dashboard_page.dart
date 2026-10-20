@@ -3,7 +3,7 @@ import 'dart:io';
 
 import 'package:hive_ce/hive.dart';
 import 'package:trina_grid/trina_grid.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 // hide TextDirection: intl exports its own (LTR/RTL) which would shadow the
 // dart:ui one that TextPainter needs (see dawColumnWidth).
@@ -563,14 +563,14 @@ class _DashboardPageState extends ConsumerState<DashboardPage>
   DateTime? _lastProcessedTime;
 
   // Method to track all keyboard events and handle shortcuts directly
-  void _handleDebugKeyEvent(RawKeyEvent event) {
-    if (event is! RawKeyDownEvent) return;
+  void _handleDebugKeyEvent(KeyEvent event) {
+    if (event is! KeyDownEvent) return;
 
     final logicalKey = event.logicalKey;
-    final isControl = event.isControlPressed;
-    final isMeta = event.isMetaPressed;
+    final isControl = HardwareKeyboard.instance.isControlPressed;
+    final isMeta = HardwareKeyboard.instance.isMetaPressed;
 
-    // Handle Ctrl+F / Cmd+F directly in RawKeyboardListener
+    // Handle Ctrl+F / Cmd+F directly in KeyboardListener
     if (logicalKey == LogicalKeyboardKey.keyF && (isControl || isMeta)) {
       // Prevent duplicate processing (same key pressed multiple times in quick succession)
       final now = DateTime.now();
@@ -592,7 +592,7 @@ class _DashboardPageState extends ConsumerState<DashboardPage>
       return;
     }
 
-    // Handle Ctrl+R / Cmd+R directly in RawKeyboardListener
+    // Handle Ctrl+R / Cmd+R directly in KeyboardListener
     if (logicalKey == LogicalKeyboardKey.keyR && (isControl || isMeta)) {
       // Prevent duplicate processing
       final now = DateTime.now();
@@ -610,7 +610,7 @@ class _DashboardPageState extends ConsumerState<DashboardPage>
       return;
     }
 
-    // Handle Ctrl+T / Cmd+T directly in RawKeyboardListener
+    // Handle Ctrl+T / Cmd+T directly in KeyboardListener
     if (logicalKey == LogicalKeyboardKey.keyT && (isControl || isMeta)) {
       final now = DateTime.now();
       if (_lastProcessedKey == logicalKey &&
@@ -1854,12 +1854,12 @@ class _DashboardPageState extends ConsumerState<DashboardPage>
     final (visible: visibleCount, hidden: hiddenCount) =
         libraryProjectCounts(ref.watch(libraryProjectsProvider));
 
-    // RawKeyboardListener is now the primary handler for Ctrl+F and Ctrl+R
+    // KeyboardListener is now the primary handler for Ctrl+F and Ctrl+R
     // This ensures it works even when other widgets (like PlutoGrid) have focus
-    return RawKeyboardListener(
+    return KeyboardListener(
       focusNode: _debugKeyboardFocusNode,
       autofocus: true, // Autofocus to ensure we capture keyboard events
-      onKey: _handleDebugKeyEvent,
+      onKeyEvent: _handleDebugKeyEvent,
       child: FocusScope(
         child: Shortcuts(
           shortcuts: <LogicalKeySet, Intent>{
@@ -4728,20 +4728,24 @@ class _PlutoProjectsTableWithSelectionState
             children: [
               Text(AppLocalizations.of(context)!.selectNewStatus),
               const SizedBox(height: 16),
-              ...ref
-                  .read(customPhasesProvider)
-                  .map(
-                    (phase) => RadioListTile<String>(
-                      title: Text(phase),
-                      value: phase,
-                      groupValue: selectedStatus,
-                      onChanged: (value) {
-                        setState(() {
-                          selectedStatus = value;
-                        });
-                      },
-                    ),
-                  ),
+              RadioGroup<String>(
+                groupValue: selectedStatus,
+                onChanged: (value) {
+                  setState(() {
+                    selectedStatus = value;
+                  });
+                },
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    for (final phase in ref.read(customPhasesProvider))
+                      RadioListTile<String>(
+                        title: Text(phase),
+                        value: phase,
+                      ),
+                  ],
+                ),
+              ),
             ],
           ),
           actions: [
@@ -5974,14 +5978,14 @@ Future<void> playProjectPreview(
       ),
     );
     if (!context.mounted || confirmed != true) return;
-    final picked = await FilePicker.pickFiles(
+    final picked = await FilePicker.pickFile(
       type: FileType.custom,
       allowedExtensions: previewAudioExtensions,
       dialogTitle: l10n.selectPreviewSong,
     );
-    if (!context.mounted || picked == null || picked.files.single.path == null)
+    if (!context.mounted || picked == null || picked.path == null)
       return;
-    final newPath = picked.files.single.path!;
+    final newPath = picked.path!;
     final repo = await ref.read(repositoryProvider.future);
     await repo.updateProject(
       project.copyWith(
@@ -9730,13 +9734,13 @@ class _PreviewSongDialogState extends ConsumerState<_PreviewSongDialog> {
         }
 
         // Share the file (default behavior)
-        final result = await Share.shareXFiles([
+        final result = await SharePlus.instance.share(ShareParams(files: [
           XFile(
             shareFile.path,
             name: shareFileName,
             mimeType: shareMimeTypeForFileName(shareFileName),
           ),
-        ], text: shareText);
+        ], text: shareText));
         if (kDebugMode) {
           debugPrint(
             '[preview_share] Share.shareXFiles returned (user completed/dismissed share sheet)',
@@ -9752,9 +9756,9 @@ class _PreviewSongDialogState extends ConsumerState<_PreviewSongDialog> {
             '[preview_share] non-Android direct share, invoking share sheet...',
           );
         }
-        final result = await Share.shareXFiles([
+        final result = await SharePlus.instance.share(ShareParams(files: [
           XFile(fileToShare.path),
-        ], text: shareText);
+        ], text: shareText));
         if (kDebugMode) {
           debugPrint(
             '[preview_share] ShareResult: status=${result.status} raw=${result.raw}',
@@ -9874,13 +9878,13 @@ class _PreviewSongDialogState extends ConsumerState<_PreviewSongDialog> {
         debugPrint('[preview_share_zip] invoking share sheet...');
       }
 
-      final result = await Share.shareXFiles([
+      final result = await SharePlus.instance.share(ShareParams(files: [
         XFile(
           zipFile.path,
           name: path.basename(zipFile.path),
           mimeType: 'application/zip',
         ),
-      ], text: l10n.sharePreviewSongZipText(widget.project.displayName));
+      ], text: l10n.sharePreviewSongZipText(widget.project.displayName)));
       if (kDebugMode) {
         debugPrint(
           '[preview_share_zip] Share.shareXFiles returned (user completed/dismissed share sheet)',

@@ -1,6 +1,6 @@
 # Vendored `ffmpeg_kit_flutter_new_audio`
 
-This is a copy of `ffmpeg_kit_flutter_new_audio` 2.5.2 (pub.dev), pinned via
+This is a copy of `ffmpeg_kit_flutter_new_audio` 2.5.7 (pub.dev), pinned via
 `dependency_overrides` in the app's `pubspec.yaml`, with the **desktop** native
 layers stubbed to no-ops.
 

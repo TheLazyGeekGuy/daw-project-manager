@@ -39,7 +39,11 @@ dependencies:
   flutter_riverpod: ^3.0.3
   hive_ce: ^2.0.0
   hive_ce_flutter: ^2.3.4
-  file_picker: ^11.0.2
+  file_picker: ^13.1.0
+  # file_picker 13's save dialog writes bytes it is handed; zips streamed to
+  # disk need only a path, which file_selector's getSaveLocation gives
+  # (lib/utils/save_file_dialog.dart, desktop only).
+  file_selector: ^1.1.0
   path: ^1.9.0
   data_table_2: ^2.5.15
   uuid: ^4.5.1
@@ -51,11 +55,11 @@ dependencies:
   xml: ^6.6.1
   path_provider: ^2.1.1
   archive: ^4.0.7
-  audioplayers: ^6.0.0
+  audioplayers: ^6.8.1
   just_audio: ^0.9.42
   just_audio_background: ^0.0.1-beta.12
   audio_service: ^0.18.15
-  desktop_drop: ^0.7.0
+  desktop_drop: ^0.8.4
   # Canonical-maintained typed wrapper around org.freedesktop.portal.*,
   # used by lib/services/linux_portal_notifier.dart to show notifications
   # via the portal instead of flutter_local_notifications' Linux backend
@@ -71,7 +75,7 @@ dependencies:
   http: ^1.2.2
   oauth2: ^2.0.3
   crypto: ^3.0.5
-  share_plus: ^12.0.2
+  share_plus: ^13.3.1
   # Android/iOS ffmpeg, used only by AudioAnalysisService.convertForSharing to
   # turn a WAV/AIFF/FLAC bounce into an MP3 before sharing (WhatsApp silently
   # drops WAV). The "_audio" variant is the smallest one that ships LAME
@@ -102,13 +106,15 @@ dependencies:
   flutter_secure_storage: ^10.0.0
   flutter_local_notifications: ^22.0.0
   timezone: ^0.11.0
-  macos_secure_bookmarks: ^0.2.1
+  macos_secure_bookmarks: ^0.3.0
   fl_chart: ^1.2.0
   windows_taskbar: ^1.1.2
   super_drag_and_drop: ^0.9.1
-  win32: ^5.15.0
+  win32: ^6.4.0
   ffi: ^2.1.4
-  win32_registry: ^2.1.0
+  win32_registry: ^3.0.3
+  material_ui: ^1.7.0
+  cupertino_ui: ^1.1.3
 
 dev_dependencies:
   flutter_test:
@@ -135,8 +141,17 @@ dev_dependencies:
   path_provider_platform_interface: ^2.1.2
   plugin_platform_interface: ^2.1.8
 
+  yaml: any
+  share_plus_platform_interface: any
 dependency_overrides:
   yaml: ^3.0.0
+  # super_native_extensions 0.9.1 (via super_drag_and_drop) caps
+  # device_info_plus below 12, but share_plus 13 needs win32 6, and so does
+  # every device_info_plus that builds with Android's built-in Kotlin (13.2+).
+  # It reads device info in one place (long_press_handler.dart:
+  # AndroidDeviceInfo.version.sdkInt), an API 13 kept. Drop this once a stable
+  # super_native_extensions allows 13 (0.10.0-dev.2 does).
+  device_info_plus: ^13.3.0
   # windows_taskbar from upstream master (1.1.4) plus one local patch. pub.dev
   # has published nothing since 1.1.2 (2023-09-05), and the handle-leak fixes
   # our taskbar play/pause button needs only exist on master. See

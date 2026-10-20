@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 
 import '../../models/midi_clip.dart';
 import '../../services/midi/synth_voice.dart';

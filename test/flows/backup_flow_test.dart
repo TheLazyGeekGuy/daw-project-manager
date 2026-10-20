@@ -4,7 +4,6 @@
 // one. Everything comes back as it was, and a rescan adds nothing.
 
 import 'package:flutter_test/flutter_test.dart';
-import 'package:daw_project_manager/models/midi_collection.dart';
 import 'package:daw_project_manager/models/music_project.dart';
 import 'package:daw_project_manager/models/release.dart';
 import 'package:daw_project_manager/models/scan_mode.dart';

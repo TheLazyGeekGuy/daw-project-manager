@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 
 import '../utils/color_contrast.dart' show meetsWcagAa;
 import '../utils/phase_colors.dart' show colorToHex, hexToColor;

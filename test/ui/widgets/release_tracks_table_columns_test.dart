@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:intl/intl.dart';
@@ -8,6 +8,7 @@ import 'package:daw_project_manager/providers/providers.dart';
 import 'package:daw_project_manager/providers/theme_provider.dart';
 import 'package:daw_project_manager/ui/widgets/release_tracks_table.dart';
 import 'package:daw_project_manager/utils/custom_fields.dart';
+import 'package:daw_project_manager/utils/localization_delegates.dart';
 
 import '../../helpers/test_factories.dart';
 
@@ -39,7 +40,7 @@ void main() {
         activeThemeProvider.overrideWithValue(AppThemes.classicDarkSpec),
       ],
       child: MaterialApp(
-        localizationsDelegates: AppLocalizations.localizationsDelegates,
+        localizationsDelegates: appLocalizationsDelegates,
         supportedLocales: AppLocalizations.supportedLocales,
         home: Scaffold(
           body: SizedBox(

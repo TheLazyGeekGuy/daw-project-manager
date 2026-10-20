@@ -1,9 +1,10 @@
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 import 'package:daw_project_manager/generated/l10n/app_localizations.dart';
 import 'package:daw_project_manager/ui/dialogs/relocate_folder_dialog.dart';
 import 'package:daw_project_manager/utils/relocation_preview.dart';
+import 'package:daw_project_manager/utils/localization_delegates.dart';
 
 void main() {
   late AppLocalizations l10n;
@@ -11,7 +12,7 @@ void main() {
   Future<bool?> open(WidgetTester tester, RelocationPreview preview, {String? tap}) async {
     bool? result;
     await tester.pumpWidget(MaterialApp(
-      localizationsDelegates: AppLocalizations.localizationsDelegates,
+      localizationsDelegates: appLocalizationsDelegates,
       supportedLocales: AppLocalizations.supportedLocales,
       home: Builder(builder: (context) {
         l10n = AppLocalizations.of(context)!;

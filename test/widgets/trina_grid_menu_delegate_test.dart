@@ -1,4 +1,8 @@
-import 'package:flutter/material.dart';
+// trina_grid's menu entries are the SDK's bundled Material types (see
+// trina_grid_menu_delegate.dart), so that is what the checks must name.
+import 'package:flutter/material.dart' as sdk_material
+    show PopupMenuDivider, PopupMenuItem;
+import 'package:material_ui/material_ui.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:trina_grid/trina_grid.dart';
 
@@ -57,8 +61,8 @@ void main() {
       // Every library-default entry is preserved, plus a divider and one
       // extra PopupMenuItem<String> carrying the 'fitAll' value.
       expect(items.length, defaultItems.length + 2);
-      expect(items[defaultItems.length], isA<PopupMenuDivider>());
-      final fitAllItem = items.last as PopupMenuItem<String>;
+      expect(items[defaultItems.length], isA<sdk_material.PopupMenuDivider>());
+      final fitAllItem = items.last as sdk_material.PopupMenuItem<String>;
       expect(fitAllItem.value, 'fitAll');
     },
   );

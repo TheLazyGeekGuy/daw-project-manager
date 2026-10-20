@@ -1,5 +1,5 @@
 import 'dart:io';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:uuid/uuid.dart';
 import 'package:file_picker/file_picker.dart';
@@ -179,14 +179,14 @@ class _TodoListWidgetState extends ConsumerState<TodoListWidget> {
   Future<void> _importTodosFromFile() async {
     try {
       // Pick a text file
-      FilePickerResult? result = await FilePicker.pickFiles(
+      PlatformFile? result = await FilePicker.pickFile(
         type: FileType.custom,
         allowedExtensions: ['txt'],
         dialogTitle: AppLocalizations.of(context)!.importTodos,
       );
 
-      if (result != null && result.files.single.path != null) {
-        final file = File(result.files.single.path!);
+      if (result != null && result.path != null) {
+        final file = File(result.path!);
         final contents = await file.readAsString();
         
         // Split by lines and create todos

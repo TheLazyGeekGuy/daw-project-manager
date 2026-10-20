@@ -5,6 +5,7 @@ import 'package:file_picker/file_picker.dart';
 import 'package:uuid/uuid.dart';
 
 import '../models/custom_theme.dart';
+import '../utils/save_file_dialog.dart';
 
 /// Reads and writes single-theme `.dpmtheme` files.
 ///
@@ -51,8 +52,9 @@ class ThemeFileService {
     }
   }
 
-  /// Writes [theme] to a file the user picks. Returns null if cancelled.
-  static Future<File?> export(
+  /// Writes [theme] to a file the user picks. Returns where it was saved
+  /// ([savedLocation]), or null if cancelled.
+  static Future<String?> export(
     CustomTheme theme, {
     required String dialogTitle,
     required String fallbackName,
@@ -61,17 +63,13 @@ class ThemeFileService {
         ? theme.name!.trim().replaceAll(RegExp(r'[^\w\- ]'), '_')
         : fallbackName;
 
-    final path = await FilePicker.saveFile(
+    return saveTextWithDialog(
       dialogTitle: dialogTitle,
       fileName: '$safeName.$fileExtension',
+      text: encode(theme),
       type: FileType.custom,
       allowedExtensions: [fileExtension],
     );
-    if (path == null) return null;
-
-    final file = File(path);
-    await file.writeAsString(encode(theme));
-    return file;
   }
 
   /// Prompts for a `.dpmtheme` file and parses it.
@@ -80,12 +78,12 @@ class ThemeFileService {
   /// theme — the caller distinguishes them by whether a file was chosen, so
   /// cancelling doesn't raise an error toast.
   static Future<ThemeImportResult> import({required String dialogTitle}) async {
-    final result = await FilePicker.pickFiles(
+    final picked = await FilePicker.pickFile(
       type: FileType.custom,
       allowedExtensions: [fileExtension],
       dialogTitle: dialogTitle,
     );
-    final path = result?.files.single.path;
+    final path = picked?.path;
     if (path == null) return const ThemeImportResult.cancelled();
 
     try {

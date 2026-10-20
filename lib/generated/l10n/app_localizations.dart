@@ -4259,18 +4259,6 @@ abstract class AppLocalizations {
   /// **'Save File'**
   String get saveFileDialogTitle;
 
-  /// Title of the system save dialog when saving all of a profile's files as one ZIP
-  ///
-  /// In en, this message translates to:
-  /// **'Save All Files as ZIP'**
-  String get saveAllFilesAsZipDialogTitle;
-
-  /// Title of the system save dialog when saving the selected files of a profile as one ZIP
-  ///
-  /// In en, this message translates to:
-  /// **'Save Selected Files as ZIP'**
-  String get saveSelectedFilesAsZipDialogTitle;
-
   /// Error message when removing press kit file fails
   ///
   /// In en, this message translates to:
@@ -8801,12 +8789,6 @@ abstract class AppLocalizations {
   /// **'Save the attached files and links'**
   String get attachmentExportTooltip;
 
-  /// No description provided for @attachmentExportSaveTitle.
-  ///
-  /// In en, this message translates to:
-  /// **'Save attachments'**
-  String get attachmentExportSaveTitle;
-
   /// No description provided for @attachmentExportNothing.
   ///
   /// In en, this message translates to:
@@ -11087,6 +11069,12 @@ abstract class AppLocalizations {
   /// **'Drag'**
   String get midiGestureDrag;
 
+  /// Shortcut sheet keycap: drawing with a pen (stylus)
+  ///
+  /// In en, this message translates to:
+  /// **'Pen'**
+  String get midiGesturePen;
+
   /// Shortcut sheet keycap: the mouse wheel
   ///
   /// In en, this message translates to:
@@ -11104,6 +11092,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Pencil: click to add a note — drag across to lengthen it, up or down for how hard it plays; a click on a note selects it'**
   String get midiShortcutPencilTool;
+
+  /// Shortcut sheet action: a pen sets a drawn note's velocity by pressure
+  ///
+  /// In en, this message translates to:
+  /// **'Drawing with a pen: the harder you press, the louder the note'**
+  String get midiShortcutPenPressure;
 
   /// Shortcut sheet action
   ///
@@ -12898,6 +12892,18 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Move to profile…'**
   String get moveToProfileMenu;
+
+  /// Project right-click menu: submenu holding move, archive and restore
+  ///
+  /// In en, this message translates to:
+  /// **'Files'**
+  String get projectMenuFiles;
+
+  /// Project right-click menu: submenu holding refresh, extract metadata and restore from Drive
+  ///
+  /// In en, this message translates to:
+  /// **'Update details'**
+  String get projectMenuUpdate;
 
   /// No description provided for @moveToProfileTitle.
   ///

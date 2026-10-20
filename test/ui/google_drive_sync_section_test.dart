@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 
@@ -7,6 +7,7 @@ import 'package:daw_project_manager/models/auto_backup_interval.dart';
 import 'package:daw_project_manager/providers/providers.dart';
 import 'package:daw_project_manager/services/google_drive_sync_service.dart';
 import 'package:daw_project_manager/ui/google_drive_sync_page.dart';
+import 'package:daw_project_manager/utils/localization_delegates.dart';
 
 /// A service that is signed out and never touches Drive, Hive or the
 /// platform, so the sync section can be mounted in a widget test.
@@ -58,10 +59,10 @@ void main() {
         uploadAutoPreviewSongsProvider.overrideWith(_FixedUploadAuto.new),
         syncOnStartupProvider.overrideWith(_FixedSyncOnStartup.new),
       ],
-      child: const MaterialApp(
-        localizationsDelegates: AppLocalizations.localizationsDelegates,
+      child: MaterialApp(
+        localizationsDelegates: appLocalizationsDelegates,
         supportedLocales: AppLocalizations.supportedLocales,
-        home: Scaffold(
+        home: const Scaffold(
           body: SingleChildScrollView(child: GoogleDriveSyncSection()),
         ),
       ),

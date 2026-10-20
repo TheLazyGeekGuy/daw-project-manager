@@ -1,8 +1,10 @@
+import 'dart:convert';
 import 'dart:io';
+import 'dart:typed_data';
 
 import 'package:file_picker/file_picker.dart';
 import 'package:path/path.dart' as p;
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:flutter/services.dart' show rootBundle;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -44,6 +46,7 @@ import '../utils/daw_logo.dart';
 import '../utils/file_launcher.dart';
 import '../utils/mobile_utils.dart';
 import '../utils/relocation_preview.dart';
+import '../utils/save_file_dialog.dart';
 import '../utils/root_overlap.dart' show findRootOverlaps;
 import '../services/companion_bridge/companion_install_scan.dart';
 import '../services/companion_bridge/companion_protocol.dart';
@@ -293,35 +296,29 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
               children: [
                 Text(AppLocalizations.of(context)!.importBackupMessage),
                 const SizedBox(height: 16),
-                RadioListTile<ImportMode>(
-                  title: Text(AppLocalizations.of(context)!.mergeWithCurrentProfile),
-                  value: ImportMode.merge,
+                RadioGroup<ImportMode>(
                   groupValue: selectedMode,
                   onChanged: (value) {
                     setState(() {
                       selectedMode = value;
                     });
                   },
-                ),
-                RadioListTile<ImportMode>(
-                  title: Text(AppLocalizations.of(context)!.replaceCurrentProfile),
-                  value: ImportMode.replace,
-                  groupValue: selectedMode,
-                  onChanged: (value) {
-                    setState(() {
-                      selectedMode = value;
-                    });
-                  },
-                ),
-                RadioListTile<ImportMode>(
-                  title: Text(AppLocalizations.of(context)!.createNewProfileForImport),
-                  value: ImportMode.createNewProfile,
-                  groupValue: selectedMode,
-                  onChanged: (value) {
-                    setState(() {
-                      selectedMode = value;
-                    });
-                  },
+                  child: Column(
+                    children: [
+                      RadioListTile<ImportMode>(
+                        title: Text(AppLocalizations.of(context)!.mergeWithCurrentProfile),
+                        value: ImportMode.merge,
+                      ),
+                      RadioListTile<ImportMode>(
+                        title: Text(AppLocalizations.of(context)!.replaceCurrentProfile),
+                        value: ImportMode.replace,
+                      ),
+                      RadioListTile<ImportMode>(
+                        title: Text(AppLocalizations.of(context)!.createNewProfileForImport),
+                        value: ImportMode.createNewProfile,
+                      ),
+                    ],
+                  ),
                 ),
                 if (selectedMode == ImportMode.createNewProfile) ...[
                   const SizedBox(height: 16),
@@ -524,26 +521,27 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
     }
 
     try {
-      final destPath = await FilePicker.saveFile(
-        dialogTitle: asXlsx ? l10n.exportAllPartsXlsx : l10n.exportAllPartsCsv,
-        fileName: asXlsx
-            ? ProjectPartsXlsxExportService.suggestedBulkFileName()
-            : ProjectPartsCsvExportService.suggestedBulkFileName(),
-        type: FileType.custom,
-        allowedExtensions: [asXlsx ? 'xlsx' : 'csv'],
-      );
-      if (destPath == null) return; // user cancelled
-
+      final Uint8List bytes;
       if (asXlsx) {
         final workbook =
             ProjectPartsXlsxExportService.buildWorkbook(projects, l10n);
         if (workbook == null) return;
-        await File(destPath).writeAsBytes(workbook);
+        bytes = workbook;
       } else {
-        await File(destPath).writeAsString(
+        bytes = utf8.encode(
           ProjectPartsCsvExportService.formatProjects(projects, l10n),
         );
       }
+      final destPath = await saveBytesWithDialog(
+        dialogTitle: asXlsx ? l10n.exportAllPartsXlsx : l10n.exportAllPartsCsv,
+        fileName: asXlsx
+            ? ProjectPartsXlsxExportService.suggestedBulkFileName()
+            : ProjectPartsCsvExportService.suggestedBulkFileName(),
+        bytes: bytes,
+        type: FileType.custom,
+        allowedExtensions: [asXlsx ? 'xlsx' : 'csv'],
+      );
+      if (destPath == null) return; // user cancelled
 
       if (mounted) {
         ScaffoldMessenger.of(context).showAppSnackBar(
@@ -910,15 +908,14 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
 
     try {
       final text = ProjectTextExportService.formatProjects(projects, l10n);
-      final destPath = await FilePicker.saveFile(
+      final destPath = await saveTextWithDialog(
         dialogTitle: l10n.exportAllProjectsInfo,
         fileName: ProjectTextExportService.suggestedBulkFileName(),
+        text: text,
         type: FileType.custom,
         allowedExtensions: ['txt'],
       );
       if (destPath == null) return; // user cancelled
-
-      await File(destPath).writeAsString(text);
 
       if (mounted) {
         ScaffoldMessenger.of(context).showAppSnackBar(
@@ -2880,8 +2877,7 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
                 physics: const NeverScrollableScrollPhysics(),
                 buildDefaultDragHandles: false,
                 itemCount: phases.length,
-                onReorder: (oldIndex, newIndex) {
-                  if (newIndex > oldIndex) newIndex--;
+                onReorderItem: (oldIndex, newIndex) {
                   final updated = List<String>.from(phases);
                   updated.insert(newIndex, updated.removeAt(oldIndex));
                   _savePhases(updated);
@@ -3736,14 +3732,14 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
 
   Future<void> _exportTheme(CustomTheme theme, AppLocalizations l10n) async {
     try {
-      final file = await ThemeFileService.export(
+      final savedTo = await ThemeFileService.export(
         theme,
         dialogTitle: l10n.exportTheme,
         fallbackName: l10n.untitledTheme,
       );
-      if (file == null || !mounted) return;
+      if (savedTo == null || !mounted) return;
       ScaffoldMessenger.of(context).showAppSnackBar(
-        SnackBar(content: Text(l10n.themeExported(file.path))),
+        SnackBar(content: Text(l10n.themeExported(savedTo))),
       );
     } catch (_) {
       if (!mounted) return;
