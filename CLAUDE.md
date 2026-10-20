@@ -208,6 +208,11 @@ Instructions for AI assistants working on this codebase.
 - Call `ScaffoldMessenger.of(context).showAppSnackBar(SnackBar(...))` (`lib/ui/app_snack_bar.dart`), never `showSnackBar` — `test/ui/app_snack_bar_test.dart` fails on any direct call in `lib/`.
 - Why: Flutter makes a snackbar with an `action` **persist** — it never times out. "1 project hidden." with its Undo sat over the bottom of the window until the app was restarted. `showAppSnackBar` forces `persist: false`, sizes the timeout to the message (longer with an action, a caller's longer `duration` wins), adds a close button, and replaces whatever is on screen instead of queueing behind it.
 
+### Material comes from `material_ui`, never the SDK's bundled copy
+- Import `package:material_ui/material_ui.dart` (and `cupertino_ui`), not `package:flutter/material.dart`: the SDK's design libraries are frozen since Flutter 3.44 and slated for deprecation. Same class names, different library — so the two copies' types don't mix.
+- Localizations: `appLocalizationsDelegates` (`lib/utils/localization_delegates.dart`), never `AppLocalizations.localizationsDelegates` — gen-l10n still fills that with flutter_localizations' delegates, which leave material_ui widgets without `MaterialLocalizations` outside English. A test fails on any use of it.
+- Dependencies still on the bundled library (trina_grid…) get the theme and localizations through `MaterialUiCompatibilityBridge` in `MaterialApp.builder`. Where a dependency's API is *typed* with bundled-Material classes (trina_grid's column menu takes `PopupMenuEntry`), import just those with `import 'package:flutter/material.dart' as sdk_material show …` — see `trina_grid_menu_delegate.dart`.
+
 ### Destructive confirm-dialog buttons need an explicit `foregroundColor`
 - Any `ElevatedButton`/`FilledButton` styled with a hardcoded red `backgroundColor` (delete/remove/reset confirmations) must also set `foregroundColor` — Flutter does not derive readable text contrast from an arbitrary `backgroundColor` on its own, and the default has been wrong before.
 - Pairing used throughout the app: `Colors.red` / `Colors.red.shade700` → `foregroundColor: Colors.white`; `Colors.red.shade300` (lighter, used for less-destructive actions like "Hide" or "Remove") → `foregroundColor: Colors.black`.

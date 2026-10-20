@@ -1,9 +1,10 @@
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 import 'package:daw_project_manager/generated/l10n/app_localizations.dart';
 import 'package:daw_project_manager/ui/widgets/player_queue_header.dart';
+import 'package:daw_project_manager/utils/localization_delegates.dart';
 
 /// The music player's queue header, at the width its pane gets on a 1920 px
 /// window. Written as a plain row it overflowed by 14 px as soon as a track
@@ -12,7 +13,7 @@ void main() {
   Future<void> pump(WidgetTester tester, Locale locale, {double width = 239}) =>
       tester.pumpWidget(MaterialApp(
         locale: locale,
-        localizationsDelegates: AppLocalizations.localizationsDelegates,
+        localizationsDelegates: appLocalizationsDelegates,
         supportedLocales: AppLocalizations.supportedLocales,
         home: Scaffold(
           body: Align(

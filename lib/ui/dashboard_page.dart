@@ -3,7 +3,7 @@ import 'dart:io';
 
 import 'package:hive_ce/hive.dart';
 import 'package:trina_grid/trina_grid.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 // hide TextDirection: intl exports its own (LTR/RTL) which would shadow the
 // dart:ui one that TextPainter needs (see dawColumnWidth).

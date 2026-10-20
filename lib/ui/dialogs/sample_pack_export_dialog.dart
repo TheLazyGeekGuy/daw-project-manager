@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 
 import '../../generated/l10n/app_localizations.dart';
 import '../../services/sample_pack/sample_classifier.dart';

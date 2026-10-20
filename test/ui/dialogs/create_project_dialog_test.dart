@@ -1,6 +1,6 @@
 import 'dart:io';
 
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:hive_ce/hive.dart';
@@ -9,6 +9,7 @@ import 'package:daw_project_manager/generated/l10n/app_localizations.dart';
 import 'package:daw_project_manager/models/profile.dart';
 import 'package:daw_project_manager/providers/providers.dart';
 import 'package:daw_project_manager/ui/dialogs/create_project_dialog.dart';
+import 'package:daw_project_manager/utils/localization_delegates.dart';
 
 import '../../helpers/hive_test_helper.dart';
 
@@ -143,7 +144,7 @@ void main() {
             ),
           ],
           child: MaterialApp(
-            localizationsDelegates: AppLocalizations.localizationsDelegates,
+            localizationsDelegates: appLocalizationsDelegates,
             supportedLocales: AppLocalizations.supportedLocales,
             home: Builder(
               builder: (context) {

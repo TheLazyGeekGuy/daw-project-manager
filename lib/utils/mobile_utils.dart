@@ -1,5 +1,5 @@
 import 'dart:io';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 
 /// Utility class to help with mobile-specific UI adaptations
 class MobileUtils {

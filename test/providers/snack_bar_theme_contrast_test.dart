@@ -2,7 +2,7 @@ import 'package:daw_project_manager/models/custom_theme.dart';
 import 'package:daw_project_manager/providers/theme_provider.dart';
 import 'package:daw_project_manager/ui/app_snack_bar.dart';
 import 'package:daw_project_manager/utils/color_contrast.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 /// Regression: the snackbar's close (✕) button used Flutter's default

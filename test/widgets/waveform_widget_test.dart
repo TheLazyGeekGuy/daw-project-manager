@@ -2,7 +2,7 @@ import 'dart:typed_data';
 import 'dart:ui' show PointerDeviceKind;
 
 import 'package:flutter/gestures.dart' show kSecondaryMouseButton;
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 
@@ -10,6 +10,7 @@ import 'package:daw_project_manager/generated/l10n/app_localizations.dart';
 import 'package:daw_project_manager/models/waveform_style.dart';
 import 'package:daw_project_manager/services/audio_analysis_service.dart';
 import 'package:daw_project_manager/ui/widgets/waveform_widget.dart';
+import 'package:daw_project_manager/utils/localization_delegates.dart';
 
 WaveformPeaks peaksOf({
   required List<double> mins,
@@ -32,7 +33,7 @@ WaveformPeaks peaksOf({
 
 Widget host(Widget child, {double devicePixelRatio = 2.0}) => ProviderScope(
       child: MaterialApp(
-        localizationsDelegates: AppLocalizations.localizationsDelegates,
+        localizationsDelegates: appLocalizationsDelegates,
         supportedLocales: AppLocalizations.supportedLocales,
         home: Scaffold(
           body: MediaQuery(

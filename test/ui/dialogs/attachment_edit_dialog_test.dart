@@ -1,9 +1,10 @@
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 import 'package:daw_project_manager/generated/l10n/app_localizations.dart';
 import 'package:daw_project_manager/models/project_attachment.dart';
 import 'package:daw_project_manager/ui/dialogs/attachment_edit_dialog.dart';
+import 'package:daw_project_manager/utils/localization_delegates.dart';
 
 /// #112 — the one dialog behind "Add Link" and behind editing any attachment.
 /// It is the only place a user types a target by hand, so it is where a bad
@@ -22,7 +23,7 @@ void main() {
   }) async {
     await tester.pumpWidget(
       MaterialApp(
-        localizationsDelegates: AppLocalizations.localizationsDelegates,
+        localizationsDelegates: appLocalizationsDelegates,
         supportedLocales: AppLocalizations.supportedLocales,
         home: Scaffold(
           body: Builder(

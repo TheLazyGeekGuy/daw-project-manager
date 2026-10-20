@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 
 /// A small "icon + dropdown" filter control (used for Phase/DAW/Key filter
 /// bars) whose hover highlight covers the icon and the dropdown as a single

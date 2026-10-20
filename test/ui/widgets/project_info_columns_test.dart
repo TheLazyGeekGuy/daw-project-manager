@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:trina_grid/trina_grid.dart';
 
@@ -6,6 +6,7 @@ import 'package:daw_project_manager/generated/l10n/app_localizations.dart';
 import 'package:daw_project_manager/models/music_project.dart';
 import 'package:daw_project_manager/models/project_part.dart';
 import 'package:daw_project_manager/ui/widgets/project_info_columns.dart';
+import 'package:daw_project_manager/utils/localization_delegates.dart';
 
 import '../../helpers/test_factories.dart';
 
@@ -62,7 +63,7 @@ void main() {
     final song = _song();
     await tester.pumpWidget(MaterialApp(
       // The parts chip speaks through the app's strings.
-      localizationsDelegates: AppLocalizations.localizationsDelegates,
+      localizationsDelegates: appLocalizationsDelegates,
       supportedLocales: AppLocalizations.supportedLocales,
       home: Scaffold(
         body: SizedBox(

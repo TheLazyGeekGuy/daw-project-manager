@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 
 /// One line of the piano roll's shortcut sheet: what to press or do, and
 /// what it does.

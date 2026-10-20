@@ -1,9 +1,10 @@
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 import 'package:daw_project_manager/generated/l10n/app_localizations.dart';
 import 'package:daw_project_manager/models/music_project.dart';
 import 'package:daw_project_manager/ui/widgets/release_total_length_footer.dart';
+import 'package:daw_project_manager/utils/localization_delegates.dart';
 
 import '../helpers/test_factories.dart';
 
@@ -16,7 +17,7 @@ Future<AppLocalizations> _pump(
 ) async {
   await tester.pumpWidget(
     MaterialApp(
-      localizationsDelegates: AppLocalizations.localizationsDelegates,
+      localizationsDelegates: appLocalizationsDelegates,
       supportedLocales: AppLocalizations.supportedLocales,
       home: Scaffold(body: ReleaseTotalLengthFooter(projects: projects)),
     ),

@@ -2,7 +2,7 @@ import 'package:daw_project_manager/generated/l10n/app_localizations.dart';
 import 'package:daw_project_manager/services/companion_bridge/companion_protocol.dart';
 import 'package:daw_project_manager/services/companion_bridge/riverpod_companion_session_hooks.dart';
 import 'package:daw_project_manager/ui/dialogs/companion_session_ended_dialog.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 void main() {

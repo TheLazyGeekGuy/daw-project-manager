@@ -1,6 +1,6 @@
 import 'dart:math' as math;
 
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 
 /// The shortest time any snackbar stays on screen.
 const Duration kSnackBarMinDuration = Duration(seconds: 4);

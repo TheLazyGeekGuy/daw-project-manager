@@ -1,5 +1,5 @@
 import 'package:flutter/gestures.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -11,6 +11,7 @@ import 'package:daw_project_manager/ui/midi_preview_player.dart';
 import 'package:daw_project_manager/ui/widgets/midi_clip_edit_controller.dart';
 import 'package:daw_project_manager/ui/widgets/midi_piano_roll.dart';
 import 'package:daw_project_manager/utils/musical_scale.dart';
+import 'package:daw_project_manager/utils/localization_delegates.dart';
 
 String _laneName(MidiLane lane) => lane.isVelocity
     ? 'Velocity'
@@ -680,7 +681,7 @@ void main() {
       final player = MidiPreviewPlayer();
       addTearDown(player.dispose);
       await tester.pumpWidget(ProviderScope(child: MaterialApp(
-        localizationsDelegates: AppLocalizations.localizationsDelegates,
+        localizationsDelegates: appLocalizationsDelegates,
         supportedLocales: AppLocalizations.supportedLocales,
         home: Scaffold(
           body: Builder(
@@ -717,7 +718,7 @@ void main() {
       var toggles = 0;
       // The window reads the shared preview volume, so it needs a scope.
       await tester.pumpWidget(ProviderScope(child: MaterialApp(
-        localizationsDelegates: AppLocalizations.localizationsDelegates,
+        localizationsDelegates: appLocalizationsDelegates,
         supportedLocales: AppLocalizations.supportedLocales,
         home: Scaffold(
           body: Builder(

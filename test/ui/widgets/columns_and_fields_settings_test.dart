@@ -1,10 +1,11 @@
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 import 'package:daw_project_manager/generated/l10n/app_localizations.dart';
 import 'package:daw_project_manager/models/custom_field.dart';
 import 'package:daw_project_manager/ui/widgets/columns_and_fields_settings.dart';
 import 'package:daw_project_manager/utils/custom_fields.dart';
+import 'package:daw_project_manager/utils/localization_delegates.dart';
 
 void main() {
   final visibilityChanges = <String>[];
@@ -35,7 +36,7 @@ void main() {
     addTearDown(tester.view.reset);
     await tester.pumpWidget(
       MaterialApp(
-        localizationsDelegates: AppLocalizations.localizationsDelegates,
+        localizationsDelegates: appLocalizationsDelegates,
         supportedLocales: AppLocalizations.supportedLocales,
         home: Scaffold(
           body: SingleChildScrollView(

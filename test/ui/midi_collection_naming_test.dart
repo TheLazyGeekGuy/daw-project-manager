@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 import 'package:daw_project_manager/generated/l10n/app_localizations.dart';
@@ -9,9 +9,10 @@ import 'package:daw_project_manager/services/midi/synth_voice.dart';
 import 'package:daw_project_manager/ui/midi_collection_actions.dart';
 import 'package:daw_project_manager/ui/midi_collection_naming.dart';
 import 'package:daw_project_manager/ui/widgets/midi_clip_list.dart';
+import 'package:daw_project_manager/utils/localization_delegates.dart';
 
 Widget _app(void Function(BuildContext context) open) => MaterialApp(
-  localizationsDelegates: AppLocalizations.localizationsDelegates,
+  localizationsDelegates: appLocalizationsDelegates,
   supportedLocales: AppLocalizations.supportedLocales,
   home: Scaffold(
     body: Builder(

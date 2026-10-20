@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 
 /// Global route observer — registered in MaterialApp so any widget can mix in
 /// [RouteAware] and get notified when routes are pushed/popped on top of them.

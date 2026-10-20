@@ -1,11 +1,12 @@
 import 'dart:async';
 
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 import 'package:daw_project_manager/generated/l10n/app_localizations.dart';
 import 'package:daw_project_manager/models/backup_progress.dart';
 import 'package:daw_project_manager/ui/dialogs/drive_sync_dialogs.dart';
+import 'package:daw_project_manager/utils/localization_delegates.dart';
 
 void main() {
   Future<void> pumpOpener(
@@ -14,7 +15,7 @@ void main() {
     bool settle = true,
   }) async {
     await tester.pumpWidget(MaterialApp(
-      localizationsDelegates: AppLocalizations.localizationsDelegates,
+      localizationsDelegates: appLocalizationsDelegates,
       supportedLocales: AppLocalizations.supportedLocales,
       home: Scaffold(
         body: Builder(

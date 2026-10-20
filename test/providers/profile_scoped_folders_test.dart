@@ -1,6 +1,6 @@
 import 'dart:io';
 
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_riverpod/misc.dart' show ProviderListenable;
 import 'package:flutter_test/flutter_test.dart';
@@ -13,6 +13,7 @@ import 'package:daw_project_manager/providers/providers.dart';
 import 'package:daw_project_manager/repository/profile_repository.dart';
 import 'package:daw_project_manager/repository/project_repository.dart';
 import 'package:daw_project_manager/ui/widgets/folders_profile_picker.dart';
+import 'package:daw_project_manager/utils/localization_delegates.dart';
 
 import '../helpers/hive_test_helper.dart';
 import '../helpers/test_factories.dart';
@@ -110,7 +111,7 @@ void main() {
     Future<List<String>> pump(WidgetTester tester, String selectedId) async {
       final picked = <String>[];
       await tester.pumpWidget(MaterialApp(
-        localizationsDelegates: AppLocalizations.localizationsDelegates,
+        localizationsDelegates: appLocalizationsDelegates,
         supportedLocales: AppLocalizations.supportedLocales,
         home: Scaffold(
           body: FoldersProfilePicker(

@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 
 /// The piano roll's tool icons Material has no glyph for: the select
 /// tool's mouse pointer, the range tool's text caret, the eraser and the

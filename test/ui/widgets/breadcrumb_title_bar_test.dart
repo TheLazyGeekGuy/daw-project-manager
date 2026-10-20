@@ -1,10 +1,11 @@
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 import 'package:daw_project_manager/generated/l10n/app_localizations.dart';
 import 'package:daw_project_manager/providers/providers.dart';
 import 'package:daw_project_manager/ui/widgets/desktop_title_bar.dart';
+import 'package:daw_project_manager/utils/localization_delegates.dart';
 
 /// A page whose only content is a title bar, so pushing and popping routes
 /// exercises exactly the registration the real pages get for free.
@@ -46,7 +47,7 @@ void main() {
       UncontrolledProviderScope(
         container: container,
         child: MaterialApp(
-          localizationsDelegates: AppLocalizations.localizationsDelegates,
+          localizationsDelegates: appLocalizationsDelegates,
           supportedLocales: AppLocalizations.supportedLocales,
           home: home,
         ),

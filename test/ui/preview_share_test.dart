@@ -1,6 +1,6 @@
 import 'dart:io';
 
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:path/path.dart' as p;
 import 'package:path_provider_platform_interface/path_provider_platform_interface.dart';
@@ -10,6 +10,7 @@ import 'package:share_plus_platform_interface/share_plus_platform_interface.dart
 import 'package:daw_project_manager/generated/l10n/app_localizations.dart';
 import 'package:daw_project_manager/models/music_project.dart';
 import 'package:daw_project_manager/ui/preview_share.dart';
+import 'package:daw_project_manager/utils/localization_delegates.dart';
 
 import '../helpers/test_factories.dart';
 
@@ -225,7 +226,7 @@ void main() {
     Future<BuildContext> pumpHost(WidgetTester tester) async {
       late BuildContext ctx;
       await tester.pumpWidget(MaterialApp(
-        localizationsDelegates: AppLocalizations.localizationsDelegates,
+        localizationsDelegates: appLocalizationsDelegates,
         supportedLocales: AppLocalizations.supportedLocales,
         home: Scaffold(
           body: Builder(builder: (context) {

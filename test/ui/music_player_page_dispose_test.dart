@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 
@@ -6,6 +6,7 @@ import 'package:daw_project_manager/generated/l10n/app_localizations.dart';
 import 'package:daw_project_manager/models/music_project.dart';
 import 'package:daw_project_manager/providers/providers.dart';
 import 'package:daw_project_manager/ui/music_player_page.dart';
+import 'package:daw_project_manager/utils/localization_delegates.dart';
 
 /// Leaving the Music Player tab used `ref` in `dispose()`, which Riverpod 3
 /// refuses: it threw on every unmount, the bottom player bar kept calling
@@ -20,10 +21,10 @@ void main() {
 
     await tester.pumpWidget(UncontrolledProviderScope(
       container: container,
-      child: const MaterialApp(
-        localizationsDelegates: AppLocalizations.localizationsDelegates,
+      child: MaterialApp(
+        localizationsDelegates: appLocalizationsDelegates,
         supportedLocales: AppLocalizations.supportedLocales,
-        home: Scaffold(body: MusicPlayerPage()),
+        home: const Scaffold(body: MusicPlayerPage()),
       ),
     ));
     await tester.pump();

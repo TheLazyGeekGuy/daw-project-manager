@@ -3,7 +3,7 @@ import '../services/app_audio_focus.dart';
 import '../utils/mobile_utils.dart';
 import '../utils/search_utils.dart';
 import 'package:flutter/foundation.dart' show kDebugMode;
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:audioplayers/audioplayers.dart';
 import '../models/playlist.dart';

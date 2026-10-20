@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 
 /// Pre-defined color palette offered in the phase color picker.
 const List<Color> kPhaseColorPalette = [

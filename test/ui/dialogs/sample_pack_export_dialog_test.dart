@@ -1,15 +1,16 @@
 import 'dart:async';
 
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 import 'package:daw_project_manager/generated/l10n/app_localizations.dart';
 import 'package:daw_project_manager/services/sample_pack/sample_pack_exporter.dart';
 import 'package:daw_project_manager/ui/dialogs/sample_pack_export_dialog.dart';
 import 'package:daw_project_manager/ui/widgets/sample_pack_card.dart';
+import 'package:daw_project_manager/utils/localization_delegates.dart';
 
 Widget _app(Widget Function(BuildContext) open) => MaterialApp(
-      localizationsDelegates: AppLocalizations.localizationsDelegates,
+      localizationsDelegates: appLocalizationsDelegates,
       supportedLocales: AppLocalizations.supportedLocales,
       home: Scaffold(
         body: Builder(
@@ -61,7 +62,7 @@ void main() {
       addTearDown(tester.view.reset);
       result = null;
       await tester.pumpWidget(MaterialApp(
-        localizationsDelegates: AppLocalizations.localizationsDelegates,
+        localizationsDelegates: appLocalizationsDelegates,
         supportedLocales: AppLocalizations.supportedLocales,
         home: Scaffold(
           body: Builder(
@@ -423,7 +424,7 @@ void main() {
       (tester) async {
     var exports = 0;
     Future<void> pumpCard(bool busy) => tester.pumpWidget(MaterialApp(
-          localizationsDelegates: AppLocalizations.localizationsDelegates,
+          localizationsDelegates: appLocalizationsDelegates,
           supportedLocales: AppLocalizations.supportedLocales,
           home: Scaffold(
             body: SamplePackCard(busy: busy, onExport: () => exports++),
