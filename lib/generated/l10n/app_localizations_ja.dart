@@ -6458,6 +6458,9 @@ class AppLocalizationsJa extends AppLocalizations {
   String get midiGestureDrag => 'ドラッグ';
 
   @override
+  String get midiGesturePen => 'ペン';
+
+  @override
   String get midiGestureWheel => 'ホイール';
 
   @override
@@ -6466,6 +6469,9 @@ class AppLocalizationsJa extends AppLocalizations {
   @override
   String get midiShortcutPencilTool =>
       '鉛筆：クリックでノートを追加。横にドラッグで長く、上下でベロシティ。ノートをクリックすると選択';
+
+  @override
+  String get midiShortcutPenPressure => 'ペンで描く：強く押すほどベロシティが上がります';
 
   @override
   String get midiShortcutDoubleClick =>

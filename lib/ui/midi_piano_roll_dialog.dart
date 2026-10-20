@@ -310,6 +310,7 @@ List<MidiShortcutSection> midiShortcutSections(
       MidiShortcut(const ['2'], l10n.midiShortcutRangeTool),
       MidiShortcut(const ['5'], l10n.midiShortcutEraserTool),
       MidiShortcut(const ['8'], l10n.midiShortcutPencilTool),
+      MidiShortcut([l10n.midiGesturePen], l10n.midiShortcutPenPressure),
     ]),
     MidiShortcutSection(l10n.midiShortcutsNotes, [
       MidiShortcut([l10n.midiGestureDoubleClick], l10n.midiShortcutDoubleClick),

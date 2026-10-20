@@ -6385,6 +6385,9 @@ class AppLocalizationsZh extends AppLocalizations {
   String get midiGestureDrag => '拖动';
 
   @override
+  String get midiGesturePen => '触控笔';
+
+  @override
   String get midiGestureWheel => '滚轮';
 
   @override
@@ -6392,6 +6395,9 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get midiShortcutPencilTool => '铅笔：单击添加音符；横向拖动可延长，上下拖动调整力度；单击音符将其选中';
+
+  @override
+  String get midiShortcutPenPressure => '用触控笔绘制：按得越用力，音符力度越大';
 
   @override
   String get midiShortcutDoubleClick =>

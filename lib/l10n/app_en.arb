@@ -6467,6 +6467,10 @@
   "@midiGestureDrag": {
     "description": "Shortcut sheet keycap: dragging with the mouse"
   },
+  "midiGesturePen": "Pen",
+  "@midiGesturePen": {
+    "description": "Shortcut sheet keycap: drawing with a pen (stylus)"
+  },
   "midiGestureWheel": "Wheel",
   "@midiGestureWheel": {
     "description": "Shortcut sheet keycap: the mouse wheel"
@@ -6478,6 +6482,10 @@
   "midiShortcutPencilTool": "Pencil: click to add a note — drag across to lengthen it, up or down for how hard it plays; a click on a note selects it",
   "@midiShortcutPencilTool": {
     "description": "Shortcut sheet action"
+  },
+  "midiShortcutPenPressure": "Drawing with a pen: the harder you press, the louder the note",
+  "@midiShortcutPenPressure": {
+    "description": "Shortcut sheet action: a pen sets a drawn note's velocity by pressure"
   },
   "midiShortcutDoubleClick": "On empty space: add a note (hold and drag: across for length, up or down for velocity; Ctrl: off the grid). On a note: delete it",
   "@midiShortcutDoubleClick": {

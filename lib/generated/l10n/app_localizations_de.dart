@@ -6660,6 +6660,9 @@ class AppLocalizationsDe extends AppLocalizations {
   String get midiGestureDrag => 'Ziehen';
 
   @override
+  String get midiGesturePen => 'Eingabestift';
+
+  @override
   String get midiGestureWheel => 'Mausrad';
 
   @override
@@ -6668,6 +6671,10 @@ class AppLocalizationsDe extends AppLocalizations {
   @override
   String get midiShortcutPencilTool =>
       'Stift: Klick fügt eine Note hinzu – seitlich ziehen verlängert sie, nach oben oder unten ändert die Anschlagstärke; Klick auf eine Note wählt sie aus';
+
+  @override
+  String get midiShortcutPenPressure =>
+      'Mit dem Eingabestift zeichnen: je fester der Druck, desto lauter die Note';
 
   @override
   String get midiShortcutDoubleClick =>

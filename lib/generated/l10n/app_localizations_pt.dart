@@ -6644,6 +6644,9 @@ class AppLocalizationsPt extends AppLocalizations {
   String get midiGestureDrag => 'Arrastar';
 
   @override
+  String get midiGesturePen => 'Caneta';
+
+  @override
   String get midiGestureWheel => 'Roda do mouse';
 
   @override
@@ -6652,6 +6655,10 @@ class AppLocalizationsPt extends AppLocalizations {
   @override
   String get midiShortcutPencilTool =>
       'Lápis: clique para adicionar uma nota — arraste para o lado para alongá-la, para cima ou para baixo para a velocidade; clicar em uma nota a seleciona';
+
+  @override
+  String get midiShortcutPenPressure =>
+      'Desenhando com caneta: quanto mais forte você pressiona, mais alta a nota';
 
   @override
   String get midiShortcutDoubleClick =>

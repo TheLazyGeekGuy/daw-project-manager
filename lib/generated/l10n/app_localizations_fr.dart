@@ -6693,6 +6693,9 @@ class AppLocalizationsFr extends AppLocalizations {
   String get midiGestureDrag => 'Glisser';
 
   @override
+  String get midiGesturePen => 'Stylet';
+
+  @override
   String get midiGestureWheel => 'Molette';
 
   @override
@@ -6701,6 +6704,10 @@ class AppLocalizationsFr extends AppLocalizations {
   @override
   String get midiShortcutPencilTool =>
       'Crayon : cliquez pour ajouter une note — glissez de côté pour l’allonger, vers le haut ou le bas pour sa vélocité ; un clic sur une note la sélectionne';
+
+  @override
+  String get midiShortcutPenPressure =>
+      'Dessiner au stylet : plus vous appuyez, plus la note est forte';
 
   @override
   String get midiShortcutDoubleClick =>

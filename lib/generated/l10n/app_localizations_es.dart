@@ -6677,6 +6677,9 @@ class AppLocalizationsEs extends AppLocalizations {
   String get midiGestureDrag => 'Arrastrar';
 
   @override
+  String get midiGesturePen => 'Lápiz óptico';
+
+  @override
   String get midiGestureWheel => 'Rueda';
 
   @override
@@ -6685,6 +6688,10 @@ class AppLocalizationsEs extends AppLocalizations {
   @override
   String get midiShortcutPencilTool =>
       'Lápiz: clic para añadir una nota; arrastra a los lados para alargarla, arriba o abajo para su velocidad; clic en una nota para seleccionarla';
+
+  @override
+  String get midiShortcutPenPressure =>
+      'Dibujar con lápiz óptico: cuanto más presionas, más fuerte suena la nota';
 
   @override
   String get midiShortcutDoubleClick =>

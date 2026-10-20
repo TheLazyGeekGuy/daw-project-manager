@@ -6648,6 +6648,9 @@ class AppLocalizationsRu extends AppLocalizations {
   String get midiGestureDrag => 'Перетаскивание';
 
   @override
+  String get midiGesturePen => 'Стилус';
+
+  @override
   String get midiGestureWheel => 'Колесо мыши';
 
   @override
@@ -6656,6 +6659,10 @@ class AppLocalizationsRu extends AppLocalizations {
   @override
   String get midiShortcutPencilTool =>
       'Карандаш: щелчок добавляет ноту; протяните вбок, чтобы удлинить, вверх или вниз — громкость; щелчок по ноте выделяет её';
+
+  @override
+  String get midiShortcutPenPressure =>
+      'Рисование стилусом: чем сильнее нажим, тем громче нота';
 
   @override
   String get midiShortcutDoubleClick =>

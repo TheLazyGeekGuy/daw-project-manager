@@ -11087,6 +11087,12 @@ abstract class AppLocalizations {
   /// **'Drag'**
   String get midiGestureDrag;
 
+  /// Shortcut sheet keycap: drawing with a pen (stylus)
+  ///
+  /// In en, this message translates to:
+  /// **'Pen'**
+  String get midiGesturePen;
+
   /// Shortcut sheet keycap: the mouse wheel
   ///
   /// In en, this message translates to:
@@ -11104,6 +11110,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Pencil: click to add a note — drag across to lengthen it, up or down for how hard it plays; a click on a note selects it'**
   String get midiShortcutPencilTool;
+
+  /// Shortcut sheet action: a pen sets a drawn note's velocity by pressure
+  ///
+  /// In en, this message translates to:
+  /// **'Drawing with a pen: the harder you press, the louder the note'**
+  String get midiShortcutPenPressure;
 
   /// Shortcut sheet action
   ///

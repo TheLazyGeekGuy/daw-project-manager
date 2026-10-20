@@ -6615,6 +6615,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get midiGestureDrag => 'Drag';
 
   @override
+  String get midiGesturePen => 'Pen';
+
+  @override
   String get midiGestureWheel => 'Wheel';
 
   @override
@@ -6623,6 +6626,10 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get midiShortcutPencilTool =>
       'Pencil: click to add a note — drag across to lengthen it, up or down for how hard it plays; a click on a note selects it';
+
+  @override
+  String get midiShortcutPenPressure =>
+      'Drawing with a pen: the harder you press, the louder the note';
 
   @override
   String get midiShortcutDoubleClick =>

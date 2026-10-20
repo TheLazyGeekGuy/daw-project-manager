@@ -113,6 +113,21 @@ int snapLaneValue(MidiLane lane, int value) {
   return (value - 8192).abs() <= 16383 * 0.03 ? 8192 : value;
 }
 
+/// The velocity (1–127) a pen's press in [e] stands for, from no pressure
+/// to full. Null for a mouse or a finger, and for a pen that reports no
+/// pressure range: those set velocity by dragging up and down instead.
+/// Windows reports pen pressure since Flutter 3.44, Linux since 3.47.
+int? penVelocity(PointerEvent e) {
+  if (e.kind != PointerDeviceKind.stylus &&
+      e.kind != PointerDeviceKind.invertedStylus) {
+    return null;
+  }
+  final range = e.pressureMax - e.pressureMin;
+  if (range <= 0) return null;
+  final t = ((e.pressure - e.pressureMin) / range).clamp(0.0, 1.0);
+  return 1 + (t * 126).round();
+}
+
 /// Whether [pitch] falls outside [scale] — drawn orange, note and velocity
 /// stem alike. Nothing is, with no scale set.
 bool noteOutOfScale(MusicalScale? scale, int pitch) =>
@@ -1245,6 +1260,7 @@ class _MidiPianoRollState extends State<MidiPianoRoll>
         // the grid, or with Ctrl right where it was clicked.
         editor.beginNote(_tickAtX(p.dx), _pitchAtY(p.dy), free: _free);
         _drag = _EditDrag(_DragKind.draw, p, null)..lastValue = editor.velocity;
+        _penPressure(editor, e);
         _holdSound(_pitchAtY(p.dy));
         return;
       }
@@ -1255,6 +1271,7 @@ class _MidiPianoRollState extends State<MidiPianoRoll>
         // for off the grid.
         editor.beginNote(_tickAtX(p.dx), _pitchAtY(p.dy), free: _free);
         _drag = _EditDrag(_DragKind.draw, p, null)..lastValue = editor.velocity;
+        _penPressure(editor, e);
         _holdSound(_pitchAtY(p.dy));
         return;
       }
@@ -1329,6 +1346,19 @@ class _MidiPianoRollState extends State<MidiPianoRoll>
     }
   }
 
+  /// A pen drawing a note plays it as hard as it presses: the hardest point
+  /// of the stroke, so easing off at the end of a long note doesn't soften
+  /// it. Mouse and touch, and pens that report no pressure, are unaffected.
+  void _penPressure(MidiClipEditController editor, PointerEvent e) {
+    final drag = _drag;
+    final v = penVelocity(e);
+    if (drag == null || drag.kind != _DragKind.draw || v == null) return;
+    final peak = drag.penPeak;
+    if (peak != null && v <= peak) return;
+    drag.penPeak = v;
+    editor.setDrawnVelocity(v);
+  }
+
   void _onEditMove(PointerMoveEvent e) {
     if (_panning) {
       _scrollBy(-e.delta.dx, -e.delta.dy);
@@ -1347,6 +1377,8 @@ class _MidiPianoRollState extends State<MidiPianoRoll>
     }
     if (_toolCursorAt.value != null) _toolCursorAt.value = e.localPosition;
     _lastDragAt = e.localPosition;
+    final editor = widget.editor;
+    if (editor != null) _penPressure(editor, e);
     _dragTo(e.localPosition);
     _updateAutoScroll(e.localPosition);
   }
@@ -1384,8 +1416,8 @@ class _MidiPianoRollState extends State<MidiPianoRoll>
       case _DragKind.draw:
         if (drag.moved) {
           // Up or down while drawing sets how hard it plays, as in Cubase;
-          // across, how long it is.
-          if (d.dy.abs() > 4) {
+          // across, how long it is. A pen sets it by pressing instead.
+          if (d.dy.abs() > 4 && drag.penPeak == null) {
             editor.setDrawnVelocity(drag.lastValue - (d.dy / 2).round());
           }
           editor.resizeSelection(NoteEdge.end, d.dx / _px, free: _free);
@@ -2272,6 +2304,10 @@ class _EditDrag {
 
   /// Where the eraser last was, to erase on from there.
   Offset? lastAt;
+
+  /// A pen drawing the note: the velocity of the hardest press so far,
+  /// which then sets the note's velocity instead of dragging up and down.
+  int? penPeak;
 
   /// The view's scroll when the drag began.
   Offset scrollStart = Offset.zero;

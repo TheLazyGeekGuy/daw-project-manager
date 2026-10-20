@@ -151,6 +151,32 @@ void main() {
           64);
     });
 
+    test('a pen press maps onto velocity; a mouse or finger has none', () {
+      PointerDownEvent press(PointerDeviceKind kind, double pressure,
+              {double min = 0, double max = 1}) =>
+          PointerDownEvent(
+              kind: kind,
+              pressure: pressure,
+              pressureMin: min,
+              pressureMax: max);
+      expect(penVelocity(press(PointerDeviceKind.stylus, 0)), 1);
+      expect(penVelocity(press(PointerDeviceKind.stylus, 0.5)), 64);
+      expect(penVelocity(press(PointerDeviceKind.stylus, 1)), 127);
+      expect(penVelocity(press(PointerDeviceKind.invertedStylus, 1)), 127,
+          reason: 'the eraser end of a pen presses as well');
+      expect(penVelocity(press(PointerDeviceKind.stylus, 1.4)), 127,
+          reason: 'clamped: some pens overshoot their own maximum');
+      expect(
+          penVelocity(press(PointerDeviceKind.stylus, 300, min: 0, max: 1024)),
+          38,
+          reason: 'measured within the range the pen reports');
+      expect(penVelocity(press(PointerDeviceKind.stylus, 1, min: 1, max: 1)),
+          isNull,
+          reason: 'a pen with no pressure range drags velocity like a mouse');
+      expect(penVelocity(press(PointerDeviceKind.mouse, 1)), isNull);
+      expect(penVelocity(press(PointerDeviceKind.touch, 1)), isNull);
+    });
+
     test('out of scale: only with a scale, by pitch class', () {
       const aMinor = MusicalScale(9, ScaleType.minor);
       expect(noteOutOfScale(aMinor, 69), isFalse); // A

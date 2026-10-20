@@ -6663,6 +6663,9 @@ class AppLocalizationsIt extends AppLocalizations {
   String get midiGestureDrag => 'Trascina';
 
   @override
+  String get midiGesturePen => 'Penna';
+
+  @override
   String get midiGestureWheel => 'Rotellina';
 
   @override
@@ -6671,6 +6674,10 @@ class AppLocalizationsIt extends AppLocalizations {
   @override
   String get midiShortcutPencilTool =>
       'Matita: clic per aggiungere una nota; trascina di lato per allungarla, su o giù per la velocity; un clic su una nota la seleziona';
+
+  @override
+  String get midiShortcutPenPressure =>
+      'Disegnare con la penna: più premi, più forte suona la nota';
 
   @override
   String get midiShortcutDoubleClick =>
