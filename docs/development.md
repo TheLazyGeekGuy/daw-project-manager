@@ -2,7 +2,7 @@
 
 [← README](../README.md) · **Development** · [Testing](testing.md) · [Architecture](architecture.md) · [Releasing](releasing.md)
 
-## 1. Install Flutter 3.41.9 and your platform's tools
+## 1. Install Flutter 3.47.7 and your platform's tools
 
 | Platform | You need | Run with |
 |---|---|---|
