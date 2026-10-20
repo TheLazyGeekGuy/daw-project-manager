@@ -3,6 +3,17 @@ import 'dart:io';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:yaml/yaml.dart';
 
+/// Whether [executable] runs here. A program that isn't installed makes
+/// `Process.runSync` throw rather than return an exit code, and thrown from a
+/// `skip:` it failed the whole file on Windows without Git's tools on PATH.
+bool canRun(String executable) {
+  try {
+    return Process.runSync(executable, ['--version']).exitCode == 0;
+  } on ProcessException {
+    return false;
+  }
+}
+
 // The Flatpak manifest is fed to flatpak-flutter, which fails outright on
 // invalid YAML (v2.9.1's first tag run died on an unquoted ": " in a command).
 void main() {
@@ -46,9 +57,11 @@ void main() {
     expect(live, contains('windows_taskbar:'));
     expect(live, contains('path: third_party/windows_taskbar'));
     expect(() => loadYaml(out), returnsNormally);
-  }, skip: Process.runSync('sed', ['--version']).exitCode != 0
-      ? 'sed not available'
-      : false);
+  }, skip: canRun('sed') ? false : 'sed not available');
+
+  test('a tool that is not installed reads as unavailable, not as a crash', () {
+    expect(canRun('dpm-no-such-tool'), isFalse);
+  });
 
   test('the Flatpak stub exposes the same function as the real file', () {
     const signature = 'Future<bool> runInProcessFfmpeg(List<String> args)';
