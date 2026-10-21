@@ -171,6 +171,91 @@ jobs:
       - name: Run tests
         run: flutter test
 
+  # The app and the DAW plugin, each running its own bridge code on one
+  # bridge folder (test/plugin_integration/). The plugin side is its headless
+  # driver, built from the plugin repo at the commit in plugin_ref: a protocol
+  # change updates both repos and that pin together. Nothing waits on this
+  # job yet: the plugin is unreleased.
+  plugin_integration:
+    name: Plugin integration (Linux)
+    if: github.event_name == 'pull_request' || github.ref == 'refs/heads/main' || startsWith(github.ref, 'refs/tags/v')
+    runs-on: ubuntu-latest
+    env:
+      PLUGIN_DIR: ${{ github.workspace }}/../daw-project-manager-plugin
+      # Only juceaide's needs (JUCE builds it at configure time); the driver
+      # itself needs nothing else. The plugin repo's "Bridge driver on Linux"
+      # job builds with exactly this list, so it stays true.
+      PLUGIN_LINUX_DEPS: pkg-config libfreetype-dev libfontconfig1-dev
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Read the pinned plugin commit
+        id: pin
+        run: echo "ref=$(tr -d '[:space:]' < test/plugin_integration/plugin_ref)" >> "$GITHUB_OUTPUT"
+
+      - name: Check out the plugin at that commit
+        uses: actions/checkout@v4
+        with:
+          repository: bandpassrecords/daw-project-manager-plugin
+          ref: ${{ steps.pin.outputs.ref }}
+          path: daw-project-manager-plugin
+
+      # actions/checkout only writes inside the workspace; the tests look for
+      # the plugin next to the app, so it moves there.
+      - name: Put the plugin beside the app
+        run: mv daw-project-manager-plugin "$PLUGIN_DIR"
+
+      - name: Install the plugin's build dependencies
+        run: sudo apt-get update && sudo apt-get install -y $PLUGIN_LINUX_DEPS
+
+      # JUCE arrives through CMake's FetchContent: kept between runs.
+      - name: Cache JUCE
+        uses: actions/cache@v4
+        with:
+          path: ${{ env.PLUGIN_DIR }}/build/_deps
+          key: plugin-deps-${{ runner.os }}-${{ steps.pin.outputs.ref }}
+          restore-keys: plugin-deps-${{ runner.os }}-
+
+      - name: Build the plugin's bridge driver
+        run: |
+          cmake -S "$PLUGIN_DIR" -B "$PLUGIN_DIR/build" -DCMAKE_BUILD_TYPE=Release -DDPM_BUILD_TESTS=OFF
+          cmake --build "$PLUGIN_DIR/build" --config Release --target DAWProjectManagerBridgeDriver --parallel
+          DRIVER="$PLUGIN_DIR/build/DAWProjectManagerBridgeDriver_artefacts/Release/DAWProjectManagerBridgeDriver"
+          # A missing driver would make the tests skip, and a skip would pass.
+          if [ ! -x "$DRIVER" ]; then
+            echo "::error::DAWProjectManagerBridgeDriver was not built"
+            exit 1
+          fi
+          echo "DPM_PLUGIN_DRIVER=$DRIVER" >> "$GITHUB_ENV"
+
+      - name: Setup Flutter ${{ env.FLUTTER_BASE_VERSION }} (Stable)
+        uses: subosito/flutter-action@v2
+        with:
+          flutter-version: ${{ env.FLUTTER_BASE_VERSION }}
+          channel: 'stable'
+
+      - name: Get dependencies
+        run: flutter pub get
+
+      - name: Inject OAuth Credentials
+        run: |
+          chmod +x scripts/inject_oauth_config.sh
+          ./scripts/inject_oauth_config.sh -d "${{ secrets.DESKTOP_CLIENT_ID }}" -s "${{ secrets.DESKTOP_CLIENT_SECRET }}" -a "${{ secrets.ANDROID_WEB_CLIENT_ID }}"
+        env:
+          DESKTOP_CLIENT_ID: ${{ secrets.DESKTOP_CLIENT_ID }}
+          DESKTOP_CLIENT_SECRET: ${{ secrets.DESKTOP_CLIENT_SECRET }}
+          ANDROID_WEB_CLIENT_ID: ${{ secrets.ANDROID_WEB_CLIENT_ID }}
+
+      - name: Generate Hive Adapters
+        run: dart run build_runner build --delete-conflicting-outputs
+
+      - name: Generate Localizations
+        run: flutter gen-l10n
+
+      - name: Run the integration tests with the plugin
+        run: flutter test test/plugin_integration
+
   # Job de Teste de Integração (para Pull Requests)
   test_pr_build:
     name: Windows app compiles
