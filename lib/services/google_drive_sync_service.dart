@@ -49,6 +49,10 @@ import '../utils/app_paths.dart'
         getReleaseArtworkPath,
         isUsingIsolatedAppData;
 import '../config/oauth_config.dart' show desktopClientSecret, desktopClientId, androidWebClientId;
+import 'plugin_bridge/plugin_protocol.dart' show dpmPluginCaptureFileInUse, dpmPluginPreviewFolderName;
+import 'plugin_capture_sync.dart';
+
+part 'google_drive_capture_sync.dart';
 
 /// Exception thrown when user cancels an upload operation
 class UploadCancelledException implements Exception {
@@ -2731,8 +2735,12 @@ class GoogleDriveSyncService {
       Map<String, String> existingProfilePhotoHashes = {};
       Map<String, String> existingReleaseArtworkHashes = {};
       Map<String, String> existingProjectCoverArtHashes = {};
+      // The DAW plugin's captures the previous backup holds (their own track,
+      // google_drive_capture_sync.dart).
+      Map<String, CaptureEntry> existingCaptures = const {};
       try {
         final existingBackup = await downloadDatabase();
+        existingCaptures = captureEntriesFrom(existingBackup['pluginCaptures']);
         if (existingBackup['previewSongHashes'] != null) {
           existingHashes = Map<String, String>.from(existingBackup['previewSongHashes'] as Map);
           if (kDebugMode) {
@@ -3644,6 +3652,9 @@ class GoogleDriveSyncService {
         'projectCoverArtFiles': projectCoverArtFileMap,
         // NEW: Project cover art hashes (projectId -> fileHash) for change detection
         'projectCoverArtHashes': projectCoverArtHashes,
+        // The DAW plugin's latest captures ("<profileId>/<projectId>" ->
+        // file, hash, name, when, length); see plugin_capture_sync.dart.
+        'pluginCaptures': await _captureEntriesForUpload(allProfiles, existingCaptures),
       };
 
       // Check for cancellation before database upload
@@ -5329,6 +5340,12 @@ class GoogleDriveSyncService {
         remoteData['midiCollectionsByProfile'] as Map,
         allProfiles,
       );
+    }
+    // The DAW plugin's captures, after the projects so one that just arrived
+    // gets its capture's file too. Audio, like the preview songs: skipped
+    // with them.
+    if (downloadPreviewSongs) {
+      await _mergeCaptures(remoteData['pluginCaptures'], allProfiles);
     }
 
     // Merge releases - distribute to CORRECT profiles (or ALL if no mappings)
