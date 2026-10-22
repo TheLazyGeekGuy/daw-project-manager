@@ -1,6 +1,7 @@
 import 'dart:io';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:daw_project_manager/services/backup_service.dart';
+import 'package:daw_project_manager/models/plugin_capture.dart';
 import 'package:daw_project_manager/models/part_template.dart';
 import 'package:daw_project_manager/models/project_part.dart';
 import 'package:daw_project_manager/models/project_template.dart';
@@ -219,6 +220,21 @@ void main() {
         ..remove('customFields');
 
       expect(BackupService.projectFromJson(json).customFields, isEmpty);
+    });
+
+    test("preserves the plugin's latest capture", () {
+      // User data, and Flatpak's only backup path.
+      final capture = PluginCapture(path: '/data/preview_songs/plugin/p1/Take.flac', capturedAt: DateTime.utc(2026, 10, 21, 18, 4), durationSeconds: 92.5);
+      final restored = BackupService.projectFromJson(
+          BackupService.projectToJson(TestFactories.makeProject(latestCapture: capture)));
+
+      expect(restored.latestCapture, capture);
+    });
+
+    test('reads a backup written before captures had a slot as none', () {
+      final json = BackupService.projectToJson(TestFactories.makeProject())..remove('latestCapture');
+
+      expect(BackupService.projectFromJson(json).latestCapture, isNull);
     });
 
     test('preserves deadline', () {

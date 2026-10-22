@@ -181,53 +181,96 @@ void main() {
   });
 
   group('captures', () {
-    test('a capture becomes the preview of a project without one', () async {
+    String capturedAt(int minute) => DateTime.utc(2026, 10, 18, 12, minute).toIso8601String();
+
+    test('a capture becomes the latest capture, and the preview song is left alone', () async {
       final source = await capture('Teardrop_20261018-120000.flac');
-      await drop('capture.ready', {'file': 'captures/Teardrop_20261018-120000.flac', 'durationSeconds': 60});
+      await drop('capture.ready', {
+        'file': 'captures/Teardrop_20261018-120000.flac',
+        'durationSeconds': 60,
+        'capturedAt': capturedAt(0),
+      });
 
       expect(await bridge.processOutbox(), 1);
-      final preview = library.project('solo', 'p1').previewSongPath!;
-      expect(p.isWithin(bridge.dpmPluginPreviewDir, preview), isTrue);
-      expect(await File(preview).readAsString(), 'flac');
-      expect(library.project('solo', 'p1').previewSongFileName, 'Teardrop_20261018-120000.flac');
+      final project = library.project('solo', 'p1');
+      final kept = project.latestCapture!;
+      expect(p.isWithin(p.join(bridge.dpmPluginPreviewDir, 'p1'), kept.path), isTrue);
+      expect(await File(kept.path).readAsString(), 'flac');
+      expect(kept.durationSeconds, 60);
+      expect(kept.capturedAt.toUtc(), DateTime.utc(2026, 10, 18, 12));
+      expect(project.previewSongPath, isNull);
       expect(await source.exists(), isFalse);
+    });
+
+    test('a capture never touches a preview song, picked or auto-detected', () async {
+      // The gaps the old rule had: a capture took over from a newer
+      // auto-detected bounce, and no newer bounce could ever take over back.
+      final picked = p.join(tmp.path, 'Final Master.wav');
+      final bounce = p.join(tmp.path, 'Song Mixdown.wav');
+      await library.saveProject('solo',
+          library.project('solo', 'p1').copyWith(previewSongPath: picked, previewSongAutoPath: bounce));
+
+      await capture('c.flac');
+      await drop('capture.ready', {'file': 'captures/c.flac', 'capturedAt': capturedAt(0)});
+      expect(await bridge.processOutbox(), 1);
+
+      final project = library.project('solo', 'p1');
+      expect(project.previewSongPath, picked);
+      expect(project.previewSongAutoPath, bounce);
+      expect(project.latestCapture, isNotNull);
     });
 
     test('a newer capture replaces the earlier one and its file', () async {
       await capture('a.flac');
-      await drop('capture.ready', {'file': 'captures/a.flac'});
+      await drop('capture.ready', {'file': 'captures/a.flac', 'capturedAt': capturedAt(0)});
       await bridge.processOutbox();
-      final first = library.project('solo', 'p1').previewSongPath!;
+      final first = library.project('solo', 'p1').latestCapture!.path;
 
       await capture('b.flac', content: 'newer');
-      await drop('capture.ready', {'file': 'captures/b.flac', 'supersedes': 'captures/a.flac'});
+      await drop('capture.ready',
+          {'file': 'captures/b.flac', 'supersedes': 'captures/a.flac', 'capturedAt': capturedAt(5)});
       await bridge.processOutbox();
 
-      final second = library.project('solo', 'p1').previewSongPath!;
+      final second = library.project('solo', 'p1').latestCapture!.path;
       expect(second, isNot(first));
       expect(await File(second).readAsString(), 'newer');
       expect(await File(first).exists(), isFalse);
     });
 
-    test('a preview the user picked is kept; the capture is cleared anyway', () async {
-      final picked = p.join(tmp.path, 'Final Master.wav');
-      await File(picked).writeAsString('master');
-      await library.saveProject('solo', library.project('solo', 'p1').copyWith(previewSongPath: picked));
+    test('an older capture arriving late does not replace a newer one', () async {
+      await capture('new.flac', content: 'new');
+      await drop('capture.ready', {'file': 'captures/new.flac', 'capturedAt': capturedAt(5)});
+      await bridge.processOutbox();
       library.saves.clear();
 
-      final source = await capture('c.flac');
-      await drop('capture.ready', {'file': 'captures/c.flac'});
+      final late = await capture('old.flac', content: 'old');
+      await drop('capture.ready', {'file': 'captures/old.flac', 'capturedAt': capturedAt(0)});
       expect(await bridge.processOutbox(), 0);
 
-      expect(library.project('solo', 'p1').previewSongPath, picked);
+      expect(await File(library.project('solo', 'p1').latestCapture!.path).readAsString(), 'new');
       expect(library.saves, isEmpty);
-      expect(await source.exists(), isFalse);
+      expect(await late.exists(), isFalse, reason: "the bridge's copy is cleared either way");
+    });
+
+    test('a capture promoted to preview song keeps its file when a newer capture arrives', () async {
+      await capture('a.flac');
+      await drop('capture.ready', {'file': 'captures/a.flac', 'capturedAt': capturedAt(0)});
+      await bridge.processOutbox();
+      final promoted = library.project('solo', 'p1').latestCapture!.path;
+      await library.saveProject('solo', library.project('solo', 'p1').copyWith(previewSongPath: promoted));
+
+      await capture('b.flac', content: 'newer');
+      await drop('capture.ready', {'file': 'captures/b.flac', 'capturedAt': capturedAt(5)});
+      await bridge.processOutbox();
+
+      expect(library.project('solo', 'p1').previewSongPath, promoted);
+      expect(await File(promoted).exists(), isTrue);
     });
 
     test('a superseded capture whose file is gone is skipped', () async {
       await drop('capture.ready', {'file': 'captures/gone.flac'});
       expect(await bridge.processOutbox(), 0);
-      expect(library.project('solo', 'p1').previewSongPath, isNull);
+      expect(library.project('solo', 'p1').latestCapture, isNull);
     });
 
     test('a message can\'t point the app outside the captures folder', () async {
@@ -238,7 +281,7 @@ void main() {
 
       expect(await bridge.processOutbox(), 0);
       expect(await outside.exists(), isTrue);
-      expect(library.project('solo', 'p1').previewSongPath, isNull);
+      expect(library.project('solo', 'p1').latestCapture, isNull);
     });
   });
 

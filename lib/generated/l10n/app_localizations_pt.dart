@@ -3062,6 +3062,31 @@ class AppLocalizationsPt extends AppLocalizations {
   }
 
   @override
+  String get latestCaptureTitle => 'Última captura';
+
+  @override
+  String get latestCaptureExplanation =>
+      'A última passagem que o plugin da DAW gravou';
+
+  @override
+  String latestCaptureDetails(String when, String length) {
+    return '$when · $length';
+  }
+
+  @override
+  String get latestCaptureUseAsPreview => 'Usar como música de prévia';
+
+  @override
+  String get latestCaptureNotOnThisDevice => 'Ainda não está neste dispositivo';
+
+  @override
+  String get latestCapturePlay => 'Reproduzir a última captura';
+
+  @override
+  String get latestCaptureNowPreview =>
+      'A última captura agora é a música de prévia';
+
+  @override
   String versionLabel(String version) {
     return 'Versão $version';
   }

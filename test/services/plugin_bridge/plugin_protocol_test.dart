@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:daw_project_manager/models/plugin_capture.dart';
 import 'package:daw_project_manager/models/profile.dart';
 import 'package:daw_project_manager/services/plugin_bridge/plugin_protocol.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -370,46 +371,60 @@ void main() {
     });
   });
 
-  group('dpmPluginMayReplacePreview', () {
+  group('dpmPluginKeepsCapture', () {
     final dir = p.join('data', 'preview_songs', 'plugin');
     final captured = DateTime(2026, 10, 18, 12);
+    PluginCapture at(DateTime when) =>
+        PluginCapture(path: p.join(dir, 'p1', 'take.flac'), capturedAt: when, durationSeconds: 60);
 
-    test('fills an empty preview, and replaces an earlier capture', () {
-      expect(dpmPluginMayReplacePreview(TestFactories.makeProject(), dpmPluginPreviewDir: dir, capturedAt: captured), isTrue);
-      expect(
-        dpmPluginMayReplacePreview(
-          TestFactories.makeProject(previewSongPath: p.join(dir, 'p1', 'old.flac')),
-          dpmPluginPreviewDir: dir,
-          capturedAt: captured,
-        ),
-        isTrue,
-      );
+    test('keeps the first capture of a project', () {
+      expect(dpmPluginKeepsCapture(TestFactories.makeProject(), captured), isTrue);
     });
 
-    test('never replaces a preview the user picked', () {
-      final picked = TestFactories.makeProject(previewSongPath: p.join('music', 'Final Master.wav'));
-      expect(
-        dpmPluginMayReplacePreview(picked,
-            dpmPluginPreviewDir: dir, capturedAt: captured, currentPreviewModifiedAt: DateTime(2020)),
-        isFalse,
-      );
+    test('keeps a newer capture, never an older one arriving late', () {
+      final project = TestFactories.makeProject(latestCapture: at(captured));
+      expect(dpmPluginKeepsCapture(project, captured.add(const Duration(minutes: 1))), isTrue);
+      expect(dpmPluginKeepsCapture(project, captured.subtract(const Duration(minutes: 1))), isFalse);
+      expect(dpmPluginKeepsCapture(project, captured), isFalse);
     });
 
-    test('replaces an auto-detected mixdown only when the capture is newer', () {
-      final mixdown = p.join('music', 'Song Mixdown.wav');
-      final project = TestFactories.makeProject(previewSongPath: mixdown, previewSongAutoPath: mixdown);
+    test('ignores the preview song: a picked or auto-detected one never decides', () {
+      // Both gaps of the old rule: a capture replaced a newer auto-detected
+      // bounce, and a newer bounce could never take over from a capture.
+      final bounce = p.join('music', 'Song Mixdown.wav');
+      final project = TestFactories.makeProject(previewSongAutoPath: bounce, previewSongPath: p.join('music', 'Master.wav'));
+      expect(dpmPluginKeepsCapture(project, captured), isTrue);
+    });
+  });
 
-      expect(
-        dpmPluginMayReplacePreview(project,
-            dpmPluginPreviewDir: dir, capturedAt: captured, currentPreviewModifiedAt: DateTime(2026, 3, 1)),
-        isTrue,
-      );
-      expect(
-        dpmPluginMayReplacePreview(project,
-            dpmPluginPreviewDir: dir, capturedAt: captured, currentPreviewModifiedAt: DateTime(2026, 10, 18, 13)),
-        isFalse,
-      );
-      expect(dpmPluginMayReplacePreview(project, dpmPluginPreviewDir: dir, capturedAt: captured), isFalse);
+  group('dpmPluginDetected', () {
+    test('a copy installed, or one seen running, counts on a desktop', () {
+      expect(dpmPluginDetected(isDesktop: true, anyInstalled: true, seen: false), isTrue);
+      // The Flatpak can't search the plug-in folders: a sighting is its only sign.
+      expect(dpmPluginDetected(isDesktop: true, anyInstalled: false, seen: true), isTrue);
+      expect(dpmPluginDetected(isDesktop: true, anyInstalled: false, seen: false), isFalse);
+    });
+
+    test('never on a phone, whatever a synced sighting says', () {
+      expect(dpmPluginDetected(isDesktop: false, anyInstalled: true, seen: true), isFalse);
+    });
+  });
+
+  group('dpmPluginCaptureFileInUse', () {
+    final take = p.join('data', 'preview_songs', 'plugin', 'p1', 'take.flac');
+
+    test('a file is in use while a project keeps it as its latest capture', () {
+      final project = TestFactories.makeProject(
+          latestCapture: PluginCapture(path: take, capturedAt: DateTime(2026, 10), durationSeconds: 30));
+      expect(dpmPluginCaptureFileInUse(take, [project]), isTrue);
+    });
+
+    test('or as its preview song: promoted, or adopted before captures had a slot', () {
+      expect(dpmPluginCaptureFileInUse(take, [TestFactories.makeProject(previewSongPath: take)]), isTrue);
+    });
+
+    test('and not otherwise', () {
+      expect(dpmPluginCaptureFileInUse(take, [TestFactories.makeProject()]), isFalse);
     });
   });
 }

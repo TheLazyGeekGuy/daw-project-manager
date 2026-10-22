@@ -5159,6 +5159,48 @@ abstract class AppLocalizations {
   /// **'by {label}'**
   String byLabel(String label);
 
+  /// No description provided for @latestCaptureTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Latest capture'**
+  String get latestCaptureTitle;
+
+  /// No description provided for @latestCaptureExplanation.
+  ///
+  /// In en, this message translates to:
+  /// **'The last pass the DAW plugin recorded'**
+  String get latestCaptureExplanation;
+
+  /// Under Latest capture: when it was captured and how long it is, e.g. "21 Oct 2026, 18:04 · 1:32".
+  ///
+  /// In en, this message translates to:
+  /// **'{when} · {length}'**
+  String latestCaptureDetails(String when, String length);
+
+  /// No description provided for @latestCaptureUseAsPreview.
+  ///
+  /// In en, this message translates to:
+  /// **'Use as preview song'**
+  String get latestCaptureUseAsPreview;
+
+  /// No description provided for @latestCaptureNotOnThisDevice.
+  ///
+  /// In en, this message translates to:
+  /// **'Not on this device yet'**
+  String get latestCaptureNotOnThisDevice;
+
+  /// No description provided for @latestCapturePlay.
+  ///
+  /// In en, this message translates to:
+  /// **'Play latest capture'**
+  String get latestCapturePlay;
+
+  /// No description provided for @latestCaptureNowPreview.
+  ///
+  /// In en, this message translates to:
+  /// **'The latest capture is now the preview song'**
+  String get latestCaptureNowPreview;
+
   /// No description provided for @versionLabel.
   ///
   /// In en, this message translates to:

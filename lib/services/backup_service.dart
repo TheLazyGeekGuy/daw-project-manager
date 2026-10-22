@@ -10,6 +10,7 @@ import '../models/custom_theme.dart';
 import '../models/music_project.dart';
 import '../models/project_attachment.dart';
 import '../models/project_marker.dart';
+import '../models/plugin_capture.dart';
 import '../models/project_stats.dart';
 import '../models/scan_root.dart';
 import '../models/ignored_path.dart';
@@ -1087,6 +1088,9 @@ class BackupService {
       'tags': project.tags,
       // User data: values the user typed into their own fields.
       'customFields': project.customFields,
+      // User data: the DAW plugin's latest capture (its file stays where the
+      // preview songs are, as a preview song's does).
+      'latestCapture': project.latestCapture?.toMap(),
     };
   }
 
@@ -1161,6 +1165,7 @@ class BackupService {
           if (tag is String) tag,
       ],
       customFields: MusicProject.customFieldsFromRaw(json['customFields']),
+      latestCapture: PluginCapture.tryFromMap(json['latestCapture']),
     );
   }
 

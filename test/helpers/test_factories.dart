@@ -1,4 +1,5 @@
 import 'package:daw_project_manager/models/music_project.dart';
+import 'package:daw_project_manager/models/plugin_capture.dart';
 import 'package:daw_project_manager/models/project_attachment.dart';
 import 'package:daw_project_manager/models/project_marker.dart';
 import 'package:daw_project_manager/models/project_part.dart';
@@ -59,6 +60,7 @@ class TestFactories {
     List<String>? tags,
     ProjectStats? stats,
     Map<String, String>? customFields,
+    PluginCapture? latestCapture,
   }) {
     return MusicProject(
       id: id,
@@ -111,6 +113,7 @@ class TestFactories {
       tags: tags ?? const [],
       stats: stats,
       customFields: customFields ?? const {},
+      latestCapture: latestCapture,
     );
   }
 

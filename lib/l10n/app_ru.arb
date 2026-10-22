@@ -2096,6 +2096,23 @@
       }
     }
   },
+  "latestCaptureTitle": "Последний захват",
+  "latestCaptureExplanation": "Последний проход, записанный плагином DAW",
+  "latestCaptureDetails": "{when} · {length}",
+  "@latestCaptureDetails": {
+    "placeholders": {
+      "when": {
+        "type": "String"
+      },
+      "length": {
+        "type": "String"
+      }
+    }
+  },
+  "latestCaptureUseAsPreview": "Сделать превью трека",
+  "latestCaptureNotOnThisDevice": "Пока нет на этом устройстве",
+  "latestCapturePlay": "Воспроизвести последний захват",
+  "latestCaptureNowPreview": "Последний захват теперь превью трека",
   "versionLabel": "Версия {version}",
   "@versionLabel": {
     "placeholders": {

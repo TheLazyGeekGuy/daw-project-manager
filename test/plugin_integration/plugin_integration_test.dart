@@ -242,7 +242,7 @@ void main() {
       // quit() in tearDown copes with the process being gone.
     });
 
-    test('a capture becomes the preview song of a project that has none', () async {
+    test("a capture becomes the project's latest capture, beside an empty preview", () async {
       await addSong('song-a', 'Night Drive');
       await openInCubase('Night Drive');
 
@@ -252,13 +252,15 @@ void main() {
       expect(captured['verdict'], 'keep');
       await exchange();
 
-      final preview = song('song-a').previewSongPath;
-      expect(preview, isNotNull);
-      expect(p.isWithin(p.join(previewSongsDir(), dpmPluginPreviewFolderName), preview!), isTrue);
-      expect(File(preview).existsSync(), isTrue);
+      final kept = song('song-a').latestCapture;
+      expect(kept, isNotNull);
+      expect(p.isWithin(p.join(previewSongsDir(), dpmPluginPreviewFolderName, 'song-a'), kept!.path), isTrue);
+      expect(File(kept.path).existsSync(), isTrue);
+      expect(kept.durationSeconds, closeTo(12, 0.5));
+      expect(song('song-a').previewSongPath, isNull, reason: 'a capture never becomes the preview song');
     });
 
-    test('a capture never replaces a preview song the user picked', () async {
+    test('a capture leaves a preview song the user picked alone', () async {
       final picked = File(p.join(Directory.systemTemp.path, 'dpm_it_picked_mix.wav'));
       await picked.writeAsBytes(const [0, 1, 2, 3]);
       addTearDown(() => picked.existsSync() ? picked.deleteSync() : null);
@@ -270,6 +272,30 @@ void main() {
       await exchange();
 
       expect(song('song-a').previewSongPath, picked.path);
+      expect(song('song-a').latestCapture, isNotNull);
+    });
+
+    test("a longer pass replaces the latest capture, and the earlier take's file goes", () async {
+      await addSong('song-a', 'Night Drive');
+      await openInCubase('Night Drive');
+      await plugin.send('settings', {'captureMode': 'automatic'});
+
+      await plugin.send('capture', {'seconds': 12.0, 'sampleRate': 48000});
+      await exchange();
+      final first = song('song-a').latestCapture!;
+
+      // Later on the plugin's clock, and at least as long: the plugin keeps it.
+      now = now.add(const Duration(minutes: 3));
+      await plugin.setClock(now);
+      final second = await plugin.send('capture', {'seconds': 20.0, 'sampleRate': 48000});
+      expect(second['verdict'], 'keep');
+      await exchange();
+
+      final kept = song('song-a').latestCapture!;
+      expect(kept.path, isNot(first.path));
+      expect(kept.durationSeconds, closeTo(20, 0.5));
+      expect(File(kept.path).existsSync(), isTrue);
+      expect(File(first.path).existsSync(), isFalse);
     });
   });
 }

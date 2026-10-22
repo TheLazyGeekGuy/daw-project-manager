@@ -4958,6 +4958,19 @@ final dpmPluginInstallsProvider = FutureProvider.autoDispose<List<DpmPluginInsta
             : DpmPluginPlatform.linux,
   );
 });
+/// Whether this device has the DAW plugin ([dpmPluginDetected]): the
+/// dashboard's capture buttons show only then. Watching the installs keeps
+/// their search alive while the dashboard is open, so it runs once, not on
+/// every rebuild.
+final dpmPluginDetectedProvider = Provider<bool>((ref) {
+  if (MobileUtils.isMobile()) return false;
+  final installs = ref.watch(dpmPluginInstallsProvider).value;
+  return dpmPluginDetected(
+    isDesktop: true,
+    anyInstalled: installs?.isNotEmpty ?? false,
+    seen: ref.watch(dpmPluginSightingProvider) != null,
+  );
+});
 
 final dpmPluginEndSessionProvider = NotifierProvider<DpmPluginEndSessionNotifier, bool>(
   DpmPluginEndSessionNotifier.new,

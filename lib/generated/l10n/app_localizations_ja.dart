@@ -2987,6 +2987,29 @@ class AppLocalizationsJa extends AppLocalizations {
   }
 
   @override
+  String get latestCaptureTitle => '最新のキャプチャ';
+
+  @override
+  String get latestCaptureExplanation => 'DAWプラグインが最後に録音した再生';
+
+  @override
+  String latestCaptureDetails(String when, String length) {
+    return '$when · $length';
+  }
+
+  @override
+  String get latestCaptureUseAsPreview => 'プレビュー曲として使う';
+
+  @override
+  String get latestCaptureNotOnThisDevice => 'まだこのデバイスにありません';
+
+  @override
+  String get latestCapturePlay => '最新のキャプチャを再生';
+
+  @override
+  String get latestCaptureNowPreview => '最新のキャプチャをプレビュー曲にしました';
+
+  @override
   String versionLabel(String version) {
     return 'バージョン $version';
   }

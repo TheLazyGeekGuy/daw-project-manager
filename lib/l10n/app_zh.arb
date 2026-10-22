@@ -2096,6 +2096,23 @@
       }
     }
   },
+  "latestCaptureTitle": "最新捕获",
+  "latestCaptureExplanation": "DAW 插件录下的最后一遍播放",
+  "latestCaptureDetails": "{when} · {length}",
+  "@latestCaptureDetails": {
+    "placeholders": {
+      "when": {
+        "type": "String"
+      },
+      "length": {
+        "type": "String"
+      }
+    }
+  },
+  "latestCaptureUseAsPreview": "用作预览歌曲",
+  "latestCaptureNotOnThisDevice": "尚未在此设备上",
+  "latestCapturePlay": "播放最新捕获",
+  "latestCaptureNowPreview": "最新捕获现在是预览歌曲",
   "versionLabel": "版本 {version}",
   "@versionLabel": {
     "placeholders": {

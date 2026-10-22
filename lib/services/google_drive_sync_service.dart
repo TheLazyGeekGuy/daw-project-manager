@@ -18,6 +18,7 @@ import '../models/profile.dart';
 import '../models/music_project.dart';
 import '../models/project_attachment.dart';
 import '../models/project_marker.dart';
+import '../models/plugin_capture.dart';
 import '../models/project_stats.dart';
 import '../models/release.dart';
 import '../models/release_file.dart';
@@ -6034,6 +6035,9 @@ class GoogleDriveSyncService {
       // User data (#109) — lost on every restore if left out.
       'tags': project.tags,
       'customFields': project.customFields,
+      // User data: the DAW plugin's latest capture. Left out, a sync from a
+      // device without it would clear this one's.
+      'latestCapture': project.latestCapture?.toMap(),
     };
   }
 
@@ -6123,6 +6127,7 @@ class GoogleDriveSyncService {
           if (tag is String) tag,
       ],
       customFields: MusicProject.customFieldsFromRaw(data['customFields']),
+      latestCapture: PluginCapture.tryFromMap(data['latestCapture']),
     );
   }
 
