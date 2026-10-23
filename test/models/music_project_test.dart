@@ -104,8 +104,8 @@ void main() {
       final p = TestFactories.makeProject(
         deadline: DateTime(now.year, now.month, now.day + 7),
       );
-      // Allow ±1 day for DST boundary crossings.
-      expect(p.daysUntilDeadline, inInclusiveRange(6, 7));
+      // Exactly: counted by date, a clock change in between costs no day.
+      expect(p.daysUntilDeadline, 7);
     });
 
     test('returns negative value for past deadline', () {
@@ -113,7 +113,7 @@ void main() {
       final p = TestFactories.makeProject(
         deadline: DateTime(now.year, now.month, now.day - 3),
       );
-      expect(p.daysUntilDeadline, inInclusiveRange(-3, -2));
+      expect(p.daysUntilDeadline, -3);
     });
 
     test('returns 0 for deadline today', () {
@@ -122,6 +122,19 @@ void main() {
         deadline: DateTime(now.year, now.month, now.day),
       );
       expect(p.daysUntilDeadline, 0);
+    });
+
+    test('counts calendar days, whatever the clock does in between', () {
+      // Counting hours between local midnights made the spring change's
+      // 23-hour day cost a day ("2d left" three days out), and the autumn
+      // one's 25-hour day could land a "72 hours later" on the evening
+      // before. In Europe the clocks went forward on 29 March 2026 and go
+      // back on 25 October 2026; in the US, 8 March and 1 November.
+      expect(MusicProject.calendarDaysBetween(DateTime(2026, 3, 27, 23, 30), DateTime(2026, 3, 30, 0, 10)), 3);
+      expect(MusicProject.calendarDaysBetween(DateTime(2026, 3, 7, 0, 5), DateTime(2026, 3, 10)), 3);
+      expect(MusicProject.calendarDaysBetween(DateTime(2026, 10, 24, 0, 8), DateTime(2026, 10, 27, 23, 59)), 3);
+      expect(MusicProject.calendarDaysBetween(DateTime(2026, 10, 31), DateTime(2026, 11, 2)), 2);
+      expect(MusicProject.calendarDaysBetween(DateTime(2026, 10, 27), DateTime(2026, 10, 24)), -3);
     });
   });
 
