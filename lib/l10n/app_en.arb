@@ -3022,6 +3022,7 @@
   "latestCaptureUseAsPreview": "Use as preview song",
   "latestCaptureNotOnThisDevice": "Not on this device yet",
   "latestCapturePlay": "Play latest capture",
+  "latestCaptureMenuHint": "Right-click to play the latest capture",
   "latestCaptureNowPreview": "The latest capture is now the preview song",
   "versionLabel": "Version {version}",
   "@versionLabel": {

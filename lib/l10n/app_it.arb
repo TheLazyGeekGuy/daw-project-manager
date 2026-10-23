@@ -2112,6 +2112,7 @@
   "latestCaptureUseAsPreview": "Usa come brano di anteprima",
   "latestCaptureNotOnThisDevice": "Non ancora su questo dispositivo",
   "latestCapturePlay": "Riproduci l'ultima cattura",
+  "latestCaptureMenuHint": "Clic destro per riprodurre l'ultima cattura",
   "latestCaptureNowPreview": "L'ultima cattura ora è il brano di anteprima",
   "versionLabel": "Versione {version}",
   "@versionLabel": {

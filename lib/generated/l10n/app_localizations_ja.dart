@@ -3007,6 +3007,9 @@ class AppLocalizationsJa extends AppLocalizations {
   String get latestCapturePlay => '最新のキャプチャを再生';
 
   @override
+  String get latestCaptureMenuHint => '右クリックで最新のキャプチャを再生';
+
+  @override
   String get latestCaptureNowPreview => '最新のキャプチャをプレビュー曲にしました';
 
   @override

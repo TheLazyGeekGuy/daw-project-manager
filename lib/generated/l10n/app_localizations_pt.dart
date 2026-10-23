@@ -3083,6 +3083,10 @@ class AppLocalizationsPt extends AppLocalizations {
   String get latestCapturePlay => 'Reproduzir a última captura';
 
   @override
+  String get latestCaptureMenuHint =>
+      'Clique com o botão direito para reproduzir a última captura';
+
+  @override
   String get latestCaptureNowPreview =>
       'A última captura agora é a música de prévia';
 

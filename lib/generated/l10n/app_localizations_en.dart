@@ -3075,6 +3075,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get latestCapturePlay => 'Play latest capture';
 
   @override
+  String get latestCaptureMenuHint => 'Right-click to play the latest capture';
+
+  @override
   String get latestCaptureNowPreview =>
       'The latest capture is now the preview song';
 

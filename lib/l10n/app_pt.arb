@@ -2136,6 +2136,7 @@
   "latestCaptureUseAsPreview": "Usar como música de prévia",
   "latestCaptureNotOnThisDevice": "Ainda não está neste dispositivo",
   "latestCapturePlay": "Reproduzir a última captura",
+  "latestCaptureMenuHint": "Clique com o botão direito para reproduzir a última captura",
   "latestCaptureNowPreview": "A última captura agora é a música de prévia",
   "versionLabel": "Versão {version}",
   "@versionLabel": {

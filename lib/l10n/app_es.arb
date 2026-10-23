@@ -2112,6 +2112,7 @@
   "latestCaptureUseAsPreview": "Usar como canción de vista previa",
   "latestCaptureNotOnThisDevice": "Aún no está en este dispositivo",
   "latestCapturePlay": "Reproducir la última captura",
+  "latestCaptureMenuHint": "Clic derecho para reproducir la última captura",
   "latestCaptureNowPreview": "La última captura es ahora la canción de vista previa",
   "versionLabel": "Versión {version}",
   "@versionLabel": {

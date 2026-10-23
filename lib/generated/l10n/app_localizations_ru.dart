@@ -3079,6 +3079,10 @@ class AppLocalizationsRu extends AppLocalizations {
   String get latestCapturePlay => 'Воспроизвести последний захват';
 
   @override
+  String get latestCaptureMenuHint =>
+      'Правый щелчок — воспроизвести последний захват';
+
+  @override
   String get latestCaptureNowPreview => 'Последний захват теперь превью трека';
 
   @override

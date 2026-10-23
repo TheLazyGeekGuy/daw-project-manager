@@ -2112,6 +2112,7 @@
   "latestCaptureUseAsPreview": "Сделать превью трека",
   "latestCaptureNotOnThisDevice": "Пока нет на этом устройстве",
   "latestCapturePlay": "Воспроизвести последний захват",
+  "latestCaptureMenuHint": "Правый щелчок — воспроизвести последний захват",
   "latestCaptureNowPreview": "Последний захват теперь превью трека",
   "versionLabel": "Версия {version}",
   "@versionLabel": {

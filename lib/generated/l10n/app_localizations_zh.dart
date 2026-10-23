@@ -2978,6 +2978,9 @@ class AppLocalizationsZh extends AppLocalizations {
   String get latestCapturePlay => '播放最新捕获';
 
   @override
+  String get latestCaptureMenuHint => '右键播放最新捕获';
+
+  @override
   String get latestCaptureNowPreview => '最新捕获现在是预览歌曲';
 
   @override

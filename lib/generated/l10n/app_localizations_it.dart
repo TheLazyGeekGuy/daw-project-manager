@@ -3089,6 +3089,10 @@ class AppLocalizationsIt extends AppLocalizations {
   String get latestCapturePlay => 'Riproduci l\'ultima cattura';
 
   @override
+  String get latestCaptureMenuHint =>
+      'Clic destro per riprodurre l\'ultima cattura';
+
+  @override
   String get latestCaptureNowPreview =>
       'L\'ultima cattura ora è il brano di anteprima';
 

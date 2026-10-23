@@ -5195,6 +5195,12 @@ abstract class AppLocalizations {
   /// **'Play latest capture'**
   String get latestCapturePlay;
 
+  /// No description provided for @latestCaptureMenuHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Right-click to play the latest capture'**
+  String get latestCaptureMenuHint;
+
   /// No description provided for @latestCaptureNowPreview.
   ///
   /// In en, this message translates to:

@@ -3095,6 +3095,10 @@ class AppLocalizationsDe extends AppLocalizations {
   String get latestCapturePlay => 'Letzte Aufnahme abspielen';
 
   @override
+  String get latestCaptureMenuHint =>
+      'Rechtsklick spielt die letzte Aufnahme ab';
+
+  @override
   String get latestCaptureNowPreview =>
       'Die letzte Aufnahme ist jetzt der Vorschau-Song';
 

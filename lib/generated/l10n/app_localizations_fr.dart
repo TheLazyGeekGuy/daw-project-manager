@@ -3108,6 +3108,10 @@ class AppLocalizationsFr extends AppLocalizations {
   String get latestCapturePlay => 'Lire la dernière capture';
 
   @override
+  String get latestCaptureMenuHint =>
+      'Clic droit pour lire la dernière capture';
+
+  @override
   String get latestCaptureNowPreview =>
       'La dernière capture est maintenant la chanson d\'aperçu';
 

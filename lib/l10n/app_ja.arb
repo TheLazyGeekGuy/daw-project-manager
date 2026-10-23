@@ -2112,6 +2112,7 @@
   "latestCaptureUseAsPreview": "プレビュー曲として使う",
   "latestCaptureNotOnThisDevice": "まだこのデバイスにありません",
   "latestCapturePlay": "最新のキャプチャを再生",
+  "latestCaptureMenuHint": "右クリックで最新のキャプチャを再生",
   "latestCaptureNowPreview": "最新のキャプチャをプレビュー曲にしました",
   "versionLabel": "バージョン {version}",
   "@versionLabel": {
