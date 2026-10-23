@@ -1,6 +1,7 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:hive_ce/hive.dart';
 import 'package:daw_project_manager/models/music_project.dart';
+import 'package:daw_project_manager/models/plugin_capture.dart';
 import '../helpers/test_factories.dart';
 import '../helpers/hive_test_helper.dart';
 import 'dart:io';
@@ -696,6 +697,18 @@ void main() {
         reopened.get(original.id)!.customFields,
         {'lufs-id': '-14.2', 'eng-id': 'Ana'},
       );
+    });
+
+    test("preserves the plugin's latest capture", () async {
+      final capture = PluginCapture(path: '/data/preview_songs/plugin/p1/Take.flac', capturedAt: DateTime.utc(2026, 10, 21, 18, 4), durationSeconds: 92.5);
+      final original = TestFactories.makeProject(id: 'capture-round-trip', latestCapture: capture);
+
+      final box = await Hive.openBox<MusicProject>('capture_round_trip');
+      await box.put(original.id, original);
+      await box.close();
+      final reopened = await Hive.openBox<MusicProject>('capture_round_trip');
+
+      expect(reopened.get(original.id)!.latestCapture, capture);
     });
 
     test('reads a record written before custom fields existed as empty',

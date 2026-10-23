@@ -1,7 +1,5 @@
 import 'dart:convert';
 
-import 'package:path/path.dart' as p;
-
 import '../../models/music_project.dart';
 import '../../models/profile.dart';
 import '../../models/todo_item.dart';
@@ -552,26 +550,29 @@ MusicProject? applyDpmPluginNotesSet(MusicProject owner, DpmPluginNotesSet messa
   return merged.isEmpty ? owner.copyWith(clearNotes: true) : owner.copyWith(notes: merged);
 }
 
-/// The plugin's captures are copied here, under the preview-songs folder,
-/// so the app knows a preview it set itself from one it didn't.
+/// The plugin's captures are copied here, under the preview-songs folder
+/// (`<folder>/<project id>/`), so they ride along wherever preview songs do.
 const String dpmPluginPreviewFolderName = 'plugin';
 
-/// Whether a capture may become [owner]'s preview song.
+/// Whether a capture taken at [capturedAt] becomes [owner]'s latest capture.
 ///
-/// Never over a preview the user picked: only when there is none, when the
-/// current one is an earlier capture (inside [dpmPluginPreviewDir]), or when
-/// it is an auto-detected mixdown older than the capture — the case #118 is
-/// about, a bounce months behind the project.
-bool dpmPluginMayReplacePreview(
-  MusicProject owner, {
-  required String dpmPluginPreviewDir,
-  required DateTime capturedAt,
-  DateTime? currentPreviewModifiedAt,
-}) {
-  final current = owner.previewSongPath;
-  if (current == null || current.isEmpty) return true;
-  if (p.isWithin(dpmPluginPreviewDir, current)) return true;
-
-  final isAutoDetected = owner.previewSongAutoPath != null && owner.previewSongAutoPath == current;
-  return isAutoDetected && currentPreviewModifiedAt != null && currentPreviewModifiedAt.isBefore(capturedAt);
+/// A capture never touches the preview song: it has a slot of its own
+/// ([MusicProject.latestCapture]). It only has to be newer than the one
+/// kept, or a late message would put an older take back.
+bool dpmPluginKeepsCapture(MusicProject owner, DateTime capturedAt) {
+  final current = owner.latestCapture;
+  return current == null || capturedAt.isAfter(current.capturedAt);
 }
+
+/// Whether this device has the DAW plugin: a copy found installed, or one
+/// seen running (where the plug-in folders can't be searched, the Flatpak,
+/// a sighting is the only sign). Never on a phone. The dashboard shows its
+/// capture buttons only then: on every project otherwise, they'd be noise.
+bool dpmPluginDetected({required bool isDesktop, required bool anyInstalled, required bool seen}) =>
+    isDesktop && (anyInstalled || seen);
+
+/// Whether any project in [projects] still plays the file at [path], as its
+/// latest capture or its preview song (a capture adopted as the preview
+/// before captures had a slot of their own stays there).
+bool dpmPluginCaptureFileInUse(String path, Iterable<MusicProject> projects) =>
+    projects.any((x) => x.latestCapture?.path == path || x.previewSongPath == path);

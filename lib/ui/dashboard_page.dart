@@ -5445,6 +5445,7 @@ class _PlutoProjectsTableWithSelectionState
                     endSessionTooltip: l10n.endSession,
                     openFolderTooltip: l10n.openFolder,
                     playPreviewTooltip: l10n.playPreview,
+                    playCaptureTooltip: l10n.latestCapturePlay,
                     archivedWithLocalCopyTooltip: l10n.archivedWithLocalCopy,
                     archivedAwayTooltip: l10n.archivedAwayTooltip,
                   ),
@@ -5468,6 +5469,10 @@ class _PlutoProjectsTableWithSelectionState
                       openProjectFolder(context, project),
                   onPlayPreview: (project) =>
                       playProjectPreview(context, ref, project),
+                  // Only where the plugin is: captures are its doing.
+                  onPlayCapture: ref.watch(dpmPluginDetectedProvider)
+                      ? (project) => playProjectCapture(context, ref, project)
+                      : null,
                   onOpen: (project) => openProjectDetail(context, project),
                   onToggleSelection: _clickSelection.toggle,
                   onRowClick: _clickSelection.handleRowClick,
@@ -5896,6 +5901,35 @@ class _PlutoProjectsTableWithSelectionState
 /// list and the dashboard card (#111) — and it was already duplicated verbatim
 /// between the first two. It stays in this file rather than moving out to its
 /// own because of `_PreviewSongDialog`, which is private to it.
+/// Plays [project]'s latest capture (the DAW plugin's last pass) in the
+/// desktop player: the dashboard's capture button. Desktop only, like the
+/// plugin. A capture synced from another device whose file hasn't come down
+/// yet is said, not failed.
+Future<void> playProjectCapture(
+  BuildContext context,
+  WidgetRef ref,
+  MusicProject project,
+) async {
+  final capture = project.latestCapture;
+  if (capture == null) return;
+  if (!await File(capture.path).exists()) {
+    if (!context.mounted) return;
+    ScaffoldMessenger.of(context).showAppSnackBar(
+      SnackBar(
+        content: Text(AppLocalizations.of(context)!.latestCaptureNotOnThisDevice),
+      ),
+    );
+    return;
+  }
+  ref.read(desktopPlayerProvider.notifier).play(
+        project.copyWith(
+          previewSongPath: capture.path,
+          previewSongFileName: path.basename(capture.path),
+        ),
+        capture.path,
+      );
+}
+
 Future<void> playProjectPreview(
   BuildContext context,
   WidgetRef ref,
@@ -8107,7 +8141,12 @@ class _PlutoProjectsTableState extends ConsumerState<_PlutoProjectsTable>
               File(projectPath).existsSync() ||
               Directory(projectPath).existsSync();
 
-          return Row(
+          return FittedBox(
+            // Scales the buttons down rather than overflowing a narrow
+            // column (widths are remembered per user).
+            fit: BoxFit.scaleDown,
+            child: Row(
+            mainAxisSize: MainAxisSize.min,
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               // Play Preview Song button (always show, but disabled if no preview)
@@ -8115,7 +8154,10 @@ class _PlutoProjectsTableState extends ConsumerState<_PlutoProjectsTable>
                 builder: (context, ref, _) {
                   final playerRequest = ref.watch(desktopPlayerProvider);
                   final isPlaying = ref.watch(desktopIsPlayingProvider);
-                  final isCurrent = playerRequest?.project.id == project.id;
+                  // Its capture playing (the button beside this one) is not
+                  // this button's preview playing.
+                  final isCurrent = playerRequest?.project.id == project.id &&
+                      playerRequest?.resolvedPath != project.latestCapture?.path;
                   final isActive = isPlaying && isCurrent;
                   final hasPreview =
                       project.previewSongPath?.isNotEmpty == true ||
@@ -8157,6 +8199,44 @@ class _PlutoProjectsTableState extends ConsumerState<_PlutoProjectsTable>
                       }
                     },
                     color: iconColor,
+                  );
+                },
+              ),
+              // The plugin's latest capture, only where the plugin is: on
+              // every row otherwise it would be noise (#118 follow-up).
+              Consumer(
+                builder: (context, ref, _) {
+                  if (!ref.watch(dpmPluginDetectedProvider)) {
+                    return const SizedBox.shrink();
+                  }
+                  final capture = project.latestCapture;
+                  final playerRequest = ref.watch(desktopPlayerProvider);
+                  final isPlaying = ref.watch(desktopIsPlayingProvider);
+                  final isCurrent = capture != null &&
+                      playerRequest?.resolvedPath == capture.path;
+                  return IconButton(
+                    icon: NowPlayingIcon(
+                      isPlaying: isPlaying && isCurrent,
+                      idleIcon: Icons.graphic_eq,
+                    ),
+                    iconSize: 22,
+                    padding: const EdgeInsets.all(4),
+                    constraints: const BoxConstraints(),
+                    tooltip: AppLocalizations.of(context)!.latestCapturePlay,
+                    color: capture != null
+                        ? Theme.of(context).colorScheme.primary
+                        : Colors.grey,
+                    onPressed: capture == null
+                        ? null
+                        : () {
+                            if (isCurrent) {
+                              ref
+                                  .read(desktopPlayerToggleRequestProvider.notifier)
+                                  .bump();
+                            } else {
+                              playProjectCapture(context, ref, project);
+                            }
+                          },
                   );
                 },
               ),
@@ -8324,6 +8404,7 @@ class _PlutoProjectsTableState extends ConsumerState<_PlutoProjectsTable>
                 },
               ),
             ],
+          ),
           );
         },
       ),

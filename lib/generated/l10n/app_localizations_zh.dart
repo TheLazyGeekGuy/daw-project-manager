@@ -2958,6 +2958,29 @@ class AppLocalizationsZh extends AppLocalizations {
   }
 
   @override
+  String get latestCaptureTitle => '最新捕获';
+
+  @override
+  String get latestCaptureExplanation => 'DAW 插件录下的最后一遍播放';
+
+  @override
+  String latestCaptureDetails(String when, String length) {
+    return '$when · $length';
+  }
+
+  @override
+  String get latestCaptureUseAsPreview => '用作预览歌曲';
+
+  @override
+  String get latestCaptureNotOnThisDevice => '尚未在此设备上';
+
+  @override
+  String get latestCapturePlay => '播放最新捕获';
+
+  @override
+  String get latestCaptureNowPreview => '最新捕获现在是预览歌曲';
+
+  @override
   String versionLabel(String version) {
     return '版本 $version';
   }

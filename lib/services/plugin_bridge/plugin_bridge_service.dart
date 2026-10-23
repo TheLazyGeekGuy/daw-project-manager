@@ -7,6 +7,7 @@ import 'package:http/http.dart' as http;
 import 'package:path/path.dart' as p;
 
 import '../../models/music_project.dart';
+import '../../models/plugin_capture.dart';
 import '../../utils/app_paths.dart';
 import 'plugin_protocol.dart';
 
@@ -459,9 +460,10 @@ class DpmPluginBridgeService {
     return null;
   }
 
-  /// Copies a capture into the preview songs and makes it the project's
-  /// preview when [dpmPluginMayReplacePreview] allows. The capture file is
-  /// removed either way: the plugin records a new one on the next pass.
+  /// Copies a capture into the app's own folder and makes it the project's
+  /// latest capture ([MusicProject.latestCapture]) — never its preview song.
+  /// The bridge's copy is removed either way: the plugin records a new one
+  /// on the next pass.
   Future<bool> _adoptCapture(DpmPluginCaptureReady message, List<DpmPluginProfileProjects> library) async {
     final source = File(p.normalize(p.join(bridgeDir, message.file)));
     // Only files in captures/: a message must not point the app elsewhere.
@@ -474,37 +476,32 @@ class DpmPluginBridgeService {
       if (found == null) return false;
 
       final owner = found.owner;
-      final current = owner.previewSongPath;
-      DateTime? currentModified;
-      if (current != null && current.isNotEmpty && !current.startsWith('drive://')) {
-        final currentFile = File(current);
-        if (await currentFile.exists()) currentModified = await currentFile.lastModified();
-      }
-
-      if (!dpmPluginMayReplacePreview(owner,
-          dpmPluginPreviewDir: dpmPluginPreviewDir,
-          capturedAt: message.capturedAt,
-          currentPreviewModifiedAt: currentModified)) {
-        return false;
-      }
+      if (!dpmPluginKeepsCapture(owner, message.capturedAt)) return false;
 
       final destination = File(p.join(dpmPluginPreviewDir, owner.id, p.basename(source.path)));
       await destination.parent.create(recursive: true);
       await source.copy(destination.path);
 
+      final previous = owner.latestCapture?.path;
       await this.library.saveProject(
         found.profileId,
-        owner.copyWith(previewSongPath: destination.path, previewSongFileName: p.basename(destination.path)),
+        owner.copyWith(
+          latestCapture: PluginCapture(
+            path: destination.path,
+            capturedAt: message.capturedAt,
+            durationSeconds: message.durationSeconds,
+          ),
+        ),
       );
 
-      // The capture it replaces, if no other row still points at it (a
-      // stack and its promoted member can share one preview).
-      if (current != null && p.isWithin(dpmPluginPreviewDir, current) && current != destination.path) {
+      // The capture it replaces, unless something still plays it: a stack
+      // and its promoted member share one row's look, and a capture adopted
+      // as a preview song before captures had a slot stays there.
+      if (previous != null && previous != destination.path && p.isWithin(dpmPluginPreviewDir, previous)) {
         final reloaded = await this.library.load();
-        final stillUsed = reloaded.any((e) => e.projects.any((pr) => pr.previewSongPath == current));
-        if (!stillUsed) {
+        if (!dpmPluginCaptureFileInUse(previous, reloaded.expand((e) => e.projects))) {
           try {
-            await File(current).delete();
+            await File(previous).delete();
           } catch (_) {}
         }
       }

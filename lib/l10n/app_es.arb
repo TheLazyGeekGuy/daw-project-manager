@@ -2096,6 +2096,23 @@
       }
     }
   },
+  "latestCaptureTitle": "Última captura",
+  "latestCaptureExplanation": "La última pasada que grabó el plugin de la DAW",
+  "latestCaptureDetails": "{when} · {length}",
+  "@latestCaptureDetails": {
+    "placeholders": {
+      "when": {
+        "type": "String"
+      },
+      "length": {
+        "type": "String"
+      }
+    }
+  },
+  "latestCaptureUseAsPreview": "Usar como canción de vista previa",
+  "latestCaptureNotOnThisDevice": "Aún no está en este dispositivo",
+  "latestCapturePlay": "Reproducir la última captura",
+  "latestCaptureNowPreview": "La última captura es ahora la canción de vista previa",
   "versionLabel": "Versión {version}",
   "@versionLabel": {
     "placeholders": {

@@ -3058,6 +3058,30 @@ class AppLocalizationsRu extends AppLocalizations {
   }
 
   @override
+  String get latestCaptureTitle => 'Последний захват';
+
+  @override
+  String get latestCaptureExplanation =>
+      'Последний проход, записанный плагином DAW';
+
+  @override
+  String latestCaptureDetails(String when, String length) {
+    return '$when · $length';
+  }
+
+  @override
+  String get latestCaptureUseAsPreview => 'Сделать превью трека';
+
+  @override
+  String get latestCaptureNotOnThisDevice => 'Пока нет на этом устройстве';
+
+  @override
+  String get latestCapturePlay => 'Воспроизвести последний захват';
+
+  @override
+  String get latestCaptureNowPreview => 'Последний захват теперь превью трека';
+
+  @override
   String versionLabel(String version) {
     return 'Версия $version';
   }

@@ -27,6 +27,7 @@ import 'package:daw_project_manager/repository/profile_repository.dart';
 import 'package:daw_project_manager/repository/project_repository.dart';
 import 'package:daw_project_manager/services/custom_field_merge.dart';
 import 'package:daw_project_manager/services/google_drive_sync_service.dart';
+import 'package:daw_project_manager/models/plugin_capture.dart';
 import '../helpers/hive_test_helper.dart';
 import '../helpers/test_factories.dart';
 
@@ -737,6 +738,24 @@ void main() {
         ..remove('customFields');
 
       expect(service.deserializeProjectForTest(data).customFields, isEmpty);
+    });
+
+    test("preserves the plugin's latest capture, through the JSON a real upload goes through", () {
+      // Left out, a sync from a device that has none would clear this one's.
+      final service = GoogleDriveSyncService();
+      final capture = PluginCapture(path: '/data/preview_songs/plugin/p1/Take.flac', capturedAt: DateTime.utc(2026, 10, 21, 18, 4), durationSeconds: 92.5);
+      final encoded = jsonEncode(service.serializeProjectForTest(TestFactories.makeProject(latestCapture: capture)));
+
+      final restored = service.deserializeProjectForTest(jsonDecode(encoded) as Map<String, dynamic>);
+
+      expect(restored.latestCapture, capture);
+    });
+
+    test('reads a backup written before captures had a slot as none', () {
+      final service = GoogleDriveSyncService();
+      final data = service.serializeProjectForTest(TestFactories.makeProject())..remove('latestCapture');
+
+      expect(service.deserializeProjectForTest(data).latestCapture, isNull);
     });
 
     test('preserves the archived state (#116)', () {

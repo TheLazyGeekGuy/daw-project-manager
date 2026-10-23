@@ -39,6 +39,7 @@ import '../utils/route_observer.dart';
 import '../generated/l10n/app_localizations.dart';
 import 'marker_navigation.dart';
 import 'session_actions.dart';
+import 'widgets/latest_capture_section.dart';
 import 'settings_page.dart' show SettingsPage, SettingsSection;
 import 'preview_share.dart';
 import 'dialogs/archive_project_dialog.dart';
@@ -1947,6 +1948,15 @@ class _ProjectDetailPageState extends ConsumerState<ProjectDetailPage> {
                               },
                             ),
 
+                            // The plugin's latest capture: beside the preview,
+                            // never in its place.
+                            if (updatedProject.latestCapture != null) ...[
+                              const SizedBox(height: 12),
+                              LatestCaptureSection(
+                                key: ValueKey('${updatedProject.id}_capture'),
+                                project: updatedProject,
+                              ),
+                            ],
                             const SizedBox(height: 24),
                           ],
                         ),

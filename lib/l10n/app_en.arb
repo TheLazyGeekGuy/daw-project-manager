@@ -3005,6 +3005,24 @@
       }
     }
   },
+  "latestCaptureTitle": "Latest capture",
+  "latestCaptureExplanation": "The last pass the DAW plugin recorded",
+  "latestCaptureDetails": "{when} · {length}",
+  "@latestCaptureDetails": {
+    "description": "Under Latest capture: when it was captured and how long it is, e.g. \"21 Oct 2026, 18:04 · 1:32\".",
+    "placeholders": {
+      "when": {
+        "type": "String"
+      },
+      "length": {
+        "type": "String"
+      }
+    }
+  },
+  "latestCaptureUseAsPreview": "Use as preview song",
+  "latestCaptureNotOnThisDevice": "Not on this device yet",
+  "latestCapturePlay": "Play latest capture",
+  "latestCaptureNowPreview": "The latest capture is now the preview song",
   "versionLabel": "Version {version}",
   "@versionLabel": {
     "placeholders": {

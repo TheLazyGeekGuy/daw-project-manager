@@ -18,6 +18,7 @@ import '../models/profile.dart';
 import '../models/music_project.dart';
 import '../models/project_attachment.dart';
 import '../models/project_marker.dart';
+import '../models/plugin_capture.dart';
 import '../models/project_stats.dart';
 import '../models/release.dart';
 import '../models/release_file.dart';
@@ -48,6 +49,10 @@ import '../utils/app_paths.dart'
         getReleaseArtworkPath,
         isUsingIsolatedAppData;
 import '../config/oauth_config.dart' show desktopClientSecret, desktopClientId, androidWebClientId;
+import 'plugin_bridge/plugin_protocol.dart' show dpmPluginCaptureFileInUse, dpmPluginPreviewFolderName;
+import 'plugin_capture_sync.dart';
+
+part 'google_drive_capture_sync.dart';
 
 /// Exception thrown when user cancels an upload operation
 class UploadCancelledException implements Exception {
@@ -2730,8 +2735,12 @@ class GoogleDriveSyncService {
       Map<String, String> existingProfilePhotoHashes = {};
       Map<String, String> existingReleaseArtworkHashes = {};
       Map<String, String> existingProjectCoverArtHashes = {};
+      // The DAW plugin's captures the previous backup holds (their own track,
+      // google_drive_capture_sync.dart).
+      Map<String, CaptureEntry> existingCaptures = const {};
       try {
         final existingBackup = await downloadDatabase();
+        existingCaptures = captureEntriesFrom(existingBackup['pluginCaptures']);
         if (existingBackup['previewSongHashes'] != null) {
           existingHashes = Map<String, String>.from(existingBackup['previewSongHashes'] as Map);
           if (kDebugMode) {
@@ -3643,6 +3652,9 @@ class GoogleDriveSyncService {
         'projectCoverArtFiles': projectCoverArtFileMap,
         // NEW: Project cover art hashes (projectId -> fileHash) for change detection
         'projectCoverArtHashes': projectCoverArtHashes,
+        // The DAW plugin's latest captures ("<profileId>/<projectId>" ->
+        // file, hash, name, when, length); see plugin_capture_sync.dart.
+        'pluginCaptures': await _captureEntriesForUpload(allProfiles, existingCaptures),
       };
 
       // Check for cancellation before database upload
@@ -5329,6 +5341,12 @@ class GoogleDriveSyncService {
         allProfiles,
       );
     }
+    // The DAW plugin's captures, after the projects so one that just arrived
+    // gets its capture's file too. Audio, like the preview songs: skipped
+    // with them.
+    if (downloadPreviewSongs) {
+      await _mergeCaptures(remoteData['pluginCaptures'], allProfiles);
+    }
 
     // Merge releases - distribute to CORRECT profiles (or ALL if no mappings)
     if (remoteData['releases'] != null) {
@@ -6034,6 +6052,9 @@ class GoogleDriveSyncService {
       // User data (#109) — lost on every restore if left out.
       'tags': project.tags,
       'customFields': project.customFields,
+      // User data: the DAW plugin's latest capture. Left out, a sync from a
+      // device without it would clear this one's.
+      'latestCapture': project.latestCapture?.toMap(),
     };
   }
 
@@ -6123,6 +6144,7 @@ class GoogleDriveSyncService {
           if (tag is String) tag,
       ],
       customFields: MusicProject.customFieldsFromRaw(data['customFields']),
+      latestCapture: PluginCapture.tryFromMap(data['latestCapture']),
     );
   }
 

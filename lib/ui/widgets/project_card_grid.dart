@@ -39,6 +39,7 @@ class ProjectCardGrid extends StatefulWidget {
     required this.onPrimaryAction,
     required this.onOpenFolder,
     required this.onPlayPreview,
+    this.onPlayCapture,
     this.activeProjectId,
     this.sessionMode = false,
     this.selectionModifierHeld = _noModifier,
@@ -86,6 +87,11 @@ class ProjectCardGrid extends StatefulWidget {
   final void Function(MusicProject) onOpenFolder;
   final void Function(MusicProject) onPlayPreview;
 
+  /// Plays a project's latest capture from the DAW plugin. Null where the
+  /// plugin isn't detected: no capture button on any card then. With it, a
+  /// card shows one when its project has a capture.
+  final void Function(MusicProject)? onPlayCapture;
+
   /// Whether session tracking is on, which changes what the first icon means.
   final bool sessionMode;
 
@@ -118,6 +124,7 @@ class ProjectCardLabels {
     required this.endSessionTooltip,
     required this.openFolderTooltip,
     required this.playPreviewTooltip,
+    this.playCaptureTooltip = '',
     required this.archivedWithLocalCopyTooltip,
     required this.archivedAwayTooltip,
   });
@@ -135,6 +142,7 @@ class ProjectCardLabels {
   final String endSessionTooltip;
   final String openFolderTooltip;
   final String playPreviewTooltip;
+  final String playCaptureTooltip;
 
   /// Archived, but the project's own files are still on disk — the zip
   /// beside them is a backup, so the card stays fully usable.
@@ -204,6 +212,9 @@ class _ProjectCardGridState extends State<ProjectCardGrid> {
           onPrimaryAction: () => widget.onPrimaryAction(project),
           onOpenFolder: () => widget.onOpenFolder(project),
           onPlayPreview: () => widget.onPlayPreview(project),
+          onPlayCapture: widget.onPlayCapture == null || project.latestCapture == null
+              ? null
+              : () => widget.onPlayCapture!(project),
         );
       },
     );
@@ -249,6 +260,7 @@ class _ProjectCard extends StatefulWidget {
     required this.onPrimaryAction,
     required this.onOpenFolder,
     required this.onPlayPreview,
+    this.onPlayCapture,
   });
 
   final MusicProject project;
@@ -268,6 +280,9 @@ class _ProjectCard extends StatefulWidget {
   final VoidCallback onPrimaryAction;
   final VoidCallback onOpenFolder;
   final VoidCallback onPlayPreview;
+
+  /// Null: no capture button (no plugin detected, or no capture).
+  final VoidCallback? onPlayCapture;
 
   @override
   State<_ProjectCard> createState() => _ProjectCardState();
@@ -472,6 +487,12 @@ class _ProjectCardState extends State<_ProjectCard> {
                 ? Colors.amberAccent.shade100
                 : Colors.white70,
           ),
+          if (widget.onPlayCapture != null)
+            _actionIcon(
+              icon: Icons.graphic_eq,
+              tooltip: widget.labels.playCaptureTooltip,
+              onPressed: widget.onPlayCapture!,
+            ),
         ],
       ),
     );

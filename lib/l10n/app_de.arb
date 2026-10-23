@@ -2096,6 +2096,23 @@
       }
     }
   },
+  "latestCaptureTitle": "Letzte Aufnahme",
+  "latestCaptureExplanation": "Der letzte Durchlauf, den das DAW-Plugin aufgenommen hat",
+  "latestCaptureDetails": "{when} · {length}",
+  "@latestCaptureDetails": {
+    "placeholders": {
+      "when": {
+        "type": "String"
+      },
+      "length": {
+        "type": "String"
+      }
+    }
+  },
+  "latestCaptureUseAsPreview": "Als Vorschau-Song verwenden",
+  "latestCaptureNotOnThisDevice": "Noch nicht auf diesem Gerät",
+  "latestCapturePlay": "Letzte Aufnahme abspielen",
+  "latestCaptureNowPreview": "Die letzte Aufnahme ist jetzt der Vorschau-Song",
   "versionLabel": "Version {version}",
   "@versionLabel": {
     "placeholders": {

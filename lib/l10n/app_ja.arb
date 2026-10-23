@@ -2096,6 +2096,23 @@
       }
     }
   },
+  "latestCaptureTitle": "最新のキャプチャ",
+  "latestCaptureExplanation": "DAWプラグインが最後に録音した再生",
+  "latestCaptureDetails": "{when} · {length}",
+  "@latestCaptureDetails": {
+    "placeholders": {
+      "when": {
+        "type": "String"
+      },
+      "length": {
+        "type": "String"
+      }
+    }
+  },
+  "latestCaptureUseAsPreview": "プレビュー曲として使う",
+  "latestCaptureNotOnThisDevice": "まだこのデバイスにありません",
+  "latestCapturePlay": "最新のキャプチャを再生",
+  "latestCaptureNowPreview": "最新のキャプチャをプレビュー曲にしました",
   "versionLabel": "バージョン {version}",
   "@versionLabel": {
     "placeholders": {

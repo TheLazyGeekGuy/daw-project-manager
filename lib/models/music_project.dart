@@ -1,6 +1,7 @@
 import 'package:hive_ce/hive.dart';
 import 'package:path/path.dart' as p;
 import '../utils/name_date_parser.dart';
+import 'plugin_capture.dart';
 import 'project_attachment.dart';
 import 'project_marker.dart';
 import 'project_part.dart';
@@ -371,6 +372,12 @@ class MusicProject {
   @HiveField(49)
   final Map<String, String> customFields;
 
+  /// The latest pass the DAW plugin captured, beside the preview song and
+  /// never in its place ([PluginCapture]). Null until the plugin captures
+  /// one. User data: syncs and backs up, file included.
+  @HiveField(50)
+  final PluginCapture? latestCapture;
+
   const MusicProject({
     required this.id,
     required this.filePath,
@@ -422,6 +429,7 @@ class MusicProject {
     this.tags = const [],
     this.stats,
     this.customFields = const {},
+    this.latestCapture,
   });
 
   /// Whether this project's files have been zipped out to an archive (#116).
@@ -764,6 +772,8 @@ class MusicProject {
     List<String>? tags,
     ProjectStats? stats,
     Map<String, String>? customFields,
+    PluginCapture? latestCapture,
+    bool clearLatestCapture = false,
   }) {
     return MusicProject(
       id: id ?? this.id,
@@ -824,6 +834,7 @@ class MusicProject {
       tags: tags ?? this.tags,
       stats: stats ?? this.stats,
       customFields: customFields ?? this.customFields,
+      latestCapture: clearLatestCapture ? null : (latestCapture ?? this.latestCapture),
     );
   }
 
@@ -955,13 +966,15 @@ class MusicProjectAdapter extends TypeAdapter<MusicProject> {
       stats: ProjectStats.tryFromMap(fields[48]),
       // Absent in every box written before custom fields existed.
       customFields: MusicProject.customFieldsFromRaw(fields[49]),
+      // Absent in every box written before plugin captures had a slot.
+      latestCapture: PluginCapture.tryFromMap(fields[50]),
     );
   }
 
   @override
   void write(BinaryWriter writer, MusicProject obj) {
     writer
-      ..writeByte(50) // 50 fields (0-49)
+      ..writeByte(51) // 51 fields (0-50)
       ..writeByte(0)
       ..write(obj.id)
       ..writeByte(1)
@@ -1061,6 +1074,8 @@ class MusicProjectAdapter extends TypeAdapter<MusicProject> {
       ..writeByte(48)
       ..write(obj.stats?.toMap())
       ..writeByte(49)
-      ..write(obj.customFields);
+      ..write(obj.customFields)
+      ..writeByte(50)
+      ..write(obj.latestCapture?.toMap());
   }
 }

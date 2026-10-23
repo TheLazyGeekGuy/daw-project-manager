@@ -2,6 +2,7 @@ import 'package:material_ui/material_ui.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 import 'package:daw_project_manager/models/music_project.dart';
+import 'package:daw_project_manager/models/plugin_capture.dart';
 import 'package:daw_project_manager/ui/widgets/project_card_grid.dart';
 
 import '../helpers/test_factories.dart';
@@ -24,6 +25,7 @@ void main() {
     endSessionTooltip: 'End session',
     openFolderTooltip: 'Open folder',
     playPreviewTooltip: 'Play preview',
+    playCaptureTooltip: 'Play latest capture',
     archivedWithLocalCopyTooltip: 'Archived — the originals are still here',
     archivedAwayTooltip: 'Archived — the files are in the archive only',
   );
@@ -39,6 +41,7 @@ void main() {
     String? cardInitials,
     String? previewSongPath,
     String? previewSongAutoPath,
+    PluginCapture? latestCapture,
   }) => TestFactories.makeProject(
     id: id,
     customDisplayName: name,
@@ -50,6 +53,7 @@ void main() {
     cardInitials: cardInitials,
     previewSongPath: previewSongPath,
     previewSongAutoPath: previewSongAutoPath,
+    latestCapture: latestCapture,
   );
 
   Widget wrap(
@@ -62,6 +66,7 @@ void main() {
     void Function(MusicProject)? onPrimaryAction,
     void Function(MusicProject)? onOpenFolder,
     void Function(MusicProject)? onPlayPreview,
+    void Function(MusicProject)? onPlayCapture,
     void Function(MusicProject)? onOpen,
     void Function(String)? onToggleSelection,
     void Function(String)? onRowClick,
@@ -88,6 +93,7 @@ void main() {
         onPrimaryAction: onPrimaryAction ?? (_) {},
         onOpenFolder: onOpenFolder ?? (_) {},
         onPlayPreview: onPlayPreview ?? (_) {},
+        onPlayCapture: onPlayCapture,
       ),
     ),
   );
@@ -383,6 +389,37 @@ void main() {
       expect(launched, ['a']);
       expect(folders, ['a']);
       expect(played, ['a']);
+    });
+
+    group("the plugin's latest capture", () {
+      final capture = PluginCapture(
+        path: '/data/preview_songs/plugin/a/take.flac',
+        capturedAt: DateTime(2026, 10, 21, 18),
+        durationSeconds: 60,
+      );
+
+      testWidgets('a card with a capture plays it, where the plugin is detected', (tester) async {
+        final played = <String>[];
+        await tester.pumpWidget(wrap(
+          [project('a', 'Night Drive', latestCapture: capture)],
+          onPlayCapture: (p) => played.add(p.id),
+        ));
+
+        await tester.tap(find.byIcon(Icons.graphic_eq));
+        await tester.pump(const Duration(seconds: 1));
+
+        expect(played, ['a']);
+      });
+
+      testWidgets('no capture button where the plugin is not detected', (tester) async {
+        await tester.pumpWidget(wrap([project('a', 'Night Drive', latestCapture: capture)]));
+        expect(find.byIcon(Icons.graphic_eq), findsNothing);
+      });
+
+      testWidgets('no capture button on a project without a capture', (tester) async {
+        await tester.pumpWidget(wrap([project('a', 'Night Drive')], onPlayCapture: (_) {}));
+        expect(find.byIcon(Icons.graphic_eq), findsNothing);
+      });
     });
 
     testWidgets('the launch icon becomes a session bookmark in session mode', (
