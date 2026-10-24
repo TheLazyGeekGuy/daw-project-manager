@@ -1,0 +1,74 @@
+# The website (dpm.bandpassrecords.com), built from website/ with Astro and
+# published to GitHub Pages. Pages' source must be "GitHub Actions"
+# (Settings > Pages), not the old gh-pages branch.
+#
+# It builds on a push that changes what the site shows, and when the release
+# workflow asks after publishing a release: the download links are read from
+# the newest release at build time.
+name: Website
+
+on:
+  push:
+    branches: [ main ]
+    paths:
+      - 'website/**'
+      - 'resources/screenshots/**'
+      - 'resources/daw/logos/**'
+      - 'resources/os/**'
+      - 'assets/changelog/changelog.json'
+      - '.github/workflows/site.yml'
+  pull_request:
+    paths:
+      - 'website/**'
+      - '.github/workflows/site.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  build:
+    name: Build the website
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: website
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+          cache-dependency-path: website/package-lock.json
+
+      - run: npm ci
+
+      - name: Build
+        env:
+          # Read the latest release without the anonymous rate limit.
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: npm run build
+
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: website/dist
+
+  deploy:
+    name: Publish to GitHub Pages
+    # A pull request only checks that the site builds.
+    if: github.event_name != 'pull_request'
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v4

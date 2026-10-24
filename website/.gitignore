@@ -1,0 +1,5 @@
+node_modules/
+dist/
+.astro/
+# Copied from ../resources by scripts/sync-resources.mjs
+public/resources/

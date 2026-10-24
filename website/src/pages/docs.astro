@@ -1,0 +1,400 @@
+---
+import Base from '../layouts/Base.astro';
+import DawGrid from '../components/DawGrid.astro';
+import ReadsTable from '../components/ReadsTable.astro';
+import '../styles/docs.css';
+---
+<Base
+    page="docs"
+    title="User guide — DAW Project Manager"
+    description="DAW Project Manager user guide — install, scan your projects, and everything you can do with them."
+>
+    <header class="guide-hero">
+        <div class="container">
+            <h1>User guide</h1>
+            <input id="guide-search" class="guide-search" type="search" placeholder="Search the guide…" autocomplete="off">
+            <button class="guide-nav-toggle" id="guide-nav-toggle" aria-expanded="false">Contents</button>
+        </div>
+    </header>
+
+    <div class="guide">
+        <aside class="guide-nav" id="guide-nav">
+            <h4>Start</h4>
+            <a href="#overview">Overview</a>
+            <a href="#installation">Install</a>
+            <a href="#first-launch">First launch</a>
+            <a href="#adding-folders">Project folders</a>
+            <a href="#scanning">Scanning</a>
+            <h4>Your library</h4>
+            <a href="#dashboard">Dashboard</a>
+            <a href="#searching-filtering">Search &amp; filters</a>
+            <a href="#bulk-actions">Many at once</a>
+            <a href="#project-details">A project's page</a>
+            <a href="#production-phases">Phases</a>
+            <a href="#version-stacks">Versions</a>
+            <h4>Work</h4>
+            <a href="#task-queue">Tasks</a>
+            <a href="#releases">Releases</a>
+            <a href="#templates">Templates</a>
+            <a href="#statistics">Statistics</a>
+            <a href="#work-sessions">Work sessions</a>
+            <h4>Music</h4>
+            <a href="#midi-clips">MIDI clips</a>
+            <a href="#music-player">Music player</a>
+            <a href="#sharing">Sharing</a>
+            <a href="#sample-pack">Sample pack</a>
+            <h4>Keep it safe</h4>
+            <a href="#google-drive-sync">Google Drive</a>
+            <a href="#local-backup">Local backup</a>
+            <a href="#archive">Archive</a>
+            <a href="#recently-deleted">Recently deleted</a>
+            <a href="#profiles">Profiles</a>
+            <h4>Make it yours</h4>
+            <a href="#settings">Settings</a>
+            <a href="#background-mode">Tray mode</a>
+            <h4>Reference</h4>
+            <a href="#keyboard-shortcuts">Shortcuts</a>
+            <a href="#supported-daws">Supported DAWs</a>
+            <a href="#metadata-extraction">What's read</a>
+        </aside>
+
+        <main class="guide-main" id="guide-main">
+            <section class="doc" id="overview">
+                <span id="getting-started" class="anchor"></span>
+                <h2>Every project, every DAW, one place</h2>
+                <p class="lead">DAW Project Manager finds the music projects on your drives — whatever DAW made them — and keeps them in one library: what's inside each one (tempo, key, plug-ins, MIDI), where it stands, what's left to do, and the mixdown to listen to. Free and open source, on Windows, macOS, Linux and Android.</p>
+                <figure class="shot"><img src="resources/screenshots/dashboard/dashboard-overview.png" alt="The dashboard: projects from several DAWs with their phase, tempo, key and deadline" width="1920" height="1080"></figure>
+            </section>
+
+            <section class="doc" id="installation">
+                <h2>Install</h2>
+                <p class="lead">Free and open source. Pick your platform from the <a href="https://github.com/bandpassrecords/daw-project-manager/releases/latest">latest release</a>.</p>
+                <div class="platforms">
+                    <div class="platform">
+                        <img src="resources/os/Windows_logo_-_2012.svg" alt="">
+                        <h3>Windows</h3>
+                        <p>Microsoft Store, or the installer <b>.exe</b>. Not yet code-signed: <i>More info → Run anyway</i>. Installing a newer one upgrades in place.</p>
+                    </div>
+                    <div class="platform">
+                        <img src="resources/os/MacOS_logo_(2017).svg" alt="">
+                        <h3>macOS</h3>
+                        <p>Open the <b>.dmg</b>, drag the app to Applications. If macOS warns: <i>System Settings → Privacy &amp; Security → Open Anyway</i>.</p>
+                    </div>
+                    <div class="platform">
+                        <img src="resources/os/Linux_logo.svg" alt="">
+                        <h3>Linux</h3>
+                        <p><b>AppImage</b> (<code>chmod +x</code>, then run — updates itself), <b>Flatpak</b> (from <a href="https://flathub.org/en/apps/com.bandpassrecords.dpm">Flathub</a>) or <b>.tar.gz</b>. The Flatpak has no Google Drive sync: use <a href="#local-backup">local backup</a>.</p>
+                    </div>
+                    <div class="platform">
+                        <img src="resources/os/android-head.png" alt="">
+                        <h3>Android</h3>
+                        <p>In closed testing on Google Play. Adds playlists and deadline notifications.</p>
+                    </div>
+                </div>
+            </section>
+
+            <section class="doc" id="first-launch">
+                <h2>First launch</h2>
+                <p class="lead">A short wizard sets language, theme, which tabs show, your first project folder (or a restore from Google Drive) and whether the app starts with your computer. All of it can be changed later in Settings.</p>
+                <figure class="shot shot-narrow"><img src="resources/screenshots/onboarding/onboarding-welcome.png" alt="The setup wizard's first page" loading="lazy" width="840" height="394"></figure>
+                <p>One step picks how a <a href="#project-details">project's page</a> is laid out, with a preview of each: <b>Sections</b>, one part of the page at a time from a rail on the left, or <b>Classic</b>, everything in one long scroll.</p>
+                <figure class="shot shot-narrow"><img src="resources/screenshots/onboarding/onboarding-detail-layout.png" alt="The wizard step choosing between the Classic and Sections layouts for a project's page" loading="lazy" width="880" height="568"></figure>
+                <div class="tip">The wizard also offers <a href="#work-sessions">Session Mode</a>, to track the time you spend on each song.</div>
+            </section>
+
+            <section class="doc" id="adding-folders">
+                <h2>Project folders</h2>
+                <p class="lead">Point the app at the folders your projects live in — it finds every project inside, however deep. Settings → Project Folders → <b>Add Folder</b>.</p>
+                <figure class="shot"><img src="resources/screenshots/settings/settings-project-folders.png" alt="Settings, Project Folders: folders, excluded folders, recently deleted" loading="lazy" width="1920" height="1080"></figure>
+                <ul>
+                    <li>Add the top folder (<code>~/Music</code>), not each song's.</li>
+                    <li><b>Excluded folders</b> are skipped — templates, sample libraries.</li>
+                    <li>Each folder has a scan mode: <b>Flat</b> (every project file is a project), <b>Smart Folder</b> (one subfolder per song) or <b>Version Stack</b> (one subfolder per song, its files stacked as <a href="#version-stacks">versions</a>).</li>
+                    <li>Edit any profile's folders from here — the profile picker at the top.</li>
+                </ul>
+            </section>
+
+            <section class="doc" id="scanning">
+                <h2>Scanning</h2>
+                <p class="lead">Two steps, so a big library shows up in seconds.</p>
+                <ul>
+                    <li><b>Scan</b> finds the project files — on launch, and whenever you press <kbd>Ctrl</kbd> <kbd>R</kbd>.</li>
+                    <li><b>Deep Scan</b> reads inside them: tempo, key, DAW version, tracks, plug-ins, MIDI. Run it from the side rail, or <b>Extract</b> on one project. It isn't automatic: on a cloud drive, reading means downloading.</li>
+                </ul>
+                <div class="tip">What each DAW gives up: <a href="#metadata-extraction">What's read from each DAW</a>. A value read wrong can always be typed over.</div>
+            </section>
+
+            <section class="doc" id="dashboard">
+                <span id="dashboard-overview" class="anchor"></span>
+                <span id="project-table-columns" class="anchor"></span>
+                <span id="row-actions" class="anchor"></span>
+                <h2>Dashboard</h2>
+                <p class="lead">Every project you have, as a table (as in the <a href="#overview">overview</a>) or as cards — the same list either way. Sort by any column; choose and order the columns.</p>
+                <figure class="shot"><img src="resources/screenshots/dashboard/dashboard-cards.png" alt="Projects as cards" loading="lazy" width="1920" height="1080"><figcaption>Cards: cover art, colour or icon per project.</figcaption></figure>
+                <ul>
+                    <li>Row buttons: play the mixdown, open in the DAW, open the project's page, open its folder, hide it.</li>
+                    <li>Right-click a project for everything else: move, archive, stack, delete…</li>
+                    <li>Change the phase straight from its cell.</li>
+                    <li>Pin projects to the bar at the top to pick up where you left off.</li>
+                </ul>
+            </section>
+
+            <section class="doc" id="searching-filtering">
+                <h2>Search &amp; filters</h2>
+                <p class="lead"><kbd>Ctrl</kbd> <kbd>F</kbd> and type. Search looks at a project's <b>name</b>, your <b>notes</b> and the DAW's, its <b>markers</b>, <b>plug-ins</b>, instrumentation, <b>tags</b> and <b>custom fields</b> — and forgives typos.</p>
+                <figure class="shot"><img src="resources/screenshots/dashboard/dashboard-filters-search.png" alt="Searching the dashboard for night" loading="lazy" width="1920" height="1080"><figcaption>"night" finds <i>Midnight Dreams</i> by its name and <i>Slow Burn</i> by its notes.</figcaption></figure>
+                <p>The DAW, the phase and the deadline aren't searched — they have filters of their own, beside the search, and filters stack: <b>All DAWs</b>, <b>All Phases</b>, <b>Show Deadline</b>, <b>Hide Finished</b>, only projects with MIDI.</p>
+            </section>
+
+            <section class="doc" id="bulk-actions">
+                <h2>Many at once</h2>
+                <p class="lead">Tick a few projects and a bar appears: hide, read their metadata, change their phase, make a release of them, stack them as versions, archive them.</p>
+                <figure class="shot"><img src="resources/screenshots/dashboard/dashboard-bulk-actions.png" alt="Several projects selected, with the bulk actions bar" loading="lazy" width="1920" height="1080"></figure>
+            </section>
+
+            <section class="doc" id="project-details">
+                <span id="project-metadata" class="anchor"></span>
+                <span id="preview-songs" class="anchor"></span>
+                <span id="todos" class="anchor"></span>
+                <span id="project-timeline" class="anchor"></span>
+                <h2>A project's page</h2>
+                <span id="detail-layout" class="anchor"></span>
+                <p class="lead">Double-click a project. Everything you edit saves as you type. The rail on the left shows one section at a time; the two buttons at the top left switch to <b>Classic</b>, the whole page in one scroll.</p>
+                <div class="shots">
+                    <figure class="shot"><img src="resources/screenshots/project-detail/project-detail-metadata.png" alt="A project's page, its Project Details section open" loading="lazy" width="1920" height="1080"><figcaption><b>Project Details</b> — tempo, key, phase, deadline.</figcaption></figure>
+                    <figure class="shot"><img src="resources/screenshots/project-detail/project-detail-todos.png" alt="A project's page, its TODO List section open" loading="lazy" width="1920" height="1080"><figcaption><b>TODO List</b> — what's left on this song.</figcaption></figure>
+                </div>
+                <ul>
+                    <li><b>Details</b> — name, tempo, key (with its Camelot code), phase, deadline, notes, your own <a href="#settings">custom fields</a>.</li>
+                    <li><b>Preview song</b> — the latest mixdown, found on its own in your export folders (Settings → Mixdown Folders) or picked by hand.</li>
+                    <li><b>To-dos</b>, attached files and links, cover art and colour, tags.</li>
+                    <li><b>Inside the project</b> — tracks, plug-ins and MIDI clips, after a deep scan.</li>
+                    <li><b>Timeline</b> — every phase change, so you can see how long a song sat in mixing.</li>
+                </ul>
+                <figure class="shot"><img src="resources/screenshots/project-detail/preview-player-playback.gif" alt="Playing a project's preview song" loading="lazy" width="960" height="540"></figure>
+            </section>
+
+            <section class="doc" id="production-phases">
+                <h2>Phases</h2>
+                <p class="lead">Where each song stands — Idea, Arranging, Mixing, Mastering, Finished out of the box. Rename them, add your own, colour and reorder them in Settings → Phases.</p>
+                <figure class="shot"><img src="resources/screenshots/settings/settings-phases-customize.png" alt="Customising phases" loading="lazy" width="1920" height="1080"></figure>
+            </section>
+
+            <section class="doc" id="version-stacks">
+                <h2>Versions</h2>
+                <p class="lead">Song.flp, Song_2.flp, Song_3.flp: one song. Stack them and the library shows it once, with one set of notes, to-dos and work time.</p>
+                <ul>
+                    <li>Select the versions → <b>Stack as Versions</b>, or set a folder's scan mode to <b>Version Stack</b> and every song folder stacks itself.</li>
+                    <li>Unstacking gives each version back exactly what it had.</li>
+                </ul>
+            </section>
+
+            <section class="doc" id="task-queue">
+                <h2>Tasks</h2>
+                <p class="lead">Every open to-do across every project, busiest first. Tick them off here, or jump to the project.</p>
+                <figure class="shot"><img src="resources/screenshots/task-queue/task-queue-overview.png" alt="The task queue" loading="lazy" width="1920" height="1080"></figure>
+            </section>
+
+            <section class="doc" id="releases">
+                <span id="creating-releases" class="anchor"></span>
+                <span id="release-files" class="anchor"></span>
+                <h2>Releases</h2>
+                <p class="lead">An EP, an album, a single: its tracks, artwork, date, to-dos and files in one place.</p>
+                <div class="shots">
+                    <figure class="shot"><img src="resources/screenshots/releases/releases-list.png" alt="The releases list" loading="lazy" width="1920" height="1080"><figcaption><b>Create New Release</b>, then pick its tracks.</figcaption></figure>
+                    <figure class="shot"><img src="resources/screenshots/releases/release-detail.png" alt="A release's page" loading="lazy" width="1920" height="1080"><figcaption>Masters and documents attached; <b>Save release files ZIP</b> for the distributor.</figcaption></figure>
+                </div>
+            </section>
+
+            <section class="doc" id="templates">
+                <h2>Templates</h2>
+                <p class="lead">Start a new song from a template — DAW, tempo, key and starter files ready — or add a ready-made checklist to a project's to-dos.</p>
+                <div class="shots">
+                    <figure class="shot"><img src="resources/screenshots/templates/project-templates-list.png" alt="Project templates" loading="lazy" width="1920" height="1080"><figcaption>Side rail → Project Templates.</figcaption></figure>
+                    <figure class="shot"><img src="resources/screenshots/templates/project-template-create-from.png" alt="Creating a project from a template" loading="lazy" width="1920" height="1080"><figcaption><b>Use</b> opens a new project filled in from it.</figcaption></figure>
+                </div>
+            </section>
+
+            <section class="doc" id="statistics">
+                <h2>Statistics</h2>
+                <p class="lead">Where your songs are, where they get stuck, how much you finish.</p>
+                <figure class="shot"><img src="resources/screenshots/statistics/statistics-global-overview.png" alt="Statistics" loading="lazy" width="1920" height="1080"></figure>
+            </section>
+
+            <section class="doc" id="work-sessions">
+                <span id="session-mode" class="anchor"></span>
+                <h2>Work sessions</h2>
+                <p class="lead">How long has this song taken? In Session Mode you start a session on a project, and the time you work on it adds up: per session, and in total.</p>
+                <ol>
+                    <li><b>Switch it on</b> — Settings → Work Sessions → <b>Session mode</b>. Off by default; in Normal Mode, launching a project just opens it in its DAW.</li>
+                    <li><b>Start a session</b> — the bookmark button on a project's row (or <kbd>S</kbd>), then <b>Start Session</b>. The app asks before starting, switching or ending one, so the timer always means what you think.</li>
+                    <li><b>Work</b> — the session bar at the top shows the song, its total so far and this session's time, with pause and stop. Its buttons open the project in its DAW or its page.</li>
+                </ol>
+                <div class="shots">
+                    <figure class="shot"><img src="resources/screenshots/work-sessions/settings-session-mode.png" alt="Settings, Work Sessions, with Session mode selected" loading="lazy" width="1920" height="1080"><figcaption>Settings → Work Sessions.</figcaption></figure>
+                    <figure class="shot"><img src="resources/screenshots/work-sessions/session-start.png" alt="Starting a session on Distant Shore" loading="lazy" width="1920" height="1080"><figcaption>Starting a session from the project's row.</figcaption></figure>
+                </div>
+                <figure class="shot"><img src="resources/screenshots/work-sessions/session-running.png" alt="A session running, with the session bar in the toolbar" loading="lazy" width="1920" height="1080"><figcaption>A session running: its project is marked in the list.</figcaption></figure>
+                <figure class="shot shot-narrow"><img src="resources/screenshots/work-sessions/session-bar.png" alt="The session bar: Distant Shore, 8h 0m in total, 11 seconds this session, pause and stop" loading="lazy" width="589" height="73"><figcaption>The song, its tempo and key, <b>8h 0m</b> in total, <b>11s</b> this session.</figcaption></figure>
+                <figure class="shot"><img src="resources/screenshots/work-sessions/session-project-time.png" alt="The project page with time worked and the running session" loading="lazy" width="1920" height="1080"><figcaption>The project's page: time worked so far, the running session, and <b>End session</b>.</figcaption></figure>
+                <span id="session-history" class="anchor"></span>
+                <h3>Every session, on record</h3>
+                <p>A project's <b>Session History</b> lists each session — the day, when it started and ended, the phase the song was in, how long — and adds them up, then by phase: how long the song spent in arranging, in mixing. A session timed wrong can be edited or removed.</p>
+                <figure class="shot"><img src="resources/screenshots/work-sessions/session-history.png" alt="A project's Session History: six sessions with their dates, times, phases and lengths, then work by phase" loading="lazy" width="1920" height="1080"><figcaption>Six sessions, <b>8h 0m</b> in all — and how that time splits across Idea, Arranging, Mixing and Mastering.</figcaption></figure>
+                <ul>
+                    <li>A <a href="#version-stacks">version stack</a> adds up the time of all its versions.</li>
+                    <li><b>Reminders</b> (Settings → Work Sessions) notify you at the interval you choose while a session runs, so one isn't left running by mistake.</li>
+                </ul>
+            </section>
+
+            <section class="doc" id="midi-clips">
+                <h2>MIDI clips</h2>
+                <p class="lead">The riffs, chords and drum patterns in every project — Ableton Live, Cubase, Nuendo, FL Studio, Reaper — without opening the DAW.</p>
+                <figure class="shot"><img src="resources/screenshots/midi/midi-library.png" alt="The MIDI tab: every clip of every project" loading="lazy" width="1920" height="1080"></figure>
+                <ul>
+                    <li>A deep scan reads them; each clip once, however often a project uses it.</li>
+                    <li>Play any clip through the built-in synth, at any tempo, with an instrument guessed from its track.</li>
+                    <li>Drag a clip into your DAW or a folder as a <code>.mid</code> — tempo and key included.</li>
+                </ul>
+                <h3>Collections</h3>
+                <p>Your own sets of clips, in folders — copies, so they keep working whatever happens to the projects. Import <code>.mid</code> files from anywhere, name files by a scheme, export or share the whole set.</p>
+                <figure class="shot"><img src="resources/screenshots/midi/midi-collection.png" alt="A MIDI collection with folders" loading="lazy" width="1920" height="1080"></figure>
+                <h3>Piano roll</h3>
+                <p>Click a clip's thumbnail. Edit like a DAW's key editor — select, range, eraser and pencil tools, quantize, duplicate, transpose, velocity and controller lanes — and save the result as a new clip. <kbd>?</kbd> lists every shortcut.</p>
+                <figure class="shot"><img src="resources/screenshots/midi/midi-piano-roll.png" alt="The piano roll" loading="lazy" width="1920" height="1080"></figure>
+            </section>
+
+            <section class="doc" id="music-player">
+                <span id="playlists" class="anchor"></span>
+                <h2>Music player</h2>
+                <p class="lead">All your mixdowns in one player. The key wheel suggests what mixes into the song playing; add a to-do at the exact second you hear something.</p>
+                <figure class="shot"><img src="resources/screenshots/music-player/music-player-desktop.png" alt="The music player with its key wheel" loading="lazy" width="1920" height="1080"></figure>
+                <div class="tip">On Android: a Now Playing screen, a mono check, and <b>playlists</b> of mixdowns to review on the go.</div>
+            </section>
+
+            <section class="doc" id="sharing">
+                <h2>Sharing</h2>
+                <p class="lead">Send a mixdown to Messages, WhatsApp, email… from its project or the player. WAV and AIFF are converted first where an app won't take them (AAC on macOS, MP3 on Windows); <b>Share as ZIP</b> sends the original.</p>
+            </section>
+
+            <section class="doc" id="sample-pack">
+                <h2>Sample pack</h2>
+                <p class="lead">Every sample your projects use, copied into one folder sorted by kind — kicks, snares, loops — with a report of which songs use what. Settings → Experimental → <b>Sample pack from your projects</b>.</p>
+                <ul>
+                    <li>Each file once, however many projects copied it. Your own recordings and bounces stay out unless you ask.</li>
+                    <li>Run it again later: only what's new is added.</li>
+                </ul>
+            </section>
+
+            <section class="doc" id="google-drive-sync">
+                <span id="drive-setup" class="anchor"></span>
+                <span id="drive-upload" class="anchor"></span>
+                <span id="drive-download" class="anchor"></span>
+                <h2>Google Drive</h2>
+                <p class="lead">Your library on every machine: details, to-dos, releases, MIDI, mixdowns and artwork. Your project files themselves stay where they are.</p>
+                <figure class="shot"><img src="resources/screenshots/google-drive-sync/drive-sync.png" alt="Google Drive sync and automatic sync, before signing in" loading="lazy" width="1654" height="476"></figure>
+                <ul>
+                    <li>Side rail → <b>Google Drive</b> → <b>Sign in to Google Drive</b>. The app only sees its own folder in your Drive.</li>
+                    <li><b>Sync</b> merges both ways: what you did on each machine is kept, deletions included.</li>
+                    <li>Sync on start, or every 30 minutes to daily — even from the tray.</li>
+                    <li>Every sync keeps the previous backup, to go back to.</li>
+                </ul>
+            </section>
+
+            <section class="doc" id="local-backup">
+                <h2>Local backup</h2>
+                <p class="lead">One file with your whole library — the way to back up without Google Drive, and the only one in the Flatpak. Settings → Backup → <b>Export Backup</b> / <b>Import Backup</b>.</p>
+                <figure class="shot"><img src="resources/screenshots/settings/settings-backup.png" alt="Settings, Backup" loading="lazy" width="1920" height="1080"></figure>
+            </section>
+
+            <section class="doc" id="archive">
+                <h2>Archive</h2>
+                <p class="lead">A finished song out of the way: its folder zipped somewhere else — and, if you choose, the originals deleted, only once the zip has been checked file by file. It stays in the library — <b>Show archived</b> — with everything you wrote about it, and restores where it came from.</p>
+                <p>Right-click → <b>Archive…</b></p>
+            </section>
+
+            <section class="doc" id="recently-deleted">
+                <h2>Recently deleted</h2>
+                <p class="lead">Deleting a project from the library keeps it for 30 days — notes, to-dos, work time, MIDI — under Settings → Project Folders. Its files on disk are never touched.</p>
+            </section>
+
+            <section class="doc" id="profiles">
+                <h2>Profiles</h2>
+                <p class="lead">One per artist name — solo, alias, collaboration — each with its own folders, projects and releases. Click your profile at the top of the side rail.</p>
+                <figure class="shot"><img src="resources/screenshots/profiles/profile-manager.png" alt="The profile manager" loading="lazy" width="1920" height="1080"></figure>
+                <ul>
+                    <li><b>Move to profile…</b> (right-click a project) hands a song to another profile — all its versions, details and MIDI, files moved or left in place.</li>
+                </ul>
+            </section>
+
+            <section class="doc" id="settings">
+                <span id="daw-launch-commands" class="anchor"></span>
+                <span id="mixdown-folders" class="anchor"></span>
+                <span id="about" class="anchor"></span>
+                <h2>Settings</h2>
+                <p class="lead">One page, a menu on the left, and a search box at the top.</p>
+                <div class="shots">
+                    <figure class="shot"><img src="resources/screenshots/settings/settings-appearance.png" alt="Settings, Appearance" loading="lazy" width="1920" height="1080"><figcaption><b>Appearance</b> — themes, including your own.</figcaption></figure>
+                    <figure class="shot"><img src="resources/screenshots/settings/settings-columns-fields.png" alt="Settings, Columns and fields" loading="lazy" width="1920" height="1080"><figcaption><b>Columns &amp; fields</b> — your own fields, and which columns each table shows.</figcaption></figure>
+                </div>
+                <ul>
+                    <li><b>DAW Locations</b> — which program opens which DAW's projects (needed on Linux).</li>
+                    <li><b>Mixdown Folders</b> — where to look for a project's exported mix.</li>
+                    <li><b>Work Sessions</b> — <a href="#work-sessions">Session Mode</a> and reminders.</li>
+                    <li><b>About</b> — version, check for updates, report an issue, the diagnostic log.</li>
+                </ul>
+            </section>
+
+            <section class="doc" id="background-mode">
+                <h2>Tray mode</h2>
+                <p class="lead">Close the window and the app keeps running in the tray (menu bar on macOS) — syncs and work sessions go on. The tray menu shows the last sync, syncs now, pauses the session, quits.</p>
+            </section>
+
+            <section class="doc" id="keyboard-shortcuts">
+                <h2>Shortcuts</h2>
+                <p class="lead"><kbd>Cmd</kbd> on macOS where it says <kbd>Ctrl</kbd>. The full list is in the app: Settings → Keyboard Shortcuts.</p>
+                <table class="keys">
+                    <tr><td><kbd>Ctrl</kbd> <kbd>F</kbd></td><td>Search</td></tr>
+                    <tr><td><kbd>Ctrl</kbd> <kbd>R</kbd></td><td>Rescan</td></tr>
+                    <tr><td><kbd>Ctrl</kbd> <kbd>T</kbd></td><td>Go to the projects table</td></tr>
+                    <tr><td><kbd>↑</kbd> <kbd>↓</kbd></td><td>Move between projects</td></tr>
+                    <tr><td><kbd>Enter</kbd> or <kbd>D</kbd></td><td>Open the project's page</td></tr>
+                    <tr><td><kbd>P</kbd></td><td>Play / pause its mixdown</td></tr>
+                    <tr><td><kbd>O</kbd></td><td>Open in its DAW</td></tr>
+                    <tr><td><kbd>F</kbd></td><td>Open its folder</td></tr>
+                    <tr><td><kbd>Alt</kbd> <kbd>←</kbd></td><td>Back (<kbd>Cmd</kbd> <kbd>←</kbd> on macOS)</td></tr>
+                    <tr><td><kbd>Space</kbd>, <kbd>←</kbd> <kbd>→</kbd></td><td>In a player: play / pause, seek 5 s (with <kbd>Ctrl</kbd>: 30 s)</td></tr>
+                </table>
+            </section>
+
+            <section class="doc" id="supported-daws">
+                <h2>Supported DAWs</h2>
+                <p class="lead">Every one is found and listed. The highlighted ones are also read inside — anything else, type in once.</p>
+                <DawGrid variant="guide" />
+                <div class="tip">Missing yours? <a href="https://github.com/bandpassrecords/daw-project-manager/issues">Open an issue</a> with the DAW and its project file's extension.</div>
+            </section>
+
+            <section class="doc" id="metadata-extraction">
+                <h2>What's read from each DAW</h2>
+                <p class="lead">A <a href="#scanning">deep scan</a> reads these straight from the project file. The same table is in the app: Settings → General → Metadata Extraction.</p>
+                <ReadsTable variant="guide" />
+                <ul>
+                    <li><b>Tracks</b> are counted by kind — audio, MIDI, instrument, sampler, groups, folders. <b>Plug-ins</b> lists every one the project loads; search the dashboard for one to find every song that uses it.</li>
+                    <li><b>MIDI events</b> are controllers, pitch bend and aftertouch, read with the notes.</li>
+                    <li>Every other DAW is listed and scanned; its tempo and key are yours to type in — or put a <code>bpm.txt</code> / <code>key.txt</code> next to the project.</li>
+                </ul>
+            </section>
+
+            <p class="no-match" id="no-match">Nothing in the guide matches — try another word.</p>
+        </main>
+    </div>
+
+    <div class="lightbox" id="lightbox" role="dialog" aria-modal="true" aria-label="Screenshot, enlarged">
+        <button class="lightbox-close" id="lightbox-close" aria-label="Close">×</button>
+        <img id="lightbox-img" alt="">
+    </div>
+
+    <script>
+        import '../scripts/docs.js';
+    </script>
+</Base>

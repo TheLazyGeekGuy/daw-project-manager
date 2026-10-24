@@ -37,7 +37,7 @@ failures and retries, reporting as you go.
   tag, so don't change it.
 - **What a tag run builds:** Unit Tests, then Windows (exe + MSIX), macOS
   (DMG + ZIP), Linux (AppImage + tar.gz), Flatpak, Android (AAB), an iOS
-  compile check, and the gh-pages download link. It takes about **15 minutes**.
+  compile check, and a website rebuild for the download links. It takes about **15 minutes**.
 - **Retries are safe.** Nothing is published outside the GitHub release, and
   there is no store upload that would reject a reused version code. Deleting
   a failed release and its tag, then recreating them, leaves nothing behind.

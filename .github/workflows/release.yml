@@ -21,6 +21,7 @@ on:
       - '**.md'
       - 'docs/**'
       - '.claude/**'
+      - 'website/**'
 
   push:
     branches: [ main ]
@@ -30,6 +31,7 @@ on:
       - '**.md'
       - 'docs/**'
       - '.claude/**'
+      - 'website/**'
 
 # One run per branch or PR at a time: a newer push to main, or to a PR,
 # cancels the run it supersedes, so a burst of merges builds only the last
@@ -1548,57 +1550,17 @@ jobs:
           echo "Program membership, a distribution certificate and a" >> $GITHUB_STEP_SUMMARY
           echo "provisioning profile added as repository secrets." >> $GITHUB_STEP_SUMMARY
 
-  # Update the macOS, Linux and Windows installer download links on the gh-pages website after every tag release
-  update-gh-pages:
-    name: Update website download links (releases only)
+  # Rebuild the website once a release's files are up: it reads the download
+  # links from the newest release (website/src/lib/release.ts).
+  update-website:
+    name: Rebuild the website (releases only)
     needs: [release_build_upload, build_linux]
     if: startsWith(github.ref, 'refs/tags/v')
     runs-on: ubuntu-latest
-
+    permissions:
+      actions: write
     steps:
-      - name: Checkout gh-pages branch
-        uses: actions/checkout@v4
-        with:
-          ref: gh-pages
-
-      - name: Update macOS DMG download URL in index.html
+      - name: Run the Website workflow
         env:
-          TAG: ${{ github.ref_name }}
-        run: |
-          NEW_URL="https://github.com/bandpassrecords/daw-project-manager/releases/download/${TAG}/DAW_Project_Manager_macOS_${TAG}.dmg"
-          # Replace every hardcoded macOS DMG URL (any previous version) with the new one
-          sed -i "s|https://github\.com/bandpassrecords/daw-project-manager/releases/download/[^/]*/DAW_Project_Manager_macOS_[^\"]*\.dmg|${NEW_URL}|g" index.html
-          echo "Updated download URLs to: ${NEW_URL}"
-          grep -n "DAW_Project_Manager_macOS" index.html
-
-      - name: Update Linux AppImage download URL in index.html
-        env:
-          TAG: ${{ github.ref_name }}
-        run: |
-          NEW_URL="https://github.com/bandpassrecords/daw-project-manager/releases/download/${TAG}/DAW_Project_Manager_Linux_${TAG}.AppImage"
-          # Replace every hardcoded Linux AppImage URL (any previous version) with the new one
-          sed -i "s|https://github\.com/bandpassrecords/daw-project-manager/releases/download/[^/]*/DAW_Project_Manager_Linux_[^\"]*\.AppImage|${NEW_URL}|g" index.html
-          echo "Updated download URLs to: ${NEW_URL}"
-          grep -n "DAW_Project_Manager_Linux" index.html
-
-      # The Windows card's main button is the Microsoft Store; its note offers
-      # this installer to anyone who'd rather not use the Store.
-      - name: Update Windows installer download URL in index.html
-        env:
-          TAG: ${{ github.ref_name }}
-        run: |
-          NEW_URL="https://github.com/bandpassrecords/daw-project-manager/releases/download/${TAG}/DAW_Project_Manager_Installer_${TAG}.exe"
-          # Replace every hardcoded Windows installer URL (any previous version) with the new one
-          sed -i "s|https://github\.com/bandpassrecords/daw-project-manager/releases/download/[^/]*/DAW_Project_Manager_Installer_[^\"]*\.exe|${NEW_URL}|g" index.html
-          echo "Updated download URLs to: ${NEW_URL}"
-          grep -n "DAW_Project_Manager_Installer" index.html
-
-      - name: Commit and push to gh-pages
-        env:
-          TAG: ${{ github.ref_name }}
-        run: |
-          git config user.name "github-actions[bot]"
-          git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add index.html
-          git diff --staged --quiet && echo "No changes to commit" || \
-            git commit -m "Update download links to ${TAG}" && git push
+          GH_TOKEN: ${{ github.token }}
+        run: gh workflow run site.yml --repo "${{ github.repository }}" --ref main

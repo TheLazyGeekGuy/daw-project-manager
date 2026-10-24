@@ -1,0 +1,58 @@
+---
+import { releasesUrl, repoUrl } from '../lib/release';
+
+interface Props {
+  /** The homepage's full footer, or the guide's single line. */
+  variant: 'full' | 'short';
+}
+
+const { variant } = Astro.props;
+const donate = 'https://www.paypal.com/donate/?hosted_button_id=QHVVZ3LAF39BL';
+const year = new Date().getFullYear();
+---
+{variant === 'full' ? (
+<footer class="footer">
+    <div class="container">
+        <div class="footer-content">
+            <div class="footer-section">
+                <h4>DAW Project Manager</h4>
+                <p>Every project, every DAW, one place. Free and open source, built with Flutter.</p>
+            </div>
+
+            <div class="footer-section">
+                <h4>Resources</h4>
+                <ul>
+                    <li><a href={repoUrl}>GitHub</a></li>
+                    <li><a href={`${repoUrl}/issues`}>Report an Issue</a></li>
+                    <li><a href={releasesUrl}>All Releases</a></li>
+                    <li><a href={donate} target="_blank" rel="noopener noreferrer">Support</a></li>
+                </ul>
+            </div>
+
+            <div class="footer-section">
+                <h4>Built With</h4>
+                <ul>
+                    <li><a href="https://flutter.dev" target="_blank" rel="noopener noreferrer">Flutter</a></li>
+                    <li><a href="https://riverpod.dev" target="_blank" rel="noopener noreferrer">Riverpod</a></li>
+                    <li><a href="https://pub.dev/packages/hive_ce" target="_blank" rel="noopener noreferrer">Hive CE</a></li>
+                    <li><a href="https://pub.dev/packages/trina_grid" target="_blank" rel="noopener noreferrer">TrinaGrid</a></li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="footer-bottom">
+            <p>&copy; {year} DAW Project Manager by BandPass Records. Open source software.</p>
+            <p class="footer-attribution">The Android robot is reproduced or modified from work created and shared by Google and used according to terms described in the <a href="https://creativecommons.org/licenses/by/3.0/" target="_blank" rel="noopener noreferrer">Creative Commons 3.0 Attribution License</a>.</p>
+        </div>
+    </div>
+</footer>
+) : (
+<footer class="footer">
+    <div class="container">
+        <div class="footer-bottom" style="text-align:center;padding:2rem 0;color:var(--text-muted)">
+            <p>DAW Project Manager · free and open source · <a href={repoUrl}>GitHub</a> · <a href={`${repoUrl}/issues`}>Report an issue</a> · <a href={donate}>Support</a></p>
+            <p style="margin-top:.4rem">© {year} BandPass Records</p>
+        </div>
+    </div>
+</footer>
+)}

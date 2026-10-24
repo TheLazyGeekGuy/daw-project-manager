@@ -1,0 +1,60 @@
+---
+import Base from '../layouts/Base.astro';
+import { changelog, highlightsOf } from '../lib/changelog';
+import { releasesUrl } from '../lib/release';
+import '../styles/docs.css';
+
+const releases = changelog();
+const dateFormat = new Intl.DateTimeFormat('en', { year: 'numeric', month: 'long', day: 'numeric', timeZone: 'UTC' });
+const shown = (date: string) => dateFormat.format(new Date(`${date}T00:00:00Z`));
+---
+<Base
+    page="changelog"
+    title="What's new — DAW Project Manager"
+    description="What changed in each DAW Project Manager release — the same notes the app shows after an update."
+>
+    <header class="guide-hero">
+        <div class="container changelog-head">
+            <h1>What's new</h1>
+            <p class="lead">The same notes the app shows after an update. Every file of every release is on <a href={releasesUrl}>GitHub</a>.</p>
+        </div>
+    </header>
+
+    <main class="container changelog">
+        {releases.map((release, i) => (
+        <section class="doc" id={`v${release.version}`}>
+            <h2>
+                <a href={`#v${release.version}`} class="version">{release.version}</a>
+                {i === 0 && <span class="badge">Latest</span>}
+            </h2>
+            <p class="date"><time datetime={release.date}>{shown(release.date)}</time> · <a href={`${releasesUrl}/tag/v${release.version}`}>Downloads</a></p>
+            <ul>
+                {highlightsOf(release).map((line) => <li>{line}</li>)}
+            </ul>
+        </section>
+        ))}
+    </main>
+</Base>
+
+<style>
+    .changelog, .changelog-head { max-width: 860px; }
+    .changelog { padding-bottom: 4rem; }
+    .changelog .doc h2 { display: flex; align-items: center; gap: .7rem; }
+    .changelog .version { color: var(--text-primary); text-decoration: none; }
+    .changelog .version:hover { color: var(--accent); }
+    .changelog .badge {
+        font-size: .72rem;
+        font-weight: 600;
+        letter-spacing: .06em;
+        text-transform: uppercase;
+        padding: .2rem .55rem;
+        border-radius: 999px;
+        color: var(--accent);
+        background: rgba(74, 158, 255, .12);
+    }
+    .changelog .date { color: var(--text-muted); font-size: .9rem; margin-bottom: .4rem; }
+    .changelog a { color: var(--accent); text-decoration: none; }
+    .changelog a:hover { text-decoration: underline; }
+    .guide-hero .lead { color: var(--text-secondary); }
+    .guide-hero .lead a { color: var(--accent); }
+</style>

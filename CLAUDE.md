@@ -335,6 +335,7 @@ Instructions for AI assistants working on this codebase.
 | Platform helpers | `lib/utils/mobile_utils.dart` |
 | Test factories | `test/helpers/test_factories.dart` |
 | OAuth client config (not versioned) | `lib/config/oauth_config.dart` |
+| Website (Astro; screenshots, DAW list, downloads and changelog read from the repo) | `website/` — see `website/README.md` |
 
 ---
 
