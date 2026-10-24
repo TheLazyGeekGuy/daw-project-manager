@@ -20,7 +20,7 @@ npm run preview   # serves dist/
 | What's new (`/changelog/`) | `../assets/changelog/changelog.json`, the app's own changelog |
 | `CNAME`, `.well-known/org.flatpak.VerifiedApps.txt` | `public/` — the domain, and Flathub's proof that the domain is ours |
 | `.nojekyll` | `public/` — without it Pages runs Jekyll, which drops Astro's `_astro/` folder (every script and stylesheet) |
-| The user guide | `src/content/docs/guide/` — one page per section, served by [Starlight](https://starlight.astro.build) at `/guide/` with search; the sidebar is `src/data/guide-sidebar.json` |
+| The user guide | `src/content/docs/guide/` — one page per section, served by [Starlight](https://starlight.astro.build) at `/guide/` with search; the sidebar is `src/data/guide-sidebar.json`. `/guide/all/` (`src/pages/guide/all.astro`) is the same pages on one scrolling page, in the sidebar's order |
 | Palettes | `src/styles/theme.css` (homepage) and `src/styles/starlight.css` (guide): the app's Neon Dark and Classic Dark |
 
 Installed apps open `docs.html`, often with an anchor (`docs.html#work-sessions`): `src/pages/docs.html.ts` sends each one to the guide page holding it (`src/data/guide-anchors.json`). A new guide page whose section had an anchor of its own needs it added there.

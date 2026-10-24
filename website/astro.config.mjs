@@ -13,7 +13,10 @@ export default defineConfig({
       social: [
         { icon: 'github', label: 'GitHub', href: 'https://github.com/bandpassrecords/daw-project-manager' },
       ],
-      sidebar,
+      sidebar: [
+        { label: 'The whole guide on one page', link: '/guide/all/', attrs: { class: 'guide-all-link' } },
+        ...sidebar,
+      ],
       customCss: ['./src/styles/starlight.css'],
       head: [
         {
