@@ -183,12 +183,15 @@ void main() {
 
   group('deadline chip', () {
     testWidgets('counts down the days left', (tester) async {
+      // Three calendar days on, not 72 hours: across the night the clocks go
+      // back, 72 hours after midnight lands on the second day.
+      final now = DateTime.now();
       await tester.pumpWidget(
         wrap([
           project(
             'a',
             'Alpha',
-            deadline: DateTime.now().add(const Duration(days: 3)),
+            deadline: DateTime(now.year, now.month, now.day + 3, now.hour, now.minute),
           ),
         ]),
       );

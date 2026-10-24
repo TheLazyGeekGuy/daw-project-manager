@@ -249,14 +249,17 @@ void main() {
     });
 
     test('dueToday filter returns projects with deadline today', () async {
+      final now = DateTime.now();
       final c = _makeContainer([
         TestFactories.makeProject(
           id: 'today',
-          deadline: DateTime.now(),
+          deadline: now,
         ),
+        // The next calendar day, not 24 hours on: on the day the clocks go
+        // back, 24 hours after midnight is still the same day.
         TestFactories.makeProject(
           id: 'tomorrow',
-          deadline: DateTime.now().add(const Duration(days: 1)),
+          deadline: DateTime(now.year, now.month, now.day + 1, now.hour, now.minute),
         ),
       ]);
       addTearDown(c.dispose);
