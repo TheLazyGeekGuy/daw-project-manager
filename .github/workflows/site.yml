@@ -1,10 +1,11 @@
 # The website (dpm.bandpassrecords.com), built from website/ with Astro and
-# published to GitHub Pages. Pages' source must be "GitHub Actions"
-# (Settings > Pages), not the old gh-pages branch.
+# published by committing the built site to the gh-pages branch, which GitHub
+# Pages serves as before. Every published version is a commit there, so going
+# back is a revert on gh-pages.
 #
 # It builds on a push that changes what the site shows, and when the release
 # workflow asks after publishing a release: the download links are read from
-# the newest release at build time.
+# the newest release at build time. A pull request only checks that it builds.
 name: Website
 
 on:
@@ -24,21 +25,18 @@ on:
   workflow_dispatch:
 
 permissions:
-  contents: read
-  pages: write
-  id-token: write
+  contents: write
 
+# Publishing runs one at a time and never cancels; pull requests each get
+# their own group so they don't queue behind it.
 concurrency:
-  group: pages
+  group: website-${{ github.event_name == 'pull_request' && github.ref || 'publish' }}
   cancel-in-progress: false
 
 jobs:
-  build:
-    name: Build the website
+  website:
+    name: Build and publish the website
     runs-on: ubuntu-latest
-    defaults:
-      run:
-        working-directory: website
     steps:
       - uses: actions/checkout@v4
 
@@ -48,27 +46,39 @@ jobs:
           cache: npm
           cache-dependency-path: website/package-lock.json
 
-      - run: npm ci
-
       - name: Build
+        working-directory: website
         env:
           # Read the latest release without the anonymous rate limit.
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: npm run build
+        run: |
+          npm ci
+          npm run build
+          # GitHub Pages runs Jekyll unless told not to, and Jekyll drops
+          # folders starting with "_" — Astro's _astro/, every script and
+          # stylesheet. website/public/.nojekyll carries the marker.
+          test -f dist/.nojekyll
 
-      - uses: actions/upload-pages-artifact@v3
+      - name: Check out gh-pages
+        if: github.event_name != 'pull_request'
+        uses: actions/checkout@v4
         with:
-          path: website/dist
+          ref: gh-pages
+          path: gh-pages
 
-  deploy:
-    name: Publish to GitHub Pages
-    # A pull request only checks that the site builds.
-    if: github.event_name != 'pull_request'
-    needs: build
-    runs-on: ubuntu-latest
-    environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
-    steps:
-      - id: deployment
-        uses: actions/deploy-pages@v4
+      # The branch becomes exactly the built site: files the site no longer
+      # has are removed with it.
+      - name: Publish to gh-pages
+        if: github.event_name != 'pull_request'
+        run: |
+          rsync -a --delete --exclude .git website/dist/ gh-pages/
+          cd gh-pages
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add -A
+          if git diff --staged --quiet; then
+            echo "The site is unchanged."
+            exit 0
+          fi
+          git commit -m "Website from ${GITHUB_SHA::8}: $(git -C .. log -1 --format=%s)"
+          git push
