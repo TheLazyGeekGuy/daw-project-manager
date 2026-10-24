@@ -4503,7 +4503,7 @@
   "dpmPluginSessionEndedSummary": "{start}–{end} · {duration}",
   "dpmPluginTabLabel": "Plugin para a DAW",
   "dpmPluginTitle": "Plugin DAW Project Manager",
-  "dpmPluginDescription": "Um plugin VST3/AU para a sua DAW. Coloque-o no bus master: ele mostra as tarefas do projeto, grava cada passagem de reprodução como a música de prévia do projeto e pode encerrar sua sessão de trabalho quando a DAW fechar o projeto.",
+  "dpmPluginDescription": "Um plugin VST3/AU para a sua DAW. Coloque-o no bus master: ele mostra as tarefas do projeto, grava cada passagem de reprodução como a última captura do projeto e pode encerrar sua sessão de trabalho quando a DAW fechar o projeto.",
   "dpmPluginLastSeen": "Visto pela última vez no {daw} (versão {version}) em {date}.",
   "dpmPluginNotSeen": "Ainda não visto neste computador. Instale-o e coloque-o no bus master da sua DAW.",
   "dpmPluginUpdateAvailable": "A versão {version} está disponível.",

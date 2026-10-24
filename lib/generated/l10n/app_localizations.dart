@@ -13332,7 +13332,7 @@ abstract class AppLocalizations {
   /// No description provided for @dpmPluginDescription.
   ///
   /// In en, this message translates to:
-  /// **'A VST3/AU plugin for your DAW. Put it on the master bus: it shows the project\'s to-dos, records each playback pass as the project\'s preview song, and can end your work session when the DAW closes the project.'**
+  /// **'A VST3/AU plugin for your DAW. Put it on the master bus: it shows the project\'s to-dos, records each playback pass as the project\'s latest capture, and can end your work session when the DAW closes the project.'**
   String get dpmPluginDescription;
 
   /// No description provided for @dpmPluginLastSeen.

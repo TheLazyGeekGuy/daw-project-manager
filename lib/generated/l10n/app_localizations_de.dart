@@ -8220,7 +8220,7 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get dpmPluginDescription =>
-      'Ein VST3/AU-Plugin für Ihre DAW. Legen Sie es auf den Master-Bus: Es zeigt die Aufgaben des Projekts, nimmt jeden Wiedergabedurchlauf als Vorschau-Song des Projekts auf und kann Ihre Arbeitssitzung beenden, wenn die DAW das Projekt schließt.';
+      'Ein VST3/AU-Plugin für Ihre DAW. Legen Sie es auf den Master-Bus: Es zeigt die Aufgaben des Projekts, nimmt jeden Wiedergabedurchlauf als letzte Aufnahme des Projekts auf und kann Ihre Arbeitssitzung beenden, wenn die DAW das Projekt schließt.';
 
   @override
   String dpmPluginLastSeen(String daw, String version, String date) {

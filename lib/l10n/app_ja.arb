@@ -4479,7 +4479,7 @@
   "dpmPluginSessionEndedSummary": "{start}–{end} · {duration}",
   "dpmPluginTabLabel": "DAW プラグイン",
   "dpmPluginTitle": "DAW Project Manager プラグイン",
-  "dpmPluginDescription": "DAW 用の VST3/AU プラグインです。マスターバスに挿すと、プロジェクトのタスクを表示し、再生のたびにプロジェクトのプレビュー曲として録音し、DAW がプロジェクトを閉じたときに作業セッションを終了できます。",
+  "dpmPluginDescription": "DAW 用の VST3/AU プラグインです。マスターバスに挿すと、プロジェクトのタスクを表示し、再生のたびにプロジェクトの最新のキャプチャとして録音し、DAW がプロジェクトを閉じたときに作業セッションを終了できます。",
   "dpmPluginLastSeen": "最後に確認: {daw}（バージョン {version}）、{date}。",
   "dpmPluginNotSeen": "このコンピューターではまだ確認されていません。インストールして、DAW のマスターバスに挿してください。",
   "dpmPluginUpdateAvailable": "バージョン {version} が利用できます。",

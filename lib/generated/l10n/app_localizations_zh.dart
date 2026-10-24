@@ -7839,7 +7839,7 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get dpmPluginDescription =>
-      '适用于 DAW 的 VST3/AU 插件。把它放在主总线上：它会显示项目的待办事项，把每次播放录制为项目的预览歌曲，并可在 DAW 关闭项目时结束你的工作会话。';
+      '适用于 DAW 的 VST3/AU 插件。把它放在主总线上：它会显示项目的待办事项，把每次播放录制为项目的最新捕获，并可在 DAW 关闭项目时结束你的工作会话。';
 
   @override
   String dpmPluginLastSeen(String daw, String version, String date) {

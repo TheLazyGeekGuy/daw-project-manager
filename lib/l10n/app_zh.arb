@@ -4479,7 +4479,7 @@
   "dpmPluginSessionEndedSummary": "{start}–{end} · {duration}",
   "dpmPluginTabLabel": "DAW 插件",
   "dpmPluginTitle": "DAW Project Manager 插件",
-  "dpmPluginDescription": "适用于 DAW 的 VST3/AU 插件。把它放在主总线上：它会显示项目的待办事项，把每次播放录制为项目的预览歌曲，并可在 DAW 关闭项目时结束你的工作会话。",
+  "dpmPluginDescription": "适用于 DAW 的 VST3/AU 插件。把它放在主总线上：它会显示项目的待办事项，把每次播放录制为项目的最新捕获，并可在 DAW 关闭项目时结束你的工作会话。",
   "dpmPluginLastSeen": "上次见到：{daw}（版本 {version}），{date}。",
   "dpmPluginNotSeen": "这台电脑上还没有见到它。请安装后放在 DAW 的主总线上。",
   "dpmPluginUpdateAvailable": "版本 {version} 可用。",
