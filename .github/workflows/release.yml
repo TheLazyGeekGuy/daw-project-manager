@@ -700,7 +700,11 @@ jobs:
         shell: bash
         run: |
           VERSION_NAME="${{ steps.build_version.outputs.version_name }}"
-          vpk pack --packId DAWProjectManager --packVersion "${VERSION_NAME}" \
+          # vpk refuses 0.0.0, which every build but a tag's carries: those
+          # pack as 0.0.<run number> instead (their app still says 0.0.0).
+          PACK_VERSION="${VERSION_NAME}"
+          if [ "${PACK_VERSION}" = "0.0.0" ]; then PACK_VERSION="0.0.${GITHUB_RUN_NUMBER}"; fi
+          vpk pack --packId DAWProjectManager --packVersion "${PACK_VERSION}" \
             --packDir build/windows/x64/runner/Release \
             --mainExe daw_project_manager.exe \
             --packTitle "DAW Project Manager" --packAuthors "BandPass Records" \
