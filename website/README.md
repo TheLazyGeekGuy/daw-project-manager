@@ -17,8 +17,10 @@ npm run preview   # serves dist/
 | Screenshots, DAW and OS logos | `../resources/` — copied into `public/resources/` by `scripts/sync-resources.mjs` before `dev` and `build`; never edit the copies |
 | Supported DAWs, and what is read from each | `src/data/daws.ts` — the homepage grid and table and the guide's grid and matrix all draw from it |
 | Download links | the newest GitHub release, read at build time (`src/lib/release.ts`); the release workflow rebuilds the site after publishing |
-| What's new (`changelog.html`, the homepage's version badge) | `../assets/changelog/changelog.json`, the app's own changelog |
+| What's new (`/changelog/`) | `../assets/changelog/changelog.json`, the app's own changelog |
 | `CNAME`, `.well-known/org.flatpak.VerifiedApps.txt` | `public/` — the domain, and Flathub's proof that the domain is ours |
 | `.nojekyll` | `public/` — without it Pages runs Jekyll, which drops Astro's `_astro/` folder (every script and stylesheet) |
+| The user guide | `src/content/docs/guide/` — one page per section, served by [Starlight](https://starlight.astro.build) at `/guide/` with search; the sidebar is `src/data/guide-sidebar.json` |
+| Palettes | `src/styles/theme.css` (homepage) and `src/styles/starlight.css` (guide): the app's Neon Dark and Classic Dark |
 
-Pages are built as `index.html`, `docs.html` and `changelog.html` (`build.format: 'file'`): installed apps link to `docs.html`.
+Installed apps open `docs.html`, often with an anchor (`docs.html#work-sessions`): `src/pages/docs.html.ts` sends each one to the guide page holding it (`src/data/guide-anchors.json`). A new guide page whose section had an anchor of its own needs it added there.

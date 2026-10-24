@@ -1,7 +1,9 @@
 ---
 import '../styles/site.css';
+import '../styles/theme.css';
 import Nav from '../components/Nav.astro';
 import Footer from '../components/Footer.astro';
+import PaletteSwitch from '../components/PaletteSwitch.astro';
 
 interface Props {
   title: string;
@@ -17,6 +19,16 @@ const { title, description, page } = Astro.props;
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content={description}>
+    <script is:inline>
+        // Before anything paints: the palette picked earlier in this browser.
+        // ?palette=classic picks one by link, and is remembered.
+        try {
+            const asked = new URLSearchParams(location.search).get('palette');
+            if (asked) localStorage.setItem('dpm-palette', asked);
+            const palette = asked || localStorage.getItem('dpm-palette');
+            if (palette) document.documentElement.dataset.palette = palette;
+        } catch {}
+    </script>
     <title>{title}</title>
     <link rel="icon" type="image/png" sizes="32x32" href="/app_icon.png">
     <link rel="icon" type="image/png" sizes="16x16" href="/app_icon.png">
@@ -29,5 +41,6 @@ const { title, description, page } = Astro.props;
     <Nav page={page} />
     <slot />
     <Footer variant={page === 'home' ? 'full' : 'short'} />
+    <PaletteSwitch />
 </body>
 </html>

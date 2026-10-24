@@ -90,4 +90,4 @@ export const deepDaws = daws
 /** The same DAWs alphabetically (the homepage table's order). */
 export const deepDawsByName = [...deepDaws].sort((a, b) => a.name.localeCompare(b.name));
 
-export const logoUrl = (daw: Daw) => `resources/daw/logos/${daw.logo}`;
+export const logoUrl = (daw: Daw) => `/resources/daw/logos/${daw.logo}`;

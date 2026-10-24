@@ -1,0 +1,15 @@
+---
+title: "What's read from each DAW"
+description: "A deep scan reads these straight from the project file. The same table is in the app: Settings → General → Metadata Extraction."
+---
+
+import DawGrid from '../../../components/DawGrid.astro';
+import ReadsTable from '../../../components/ReadsTable.astro';
+
+<p class="lead">A <a href="/guide/scanning/">deep scan</a> reads these straight from the project file. The same table is in the app: Settings → General → Metadata Extraction.</p>
+<ReadsTable variant="guide" />
+<ul>
+<li><b>Tracks</b> are counted by kind — audio, MIDI, instrument, sampler, groups, folders. <b>Plug-ins</b> lists every one the project loads; search the dashboard for one to find every song that uses it.</li>
+<li><b>MIDI events</b> are controllers, pitch bend and aftertouch, read with the notes.</li>
+<li>Every other DAW is listed and scanned; its tempo and key are yours to type in — or put a <code>bpm.txt</code> / <code>key.txt</code> next to the project.</li>
+</ul>

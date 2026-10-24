@@ -1,0 +1,114 @@
+/* The site's palettes, taken from the app's own themes
+   (lib/providers/theme_provider.dart): Neon Dark and Classic Dark. They set
+   the variables site.css and home.css draw with; <html data-palette> picks
+   one, Neon by default. */
+
+:root,
+:root[data-palette='neon'] {
+    --bg-darker: #0A0A14;         /* neonDark background */
+    --bg-dark: #0F0F1E;           /* neonDark surface */
+    --bg-card: #1A1A2E;           /* neonDark card */
+    --primary-color: #24243D;
+    --primary-dark: #1A1A2E;
+    --primary-light: #34345A;
+    --accent: #00D4FF;            /* neonDark primary */
+    --accent-hover: #4DE1FF;
+    --accent-2: #7B2CBF;          /* neonDark secondary */
+    --accent-ink: #001018;        /* text on an accent fill */
+    --accent-soft: rgba(0, 212, 255, 0.12);
+    --glow-1: rgba(0, 212, 255, 0.22);
+    --glow-2: rgba(123, 44, 191, 0.30);
+    --text-primary: #FFFFFF;
+    --text-secondary: rgba(255, 255, 255, 0.72);
+    --text-muted: rgba(255, 255, 255, 0.55);
+    --border-color: rgba(255, 255, 255, 0.10);
+    --shadow: rgba(0, 0, 0, 0.55);
+}
+
+:root[data-palette='classic'] {
+    --bg-darker: #161719;
+    --bg-dark: #1E1F22;           /* classicDark background */
+    --bg-card: #2B2D31;           /* classicDark card */
+    --primary-color: #5A6B7A;     /* classicDark primary */
+    --primary-dark: #3C3F43;
+    --primary-light: #7A8B9A;
+    --accent: #4A9EFF;
+    --accent-hover: #6AB0FF;
+    --accent-2: #5A6B7A;
+    --accent-ink: #FFFFFF;
+    --accent-soft: rgba(74, 158, 255, 0.12);
+    --glow-1: rgba(74, 158, 255, 0.16);
+    --glow-2: rgba(90, 107, 122, 0.22);
+    --text-primary: #FFFFFF;
+    --text-secondary: #B0B3B8;
+    --text-muted: #8A8D90;
+    --border-color: #3C3F43;
+    --shadow: rgba(0, 0, 0, 0.4);
+}
+
+body {
+    background: var(--bg-darker);
+}
+
+.navbar {
+    background: color-mix(in srgb, var(--bg-darker) 78%, transparent);
+    border-bottom-color: var(--border-color);
+}
+
+.btn-primary {
+    background: var(--accent);
+    color: var(--accent-ink);
+}
+
+.btn-primary:hover {
+    background: var(--accent-hover);
+    box-shadow: 0 10px 30px -8px var(--glow-1);
+}
+
+.github-link {
+    background: var(--bg-card);
+    border: 1px solid var(--border-color);
+}
+
+.github-link:hover {
+    background: var(--primary-color);
+}
+
+/* Preview only: switches the palette to compare the two. Remove before
+   this goes live, or keep it as a visitor's choice. */
+.palette-switch {
+    position: fixed;
+    right: 16px;
+    bottom: 16px;
+    z-index: 2000;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    padding: 4px;
+    border-radius: 999px;
+    border: 1px solid var(--border-color);
+    background: color-mix(in srgb, var(--bg-card) 92%, transparent);
+    backdrop-filter: blur(10px);
+    box-shadow: 0 10px 30px -10px var(--shadow);
+    font: 500 0.8rem Inter, sans-serif;
+}
+
+.palette-switch span {
+    padding: 0 8px 0 10px;
+    color: var(--text-muted);
+}
+
+.palette-switch button {
+    border: 0;
+    border-radius: 999px;
+    padding: 6px 12px;
+    background: transparent;
+    color: var(--text-secondary);
+    font: inherit;
+    cursor: pointer;
+}
+
+.palette-switch button[aria-pressed='true'] {
+    background: var(--accent);
+    color: var(--accent-ink);
+}

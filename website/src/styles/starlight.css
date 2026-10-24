@@ -1,0 +1,229 @@
+/* The user guide (Starlight): the app's palettes, and the guide's own pieces
+   — screenshots, tips, platform cards, key tables, the DAW grid and matrix. */
+
+/* ── Palettes (dark is Starlight's default; light is its theme toggle) ── */
+:root,
+:root[data-palette='neon'] {
+    --sl-color-accent-low: #072a35;
+    --sl-color-accent: #00d4ff;
+    --sl-color-accent-high: #b3f2ff;
+    --sl-color-white: #ffffff;
+    --sl-color-gray-1: #e6e6f0;
+    --sl-color-gray-2: #c2c2d6;
+    --sl-color-gray-3: #8c8ca8;
+    --sl-color-gray-4: #55557a;
+    --sl-color-gray-5: #2c2c48;
+    --sl-color-gray-6: #1a1a2e;
+    --sl-color-black: #0a0a14;
+}
+
+:root[data-palette='classic'] {
+    --sl-color-accent-low: #12294a;
+    --sl-color-accent: #4a9eff;
+    --sl-color-accent-high: #c2ddff;
+    --sl-color-gray-1: #eceef0;
+    --sl-color-gray-2: #c4c7cc;
+    --sl-color-gray-3: #8a8d90;
+    --sl-color-gray-4: #5a5d62;
+    --sl-color-gray-5: #3c3f43;
+    --sl-color-gray-6: #2b2d31;
+    --sl-color-black: #1e1f22;
+}
+
+:root[data-theme='light'],
+:root[data-theme='light'][data-palette='neon'] {
+    --sl-color-accent-low: #d5f6ff;
+    --sl-color-accent: #007f9c;
+    --sl-color-accent-high: #003a47;
+    --sl-color-white: #0a0a14;
+    --sl-color-gray-1: #1a1a2e;
+    --sl-color-gray-2: #2c2c48;
+    --sl-color-gray-3: #55557a;
+    --sl-color-gray-4: #8c8ca8;
+    --sl-color-gray-5: #c2c2d6;
+    --sl-color-gray-6: #ececf4;
+    --sl-color-gray-7: #f6f6fa;
+    --sl-color-black: #ffffff;
+}
+
+:root[data-theme='light'][data-palette='classic'] {
+    --sl-color-accent-low: #dcebff;
+    --sl-color-accent: #2b6fd1;
+    --sl-color-accent-high: #0e2c57;
+}
+
+:root {
+    --sl-font: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+}
+
+/* ── The guide's pieces ── */
+.sl-markdown-content .lead {
+    font-size: 1.1rem;
+    color: var(--sl-color-gray-2);
+}
+
+.sl-markdown-content .shot {
+    margin: 1.2rem 0;
+    border-radius: 12px;
+    overflow: hidden;
+    border: 1px solid var(--sl-color-gray-5);
+    background: var(--sl-color-gray-6);
+    box-shadow: 0 18px 50px -20px rgba(0, 0, 0, 0.6);
+}
+
+.sl-markdown-content .shot img {
+    display: block;
+    width: 100%;
+    height: auto;
+    margin: 0;
+    cursor: zoom-in;
+}
+
+.sl-markdown-content .shot-narrow { max-width: 620px; }
+
+.sl-markdown-content .shots {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+}
+
+.sl-markdown-content .shots > * { margin: 0; }
+
+.sl-markdown-content figcaption {
+    padding: 0.55rem 0.9rem;
+    font-size: 0.85rem;
+    color: var(--sl-color-gray-3);
+    border-top: 1px solid var(--sl-color-gray-5);
+}
+
+.sl-markdown-content .tip {
+    padding: 0.8rem 1rem;
+    border-left: 3px solid var(--sl-color-accent);
+    border-radius: 0 10px 10px 0;
+    background: var(--sl-color-accent-low);
+    color: var(--sl-color-gray-1);
+}
+
+.sl-markdown-content .tip.warn {
+    border-color: #e2a23b;
+    background: rgba(226, 162, 59, 0.12);
+}
+
+.sl-markdown-content .platforms {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+    gap: 1rem;
+}
+
+.sl-markdown-content .platform {
+    margin: 0;
+    padding: 1.1rem 1.2rem;
+    border: 1px solid var(--sl-color-gray-5);
+    border-radius: 12px;
+    background: var(--sl-color-gray-6);
+}
+
+.sl-markdown-content .platform img { height: 28px; margin: 0 0 0.6rem; }
+.sl-markdown-content .platform h3 { margin: 0 0 0.4rem; font-size: 1rem; }
+.sl-markdown-content .platform p { margin: 0; font-size: 0.9rem; }
+
+.sl-markdown-content kbd {
+    display: inline-block;
+    min-width: 1.6em;
+    padding: 0.05em 0.45em;
+    border: 1px solid var(--sl-color-gray-5);
+    border-bottom-width: 2px;
+    border-radius: 6px;
+    background: var(--sl-color-gray-6);
+    font: 600 0.8rem/1.5 var(--sl-font);
+    color: var(--sl-color-white);
+    text-align: center;
+}
+
+.sl-markdown-content table.keys { display: table; width: 100%; }
+.sl-markdown-content table.keys td:first-child { width: 42%; white-space: nowrap; }
+
+.sl-markdown-content .daw-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+    gap: 0.8rem;
+}
+
+.sl-markdown-content .daw {
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.45rem;
+    padding: 1rem 0.6rem;
+    border: 1px solid var(--sl-color-gray-5);
+    border-radius: 12px;
+    background: var(--sl-color-gray-6);
+    text-align: center;
+}
+
+.sl-markdown-content .daw img { height: 36px; margin: 0; }
+.sl-markdown-content .daw b { font-size: 0.9rem; margin: 0; }
+.sl-markdown-content .daw small { margin: 0; color: var(--sl-color-gray-3); font-size: 0.74rem; line-height: 1.4; }
+.sl-markdown-content .daw.deep { border-color: color-mix(in srgb, var(--sl-color-accent) 45%, transparent); }
+.sl-markdown-content .daw.deep small { color: var(--sl-color-accent); }
+
+.sl-markdown-content .matrix-wrap {
+    overflow-x: auto;
+    border: 1px solid var(--sl-color-gray-5);
+    border-radius: 12px;
+}
+
+.sl-markdown-content table.matrix {
+    display: table;
+    width: 100%;
+    margin: 0;
+    min-width: 640px;
+    font-size: 0.85rem;
+}
+
+.sl-markdown-content table.matrix th,
+.sl-markdown-content table.matrix td { text-align: center; border-color: var(--sl-color-gray-5); }
+.sl-markdown-content table.matrix tbody th { text-align: left; white-space: nowrap; }
+.sl-markdown-content table.matrix tbody th img { display: inline; height: 20px; vertical-align: middle; margin: 0 0.5rem 0 0; }
+.sl-markdown-content table.matrix td.yes { color: var(--sl-color-accent); font-weight: 700; }
+
+@media (max-width: 50rem) {
+    .sl-markdown-content .shots { grid-template-columns: 1fr; }
+}
+
+/* ── Lightbox (public/guide-lightbox.js) ── */
+.guide-lightbox {
+    position: fixed;
+    inset: 0;
+    z-index: 1000;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    padding: 3vh 3vw;
+    background: rgba(5, 6, 8, 0.88);
+    backdrop-filter: blur(4px);
+    cursor: zoom-out;
+}
+
+.guide-lightbox.open { display: flex; }
+
+.guide-lightbox img {
+    max-width: 100%;
+    max-height: 100%;
+    border-radius: 12px;
+}
+
+.guide-lightbox button {
+    position: absolute;
+    top: 1rem;
+    right: 1.2rem;
+    width: 2.6rem;
+    height: 2.6rem;
+    border: 0;
+    border-radius: 50%;
+    background: var(--sl-color-gray-6);
+    color: var(--sl-color-white);
+    font-size: 1.4rem;
+    cursor: pointer;
+}

@@ -1,0 +1,603 @@
+/* The homepage: a glowing hero, a strip of DAW logos, a bento grid of
+   features and the downloads side by side. Colours come from theme.css. */
+
+/* ── Hero ── */
+.hero2 {
+    position: relative;
+    overflow: hidden;
+    padding: 5.5rem 0 0;
+    text-align: center;
+}
+
+.hero2-glow {
+    position: absolute;
+    inset: -20% -10% auto;
+    height: 900px;
+    background:
+        radial-gradient(40% 45% at 30% 30%, var(--glow-1), transparent 70%),
+        radial-gradient(40% 45% at 70% 35%, var(--glow-2), transparent 70%);
+    filter: blur(20px);
+    pointer-events: none;
+}
+
+.hero2::after {
+    /* A faint grid behind the glow. */
+    content: '';
+    position: absolute;
+    inset: 0;
+    background-image:
+        linear-gradient(var(--border-color) 1px, transparent 1px),
+        linear-gradient(90deg, var(--border-color) 1px, transparent 1px);
+    background-size: 56px 56px;
+    mask-image: radial-gradient(60% 50% at 50% 20%, #000 0%, transparent 75%);
+    opacity: 0.45;
+    pointer-events: none;
+}
+
+.hero2-content {
+    position: relative;
+    z-index: 1;
+}
+
+.hero-news {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.6rem;
+    margin-bottom: 1.8rem;
+    padding: 0.35rem 0.9rem 0.35rem 0.4rem;
+    border: 1px solid var(--border-color);
+    border-radius: 999px;
+    background: color-mix(in srgb, var(--bg-card) 70%, transparent);
+    color: var(--text-secondary);
+    font-size: 0.88rem;
+    text-decoration: none;
+    transition: border-color 0.2s, color 0.2s;
+}
+
+.hero-news:hover {
+    border-color: var(--accent);
+    color: var(--text-primary);
+}
+
+.hero-news b {
+    padding: 0.1rem 0.55rem;
+    border-radius: 999px;
+    background: var(--accent-soft);
+    color: var(--accent);
+    font-weight: 600;
+}
+
+.hero2-title {
+    font-size: clamp(2.4rem, 6vw, 4.4rem);
+    font-weight: 700;
+    line-height: 1.08;
+    letter-spacing: -0.03em;
+    margin-bottom: 1.4rem;
+}
+
+.gradient-text {
+    background: linear-gradient(100deg, var(--accent) 10%, var(--accent-2) 90%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.hero2-subtitle {
+    max-width: 640px;
+    margin: 0 auto 2.2rem;
+    font-size: 1.15rem;
+    line-height: 1.75;
+    color: var(--text-secondary);
+}
+
+.hero2-shot {
+    position: relative;
+    max-width: 1040px;
+    margin: 0 auto;
+    padding: 1px;
+    border-radius: 16px 16px 0 0;
+    background: linear-gradient(180deg, color-mix(in srgb, var(--accent) 55%, transparent), transparent 60%);
+    box-shadow: 0 -10px 80px -20px var(--glow-1);
+}
+
+.hero2-shot img {
+    display: block;
+    width: 100%;
+    height: auto;
+    border-radius: 15px 15px 0 0;
+}
+
+/* ── DAW logo strip ── */
+.daw-strip {
+    padding: 2.6rem 0 2.8rem;
+    border-top: 1px solid var(--border-color);
+    border-bottom: 1px solid var(--border-color);
+    background: var(--bg-dark);
+}
+
+.daw-strip-caption {
+    text-align: center;
+    color: var(--text-muted);
+    font-size: 0.95rem;
+    margin-bottom: 1.6rem;
+    padding: 0 16px;
+}
+
+.daw-strip-caption b {
+    color: var(--text-primary);
+}
+
+.daw-strip-caption a {
+    color: var(--accent);
+    text-decoration: none;
+}
+
+.marquee {
+    display: flex;
+    overflow: hidden;
+    mask-image: linear-gradient(90deg, transparent, #000 10%, #000 90%, transparent);
+}
+
+.marquee-row {
+    display: flex;
+    flex-shrink: 0;
+    gap: 3rem;
+    padding-right: 3rem;
+    list-style: none;
+    animation: marquee 60s linear infinite;
+}
+
+.marquee:hover .marquee-row {
+    animation-play-state: paused;
+}
+
+.marquee-row img {
+    display: block;
+    height: 40px;
+    width: auto;
+    filter: grayscale(1) brightness(1.4);
+    opacity: 0.65;
+    transition: filter 0.2s, opacity 0.2s;
+}
+
+.marquee-row img:hover {
+    filter: none;
+    opacity: 1;
+}
+
+@keyframes marquee {
+    to { transform: translateX(-100%); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .marquee-row { animation: none; }
+    .marquee { flex-wrap: wrap; justify-content: center; mask-image: none; }
+    .marquee-row[aria-hidden='true'] { display: none; }
+    .marquee-row { flex-wrap: wrap; justify-content: center; gap: 1.5rem; padding: 0 16px; }
+}
+
+/* ── Bento grid ── */
+.bento-section {
+    padding: 6rem 0 4rem;
+}
+
+.bento {
+    display: grid;
+    grid-template-columns: repeat(6, minmax(0, 1fr));
+    gap: 1rem;
+    margin-top: 3rem;
+}
+
+.tile {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    border-radius: 18px;
+    border: 1px solid var(--border-color);
+    background:
+        radial-gradient(120% 80% at 0% 0%, var(--accent-soft), transparent 55%),
+        var(--bg-dark);
+    transition: border-color 0.25s, transform 0.25s;
+}
+
+.tile:hover {
+    border-color: color-mix(in srgb, var(--accent) 45%, var(--border-color));
+    transform: translateY(-2px);
+}
+
+.tile-wide { grid-column: span 4; }
+.tile-third { grid-column: span 2; }
+.tile-half { grid-column: span 3; }
+.tile-full { grid-column: span 6; flex-direction: row; align-items: stretch; }
+
+.tile-copy {
+    padding: 1.6rem 1.6rem 1.2rem;
+}
+
+.tile-full .tile-copy {
+    flex: 0 0 38%;
+    align-self: center;
+    padding: 2rem;
+}
+
+.tile h3 {
+    font-size: 1.2rem;
+    line-height: 1.3;
+    margin: 0.35rem 0 0.5rem;
+}
+
+.tile p {
+    color: var(--text-secondary);
+    font-size: 0.95rem;
+    line-height: 1.6;
+}
+
+.tile .feature-kicker {
+    color: var(--accent);
+    font-size: 0.72rem;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+}
+
+.tile-shot {
+    margin-top: auto;
+    margin-left: 1.6rem;
+    border-top-left-radius: 12px;
+    border: 1px solid var(--border-color);
+    border-right: 0;
+    border-bottom: 0;
+    overflow: hidden;
+    height: 240px;
+    box-shadow: -10px -10px 40px -20px var(--shadow);
+}
+
+.tile-wide .tile-shot { height: 300px; }
+
+.tile-full .tile-shot {
+    flex: 1;
+    height: auto;
+    min-height: 280px;
+    margin: 2rem 0 0 0;
+}
+
+.tile-shot img {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: left top;
+}
+
+/* The versions tile has no screenshot: three files fanning into one. */
+.tile-stack {
+    position: relative;
+    margin: auto 1.6rem 1.8rem;
+    height: 150px;
+}
+
+.tile-stack span {
+    position: absolute;
+    left: 50%;
+    width: min(260px, 80%);
+    padding: 0.8rem 1rem;
+    border-radius: 10px;
+    border: 1px solid var(--border-color);
+    background: var(--bg-card);
+    font: 500 0.9rem 'SFMono-Regular', Consolas, monospace;
+    color: var(--text-secondary);
+    box-shadow: 0 10px 30px -12px var(--shadow);
+    transition: transform 0.35s;
+}
+
+.tile-stack span:nth-child(1) { top: 0; transform: translateX(-62%) rotate(-5deg); }
+.tile-stack span:nth-child(2) { top: 40px; transform: translateX(-50%); }
+.tile-stack span:nth-child(3) {
+    top: 80px;
+    transform: translateX(-38%) rotate(4deg);
+    border-color: var(--accent);
+    color: var(--text-primary);
+}
+
+.tile-text:hover .tile-stack span { transform: translateX(-50%); }
+
+/* ── Supported DAWs: the existing section, on the new surfaces ── */
+.daws {
+    background: var(--bg-dark);
+    border-top: 1px solid var(--border-color);
+    border-bottom: 1px solid var(--border-color);
+}
+
+.daw-item {
+    background: var(--bg-card);
+    border-color: var(--border-color);
+}
+
+/* ── Downloads ── */
+.download2 {
+    padding: 6rem 0 5rem;
+}
+
+.download2-cards {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 1rem;
+    margin-top: 3rem;
+}
+
+.download2-card {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.6rem;
+    padding: 2.2rem 1.6rem 1.8rem;
+    border-radius: 18px;
+    border: 1px solid var(--border-color);
+    background: var(--bg-dark);
+    text-align: center;
+}
+
+.download2-card.is-yours {
+    border-color: var(--accent);
+    background:
+        radial-gradient(100% 70% at 50% 0%, var(--accent-soft), transparent 70%),
+        var(--bg-dark);
+    box-shadow: 0 20px 60px -30px var(--glow-1);
+}
+
+.download2-yours {
+    position: absolute;
+    top: -0.75rem;
+    display: none;
+    padding: 0.15rem 0.7rem;
+    border-radius: 999px;
+    background: var(--accent);
+    color: var(--accent-ink);
+    font-size: 0.75rem;
+    font-weight: 600;
+}
+
+.download2-card.is-yours .download2-yours { display: block; }
+
+.download2-card .os-logo { height: 44px; margin-bottom: 0.4rem; }
+.download2-card h3 { font-size: 1.3rem; }
+.download2-card > p { color: var(--text-secondary); font-size: 0.92rem; }
+.download2-card .btn { margin-top: 0.6rem; width: 100%; }
+
+.download2-alt {
+    color: var(--accent);
+    font-size: 0.9rem;
+    text-decoration: none;
+}
+
+.download2-alt:hover { text-decoration: underline; }
+
+.download2-card .download-note {
+    margin-top: 0.4rem;
+    font-size: 0.8rem;
+    color: var(--text-muted);
+}
+
+.android2 {
+    display: flex;
+    align-items: center;
+    gap: 1.4rem;
+    margin-top: 1rem;
+    padding: 1.4rem 1.6rem;
+    border-radius: 18px;
+    border: 1px solid var(--border-color);
+    background: var(--bg-dark);
+}
+
+.android2 .android-testing-icon { width: 48px; height: auto; margin: 0; }
+.android2 > div { flex: 1; }
+.android2 h3 { font-size: 1.1rem; margin-bottom: 0.2rem; }
+.android2 p { color: var(--text-secondary); font-size: 0.92rem; }
+
+.download2 .download-info {
+    margin-top: 1.6rem;
+    text-align: center;
+    color: var(--text-muted);
+}
+
+.download2 .download-info a { color: var(--accent); }
+
+/* ── Narrow screens ── */
+@media (max-width: 900px) {
+    .bento { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .tile-wide, .tile-half, .tile-full { grid-column: span 2; }
+    .tile-third { grid-column: span 1; }
+    .tile-full { flex-direction: column; }
+    .tile-full .tile-copy { flex: none; padding: 1.6rem 1.6rem 1.2rem; }
+    .tile-full .tile-shot { margin: 0 0 0 1.6rem; min-height: 0; height: 260px; }
+    .download2-cards { grid-template-columns: 1fr; }
+}
+
+@media (max-width: 600px) {
+    .hero2 { padding-top: 3.5rem; }
+    .tile-third { grid-column: span 2; }
+    .tile-shot, .tile-wide .tile-shot { height: 200px; }
+    .android2 { flex-direction: column; text-align: center; }
+}
+
+/* ── Coming in 3.0 ── */
+.coming {
+    position: relative;
+    padding: 6rem 0 3rem;
+    background:
+        radial-gradient(50% 40% at 50% 0%, var(--glow-2), transparent 70%),
+        var(--bg-darker);
+}
+
+.coming .section-head { text-align: center; }
+
+.coming .section-subtitle a { color: var(--accent); text-decoration: none; }
+
+.coming-badge {
+    display: inline-block;
+    margin-bottom: 1rem;
+    padding: 0.3rem 0.9rem;
+    border-radius: 999px;
+    border: 1px solid color-mix(in srgb, var(--accent) 50%, transparent);
+    background: var(--accent-soft);
+    color: var(--accent);
+    font-size: 0.8rem;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+}
+
+.spotlight {
+    display: grid;
+    grid-template-columns: minmax(0, 5fr) minmax(0, 6fr);
+    gap: 3rem;
+    align-items: center;
+    margin-top: 4.5rem;
+}
+
+.spotlight.reverse { grid-template-columns: minmax(0, 6fr) minmax(0, 5fr); }
+.spotlight.reverse .spotlight-copy { order: 2; }
+
+.spotlight h3 {
+    font-size: clamp(1.5rem, 3vw, 2rem);
+    line-height: 1.2;
+    letter-spacing: -0.02em;
+    margin: 0.5rem 0 0.9rem;
+}
+
+.spotlight-copy > p {
+    color: var(--text-secondary);
+    font-size: 1.05rem;
+    line-height: 1.7;
+}
+
+.spotlight .feature-kicker {
+    color: var(--accent);
+    font-size: 0.75rem;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+}
+
+.spotlight-list {
+    list-style: none;
+    margin-top: 1.3rem;
+    display: grid;
+    gap: 0.7rem;
+}
+
+.spotlight-list li {
+    position: relative;
+    padding-left: 1.6rem;
+    color: var(--text-secondary);
+    line-height: 1.6;
+}
+
+.spotlight-list li::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0.55em;
+    width: 0.6rem;
+    height: 0.6rem;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--accent), var(--accent-2));
+}
+
+.spotlight-list b { color: var(--text-primary); font-weight: 600; }
+
+.spotlight-daws {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 0.9rem;
+    margin-top: 1.6rem;
+}
+
+.spotlight-daws span {
+    color: var(--text-muted);
+    font-size: 0.85rem;
+}
+
+.spotlight-daws img { height: 28px; width: auto; }
+
+.spotlight-visual { position: relative; }
+
+.spotlight-visual .app-window {
+    border-radius: 14px;
+    box-shadow: 0 30px 80px -30px var(--glow-1), 0 20px 50px -25px var(--shadow);
+}
+
+.spotlight-visual-pack { padding: 0 0 3.5rem 0; }
+
+.pack-tree {
+    position: absolute;
+    left: -1.5rem;
+    bottom: 0;
+    display: grid;
+    gap: 0.15rem;
+    padding: 1rem 1.2rem;
+    border-radius: 12px;
+    border: 1px solid var(--border-color);
+    background: color-mix(in srgb, var(--bg-card) 94%, transparent);
+    backdrop-filter: blur(8px);
+    box-shadow: 0 20px 50px -20px var(--shadow);
+    font: 500 0.82rem/1.5 'SFMono-Regular', Consolas, monospace;
+    color: var(--text-secondary);
+}
+
+.pack-tree b { color: var(--text-primary); }
+.pack-tree span { padding-left: 1.1rem; }
+.pack-tree span::before { content: '▸ '; color: var(--accent); }
+.pack-tree i { padding-left: 1.1rem; font-style: normal; color: var(--text-muted); }
+
+.spotlight-visual-plugin {
+    display: flex;
+    justify-content: center;
+}
+
+.spotlight-visual-plugin img {
+    width: min(420px, 100%);
+    height: auto;
+    border-radius: 14px;
+    border: 1px solid var(--border-color);
+    box-shadow: 0 30px 80px -25px var(--glow-2), 0 20px 50px -25px var(--shadow);
+}
+
+.exp-grid {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 1rem;
+    margin-top: 4.5rem;
+}
+
+.exp-card {
+    padding: 1.4rem;
+    border-radius: 16px;
+    border: 1px solid var(--border-color);
+    background: var(--bg-dark);
+}
+
+.exp-card .feature-kicker {
+    color: var(--accent);
+    font-size: 0.7rem;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+}
+
+.exp-card h4 { font-size: 1.05rem; margin: 0.4rem 0 0.5rem; }
+.exp-card p { color: var(--text-secondary); font-size: 0.9rem; line-height: 1.6; }
+
+@media (max-width: 900px) {
+    .spotlight, .spotlight.reverse { grid-template-columns: 1fr; gap: 2rem; margin-top: 3.5rem; }
+    .spotlight.reverse .spotlight-copy { order: 0; }
+    .pack-tree { left: 0.8rem; }
+    .exp-grid { grid-template-columns: 1fr 1fr; }
+}
+
+@media (max-width: 600px) {
+    .exp-grid { grid-template-columns: 1fr; }
+}

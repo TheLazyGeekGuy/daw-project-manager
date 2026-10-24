@@ -101,7 +101,7 @@ The same goes for pictures: no developer tools (above), no debug output.
 
 - **README** (`main`): references `resources/screenshots/…` directly; the
   feature tiles are a 2-column table.
-- **Website** (`website/`, `src/pages/docs.astro` / `index.astro`): it serves
+- **Website** (`website/`: the guide in `src/content/docs/guide/`, the homepage in `src/pages/index.astro`): it serves
   `resources/screenshots/` itself, so a retaken picture needs nothing more. A
   new one is referenced as `resources/screenshots/<area>/<name>.png`; check it
   with `npm run dev` in `website/`. Merging to `main` publishes the site.
