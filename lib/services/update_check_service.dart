@@ -54,7 +54,7 @@ class UpdateCheckService {
       final json = jsonDecode(response.body) as Map<String, dynamic>;
       final tag = (json['tag_name'] as String?)?.replaceAll(RegExp(r'^v'), '') ?? '';
       if (tag.isEmpty) return null;
-      if (_isNewer(tag, currentVersion)) return tag;
+      if (isNewer(tag, currentVersion)) return tag;
       return null;
     } catch (e) {
       if (kDebugMode) print('[UpdateCheck] error: $e');
@@ -63,7 +63,7 @@ class UpdateCheckService {
   }
 
   /// Returns true if [remote] semver is strictly greater than [local].
-  static bool _isNewer(String remote, String local) {
+  static bool isNewer(String remote, String local) {
     final r = _parse(remote);
     final l = _parse(local);
     for (int i = 0; i < 3; i++) {

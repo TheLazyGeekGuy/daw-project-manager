@@ -7980,4 +7980,20 @@ class AppLocalizationsJa extends AppLocalizations {
   @override
   String get dpmPluginScanUnavailable =>
       'Flatpak 版はプラグインフォルダーを参照できません。DAW がプラグインを読み込むと、ここに表示されます。';
+
+  @override
+  String get legacyInstallTitle => '古いインストールを削除しますか？';
+
+  @override
+  String get legacyInstallMessage =>
+      '以前のインストーラーで入れた DAW Project Manager の古いコピーがまだインストールされています。このコピーがそれに代わり、今後は自動で更新されます。古いコピーを削除してもライブラリには影響しません。';
+
+  @override
+  String get legacyInstallRemove => '削除する';
+
+  @override
+  String get legacyInstallKeep => '残す';
+
+  @override
+  String get legacyInstallRemoveFailed => '古いコピーのアンインストーラーを起動できませんでした。';
 }

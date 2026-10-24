@@ -32,6 +32,8 @@ import 'services/scanner_service.dart';
 import 'services/deadline_notification_service.dart';
 import 'services/google_drive_sync_service.dart';
 import 'services/update_check_service.dart';
+import 'services/velopack/legacy_windows_install.dart';
+import 'services/velopack/velopack_install.dart';
 import 'services/crash_logger.dart';
 import 'services/dock_menu_service.dart';
 import 'services/quick_action.dart';
@@ -64,6 +66,7 @@ import 'ui/app_snack_bar.dart';
 import 'services/plugin_bridge/plugin_bridge_service.dart';
 import 'services/plugin_bridge/repository_plugin_library.dart';
 import 'services/plugin_bridge/riverpod_plugin_session_hooks.dart';
+import 'ui/dialogs/legacy_install_dialog.dart';
 import 'ui/dialogs/plugin_session_ended_dialog.dart';
 
 // Global navigator key for deep linking
@@ -233,6 +236,40 @@ Future<void> _runStartupUpdateCheck(ProviderContainer container) async {
         if (ctx != null) UpdateAvailableDialog.show(ctx, newer);
       });
     }
+  } catch (_) {}
+}
+
+/// `app_settings` key: the user chose to keep the old installer's copy.
+/// Device-local, like the rest of that box.
+const _kLegacyInstallKeptKey = 'legacyInstallKept';
+
+/// A copy installed by the self-updating (Velopack) installer looks for one
+/// the old Inno Setup installer left behind, and offers to remove it — the
+/// new installer puts its copy beside it rather than over it. "Keep it" is
+/// remembered; closing the dialog asks again next launch.
+Future<void> _offerLegacyInstallRemoval() async {
+  if (VelopackInstall.current == null) return;
+  try {
+    final box = await Hive.openBox<String>('app_settings');
+    if (box.get(_kLegacyInstallKeptKey) == 'true') return;
+    final legacy = LegacyWindowsInstall.find();
+    if (legacy == null) return;
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      final ctx = navigatorKey.currentContext;
+      if (ctx == null) return;
+      final messenger = ScaffoldMessenger.maybeOf(ctx);
+      final failedMessage = AppLocalizations.of(ctx)!.legacyInstallRemoveFailed;
+      final remove = await showLegacyInstallDialog(ctx);
+      if (remove == false) {
+        await box.put(_kLegacyInstallKeptKey, 'true');
+      } else if (remove == true) {
+        try {
+          await legacy.uninstall();
+        } catch (_) {
+          messenger?.showAppSnackBar(SnackBar(content: Text(failedMessage)));
+        }
+      }
+    });
   } catch (_) {}
 }
 
@@ -994,6 +1031,12 @@ Future<void> _main(List<String> args) async {
     if (!kIsWeb &&
         (Platform.isWindows || Platform.isMacOS || Platform.isLinux)) {
       _runStartupUpdateCheck(container);
+    }
+
+    // 4g-2. The Windows installer's copy offers to remove the one the
+    // previous installer left in Program Files.
+    if (!kIsWeb && Platform.isWindows) {
+      unawaited(_offerLegacyInstallRemoval());
     }
 
     // 4h. Reconcile the launch-at-startup preference with the OS. The user

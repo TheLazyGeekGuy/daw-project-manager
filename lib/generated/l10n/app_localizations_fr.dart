@@ -8303,4 +8303,21 @@ class AppLocalizationsFr extends AppLocalizations {
   @override
   String get dpmPluginScanUnavailable =>
       'Le Flatpak ne peut pas regarder dans vos dossiers de plugins. Le plugin apparaîtra ici dès qu\'une DAW l\'aura chargé.';
+
+  @override
+  String get legacyInstallTitle => 'Supprimer l’ancienne installation ?';
+
+  @override
+  String get legacyInstallMessage =>
+      'Une ancienne copie de DAW Project Manager, issue du précédent programme d’installation, est encore installée. Celle-ci la remplace et se met désormais à jour toute seule. Supprimer l’ancienne copie ne touche pas à votre bibliothèque.';
+
+  @override
+  String get legacyInstallRemove => 'La supprimer';
+
+  @override
+  String get legacyInstallKeep => 'La garder';
+
+  @override
+  String get legacyInstallRemoveFailed =>
+      'Impossible de lancer le programme de désinstallation de l’ancienne copie.';
 }

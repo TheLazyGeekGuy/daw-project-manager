@@ -671,6 +671,69 @@ jobs:
           }
         shell: pwsh
 
+      # 5.4a. The self-updating Setup, beside the Inno installer and from the
+      # same build. Velopack packs it into DAW_Project_Manager_Setup_<ref>.exe,
+      # which installs per user into %LocalAppData%\DAWProjectManager, plus the
+      # packages installed copies update themselves from
+      # (lib/services/velopack/). The Inno installer keeps its name, so the
+      # copies it installed keep finding it in their update dialog.
+      # --packId must stay kVelopackPackId (a test checks it): Velopack deletes
+      # %LocalAppData%\<packId> on uninstall, so it must never be the app's
+      # data folder, daw_project_manager.
+      - name: Install Velopack (vpk)
+        if: matrix.is_installer == true
+        run: dotnet tool install -g vpk --version 1.2.161
+
+      # Last release's packages, for the delta. The first release made with
+      # Velopack has none before it.
+      - name: Download the last Velopack release
+        if: matrix.is_installer == true && startsWith(github.ref, 'refs/tags/v')
+        shell: bash
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          vpk download github --repoUrl "https://github.com/${{ github.repository }}" \
+            --token "$GITHUB_TOKEN" -o Releases || echo "No earlier Velopack release."
+
+      - name: Pack the self-updating Setup (Velopack)
+        if: matrix.is_installer == true
+        shell: bash
+        run: |
+          VERSION_NAME="${{ steps.build_version.outputs.version_name }}"
+          vpk pack --packId DAWProjectManager --packVersion "${VERSION_NAME}" \
+            --packDir build/windows/x64/runner/Release \
+            --mainExe daw_project_manager.exe \
+            --packTitle "DAW Project Manager" --packAuthors "BandPass Records" \
+            --icon app_icon.ico --noPortable -o Releases
+          SETUP="DAW_Project_Manager_Setup_${{ steps.sanitize_ref.outputs.sanitized_ref }}.exe"
+          cp Releases/DAWProjectManager-win-Setup.exe "Output/${SETUP}"
+          (cd Output && sha256sum "${SETUP}" > "${SETUP}.sha256")
+          ls -la Releases Output
+
+      # The Setup, its checksum, the feed (releases.win.json) and this
+      # version's packages. The feed also lists earlier versions' packages,
+      # which stay on their own releases.
+      - name: Upload the self-updating Setup and its packages
+        if: matrix.is_installer == true && startsWith(github.ref, 'refs/tags/v')
+        shell: bash
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          VERSION_NAME="${{ steps.build_version.outputs.version_name }}"
+          SETUP="Output/DAW_Project_Manager_Setup_${{ github.ref_name }}.exe"
+          gh release upload "${{ github.ref_name }}" --clobber \
+            "${SETUP}" "${SETUP}.sha256" \
+            Releases/releases.win.json \
+            Releases/DAWProjectManager-${VERSION_NAME}-*.nupkg
+
+      - name: Upload the self-updating Setup (PR only)
+        if: matrix.is_installer == true && github.event_name == 'pull_request'
+        uses: actions/upload-artifact@v4
+        with:
+          name: DAW_Project_Manager_Setup_${{ steps.sanitize_ref.outputs.sanitized_ref }}
+          path: Output/DAW_Project_Manager_Setup_${{ steps.sanitize_ref.outputs.sanitized_ref }}.exe
+          retention-days: 7
+
       # 5.4b. Zip the unpacked Windows build as well, on pull requests only.
       # A test build handed to someone who already has the app installed must
       # not go through the installer: it shares its Inno AppId with the

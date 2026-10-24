@@ -4516,5 +4516,10 @@
   "dpmPluginSearching": "Buscando…",
   "dpmPluginCustomFoldersHint": "Instalou em outro lugar? Adicione essa pasta, e o app procura nela quando as pastas padrão não têm nenhuma cópia.",
   "dpmPluginCustomFolderTag": "sua pasta",
-  "dpmPluginScanUnavailable": "O Flatpak não consegue olhar suas pastas de plugins. O plugin aparece aqui assim que uma DAW o carregar."
+  "dpmPluginScanUnavailable": "O Flatpak não consegue olhar suas pastas de plugins. O plugin aparece aqui assim que uma DAW o carregar.",
+  "legacyInstallTitle": "Remover a instalação antiga?",
+  "legacyInstallMessage": "Uma cópia antiga do DAW Project Manager, do instalador anterior, ainda está instalada. Esta a substitui e, a partir de agora, se atualiza sozinha. Remover a cópia antiga não mexe na sua biblioteca.",
+  "legacyInstallRemove": "Remover",
+  "legacyInstallKeep": "Manter",
+  "legacyInstallRemoveFailed": "Não foi possível iniciar o desinstalador da cópia antiga."
 }
