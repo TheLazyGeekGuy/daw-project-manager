@@ -6,6 +6,7 @@ const repo = 'bandpassrecords/daw-project-manager';
 export const repoUrl = `https://github.com/${repo}`;
 export const releasesUrl = `${repoUrl}/releases`;
 export const storeUrl = 'https://apps.microsoft.com/detail/9n8hxzd3hwx7';
+export const pluginReleasesUrl = 'https://github.com/bandpassrecords/daw-project-manager-plugin/releases/latest';
 
 export interface Downloads {
   /** e.g. "v2.9.3"; null when GitHub couldn't be reached. */

@@ -74,8 +74,7 @@ body {
     background: var(--primary-color);
 }
 
-/* Preview only: switches the palette to compare the two. Remove before
-   this goes live, or keep it as a visitor's choice. */
+/* The visitor's choice of palette, kept in their browser. */
 .palette-switch {
     position: fixed;
     right: 16px;

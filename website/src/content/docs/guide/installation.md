@@ -9,7 +9,7 @@ description: "Free and open source. Pick your platform from the latest release."
 
 ### Windows
 
-<p>Microsoft Store, or the installer <b>.exe</b>. Not yet code-signed: <i>More info → Run anyway</i>. Installing a newer one upgrades in place.</p>
+<p>Microsoft Store, or the installer <b>.exe</b> (<i>DAW_Project_Manager_Setup</i>), which installs for your account and updates itself: <i>Update Now</i> when a new version is out. Not yet code-signed: <i>More info → Run anyway</i>. Installed with the earlier installer? It keeps updating as before — or install the new one, and the app offers to remove the old copy.</p>
 </div>
 <div class="platform">
 <img src="/resources/os/MacOS_logo_(2017).svg" alt="">

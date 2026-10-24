@@ -20,7 +20,7 @@ export default defineConfig({
       customCss: ['./src/styles/starlight.css'],
       head: [
         {
-          // The palette picked on the homepage (preview), before anything paints.
+          // The palette picked on the homepage, before anything paints.
           tag: 'script',
           content:
             "try{const a=new URLSearchParams(location.search).get('palette');if(a)localStorage.setItem('dpm-palette',a);const p=a||localStorage.getItem('dpm-palette');if(p)document.documentElement.dataset.palette=p}catch{}",

@@ -3,7 +3,7 @@ import Base from '../layouts/Base.astro';
 import DawGrid from '../components/DawGrid.astro';
 import ReadsTable from '../components/ReadsTable.astro';
 import { daws, logoUrl } from '../data/daws';
-import { latestDownloads, repoUrl, storeUrl } from '../lib/release';
+import { latestDownloads, pluginReleasesUrl, repoUrl, storeUrl } from '../lib/release';
 import { changelog } from '../lib/changelog';
 import '../styles/home.css';
 
@@ -131,6 +131,16 @@ const experimentalTools = [
     title: 'Moved a project folder?',
     text: 'Point the app at its new place: every project, excluded folder and recently deleted song in it follows.',
   },
+  {
+    kicker: 'New · Windows',
+    title: 'An installer that updates itself',
+    text: 'The new Windows installer keeps the app up to date from inside it: Update Now, and it restarts on the new version.',
+  },
+  {
+    kicker: 'New · MIDI',
+    title: 'Controllers and pitch bend',
+    text: 'Ableton Live and Reaper clips bring their controllers, pitch bend and aftertouch along with the notes.',
+  },
 ];
 ---
 <Base
@@ -141,7 +151,7 @@ const experimentalTools = [
     <section class="hero2">
         <div class="hero2-glow" aria-hidden="true"></div>
         <div class="container hero2-content">
-            <a href="#coming" class="hero-news"><b>Coming in 3.0</b> Sample packs, a DAW plug-in, MIDI keyboards →</a>
+            <a href="#new" class="hero-news"><b>New in 3.0</b> Sample packs, a DAW plug-in, MIDI keyboards →</a>
             <h1 class="hero2-title">Every project, every DAW,<br><span class="gradient-text">one place.</span></h1>
             <p class="hero2-subtitle">The songs spread across your project folders, in one library: what's inside each one, where it stands, and what's left to do — from first idea to release.</p>
             <div class="hero-buttons">
@@ -168,12 +178,12 @@ const experimentalTools = [
         </div>
     </section>
 
-    <section id="coming" class="coming">
+    <section id="new" class="coming">
         <div class="container">
             <div class="section-head">
-                <span class="coming-badge">Coming in 3.0</span>
-                <h2 class="section-title">What's next</h2>
-                <p class="section-subtitle">The next version is on its way. Here is what it brings{latest && <> — or see <a href="/changelog/">what's new in {latest.version}</a></>}.</p>
+                <span class="coming-badge">New in 3.0</span>
+                <h2 class="section-title">What's new</h2>
+                <p class="section-subtitle">The biggest release yet. Here is what it brings — and <a href="/changelog/">every change, version by version</a>.</p>
             </div>
 
             <article class="spotlight">
@@ -214,6 +224,7 @@ const experimentalTools = [
                         <li><b>Work sessions follow the DAW:</b> the app knows when the project opens and closes.</li>
                         <li><b>Knows which project is open</b>, from the DAW's window or the app's launch.</li>
                     </ul>
+                    <a href={pluginReleasesUrl} class="btn btn-secondary spotlight-cta" target="_blank" rel="noopener noreferrer">Get the plug-in</a>
                 </div>
                 <div class="spotlight-visual spotlight-visual-plugin">
                     <img src="/images/daw-plugin.png" alt="The plug-in in a DAW: the linked project, pre-listen capture, and the project's to-dos" class="app-screenshot" loading="lazy" width="482" height="652">
@@ -315,7 +326,7 @@ const experimentalTools = [
                     <h3>Windows</h3>
                     <p>Windows 10 or later (64-bit)</p>
                     <a href={storeUrl} class="btn btn-primary" target="_blank" rel="noopener noreferrer">Microsoft Store</a>
-                    <a href={downloads.windowsInstaller} class="download2-alt">or the installer (.exe)</a>
+                    <a href={downloads.windowsInstaller} class="download2-alt">or the installer (.exe) — updates itself</a>
                     <p class="download-note">Not code-signed yet: Windows may show <strong>Windows protected your PC</strong> — <strong>More info → Run anyway</strong>.</p>
                 </div>
 

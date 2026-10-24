@@ -601,3 +601,8 @@
 @media (max-width: 600px) {
     .exp-grid { grid-template-columns: 1fr; }
 }
+
+.spotlight-cta { margin-top: 1.6rem; }
+.exp-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+@media (max-width: 900px) { .exp-grid { grid-template-columns: 1fr 1fr; } }
+@media (max-width: 600px) { .exp-grid { grid-template-columns: 1fr; } }
