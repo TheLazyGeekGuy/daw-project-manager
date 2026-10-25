@@ -34,7 +34,7 @@
   <screenshots>
     <screenshot type="default">
       <caption>Dashboard overview with projects across multiple DAWs</caption>
-      <image>https://raw.githubusercontent.com/bandpassrecords/daw-project-manager/v2.9.3/resources/screenshots/dashboard/dashboard-overview.png</image>
+      <image>https://raw.githubusercontent.com/bandpassrecords/daw-project-manager/v3.0.0/resources/screenshots/dashboard/dashboard-overview.png</image>
     </screenshot>
   </screenshots>
 
@@ -58,6 +58,25 @@
       this one for each shipped version instead of overwriting it, so the
       changelog accumulates.
     -->
+    <release version="3.0.0" date="2026-10-25">
+      <description>
+        <ul>
+          <li>A DAW plugin: put DAW Project Manager on your DAW's master bus to see and tick off the project's to-dos, edit its notes, and keep each playback pass as the project's latest capture, ready to play here.</li>
+          <li>Work sessions can follow your DAW: one ends when the DAW closes the project, and one can start when it opens (Settings &gt; DAW plugin).</li>
+          <li>Play a MIDI keyboard into the piano roll, and record takes over the loop region with a metronome and latency calibration.</li>
+          <li>Google Drive sync now merges every device's changes instead of overwriting them, shows what it's doing, carries deletions, and can recover an earlier backup.</li>
+          <li>Deleted projects wait 30 days in Recently deleted, and a song can move to another profile with all its versions, notes and to-dos.</li>
+          <li>Moved a project folder yourself? Relocate it in Settings &gt; Project Folders, and its projects, exclusions and recently deleted songs follow.</li>
+          <li>Experimental: build a sample pack from the samples your projects use, sorted by kind, with a report of how many songs use each one.</li>
+          <li>Experimental: export a melodic MIDI catalog, your Cubase projects' track layout, and a page of every insert chain you use in Cubase.</li>
+          <li>On Windows, a new installer keeps the app up to date by itself; copies from the previous installer keep updating as before.</li>
+          <li>Launch at login now works on the Microsoft Store build, macOS, Linux and Flatpak, and repairs itself after an update.</li>
+          <li>Searching notes and the changelog matches words where they start, without fuzzy surprises.</li>
+          <li>The macOS app now runs on Apple silicon only; Intel Macs can keep using version 2.9.</li>
+        </ul>
+      </description>
+      <url>https://github.com/bandpassrecords/daw-project-manager/releases/tag/v3.0.0</url>
+    </release>
     <release version="2.9.3" date="2026-10-08">
       <description>
         <ul>
