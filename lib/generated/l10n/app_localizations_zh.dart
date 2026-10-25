@@ -2978,6 +2978,9 @@ class AppLocalizationsZh extends AppLocalizations {
   String get latestCapturePlay => '播放最新捕获';
 
   @override
+  String get latestCaptureMenuHint => '右键播放最新捕获';
+
+  @override
   String get latestCaptureNowPreview => '最新捕获现在是预览歌曲';
 
   @override
@@ -7836,7 +7839,7 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get dpmPluginDescription =>
-      '适用于 DAW 的 VST3/AU 插件。把它放在主总线上：它会显示项目的待办事项，把每次播放录制为项目的预览歌曲，并可在 DAW 关闭项目时结束你的工作会话。';
+      '适用于 DAW 的 VST3/AU 插件。把它放在主总线上：它会显示项目的待办事项，把每次播放录制为项目的最新捕获，并可在 DAW 关闭项目时结束你的工作会话。';
 
   @override
   String dpmPluginLastSeen(String daw, String version, String date) {
@@ -7887,4 +7890,20 @@ class AppLocalizationsZh extends AppLocalizations {
   @override
   String get dpmPluginScanUnavailable =>
       'Flatpak 版无法查看你的插件文件夹。DAW 加载插件后，它会显示在这里。';
+
+  @override
+  String get legacyInstallTitle => '移除旧的安装？';
+
+  @override
+  String get legacyInstallMessage =>
+      '由旧安装程序安装的 DAW Project Manager 旧副本仍在电脑上。当前副本将取代它，并从此自动更新。移除旧副本不会影响你的资料库。';
+
+  @override
+  String get legacyInstallRemove => '移除';
+
+  @override
+  String get legacyInstallKeep => '保留';
+
+  @override
+  String get legacyInstallRemoveFailed => '无法启动旧副本的卸载程序。';
 }

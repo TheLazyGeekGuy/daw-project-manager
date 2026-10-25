@@ -2112,6 +2112,7 @@
   "latestCaptureUseAsPreview": "プレビュー曲として使う",
   "latestCaptureNotOnThisDevice": "まだこのデバイスにありません",
   "latestCapturePlay": "最新のキャプチャを再生",
+  "latestCaptureMenuHint": "右クリックで最新のキャプチャを再生",
   "latestCaptureNowPreview": "最新のキャプチャをプレビュー曲にしました",
   "versionLabel": "バージョン {version}",
   "@versionLabel": {
@@ -4478,7 +4479,7 @@
   "dpmPluginSessionEndedSummary": "{start}–{end} · {duration}",
   "dpmPluginTabLabel": "DAW プラグイン",
   "dpmPluginTitle": "DAW Project Manager プラグイン",
-  "dpmPluginDescription": "DAW 用の VST3/AU プラグインです。マスターバスに挿すと、プロジェクトのタスクを表示し、再生のたびにプロジェクトのプレビュー曲として録音し、DAW がプロジェクトを閉じたときに作業セッションを終了できます。",
+  "dpmPluginDescription": "DAW 用の VST3/AU プラグインです。マスターバスに挿すと、プロジェクトのタスクを表示し、再生のたびにプロジェクトの最新のキャプチャとして録音し、DAW がプロジェクトを閉じたときに作業セッションを終了できます。",
   "dpmPluginLastSeen": "最後に確認: {daw}（バージョン {version}）、{date}。",
   "dpmPluginNotSeen": "このコンピューターではまだ確認されていません。インストールして、DAW のマスターバスに挿してください。",
   "dpmPluginUpdateAvailable": "バージョン {version} が利用できます。",
@@ -4492,5 +4493,10 @@
   "dpmPluginSearching": "検索中…",
   "dpmPluginCustomFoldersHint": "別の場所にインストールしましたか？ そのフォルダーを追加すると、標準フォルダーにコピーがない場合にアプリがそこを探します。",
   "dpmPluginCustomFolderTag": "追加したフォルダー",
-  "dpmPluginScanUnavailable": "Flatpak 版はプラグインフォルダーを参照できません。DAW がプラグインを読み込むと、ここに表示されます。"
+  "dpmPluginScanUnavailable": "Flatpak 版はプラグインフォルダーを参照できません。DAW がプラグインを読み込むと、ここに表示されます。",
+  "legacyInstallTitle": "古いインストールを削除しますか？",
+  "legacyInstallMessage": "以前のインストーラーで入れた DAW Project Manager の古いコピーがまだインストールされています。このコピーがそれに代わり、今後は自動で更新されます。古いコピーを削除してもライブラリには影響しません。",
+  "legacyInstallRemove": "削除する",
+  "legacyInstallKeep": "残す",
+  "legacyInstallRemoveFailed": "古いコピーのアンインストーラーを起動できませんでした。"
 }

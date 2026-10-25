@@ -2112,6 +2112,7 @@
   "latestCaptureUseAsPreview": "Usar como canción de vista previa",
   "latestCaptureNotOnThisDevice": "Aún no está en este dispositivo",
   "latestCapturePlay": "Reproducir la última captura",
+  "latestCaptureMenuHint": "Clic derecho para reproducir la última captura",
   "latestCaptureNowPreview": "La última captura es ahora la canción de vista previa",
   "versionLabel": "Versión {version}",
   "@versionLabel": {
@@ -4478,7 +4479,7 @@
   "dpmPluginSessionEndedSummary": "{start}–{end} · {duration}",
   "dpmPluginTabLabel": "Plugin para la DAW",
   "dpmPluginTitle": "Plugin DAW Project Manager",
-  "dpmPluginDescription": "Un plugin VST3/AU para tu DAW. Ponlo en el bus máster: muestra las tareas del proyecto, graba cada pasada de reproducción como la canción de vista previa del proyecto y puede finalizar tu sesión de trabajo cuando la DAW cierre el proyecto.",
+  "dpmPluginDescription": "Un plugin VST3/AU para tu DAW. Ponlo en el bus máster: muestra las tareas del proyecto, graba cada pasada de reproducción como la última captura del proyecto y puede finalizar tu sesión de trabajo cuando la DAW cierre el proyecto.",
   "dpmPluginLastSeen": "Visto por última vez en {daw} (versión {version}) el {date}.",
   "dpmPluginNotSeen": "Aún no se ha visto en este equipo. Instálalo y ponlo en el bus máster de tu DAW.",
   "dpmPluginUpdateAvailable": "La versión {version} está disponible.",
@@ -4492,5 +4493,10 @@
   "dpmPluginSearching": "Buscando…",
   "dpmPluginCustomFoldersHint": "¿Lo instalaste en otro sitio? Añade esa carpeta y la aplicación buscará allí cuando las carpetas estándar no tengan ninguna copia.",
   "dpmPluginCustomFolderTag": "tu carpeta",
-  "dpmPluginScanUnavailable": "El Flatpak no puede mirar en tus carpetas de plugins. El plugin aparecerá aquí cuando una DAW lo haya cargado."
+  "dpmPluginScanUnavailable": "El Flatpak no puede mirar en tus carpetas de plugins. El plugin aparecerá aquí cuando una DAW lo haya cargado.",
+  "legacyInstallTitle": "¿Quitar la instalación antigua?",
+  "legacyInstallMessage": "Una copia antigua de DAW Project Manager, del instalador anterior, sigue instalada. Esta la reemplaza y a partir de ahora se actualiza sola. Quitar la copia antigua no toca tu biblioteca.",
+  "legacyInstallRemove": "Quitarla",
+  "legacyInstallKeep": "Conservarla",
+  "legacyInstallRemoveFailed": "No se pudo iniciar el desinstalador de la copia antigua."
 }

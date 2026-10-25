@@ -5,37 +5,45 @@ import 'package:flutter/services.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import '../../generated/l10n/app_localizations.dart';
-import '../../services/appimage_update_service.dart';
+import '../../services/self_updater.dart';
+import '../../services/update_download.dart';
 import '../app_snack_bar.dart';
 
 enum _Stage { fetching, downloading, verifying, cancelling, ready, error }
 
-/// Drives the actual AppImage self-update (fetch release assets, download,
-/// verify, replace, offer a restart) after the user picks "Update Now" in
-/// [UpdateAvailableDialog]. Kept as a separate dialog/widget so the parent
-/// dialog can stay a simple StatelessWidget.
-class AppImageSelfUpdateDialog extends StatefulWidget {
+/// Drives a self-update — the AppImage's or the Windows installer's copy
+/// ([SelfUpdater]): download, verify, offer a restart — after the user picks
+/// "Update Now" in [UpdateAvailableDialog]. Kept as a separate dialog/widget
+/// so the parent dialog can stay a simple StatelessWidget.
+class SelfUpdateDialog extends StatefulWidget {
   final String version;
 
-  const AppImageSelfUpdateDialog({super.key, required this.version});
+  /// Makes a fresh updater for each attempt (Retry makes another).
+  final SelfUpdater Function() createUpdater;
 
-  static void show(BuildContext context, String version) {
+  const SelfUpdateDialog({super.key, required this.version, required this.createUpdater});
+
+  static void show(BuildContext context, String version, SelfUpdater Function() createUpdater) {
     showDialog(
       context: context,
       barrierDismissible: false,
-      builder: (_) => AppImageSelfUpdateDialog(version: version),
+      builder: (_) => SelfUpdateDialog(version: version, createUpdater: createUpdater),
     );
   }
 
   @override
-  State<AppImageSelfUpdateDialog> createState() => _AppImageSelfUpdateDialogState();
+  State<SelfUpdateDialog> createState() => _SelfUpdateDialogState();
 }
 
-class _AppImageSelfUpdateDialogState extends State<AppImageSelfUpdateDialog> {
+class _SelfUpdateDialogState extends State<SelfUpdateDialog> {
   _Stage _stage = _Stage.fetching;
   double? _progress;
   String? _errorDetails;
   UpdateCancelToken? _cancelToken;
+
+  /// The updater of the attempt that got ready; it restarts into the update.
+  SelfUpdater? _ready;
+  String _reportName = '';
 
   @override
   void initState() {
@@ -51,17 +59,12 @@ class _AppImageSelfUpdateDialogState extends State<AppImageSelfUpdateDialog> {
     });
     final cancelToken = UpdateCancelToken();
     _cancelToken = cancelToken;
-    final service = AppImageUpdateService();
+    final updater = widget.createUpdater();
+    _reportName = updater.reportName;
+    var keep = false;
     try {
-      final assets = await service.fetchReleaseAssets(widget.version);
-      if (cancelToken.isCancelled) throw const UpdateCancelledException();
-      if (assets == null) {
-        throw StateError('No AppImage asset found for v${widget.version}.');
-      }
-      if (!mounted) return;
-      setState(() => _stage = _Stage.downloading);
-      await service.applyUpdate(
-        assets,
+      await updater.prepare(
+        widget.version,
         cancelToken: cancelToken,
         onProgress: (progress) {
           if (!mounted) return;
@@ -72,9 +75,12 @@ class _AppImageSelfUpdateDialogState extends State<AppImageSelfUpdateDialog> {
         },
       );
       if (!mounted) return;
+      keep = true;
+      _ready?.close();
+      _ready = updater;
       setState(() => _stage = _Stage.ready);
     } on UpdateCancelledException {
-      // Cleanup already happened inside applyUpdate before this was thrown —
+      // Cleanup already happened inside prepare before this was thrown —
       // just close the dialog, this isn't a failure the user needs to see.
       if (mounted) Navigator.of(context).pop();
     } catch (e, stackTrace) {
@@ -84,8 +90,14 @@ class _AppImageSelfUpdateDialogState extends State<AppImageSelfUpdateDialog> {
         _errorDetails = '$e\n\n$stackTrace';
       });
     } finally {
-      service.close();
+      if (!keep) updater.close();
     }
+  }
+
+  @override
+  void dispose() {
+    _ready?.close();
+    super.dispose();
   }
 
   void _cancel() {
@@ -95,8 +107,7 @@ class _AppImageSelfUpdateDialogState extends State<AppImageSelfUpdateDialog> {
   }
 
   Future<void> _restartNow() async {
-    final service = AppImageUpdateService();
-    await service.relaunch();
+    await _ready?.restart();
     exit(0);
   }
 
@@ -119,7 +130,7 @@ class _AppImageSelfUpdateDialogState extends State<AppImageSelfUpdateDialog> {
       queryParameters: {
         'template': 'issue.yml',
         'type': 'Bug report',
-        'actual': 'The in-app AppImage update failed with:\n\n${_errorDetails ?? ''}',
+        'actual': 'The in-app $_reportName update failed with:\n\n${_errorDetails ?? ''}',
       },
     );
     await launchUrl(uri, mode: LaunchMode.externalApplication);

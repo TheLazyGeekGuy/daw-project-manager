@@ -9,28 +9,35 @@ void main() {
   group('updateRouteFor', () {
     test('the MSIX package updates from the Microsoft Store', () {
       expect(
-        updateRouteFor(isWindows: true, isMsix: true, isAppImage: false),
+        updateRouteFor(isWindows: true, isMsix: true, isVelopack: false, isAppImage: false),
         UpdateRoute.microsoftStore,
       );
     });
 
-    test("the .exe installer's copy updates with the next installer", () {
+    test("the .exe installer's copy updates itself", () {
       expect(
-        updateRouteFor(isWindows: true, isMsix: false, isAppImage: false),
+        updateRouteFor(isWindows: true, isMsix: false, isVelopack: true, isAppImage: false),
+        UpdateRoute.windowsSelfUpdate,
+      );
+    });
+
+    test("the old installer's copy is offered the new installer", () {
+      expect(
+        updateRouteFor(isWindows: true, isMsix: false, isVelopack: false, isAppImage: false),
         UpdateRoute.windowsInstaller,
       );
     });
 
     test('the AppImage updates itself', () {
       expect(
-        updateRouteFor(isWindows: false, isMsix: false, isAppImage: true),
+        updateRouteFor(isWindows: false, isMsix: false, isVelopack: false, isAppImage: true),
         UpdateRoute.appImage,
       );
     });
 
     test('everything else downloads from GitHub', () {
       expect(
-        updateRouteFor(isWindows: false, isMsix: false, isAppImage: false),
+        updateRouteFor(isWindows: false, isMsix: false, isVelopack: false, isAppImage: false),
         UpdateRoute.gitHub,
       );
     });
@@ -57,6 +64,17 @@ void main() {
     expect(find.text('Download installer'), findsOneWidget);
     expect(find.text('Get on Microsoft Store'), findsNothing);
     expect(find.textContaining('Microsoft Store'), findsNothing);
+  });
+
+  testWidgets("the installer's copy offers to update in place, not a download",
+      (tester) async {
+    await pump(tester, UpdateRoute.windowsSelfUpdate);
+
+    expect(find.text('Windows installer'), findsOneWidget);
+    expect(find.text('Update in place and restart.'), findsOneWidget);
+    expect(find.text('Update Now'), findsOneWidget);
+    expect(find.text('Download installer'), findsNothing);
+    expect(find.text('Get on Microsoft Store'), findsNothing);
   });
 
   testWidgets('a Store copy is sent to the Store', (tester) async {

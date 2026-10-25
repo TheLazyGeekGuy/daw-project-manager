@@ -2112,6 +2112,7 @@
   "latestCaptureUseAsPreview": "用作预览歌曲",
   "latestCaptureNotOnThisDevice": "尚未在此设备上",
   "latestCapturePlay": "播放最新捕获",
+  "latestCaptureMenuHint": "右键播放最新捕获",
   "latestCaptureNowPreview": "最新捕获现在是预览歌曲",
   "versionLabel": "版本 {version}",
   "@versionLabel": {
@@ -4478,7 +4479,7 @@
   "dpmPluginSessionEndedSummary": "{start}–{end} · {duration}",
   "dpmPluginTabLabel": "DAW 插件",
   "dpmPluginTitle": "DAW Project Manager 插件",
-  "dpmPluginDescription": "适用于 DAW 的 VST3/AU 插件。把它放在主总线上：它会显示项目的待办事项，把每次播放录制为项目的预览歌曲，并可在 DAW 关闭项目时结束你的工作会话。",
+  "dpmPluginDescription": "适用于 DAW 的 VST3/AU 插件。把它放在主总线上：它会显示项目的待办事项，把每次播放录制为项目的最新捕获，并可在 DAW 关闭项目时结束你的工作会话。",
   "dpmPluginLastSeen": "上次见到：{daw}（版本 {version}），{date}。",
   "dpmPluginNotSeen": "这台电脑上还没有见到它。请安装后放在 DAW 的主总线上。",
   "dpmPluginUpdateAvailable": "版本 {version} 可用。",
@@ -4492,5 +4493,10 @@
   "dpmPluginSearching": "正在搜索…",
   "dpmPluginCustomFoldersHint": "安装在其他位置？添加该文件夹后，当标准文件夹中没有副本时，应用会在那里查找。",
   "dpmPluginCustomFolderTag": "你的文件夹",
-  "dpmPluginScanUnavailable": "Flatpak 版无法查看你的插件文件夹。DAW 加载插件后，它会显示在这里。"
+  "dpmPluginScanUnavailable": "Flatpak 版无法查看你的插件文件夹。DAW 加载插件后，它会显示在这里。",
+  "legacyInstallTitle": "移除旧的安装？",
+  "legacyInstallMessage": "由旧安装程序安装的 DAW Project Manager 旧副本仍在电脑上。当前副本将取代它，并从此自动更新。移除旧副本不会影响你的资料库。",
+  "legacyInstallRemove": "移除",
+  "legacyInstallKeep": "保留",
+  "legacyInstallRemoveFailed": "无法启动旧副本的卸载程序。"
 }

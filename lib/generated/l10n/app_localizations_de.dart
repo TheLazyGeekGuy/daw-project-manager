@@ -3095,6 +3095,10 @@ class AppLocalizationsDe extends AppLocalizations {
   String get latestCapturePlay => 'Letzte Aufnahme abspielen';
 
   @override
+  String get latestCaptureMenuHint =>
+      'Rechtsklick spielt die letzte Aufnahme ab';
+
+  @override
   String get latestCaptureNowPreview =>
       'Die letzte Aufnahme ist jetzt der Vorschau-Song';
 
@@ -8216,7 +8220,7 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get dpmPluginDescription =>
-      'Ein VST3/AU-Plugin für Ihre DAW. Legen Sie es auf den Master-Bus: Es zeigt die Aufgaben des Projekts, nimmt jeden Wiedergabedurchlauf als Vorschau-Song des Projekts auf und kann Ihre Arbeitssitzung beenden, wenn die DAW das Projekt schließt.';
+      'Ein VST3/AU-Plugin für Ihre DAW. Legen Sie es auf den Master-Bus: Es zeigt die Aufgaben des Projekts, nimmt jeden Wiedergabedurchlauf als letzte Aufnahme des Projekts auf und kann Ihre Arbeitssitzung beenden, wenn die DAW das Projekt schließt.';
 
   @override
   String dpmPluginLastSeen(String daw, String version, String date) {
@@ -8270,4 +8274,21 @@ class AppLocalizationsDe extends AppLocalizations {
   @override
   String get dpmPluginScanUnavailable =>
       'Das Flatpak kann nicht in Ihre Plugin-Ordner schauen. Das Plugin erscheint hier, sobald eine DAW es geladen hat.';
+
+  @override
+  String get legacyInstallTitle => 'Alte Installation entfernen?';
+
+  @override
+  String get legacyInstallMessage =>
+      'Eine ältere Kopie von DAW Project Manager aus dem bisherigen Installationsprogramm ist noch installiert. Diese ersetzt sie und aktualisiert sich ab jetzt selbst. Das Entfernen der alten Kopie lässt deine Bibliothek unberührt.';
+
+  @override
+  String get legacyInstallRemove => 'Entfernen';
+
+  @override
+  String get legacyInstallKeep => 'Behalten';
+
+  @override
+  String get legacyInstallRemoveFailed =>
+      'Das Deinstallationsprogramm der alten Kopie konnte nicht gestartet werden.';
 }
