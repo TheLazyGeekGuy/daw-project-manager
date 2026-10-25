@@ -2112,6 +2112,7 @@
   "latestCaptureUseAsPreview": "Сделать превью трека",
   "latestCaptureNotOnThisDevice": "Пока нет на этом устройстве",
   "latestCapturePlay": "Воспроизвести последний захват",
+  "latestCaptureMenuHint": "Правый щелчок — воспроизвести последний захват",
   "latestCaptureNowPreview": "Последний захват теперь превью трека",
   "versionLabel": "Версия {version}",
   "@versionLabel": {
@@ -4478,7 +4479,7 @@
   "dpmPluginSessionEndedSummary": "{start}–{end} · {duration}",
   "dpmPluginTabLabel": "Плагин для DAW",
   "dpmPluginTitle": "Плагин DAW Project Manager",
-  "dpmPluginDescription": "Плагин VST3/AU для вашей DAW. Поставьте его на мастер-шину: он показывает задачи проекта, записывает каждое воспроизведение как песню для предпрослушивания проекта и может завершать рабочую сессию, когда DAW закрывает проект.",
+  "dpmPluginDescription": "Плагин VST3/AU для вашей DAW. Поставьте его на мастер-шину: он показывает задачи проекта, записывает каждое воспроизведение как последний захват проекта и может завершать рабочую сессию, когда DAW закрывает проект.",
   "dpmPluginLastSeen": "Последний раз замечен в {daw} (версия {version}) {date}.",
   "dpmPluginNotSeen": "На этом компьютере пока не замечен. Установите его и поставьте на мастер-шину DAW.",
   "dpmPluginUpdateAvailable": "Доступна версия {version}.",

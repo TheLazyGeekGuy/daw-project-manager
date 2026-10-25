@@ -25,7 +25,6 @@ void main() {
     endSessionTooltip: 'End session',
     openFolderTooltip: 'Open folder',
     playPreviewTooltip: 'Play preview',
-    playCaptureTooltip: 'Play latest capture',
     archivedWithLocalCopyTooltip: 'Archived — the originals are still here',
     archivedAwayTooltip: 'Archived — the files are in the archive only',
   );
@@ -66,7 +65,7 @@ void main() {
     void Function(MusicProject)? onPrimaryAction,
     void Function(MusicProject)? onOpenFolder,
     void Function(MusicProject)? onPlayPreview,
-    void Function(MusicProject)? onPlayCapture,
+    bool showCaptureMarkers = false,
     void Function(MusicProject)? onOpen,
     void Function(String)? onToggleSelection,
     void Function(String)? onRowClick,
@@ -93,7 +92,7 @@ void main() {
         onPrimaryAction: onPrimaryAction ?? (_) {},
         onOpenFolder: onOpenFolder ?? (_) {},
         onPlayPreview: onPlayPreview ?? (_) {},
-        onPlayCapture: onPlayCapture,
+        showCaptureMarkers: showCaptureMarkers,
       ),
     ),
   );
@@ -183,15 +182,17 @@ void main() {
 
   group('deadline chip', () {
     testWidgets('counts down the days left', (tester) async {
-      // Three calendar days on, not 72 hours: across the night the clocks go
-      // back, 72 hours after midnight lands on the second day.
-      final now = DateTime.now();
       await tester.pumpWidget(
         wrap([
           project(
             'a',
             'Alpha',
-            deadline: DateTime(now.year, now.month, now.day + 3, now.hour, now.minute),
+            // Three calendar days, not 72 hours: across a clock change, 72
+            // hours from just after midnight is the evening before.
+            deadline: () {
+              final now = DateTime.now();
+              return DateTime(now.year, now.month, now.day + 3, 12);
+            }(),
           ),
         ]),
       );
@@ -401,27 +402,25 @@ void main() {
         durationSeconds: 60,
       );
 
-      testWidgets('a card with a capture plays it, where the plugin is detected', (tester) async {
-        final played = <String>[];
+      // No capture button of its own: every card keeps the same icons, and
+      // the capture plays from the card's right-click menu.
+      testWidgets('a card with a capture marks its play icon, where the plugin is detected', (tester) async {
         await tester.pumpWidget(wrap(
           [project('a', 'Night Drive', latestCapture: capture)],
-          onPlayCapture: (p) => played.add(p.id),
+          showCaptureMarkers: true,
         ));
-
-        await tester.tap(find.byIcon(Icons.graphic_eq));
-        await tester.pump(const Duration(seconds: 1));
-
-        expect(played, ['a']);
+        expect(find.byKey(const ValueKey('card-capture-dot')), findsOneWidget);
+        expect(find.byIcon(Icons.graphic_eq), findsNothing);
       });
 
-      testWidgets('no capture button where the plugin is not detected', (tester) async {
+      testWidgets('no mark where the plugin is not detected', (tester) async {
         await tester.pumpWidget(wrap([project('a', 'Night Drive', latestCapture: capture)]));
-        expect(find.byIcon(Icons.graphic_eq), findsNothing);
+        expect(find.byKey(const ValueKey('card-capture-dot')), findsNothing);
       });
 
-      testWidgets('no capture button on a project without a capture', (tester) async {
-        await tester.pumpWidget(wrap([project('a', 'Night Drive')], onPlayCapture: (_) {}));
-        expect(find.byIcon(Icons.graphic_eq), findsNothing);
+      testWidgets('no mark on a project without a capture', (tester) async {
+        await tester.pumpWidget(wrap([project('a', 'Night Drive')], showCaptureMarkers: true));
+        expect(find.byKey(const ValueKey('card-capture-dot')), findsNothing);
       });
     });
 

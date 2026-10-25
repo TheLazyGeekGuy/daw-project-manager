@@ -3022,6 +3022,7 @@
   "latestCaptureUseAsPreview": "Use as preview song",
   "latestCaptureNotOnThisDevice": "Not on this device yet",
   "latestCapturePlay": "Play latest capture",
+  "latestCaptureMenuHint": "Right-click to play the latest capture",
   "latestCaptureNowPreview": "The latest capture is now the preview song",
   "versionLabel": "Version {version}",
   "@versionLabel": {
@@ -8103,7 +8104,7 @@
   },
   "dpmPluginTabLabel": "DAW plugin",
   "dpmPluginTitle": "DAW Project Manager plugin",
-  "dpmPluginDescription": "A VST3/AU plugin for your DAW. Put it on the master bus: it shows the project's to-dos, records each playback pass as the project's preview song, and can end your work session when the DAW closes the project.",
+  "dpmPluginDescription": "A VST3/AU plugin for your DAW. Put it on the master bus: it shows the project's to-dos, records each playback pass as the project's latest capture, and can end your work session when the DAW closes the project.",
   "dpmPluginLastSeen": "Last seen in {daw} (version {version}) on {date}.",
   "@dpmPluginLastSeen": {
     "placeholders": {

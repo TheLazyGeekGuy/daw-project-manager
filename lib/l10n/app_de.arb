@@ -2112,6 +2112,7 @@
   "latestCaptureUseAsPreview": "Als Vorschau-Song verwenden",
   "latestCaptureNotOnThisDevice": "Noch nicht auf diesem Gerät",
   "latestCapturePlay": "Letzte Aufnahme abspielen",
+  "latestCaptureMenuHint": "Rechtsklick spielt die letzte Aufnahme ab",
   "latestCaptureNowPreview": "Die letzte Aufnahme ist jetzt der Vorschau-Song",
   "versionLabel": "Version {version}",
   "@versionLabel": {
@@ -4478,7 +4479,7 @@
   "dpmPluginSessionEndedSummary": "{start}–{end} · {duration}",
   "dpmPluginTabLabel": "DAW-Plugin",
   "dpmPluginTitle": "DAW Project Manager-Plugin",
-  "dpmPluginDescription": "Ein VST3/AU-Plugin für Ihre DAW. Legen Sie es auf den Master-Bus: Es zeigt die Aufgaben des Projekts, nimmt jeden Wiedergabedurchlauf als Vorschau-Song des Projekts auf und kann Ihre Arbeitssitzung beenden, wenn die DAW das Projekt schließt.",
+  "dpmPluginDescription": "Ein VST3/AU-Plugin für Ihre DAW. Legen Sie es auf den Master-Bus: Es zeigt die Aufgaben des Projekts, nimmt jeden Wiedergabedurchlauf als letzte Aufnahme des Projekts auf und kann Ihre Arbeitssitzung beenden, wenn die DAW das Projekt schließt.",
   "dpmPluginLastSeen": "Zuletzt gesehen in {daw} (Version {version}) am {date}.",
   "dpmPluginNotSeen": "Auf diesem Computer noch nicht gesehen. Installieren Sie es und legen Sie es auf den Master-Bus Ihrer DAW.",
   "dpmPluginUpdateAvailable": "Version {version} ist verfügbar.",

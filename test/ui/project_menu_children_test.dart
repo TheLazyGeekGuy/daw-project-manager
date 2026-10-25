@@ -21,6 +21,7 @@ void main() {
     bool driveRestoreOffered = true,
     bool previewShareable = false,
     bool includeCardOptions = false,
+    bool captureOffered = false,
   }) async {
     await tester.pumpWidget(MaterialApp(
       localizationsDelegates: appLocalizationsDelegates,
@@ -48,6 +49,7 @@ void main() {
         archivedFilesPresent: project.isArchived && filesPresent,
         driveRestoreOffered: driveRestoreOffered,
         previewShareable: previewShareable,
+        captureOffered: captureOffered,
       ),
     );
     await tester.pumpAndSettle();
@@ -138,6 +140,21 @@ void main() {
     expect(entry('archive'), findsNothing);
     expect(entry('discardArchive'), findsOneWidget,
         reason: 'the files are still here, so the zip can go');
+  });
+
+  testWidgets("the DAW plugin's latest capture plays from the menu, where offered",
+      (tester) async {
+    await openMenu(tester, TestFactories.makeProject(), captureOffered: true);
+    expect(entry('playCapture'), findsOneWidget);
+
+    await tester.tap(entry('playCapture'));
+    await tester.pumpAndSettle();
+    expect(await chosen, 'playCapture');
+  });
+
+  testWidgets('no capture entry where none is offered', (tester) async {
+    await openMenu(tester, TestFactories.makeProject());
+    expect(entry('playCapture'), findsNothing);
   });
 
   testWidgets('session mode swaps launching for the session', (tester) async {

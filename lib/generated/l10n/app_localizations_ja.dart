@@ -3007,6 +3007,9 @@ class AppLocalizationsJa extends AppLocalizations {
   String get latestCapturePlay => '最新のキャプチャを再生';
 
   @override
+  String get latestCaptureMenuHint => '右クリックで最新のキャプチャを再生';
+
+  @override
   String get latestCaptureNowPreview => '最新のキャプチャをプレビュー曲にしました';
 
   @override
@@ -7927,7 +7930,7 @@ class AppLocalizationsJa extends AppLocalizations {
 
   @override
   String get dpmPluginDescription =>
-      'DAW 用の VST3/AU プラグインです。マスターバスに挿すと、プロジェクトのタスクを表示し、再生のたびにプロジェクトのプレビュー曲として録音し、DAW がプロジェクトを閉じたときに作業セッションを終了できます。';
+      'DAW 用の VST3/AU プラグインです。マスターバスに挿すと、プロジェクトのタスクを表示し、再生のたびにプロジェクトの最新のキャプチャとして録音し、DAW がプロジェクトを閉じたときに作業セッションを終了できます。';
 
   @override
   String dpmPluginLastSeen(String daw, String version, String date) {

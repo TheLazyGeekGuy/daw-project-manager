@@ -17,6 +17,7 @@ import 'dialogs/card_initials_dialog.dart';
 import 'dialogs/move_project_dialog.dart';
 import 'preview_share.dart';
 import 'project_detail_page.dart';
+import 'project_playback.dart';
 import 'profile_move_actions.dart';
 import 'recently_deleted_actions.dart';
 import 'session_actions.dart';
@@ -143,6 +144,10 @@ Future<void> showProjectContextMenu({
       archivedFilesPresent: project.isArchived && projectFileExists(project),
       driveRestoreOffered: GoogleDriveSyncService.isSupported,
       previewShareable: preview != null && !preview.startsWith('drive://'),
+      captureOffered: offersLatestCapture(
+        project,
+        pluginDetected: ref.read(dpmPluginDetectedProvider),
+      ),
     ),
   );
 
@@ -165,6 +170,9 @@ Future<void> showProjectContextMenu({
         break;
       case 'openFolder':
         await openProjectFolder(context, project);
+        break;
+      case 'playCapture':
+        await playProjectCapture(context, ref, project);
         break;
       case 'move':
         await showMoveProjectDialog(context, ref, project);
@@ -352,6 +360,7 @@ List<Widget> projectMenuChildren({
   required bool archivedFilesPresent,
   required bool driveRestoreOffered,
   required bool previewShareable,
+  bool captureOffered = false,
 }) {
   Widget item(
     String value,
@@ -423,6 +432,10 @@ List<Widget> projectMenuChildren({
         : item('launch', Icons.open_in_new, l10n.tooltipLaunchInDaw),
     item('view', Icons.assignment, l10n.tooltipViewDetails),
     item('openFolder', Icons.folder_open, l10n.openFolder),
+    // The DAW plugin's latest capture (offersLatestCapture): the same rule as
+    // the dot on the play button.
+    if (captureOffered)
+      item('playCapture', Icons.graphic_eq, l10n.latestCapturePlay),
     if (previewShareable) item('share', Icons.share, l10n.sharePreviewSong),
     const Divider(height: 1),
     if (files.isNotEmpty)
