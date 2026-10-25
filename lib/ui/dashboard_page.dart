@@ -79,6 +79,7 @@ import 'widgets/ctrl_wheel_volume.dart';
 import 'widgets/whats_new_dialog.dart';
 import 'widgets/desktop_title_bar.dart';
 import 'widgets/project_card_grid.dart';
+import 'project_playback.dart';
 import 'widgets/drag_to_share_button.dart';
 import 'widgets/filter_dropdown.dart';
 import 'widgets/language_switcher.dart';
@@ -5445,7 +5446,6 @@ class _PlutoProjectsTableWithSelectionState
                     endSessionTooltip: l10n.endSession,
                     openFolderTooltip: l10n.openFolder,
                     playPreviewTooltip: l10n.playPreview,
-                    playCaptureTooltip: l10n.latestCapturePlay,
                     archivedWithLocalCopyTooltip: l10n.archivedWithLocalCopy,
                     archivedAwayTooltip: l10n.archivedAwayTooltip,
                   ),
@@ -5470,9 +5470,7 @@ class _PlutoProjectsTableWithSelectionState
                   onPlayPreview: (project) =>
                       playProjectPreview(context, ref, project),
                   // Only where the plugin is: captures are its doing.
-                  onPlayCapture: ref.watch(dpmPluginDetectedProvider)
-                      ? (project) => playProjectCapture(context, ref, project)
-                      : null,
+                  showCaptureMarkers: ref.watch(dpmPluginDetectedProvider),
                   onOpen: (project) => openProjectDetail(context, project),
                   onToggleSelection: _clickSelection.toggle,
                   onRowClick: _clickSelection.handleRowClick,
@@ -5901,35 +5899,6 @@ class _PlutoProjectsTableWithSelectionState
 /// list and the dashboard card (#111) — and it was already duplicated verbatim
 /// between the first two. It stays in this file rather than moving out to its
 /// own because of `_PreviewSongDialog`, which is private to it.
-/// Plays [project]'s latest capture (the DAW plugin's last pass) in the
-/// desktop player: the dashboard's capture button. Desktop only, like the
-/// plugin. A capture synced from another device whose file hasn't come down
-/// yet is said, not failed.
-Future<void> playProjectCapture(
-  BuildContext context,
-  WidgetRef ref,
-  MusicProject project,
-) async {
-  final capture = project.latestCapture;
-  if (capture == null) return;
-  if (!await File(capture.path).exists()) {
-    if (!context.mounted) return;
-    ScaffoldMessenger.of(context).showAppSnackBar(
-      SnackBar(
-        content: Text(AppLocalizations.of(context)!.latestCaptureNotOnThisDevice),
-      ),
-    );
-    return;
-  }
-  ref.read(desktopPlayerProvider.notifier).play(
-        project.copyWith(
-          previewSongPath: capture.path,
-          previewSongFileName: path.basename(capture.path),
-        ),
-        capture.path,
-      );
-}
-
 Future<void> playProjectPreview(
   BuildContext context,
   WidgetRef ref,
@@ -8141,12 +8110,7 @@ class _PlutoProjectsTableState extends ConsumerState<_PlutoProjectsTable>
               File(projectPath).existsSync() ||
               Directory(projectPath).existsSync();
 
-          return FittedBox(
-            // Scales the buttons down rather than overflowing a narrow
-            // column (widths are remembered per user).
-            fit: BoxFit.scaleDown,
-            child: Row(
-            mainAxisSize: MainAxisSize.min,
+          return Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               // Play Preview Song button (always show, but disabled if no preview)
@@ -8154,11 +8118,13 @@ class _PlutoProjectsTableState extends ConsumerState<_PlutoProjectsTable>
                 builder: (context, ref, _) {
                   final playerRequest = ref.watch(desktopPlayerProvider);
                   final isPlaying = ref.watch(desktopIsPlayingProvider);
-                  // Its capture playing (the button beside this one) is not
-                  // this button's preview playing.
-                  final isCurrent = playerRequest?.project.id == project.id &&
-                      playerRequest?.resolvedPath != project.latestCapture?.path;
+                  // Preview or latest capture: one button plays both.
+                  final isCurrent = playButtonIsCurrent(playerRequest, project);
                   final isActive = isPlaying && isCurrent;
+                  final capture = offersLatestCapture(
+                    project,
+                    pluginDetected: ref.watch(dpmPluginDetectedProvider),
+                  );
                   final hasPreview =
                       project.previewSongPath?.isNotEmpty == true ||
                       project.previewSongAutoPath != null;
@@ -8167,16 +8133,24 @@ class _PlutoProjectsTableState extends ConsumerState<_PlutoProjectsTable>
                       : project.previewSongAutoPath != null
                       ? Colors.amber
                       : Colors.grey;
-                  return IconButton(
+                  final l10n = AppLocalizations.of(context)!;
+                  final captureHint = capture ? '\n◉ ${l10n.latestCaptureMenuHint}' : '';
+                  final button = IconButton(
                     // Bouncing bars while this row's preview plays (the pause
-                    // icon on hover), the play icon otherwise.
-                    icon: NowPlayingIcon(
-                      isPlaying: isActive,
-                      idleIcon: isCurrent
-                          ? Icons.play_circle
-                          : (hasPreview
-                                ? Icons.play_circle
-                                : Icons.play_circle_outline),
+                    // icon on hover), the play icon otherwise. A dot when the
+                    // DAW plugin left a capture: right-click plays it.
+                    icon: Badge(
+                      isLabelVisible: capture,
+                      smallSize: 7,
+                      backgroundColor: Theme.of(context).colorScheme.primary,
+                      child: NowPlayingIcon(
+                        isPlaying: isActive,
+                        idleIcon: isCurrent
+                            ? Icons.play_circle
+                            : (hasPreview
+                                  ? Icons.play_circle
+                                  : Icons.play_circle_outline),
+                      ),
                     ),
                     iconSize: 24,
                     padding: const EdgeInsets.all(4),
@@ -8187,8 +8161,8 @@ class _PlutoProjectsTableState extends ConsumerState<_PlutoProjectsTable>
                               : AppLocalizations.of(context)!.playPreview)
                         : project.previewSongAutoPath != null &&
                               project.previewSongPath?.isNotEmpty != true
-                        ? '${AppLocalizations.of(context)!.playPreview} (P)\n⚡ ${AppLocalizations.of(context)!.autoDetected}: ${path.basename(project.previewSongAutoPath!)}'
-                        : '${AppLocalizations.of(context)!.playPreview} (P)',
+                        ? '${AppLocalizations.of(context)!.playPreview} (P)\n⚡ ${AppLocalizations.of(context)!.autoDetected}: ${path.basename(project.previewSongAutoPath!)}$captureHint'
+                        : '${AppLocalizations.of(context)!.playPreview} (P)$captureHint',
                     onPressed: () {
                       if (isCurrent) {
                         ref
@@ -8200,43 +8174,16 @@ class _PlutoProjectsTableState extends ConsumerState<_PlutoProjectsTable>
                     },
                     color: iconColor,
                   );
-                },
-              ),
-              // The plugin's latest capture, only where the plugin is: on
-              // every row otherwise it would be noise (#118 follow-up).
-              Consumer(
-                builder: (context, ref, _) {
-                  if (!ref.watch(dpmPluginDetectedProvider)) {
-                    return const SizedBox.shrink();
-                  }
-                  final capture = project.latestCapture;
-                  final playerRequest = ref.watch(desktopPlayerProvider);
-                  final isPlaying = ref.watch(desktopIsPlayingProvider);
-                  final isCurrent = capture != null &&
-                      playerRequest?.resolvedPath == capture.path;
-                  return IconButton(
-                    icon: NowPlayingIcon(
-                      isPlaying: isPlaying && isCurrent,
-                      idleIcon: Icons.graphic_eq,
+                  if (!capture) return button;
+                  return GestureDetector(
+                    onSecondaryTapUp: (details) => showPlayChoiceMenu(
+                      context: context,
+                      ref: ref,
+                      project: project,
+                      position: details.globalPosition,
+                      onPlayPreview: () => _playPreviewSong(project),
                     ),
-                    iconSize: 22,
-                    padding: const EdgeInsets.all(4),
-                    constraints: const BoxConstraints(),
-                    tooltip: AppLocalizations.of(context)!.latestCapturePlay,
-                    color: capture != null
-                        ? Theme.of(context).colorScheme.primary
-                        : Colors.grey,
-                    onPressed: capture == null
-                        ? null
-                        : () {
-                            if (isCurrent) {
-                              ref
-                                  .read(desktopPlayerToggleRequestProvider.notifier)
-                                  .bump();
-                            } else {
-                              playProjectCapture(context, ref, project);
-                            }
-                          },
+                    child: button,
                   );
                 },
               ),
@@ -8404,7 +8351,6 @@ class _PlutoProjectsTableState extends ConsumerState<_PlutoProjectsTable>
                 },
               ),
             ],
-          ),
           );
         },
       ),

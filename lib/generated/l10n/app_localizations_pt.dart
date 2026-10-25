@@ -3083,6 +3083,10 @@ class AppLocalizationsPt extends AppLocalizations {
   String get latestCapturePlay => 'Reproduzir a última captura';
 
   @override
+  String get latestCaptureMenuHint =>
+      'Clique com o botão direito para reproduzir a última captura';
+
+  @override
   String get latestCaptureNowPreview =>
       'A última captura agora é a música de prévia';
 
@@ -8191,7 +8195,7 @@ class AppLocalizationsPt extends AppLocalizations {
 
   @override
   String get dpmPluginDescription =>
-      'Um plugin VST3/AU para a sua DAW. Coloque-o no bus master: ele mostra as tarefas do projeto, grava cada passagem de reprodução como a música de prévia do projeto e pode encerrar sua sessão de trabalho quando a DAW fechar o projeto.';
+      'Um plugin VST3/AU para a sua DAW. Coloque-o no bus master: ele mostra as tarefas do projeto, grava cada passagem de reprodução como a última captura do projeto e pode encerrar sua sessão de trabalho quando a DAW fechar o projeto.';
 
   @override
   String dpmPluginLastSeen(String daw, String version, String date) {

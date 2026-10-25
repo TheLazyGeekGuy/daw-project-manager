@@ -39,7 +39,7 @@ class ProjectCardGrid extends StatefulWidget {
     required this.onPrimaryAction,
     required this.onOpenFolder,
     required this.onPlayPreview,
-    this.onPlayCapture,
+    this.showCaptureMarkers = false,
     this.activeProjectId,
     this.sessionMode = false,
     this.selectionModifierHeld = _noModifier,
@@ -87,10 +87,11 @@ class ProjectCardGrid extends StatefulWidget {
   final void Function(MusicProject) onOpenFolder;
   final void Function(MusicProject) onPlayPreview;
 
-  /// Plays a project's latest capture from the DAW plugin. Null where the
-  /// plugin isn't detected: no capture button on any card then. With it, a
-  /// card shows one when its project has a capture.
-  final void Function(MusicProject)? onPlayCapture;
+  /// Whether a project's play icon carries a dot when the DAW plugin left
+  /// it a capture: only where the plugin is detected. The capture itself
+  /// plays from the card's right-click menu, never a button of its own, so
+  /// every card keeps the same icons.
+  final bool showCaptureMarkers;
 
   /// Whether session tracking is on, which changes what the first icon means.
   final bool sessionMode;
@@ -124,7 +125,6 @@ class ProjectCardLabels {
     required this.endSessionTooltip,
     required this.openFolderTooltip,
     required this.playPreviewTooltip,
-    this.playCaptureTooltip = '',
     required this.archivedWithLocalCopyTooltip,
     required this.archivedAwayTooltip,
   });
@@ -142,7 +142,6 @@ class ProjectCardLabels {
   final String endSessionTooltip;
   final String openFolderTooltip;
   final String playPreviewTooltip;
-  final String playCaptureTooltip;
 
   /// Archived, but the project's own files are still on disk — the zip
   /// beside them is a backup, so the card stays fully usable.
@@ -212,9 +211,7 @@ class _ProjectCardGridState extends State<ProjectCardGrid> {
           onPrimaryAction: () => widget.onPrimaryAction(project),
           onOpenFolder: () => widget.onOpenFolder(project),
           onPlayPreview: () => widget.onPlayPreview(project),
-          onPlayCapture: widget.onPlayCapture == null || project.latestCapture == null
-              ? null
-              : () => widget.onPlayCapture!(project),
+          hasCaptureMarker: widget.showCaptureMarkers && project.latestCapture != null,
         );
       },
     );
@@ -260,7 +257,7 @@ class _ProjectCard extends StatefulWidget {
     required this.onPrimaryAction,
     required this.onOpenFolder,
     required this.onPlayPreview,
-    this.onPlayCapture,
+    this.hasCaptureMarker = false,
   });
 
   final MusicProject project;
@@ -281,8 +278,8 @@ class _ProjectCard extends StatefulWidget {
   final VoidCallback onOpenFolder;
   final VoidCallback onPlayPreview;
 
-  /// Null: no capture button (no plugin detected, or no capture).
-  final VoidCallback? onPlayCapture;
+  /// A dot on the play icon: the DAW plugin left this project a capture.
+  final bool hasCaptureMarker;
 
   @override
   State<_ProjectCard> createState() => _ProjectCardState();
@@ -478,6 +475,7 @@ class _ProjectCardState extends State<_ProjectCard> {
             icon: Icons.play_arrow,
             tooltip: widget.labels.playPreviewTooltip,
             onPressed: widget.onPlayPreview,
+            dot: widget.hasCaptureMarker,
             // Same three-state colouring the mobile list uses: green for a
             // preview the user set, amber for an auto-detected mixdown, grey
             // when neither is known yet.
@@ -487,12 +485,6 @@ class _ProjectCardState extends State<_ProjectCard> {
                 ? Colors.amberAccent.shade100
                 : Colors.white70,
           ),
-          if (widget.onPlayCapture != null)
-            _actionIcon(
-              icon: Icons.graphic_eq,
-              tooltip: widget.labels.playCaptureTooltip,
-              onPressed: widget.onPlayCapture!,
-            ),
         ],
       ),
     );
@@ -503,7 +495,9 @@ class _ProjectCardState extends State<_ProjectCard> {
     required String tooltip,
     required VoidCallback onPressed,
     Color? color,
+    bool dot = false,
   }) {
+    final glyph = Icon(icon, size: 16, color: color ?? Colors.white);
     return Tooltip(
       message: tooltip,
       child: InkResponse(
@@ -511,7 +505,14 @@ class _ProjectCardState extends State<_ProjectCard> {
         radius: 16,
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 4),
-          child: Icon(icon, size: 16, color: color ?? Colors.white),
+          child: dot
+              ? Badge(
+                  key: const ValueKey('card-capture-dot'),
+                  smallSize: 6,
+                  backgroundColor: Theme.of(context).colorScheme.primary,
+                  child: glyph,
+                )
+              : glyph,
         ),
       ),
     );

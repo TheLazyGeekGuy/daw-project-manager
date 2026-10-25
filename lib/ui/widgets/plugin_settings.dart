@@ -248,6 +248,8 @@ class _InstalledCopies extends StatelessWidget {
                 onPressed: view.onRemoveFolder == null ? null : () => view.onRemoveFolder!(folder),
               ),
             ),
+          // Room between the hint (or the last folder) and the button.
+          const SizedBox(height: 12),
           Align(
             alignment: Alignment.centerLeft,
             child: OutlinedButton.icon(

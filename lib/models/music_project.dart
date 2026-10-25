@@ -584,13 +584,17 @@ class MusicProject {
   /// Returns the number of days remaining until the deadline
   /// Returns null if no deadline is set
   /// Positive: days remaining, Negative: days overdue, Zero: due today
-  int? get daysUntilDeadline {
-    if (deadline == null) return null;
-    final now = DateTime.now();
-    final today = DateTime(now.year, now.month, now.day);
-    final deadlineDay = DateTime(deadline!.year, deadline!.month, deadline!.day);
-    return deadlineDay.difference(today).inDays;
-  }
+  int? get daysUntilDeadline =>
+      deadline == null ? null : calendarDaysBetween(DateTime.now(), deadline!);
+
+  /// Whole calendar days from [from]'s date to [to]'s, by date alone.
+  /// Counting hours between local midnights came out a day short across the
+  /// spring clock change (a 23-hour day: "2d left" for a deadline 3 days
+  /// away), so the dates are compared as UTC, where every day is 24 hours.
+  static int calendarDaysBetween(DateTime from, DateTime to) =>
+      DateTime.utc(to.year, to.month, to.day)
+          .difference(DateTime.utc(from.year, from.month, from.day))
+          .inDays;
 
   /// Converts musical key to Camelot Wheel notation
   /// Returns null if musicalKey is null or not recognized

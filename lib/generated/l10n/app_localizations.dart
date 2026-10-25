@@ -5195,6 +5195,12 @@ abstract class AppLocalizations {
   /// **'Play latest capture'**
   String get latestCapturePlay;
 
+  /// No description provided for @latestCaptureMenuHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Right-click to play the latest capture'**
+  String get latestCaptureMenuHint;
+
   /// No description provided for @latestCaptureNowPreview.
   ///
   /// In en, this message translates to:
@@ -13326,7 +13332,7 @@ abstract class AppLocalizations {
   /// No description provided for @dpmPluginDescription.
   ///
   /// In en, this message translates to:
-  /// **'A VST3/AU plugin for your DAW. Put it on the master bus: it shows the project\'s to-dos, records each playback pass as the project\'s preview song, and can end your work session when the DAW closes the project.'**
+  /// **'A VST3/AU plugin for your DAW. Put it on the master bus: it shows the project\'s to-dos, records each playback pass as the project\'s latest capture, and can end your work session when the DAW closes the project.'**
   String get dpmPluginDescription;
 
   /// No description provided for @dpmPluginLastSeen.
