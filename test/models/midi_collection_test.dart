@@ -23,7 +23,7 @@ MidiClip _clip(String name, int pitch) => MidiClip(
 MidiCollectionItem _item(String id, MidiClip clip) => MidiCollectionItem(
   id: id,
   clip: clip,
-  addedAt: DateTime.utc(2026, 10, 1),
+  addedAt: DateTime(2026, 10, 1),
   sourceProjectId: 'p1',
   sourceProjectName: 'Song',
   bpm: 145,
@@ -37,8 +37,8 @@ void main() {
       final c = MidiCollection(
         id: 'c1',
         name: 'Basslines',
-        createdAt: DateTime.utc(2026, 1, 1),
-        updatedAt: DateTime.utc(2026, 2, 1),
+        createdAt: DateTime(2026, 1, 1),
+        updatedAt: DateTime(2026, 2, 1),
         items: [_item('i1', _clip('Line', 36))],
       );
       final back = MidiCollection.tryParse(jsonDecode(jsonEncode(c.toJson())))!;
@@ -58,7 +58,7 @@ void main() {
       final item = MidiCollectionItem(
         id: 'i9',
         clip: _clip('Hook', 60),
-        addedAt: DateTime.utc(2026, 10, 2),
+        addedAt: DateTime(2026, 10, 2),
         sourceFileName: 'Hook.mid',
       );
       final back = MidiCollectionItem.tryParse(
@@ -82,8 +82,8 @@ void main() {
       final c = MidiCollection(
         id: 'c1',
         name: 'x',
-        createdAt: DateTime.utc(2026),
-        updatedAt: DateTime.utc(2026),
+        createdAt: DateTime(2026),
+        updatedAt: DateTime(2026),
         deleted: true,
       );
       expect(MidiCollection.tryParse(c.toJson())!.deleted, isTrue);
@@ -93,8 +93,8 @@ void main() {
       final json = MidiCollection(
         id: 'c1',
         name: 'x',
-        createdAt: DateTime.utc(2026),
-        updatedAt: DateTime.utc(2026),
+        createdAt: DateTime(2026),
+        updatedAt: DateTime(2026),
         items: [_item('i1', _clip('a', 40))],
       ).toJson();
       (json['items'] as List).add({'id': 'broken'});
@@ -114,8 +114,8 @@ void main() {
       final c = MidiCollection(
         id: 'c1',
         name: 'x',
-        createdAt: DateTime.utc(2026),
-        updatedAt: DateTime.utc(2026),
+        createdAt: DateTime(2026),
+        updatedAt: DateTime(2026),
         items: [_item('i1', _clip('a', 40))],
       );
       expect(c.containsClip(_clip('renamed', 40)), isTrue);
@@ -130,8 +130,8 @@ void main() {
     }) => MidiCollection(
       id: 'c1',
       name: 'Pack',
-      createdAt: DateTime.utc(2026),
-      updatedAt: DateTime.utc(2026),
+      createdAt: DateTime(2026),
+      updatedAt: DateTime(2026),
       folders: folders,
       items: items,
     );
@@ -142,7 +142,7 @@ void main() {
         final item = MidiCollectionItem(
           id: 'i1',
           clip: _clip('Line', 36),
-          addedAt: DateTime.utc(2026, 10, 6),
+          addedAt: DateTime(2026, 10, 6),
           title: 'Acid',
           role: 'bass',
           folderId: 'f2',
@@ -156,7 +156,7 @@ void main() {
               items: [item],
             ).copyWith(
               naming: const MidiNamingTemplate(numbered: false, separator: '_'),
-              updatedAt: DateTime.utc(2026),
+              updatedAt: DateTime(2026),
             );
         final back = MidiCollection.tryParse(
           jsonDecode(jsonEncode(c.toJson())),
@@ -211,13 +211,13 @@ void main() {
           MidiCollectionItem(
             id: 'x',
             clip: _clip('x', 40),
-            addedAt: DateTime.utc(2026),
+            addedAt: DateTime(2026),
             folderId: 'b',
           ),
           MidiCollectionItem(
             id: 'y',
             clip: _clip('y', 41),
-            addedAt: DateTime.utc(2026),
+            addedAt: DateTime(2026),
             folderId: 'gone',
           ),
         ],
@@ -265,7 +265,7 @@ void main() {
 
     setUp(() async {
       tempDir = await HiveTestHelper.setUp();
-      now = DateTime.utc(2026, 10, 1, 12);
+      now = DateTime(2026, 10, 1, 12);
       store = MidiCollectionStore('profile-a', clock: () => now);
     });
 
@@ -521,7 +521,7 @@ void main() {
       }) => MidiCollection(
         id: id,
         name: name,
-        createdAt: DateTime.utc(2026),
+        createdAt: DateTime(2026),
         updatedAt: at,
         deleted: deleted,
       );

@@ -1,4 +1,5 @@
 import 'package:flutter/foundation.dart';
+import '../utils/sync_time.dart';
 
 /// What a custom field holds. Values are always stored as text (see
 /// `MusicProject.customFields`); the type only decides how a value is entered,
@@ -94,8 +95,8 @@ class CustomFieldDefinition {
         'showInProjectsTable': showInProjectsTable,
         'showInReleaseTracks': showInReleaseTracks,
         'order': order,
-        'updatedAt': updatedAt?.toIso8601String(),
-        'deletedAt': deletedAt?.toIso8601String(),
+        'updatedAt': syncInstantOrNull(updatedAt),
+        'deletedAt': syncInstantOrNull(deletedAt),
       };
 
   /// Throws on a missing id or name — callers parse lists through
@@ -113,8 +114,8 @@ class CustomFieldDefinition {
       showInProjectsTable: json['showInProjectsTable'] as bool? ?? true,
       showInReleaseTracks: json['showInReleaseTracks'] as bool? ?? false,
       order: (json['order'] as num?)?.toInt() ?? 0,
-      updatedAt: DateTime.tryParse(json['updatedAt'] as String? ?? ''),
-      deletedAt: DateTime.tryParse(json['deletedAt'] as String? ?? ''),
+      updatedAt: tryParseSyncInstant(json['updatedAt']),
+      deletedAt: tryParseSyncInstant(json['deletedAt']),
     );
   }
 
