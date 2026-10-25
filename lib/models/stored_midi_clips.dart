@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:typed_data';
 
 import 'midi_clip.dart';
+import '../utils/sync_time.dart';
 
 /// A project's unique MIDI clips as the last extraction read them, kept so
 /// they can be listed, played and shared without the project file — on a
@@ -39,9 +40,9 @@ class StoredMidiClips {
   Map<String, dynamic> toJson() => _toMap(base64Encode);
 
   Map<String, dynamic> _toMap(Object Function(Uint8List) bytes) => {
-        'extractedAt': extractedAt.toIso8601String(),
+        'extractedAt': syncInstant(extractedAt),
         if (sourceModifiedAt != null)
-          'sourceModifiedAt': sourceModifiedAt!.toIso8601String(),
+          'sourceModifiedAt': syncInstant(sourceModifiedAt!),
         'clips': [for (final c in clips) midiClipToMap(c, bytes: bytes)],
         if (missingFiles.isNotEmpty) 'missingFiles': missingFiles,
       };
@@ -50,7 +51,7 @@ class StoredMidiClips {
   /// readable record at all; a single bad clip is skipped, never the rest.
   static StoredMidiClips? tryParse(Object? value) {
     if (value is! Map) return null;
-    final extractedAt = DateTime.tryParse(value['extractedAt'] as String? ?? '');
+    final extractedAt = tryParseSyncInstant(value['extractedAt']);
     if (extractedAt == null) return null;
     final clips = <MidiClip>[
       for (final raw in (value['clips'] as List?) ?? const [])
@@ -59,7 +60,7 @@ class StoredMidiClips {
     return StoredMidiClips(
       extractedAt: extractedAt,
       sourceModifiedAt:
-          DateTime.tryParse(value['sourceModifiedAt'] as String? ?? ''),
+          tryParseSyncInstant(value['sourceModifiedAt']),
       clips: clips,
       missingFiles: [
         for (final f in (value['missingFiles'] as List?) ?? const [])

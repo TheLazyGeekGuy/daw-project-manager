@@ -2,6 +2,7 @@ import 'package:material_ui/material_ui.dart';
 
 import '../utils/color_contrast.dart' show meetsWcagAa;
 import '../utils/phase_colors.dart' show colorToHex, hexToColor;
+import '../utils/sync_time.dart';
 
 /// How strongly a theme leans on its accent color for interactive surfaces.
 ///
@@ -257,8 +258,8 @@ class CustomTheme {
         'card': colorToHex(card),
         'cardRadius': cardRadius,
         'controlRadius': controlRadius,
-        if (createdAt != null) 'createdAt': createdAt!.toIso8601String(),
-        if (updatedAt != null) 'updatedAt': updatedAt!.toIso8601String(),
+        if (createdAt != null) 'createdAt': syncInstant(createdAt!),
+        if (updatedAt != null) 'updatedAt': syncInstant(updatedAt!),
       };
 
   static CustomTheme fromJson(Map<String, dynamic> json) {
@@ -280,7 +281,7 @@ class CustomTheme {
 
     DateTime? date(String key) {
       final raw = json[key];
-      return raw is String ? DateTime.tryParse(raw) : null;
+      return tryParseSyncInstant(raw);
     }
 
     return CustomTheme(

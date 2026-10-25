@@ -18,7 +18,7 @@ const _notes = [
 
 StoredMidiClips _stored(DateTime at, {String name = 'Riff'}) => StoredMidiClips(
       extractedAt: at,
-      sourceModifiedAt: DateTime.utc(2026, 9, 1),
+      sourceModifiedAt: DateTime(2026, 9, 1),
       clips: [
         MidiClip(
           name: name,
@@ -73,14 +73,14 @@ void main() {
     test('missing referenced files are kept, and left out when there are none',
         () {
       final withMissing = StoredMidiClips(
-        extractedAt: DateTime.utc(2026),
+        extractedAt: DateTime(2026),
         clips: const [],
         missingFiles: const ['MIDI/gone.mid'],
       );
       expect(StoredMidiClips.tryParse(jsonDecode(jsonEncode(withMissing.toJson())))!
               .missingFiles,
           ['MIDI/gone.mid']);
-      final none = StoredMidiClips(extractedAt: DateTime.utc(2026), clips: const []);
+      final none = StoredMidiClips(extractedAt: DateTime(2026), clips: const []);
       expect(none.toJson().containsKey('missingFiles'), isFalse);
       expect(StoredMidiClips.tryParse(none.toMap())!.missingFiles, isEmpty);
     });
@@ -116,7 +116,7 @@ void main() {
   });
 
   group('StoredMidiClips', () {
-    final value = _stored(DateTime.utc(2026, 10, 1, 12));
+    final value = _stored(DateTime(2026, 10, 1, 12));
 
     void expectSame(StoredMidiClips? got) {
       expect(got, isNotNull);
@@ -149,8 +149,8 @@ void main() {
     });
 
     test('is stale only when the file changed after the read', () {
-      expect(value.isStaleFor(DateTime.utc(2026, 9, 2)), isTrue);
-      expect(value.isStaleFor(DateTime.utc(2026, 9, 1)), isFalse);
+      expect(value.isStaleFor(DateTime(2026, 9, 2)), isTrue);
+      expect(value.isStaleFor(DateTime(2026, 9, 1)), isFalse);
       expect(value.isStaleFor(null), isFalse);
     });
 
@@ -158,7 +158,7 @@ void main() {
       // Regression: on Linux the scan's stat() time is whole seconds and the
       // page's lastModified() keeps milliseconds, so every freshly read
       // project showed "the project file has changed".
-      final at = DateTime.utc(2026, 9, 1);
+      final at = DateTime(2026, 9, 1);
       expect(value.isStaleFor(at.add(const Duration(milliseconds: 50))), isFalse);
       expect(value.isStaleFor(at.add(const Duration(milliseconds: 1999))), isFalse);
       expect(value.isStaleFor(at.add(const Duration(seconds: 2))), isTrue);
@@ -177,8 +177,8 @@ void main() {
     tearDown(() => HiveTestHelper.tearDown(tempDir));
 
     test('stores, reads and deletes per project', () async {
-      await store.put('p1', _stored(DateTime.utc(2026, 1, 1)));
-      await store.put('p2', _stored(DateTime.utc(2026, 1, 1)));
+      await store.put('p1', _stored(DateTime(2026, 1, 1)));
+      await store.put('p2', _stored(DateTime(2026, 1, 1)));
       expect((await store.get('p1'))!.clips.single.notes, _notes);
 
       await store.deleteAll(['p1']);
@@ -188,26 +188,26 @@ void main() {
     });
 
     test('profiles do not see each other\'s clips', () async {
-      await store.put('p1', _stored(DateTime.utc(2026, 1, 1)));
+      await store.put('p1', _stored(DateTime(2026, 1, 1)));
       expect(await MidiClipStore('profile-b').get('p1'), isNull);
     });
 
     test('getAll can be limited to some projects', () async {
-      await store.put('p1', _stored(DateTime.utc(2026, 1, 1)));
-      await store.put('p2', _stored(DateTime.utc(2026, 1, 1)));
+      await store.put('p1', _stored(DateTime(2026, 1, 1)));
+      await store.put('p2', _stored(DateTime(2026, 1, 1)));
       expect((await store.getAll(onlyProjects: {'p2'})).keys, ['p2']);
     });
 
     test('mergeNewer takes newer and new records, never older ones, never deletes',
         () async {
-      await store.put('kept', _stored(DateTime.utc(2026, 5, 1), name: 'mine'));
-      await store.put('updated', _stored(DateTime.utc(2026, 5, 1), name: 'old'));
-      await store.put('local-only', _stored(DateTime.utc(2026, 5, 1)));
+      await store.put('kept', _stored(DateTime(2026, 5, 1), name: 'mine'));
+      await store.put('updated', _stored(DateTime(2026, 5, 1), name: 'old'));
+      await store.put('local-only', _stored(DateTime(2026, 5, 1)));
 
       final written = await store.mergeNewer({
-        'kept': _stored(DateTime.utc(2026, 4, 1), name: 'older'),
-        'updated': _stored(DateTime.utc(2026, 6, 1), name: 'new'),
-        'arrived': _stored(DateTime.utc(2026, 6, 1)),
+        'kept': _stored(DateTime(2026, 4, 1), name: 'older'),
+        'updated': _stored(DateTime(2026, 6, 1), name: 'new'),
+        'arrived': _stored(DateTime(2026, 6, 1)),
       });
 
       expect(written, 2);
@@ -221,7 +221,7 @@ void main() {
       final events = <String>[];
       final sub = store.watch().listen(events.add);
       await Future<void>.delayed(Duration.zero);
-      await store.put('p9', _stored(DateTime.utc(2026, 1, 1)));
+      await store.put('p9', _stored(DateTime(2026, 1, 1)));
       await Future<void>.delayed(const Duration(milliseconds: 50));
       await sub.cancel();
       expect(events, contains('p9'));
@@ -229,7 +229,7 @@ void main() {
   });
 
   test('payload helpers round-trip and skip unreadable entries', () {
-    final all = {'p1': _stored(DateTime.utc(2026, 1, 1))};
+    final all = {'p1': _stored(DateTime(2026, 1, 1))};
     final json = jsonDecode(jsonEncode(storedMidiClipsToJson(all)));
     (json as Map)['bad'] = 'x';
     final back = storedMidiClipsFromJson(json);

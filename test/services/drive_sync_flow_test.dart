@@ -505,6 +505,28 @@ void main() {
       expect(tombstone.beats(DateTime.parse(entry['updatedAt'] as String)), isFalse);
     });
 
+    // Instants went up as local times with no offset: read on a device in
+    // another time zone, or twice in the hour the clocks go back, a restore
+    // came out an hour before its own deletion and lost to it.
+    test('times go up naming their zone, so any device reads the same moment',
+        () async {
+      final service = await signedIn();
+      final changed = DateTime(2026, 10, 25, 2, 30);
+      await projectRepo.projectsBox.put(
+        'p',
+        TestFactories.makeProject(id: 'p', createdAt: changed, updatedAt: changed, lastModifiedAt: changed),
+      );
+
+      await service.syncDatabase(projectRepo: projectRepo, profileRepo: profileRepo);
+
+      final entry = (backupOnDrive()['projects'] as List).firstWhere((e) => e['id'] == 'p');
+      for (final field in ['createdAt', 'updatedAt', 'lastModifiedAt']) {
+        final text = entry[field] as String;
+        expect(text, endsWith('Z'), reason: field);
+        expect(DateTime.parse(text).isAtSameMomentAs(changed), isTrue, reason: field);
+      }
+    });
+
     test('a deletion elsewhere removes the row here', () async {
       final service = await signedIn();
       await projectRepo.projectsBox.put(

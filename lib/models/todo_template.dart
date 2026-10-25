@@ -1,4 +1,5 @@
 import 'package:hive_ce/hive.dart';
+import '../utils/sync_time.dart';
 
 part 'todo_template.g.dart';
 
@@ -48,8 +49,8 @@ class TodoTemplate extends HiveObject {
       'id': id,
       'name': name,
       'items': items,
-      'createdAt': createdAt.toIso8601String(),
-      'updatedAt': updatedAt.toIso8601String(),
+      'createdAt': syncInstant(createdAt),
+      'updatedAt': syncInstant(updatedAt),
     };
   }
 
@@ -58,8 +59,8 @@ class TodoTemplate extends HiveObject {
       id: json['id'] as String,
       name: json['name'] as String,
       items: (json['items'] as List<dynamic>).cast<String>(),
-      createdAt: DateTime.parse(json['createdAt'] as String),
-      updatedAt: DateTime.parse(json['updatedAt'] as String),
+      createdAt: parseSyncInstant(json['createdAt'] as String),
+      updatedAt: parseSyncInstant(json['updatedAt'] as String),
     );
   }
 }

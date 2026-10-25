@@ -30,6 +30,7 @@ import '../repository/profile_repository.dart';
 import 'custom_theme_merge.dart';
 import '../utils/app_paths.dart';
 import '../utils/save_file_dialog.dart';
+import '../utils/sync_time.dart';
 
 class BackupService {
   /// The backup [exportBackup] writes, as JSON — everything but the file
@@ -1031,13 +1032,13 @@ class BackupService {
       'filePath': project.filePath,
       'fileName': project.fileName,
       'fileSizeBytes': project.fileSizeBytes,
-      'lastModifiedAt': project.lastModifiedAt.toIso8601String(),
+      'lastModifiedAt': syncInstant(project.lastModifiedAt),
       'customDisplayName': project.customDisplayName,
       'thumbnailPath': project.thumbnailPath,
       'status': project.status,
       'fileExtension': project.fileExtension,
-      'createdAt': project.createdAt.toIso8601String(),
-      'updatedAt': project.updatedAt.toIso8601String(),
+      'createdAt': syncInstant(project.createdAt),
+      'updatedAt': syncInstant(project.updatedAt),
       'bpm': project.bpm,
       'musicalKey': project.musicalKey,
       'notes': project.notes,
@@ -1047,8 +1048,8 @@ class BackupService {
       'parts': project.parts.map((part) => part.toJson()).toList(),
       'hidden': project.hidden,
       'previewSongPath': project.previewSongPath,
-      'fileCreatedAt': project.fileCreatedAt?.toIso8601String(),
-      'statusChangedAt': project.statusChangedAt?.toIso8601String(),
+      'fileCreatedAt': syncInstantOrNull(project.fileCreatedAt),
+      'statusChangedAt': syncInstantOrNull(project.statusChangedAt),
       'previewSongFileName': project.previewSongFileName,
       'uploadedPreviewSongHash': project.uploadedPreviewSongHash,
       'deadline': project.deadline?.toIso8601String(),
@@ -1078,7 +1079,7 @@ class BackupService {
       'cardInitials': project.cardInitials,
       // Archiving (#116) — user data, same reasoning as the block above.
       'archivePath': project.archivePath,
-      'archivedAt': project.archivedAt?.toIso8601String(),
+      'archivedAt': syncInstantOrNull(project.archivedAt),
       'archiveEntryPath': project.archiveEntryPath,
       // Song length (#157) — see the Drive serializer for why both halves
       // are carried.
@@ -1100,13 +1101,13 @@ class BackupService {
       filePath: json['filePath'] as String,
       fileName: json['fileName'] as String,
       fileSizeBytes: json['fileSizeBytes'] as int,
-      lastModifiedAt: DateTime.parse(json['lastModifiedAt'] as String),
+      lastModifiedAt: parseSyncInstant(json['lastModifiedAt'] as String),
       customDisplayName: json['customDisplayName'] as String?,
       thumbnailPath: json['thumbnailPath'] as String?,
       status: json['status'] as String? ?? 'Idea',
       fileExtension: json['fileExtension'] as String,
-      createdAt: DateTime.parse(json['createdAt'] as String),
-      updatedAt: DateTime.parse(json['updatedAt'] as String),
+      createdAt: parseSyncInstant(json['createdAt'] as String),
+      updatedAt: parseSyncInstant(json['updatedAt'] as String),
       bpm: json['bpm'] != null ? (json['bpm'] as num).toDouble() : null,
       musicalKey: json['musicalKey'] as String?,
       notes: json['notes'] as String?,
@@ -1119,8 +1120,8 @@ class BackupService {
           const [],
       hidden: json['hidden'] as bool? ?? false,
       previewSongPath: json['previewSongPath'] as String?,
-      fileCreatedAt: json['fileCreatedAt'] != null ? DateTime.parse(json['fileCreatedAt'] as String) : null,
-      statusChangedAt: json['statusChangedAt'] != null ? DateTime.parse(json['statusChangedAt'] as String) : null,
+      fileCreatedAt: json['fileCreatedAt'] != null ? parseSyncInstant(json['fileCreatedAt'] as String) : null,
+      statusChangedAt: json['statusChangedAt'] != null ? parseSyncInstant(json['statusChangedAt'] as String) : null,
       previewSongFileName: json['previewSongFileName'] as String?,
       uploadedPreviewSongHash: json['uploadedPreviewSongHash'] as String?,
       deadline: json['deadline'] != null ? DateTime.parse(json['deadline'] as String) : null,
@@ -1155,7 +1156,7 @@ class BackupService {
       cardInitials: json['cardInitials'] as String?,
       archivePath: json['archivePath'] as String?,
       archivedAt: json['archivedAt'] != null
-          ? DateTime.parse(json['archivedAt'] as String)
+          ? parseSyncInstant(json['archivedAt'] as String)
           : null,
       archiveEntryPath: json['archiveEntryPath'] as String?,
       durationMs: (json['durationMs'] as num?)?.toInt(),
@@ -1175,8 +1176,8 @@ class BackupService {
     return {
       'id': root.id,
       'path': root.path,
-      'addedAt': root.addedAt.toIso8601String(),
-      'lastScanAt': root.lastScanAt?.toIso8601String(),
+      'addedAt': syncInstant(root.addedAt),
+      'lastScanAt': syncInstantOrNull(root.lastScanAt),
       // The four below were silently dropped until #155: a folder came back
       // from a backup renamed to its folder name, in Flat mode, and
       // scanning — whatever the user had set. Each is a decision about the
@@ -1194,7 +1195,7 @@ class BackupService {
     return {
       'id': p.id,
       'path': p.path,
-      'addedAt': p.addedAt.toIso8601String(),
+      'addedAt': syncInstant(p.addedAt),
     };
   }
 
@@ -1207,8 +1208,8 @@ class BackupService {
     return ScanRoot(
       id: json['id'] as String,
       path: json['path'] as String,
-      addedAt: DateTime.parse(json['addedAt'] as String),
-      lastScanAt: json['lastScanAt'] != null ? DateTime.parse(json['lastScanAt'] as String) : null,
+      addedAt: parseSyncInstant(json['addedAt'] as String),
+      lastScanAt: json['lastScanAt'] != null ? parseSyncInstant(json['lastScanAt'] as String) : null,
       displayName: json['displayName'] as String?,
       scanDepth: (json['scanDepth'] as num?)?.toInt() ?? 0,
       autoStackVersions: json['autoStackVersions'] as bool? ?? false,
@@ -1220,7 +1221,7 @@ class BackupService {
     return IgnoredPath(
       id: json['id'] as String? ?? '',
       path: json['path'] as String,
-      addedAt: json['addedAt'] != null ? DateTime.parse(json['addedAt'] as String) : DateTime.now(),
+      addedAt: json['addedAt'] != null ? parseSyncInstant(json['addedAt'] as String) : DateTime.now(),
     );
   }
 
@@ -1229,8 +1230,8 @@ class BackupService {
       'id': template.id,
       'name': template.name,
       'items': template.items,
-      'createdAt': template.createdAt.toIso8601String(),
-      'updatedAt': template.updatedAt.toIso8601String(),
+      'createdAt': syncInstant(template.createdAt),
+      'updatedAt': syncInstant(template.updatedAt),
     };
   }
 
@@ -1239,8 +1240,8 @@ class BackupService {
       id: json['id'] as String,
       name: json['name'] as String,
       items: (json['items'] as List<dynamic>).cast<String>(),
-      createdAt: DateTime.parse(json['createdAt'] as String),
-      updatedAt: DateTime.parse(json['updatedAt'] as String),
+      createdAt: parseSyncInstant(json['createdAt'] as String),
+      updatedAt: parseSyncInstant(json['updatedAt'] as String),
     );
   }
 
@@ -1250,8 +1251,8 @@ class BackupService {
       'name': template.name,
       'sourceFolderPath': template.sourceFolderPath,
       'mainFileRelativePath': template.mainFileRelativePath,
-      'createdAt': template.createdAt.toIso8601String(),
-      'updatedAt': template.updatedAt.toIso8601String(),
+      'createdAt': syncInstant(template.createdAt),
+      'updatedAt': syncInstant(template.updatedAt),
       'bpm': template.bpm,
       'musicalKey': template.musicalKey,
       'dawVersion': template.dawVersion,
@@ -1266,8 +1267,8 @@ class BackupService {
       name: json['name'] as String,
       sourceFolderPath: json['sourceFolderPath'] as String,
       mainFileRelativePath: json['mainFileRelativePath'] as String,
-      createdAt: DateTime.parse(json['createdAt'] as String),
-      updatedAt: DateTime.parse(json['updatedAt'] as String),
+      createdAt: parseSyncInstant(json['createdAt'] as String),
+      updatedAt: parseSyncInstant(json['updatedAt'] as String),
       bpm: (json['bpm'] as num?)?.toDouble(),
       musicalKey: json['musicalKey'] as String?,
       dawVersion: json['dawVersion'] as String?,
@@ -1280,8 +1281,8 @@ class BackupService {
     return {
       'id': root.id,
       'path': root.path,
-      'addedAt': root.addedAt.toIso8601String(),
-      'lastRefreshedAt': root.lastRefreshedAt?.toIso8601String(),
+      'addedAt': syncInstant(root.addedAt),
+      'lastRefreshedAt': syncInstantOrNull(root.lastRefreshedAt),
     };
   }
 
@@ -1289,9 +1290,9 @@ class BackupService {
     return TemplateRoot(
       id: json['id'] as String,
       path: json['path'] as String,
-      addedAt: DateTime.parse(json['addedAt'] as String),
+      addedAt: parseSyncInstant(json['addedAt'] as String),
       lastRefreshedAt:
-          json['lastRefreshedAt'] != null ? DateTime.parse(json['lastRefreshedAt'] as String) : null,
+          json['lastRefreshedAt'] != null ? parseSyncInstant(json['lastRefreshedAt'] as String) : null,
     );
   }
 
@@ -1358,7 +1359,7 @@ class BackupService {
       'filePath': file.filePath,
       'fileType': file.fileType,
       'fileSizeBytes': file.fileSizeBytes,
-      'addedAt': file.addedAt.toIso8601String(),
+      'addedAt': syncInstant(file.addedAt),
       'description': file.description,
     };
   }
@@ -1370,7 +1371,7 @@ class BackupService {
       filePath: json['filePath'] as String,
       fileType: json['fileType'] as String,
       fileSizeBytes: json['fileSizeBytes'] as int,
-      addedAt: DateTime.parse(json['addedAt'] as String),
+      addedAt: parseSyncInstant(json['addedAt'] as String),
       description: json['description'] as String?,
     );
   }
@@ -1391,8 +1392,8 @@ class BackupService {
     return {
       'id': profile.id,
       'name': profile.name,
-      'createdAt': profile.createdAt.toIso8601String(),
-      'lastUsedAt': profile.lastUsedAt?.toIso8601String(),
+      'createdAt': syncInstant(profile.createdAt),
+      'lastUsedAt': syncInstantOrNull(profile.lastUsedAt),
       'photoPath': profile.photoPath,
       'photoData': photoBase64,
       'photoFileName': photoFileName,
@@ -1404,7 +1405,7 @@ class BackupService {
       'id': todo.id,
       'text': todo.text,
       'completed': todo.completed,
-      'createdAt': todo.createdAt.toIso8601String(),
+      'createdAt': syncInstant(todo.createdAt),
       'dueAt': todo.dueAt?.toIso8601String(),
     };
   }
@@ -1414,7 +1415,7 @@ class BackupService {
       id: json['id'] as String,
       text: json['text'] as String,
       completed: json['completed'] as bool? ?? false,
-      createdAt: DateTime.parse(json['createdAt'] as String),
+      createdAt: parseSyncInstant(json['createdAt'] as String),
       // Backups written before #113 carry no 'dueAt'.
       dueAt: json['dueAt'] != null
           ? DateTime.parse(json['dueAt'] as String)

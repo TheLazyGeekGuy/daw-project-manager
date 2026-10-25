@@ -2,6 +2,7 @@ import 'package:hive_ce/hive.dart';
 import 'package:uuid/uuid.dart';
 
 import 'project_part.dart';
+import '../utils/sync_time.dart';
 
 const _uuid = Uuid();
 
@@ -99,8 +100,8 @@ class PartTemplate extends HiveObject {
       'id': id,
       'name': name,
       'items': items.map((i) => i.toJson()).toList(),
-      'createdAt': createdAt.toIso8601String(),
-      'updatedAt': updatedAt.toIso8601String(),
+      'createdAt': syncInstant(createdAt),
+      'updatedAt': syncInstant(updatedAt),
     };
   }
 
@@ -111,8 +112,8 @@ class PartTemplate extends HiveObject {
       items: (json['items'] as List<dynamic>? ?? const [])
           .map((i) => ProjectPart.fromJson(i as Map<dynamic, dynamic>))
           .toList(),
-      createdAt: DateTime.parse(json['createdAt'] as String),
-      updatedAt: DateTime.parse(json['updatedAt'] as String),
+      createdAt: parseSyncInstant(json['createdAt'] as String),
+      updatedAt: parseSyncInstant(json['updatedAt'] as String),
     );
   }
 }

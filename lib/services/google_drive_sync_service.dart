@@ -51,6 +51,7 @@ import '../utils/app_paths.dart'
 import '../config/oauth_config.dart' show desktopClientSecret, desktopClientId, androidWebClientId;
 import 'plugin_bridge/plugin_protocol.dart' show dpmPluginCaptureFileInUse, dpmPluginPreviewFolderName;
 import 'plugin_capture_sync.dart';
+import '../utils/sync_time.dart';
 
 part 'google_drive_capture_sync.dart';
 
@@ -5925,8 +5926,8 @@ class GoogleDriveSyncService {
     return {
       'id': profile.id,
       'name': profile.name,
-      'createdAt': profile.createdAt.toIso8601String(),
-      'lastUsedAt': profile.lastUsedAt?.toIso8601String(),
+      'createdAt': syncInstant(profile.createdAt),
+      'lastUsedAt': syncInstantOrNull(profile.lastUsedAt),
       'photoPath': profile.photoPath,
       'bio': profile.bio,
       'artworkPath': profile.artworkPath,
@@ -5945,7 +5946,7 @@ class GoogleDriveSyncService {
   /// copy looked a fraction of a millisecond newer than the row it came from,
   /// and changed: a synced library previewed as "N projects updated" and the
   /// next sync rewrote them all.
-  static DateTime _storedDate(String raw) => _toHivePrecision(DateTime.parse(raw));
+  static DateTime _storedDate(String raw) => _toHivePrecision(DateTime.parse(raw).toLocal());
 
   static DateTime _toHivePrecision(DateTime d) =>
       DateTime.fromMillisecondsSinceEpoch(d.millisecondsSinceEpoch, isUtc: d.isUtc);
@@ -5980,13 +5981,13 @@ class GoogleDriveSyncService {
       'filePath': project.filePath,
       'fileName': project.fileName,
       'fileSizeBytes': project.fileSizeBytes,
-      'lastModifiedAt': project.lastModifiedAt.toIso8601String(),
+      'lastModifiedAt': syncInstant(project.lastModifiedAt),
       'customDisplayName': project.customDisplayName,
       'thumbnailPath': project.thumbnailPath,
       'status': project.status,
       'fileExtension': project.fileExtension,
-      'createdAt': project.createdAt.toIso8601String(),
-      'updatedAt': project.updatedAt.toIso8601String(),
+      'createdAt': syncInstant(project.createdAt),
+      'updatedAt': syncInstant(project.updatedAt),
       'bpm': project.bpm,
       'musicalKey': project.musicalKey,
       'notes': project.notes,
@@ -5996,7 +5997,7 @@ class GoogleDriveSyncService {
         'id': t.id,
         'text': t.text,
         'completed': t.completed,
-        'createdAt': t.createdAt.toIso8601String(),
+        'createdAt': syncInstant(t.createdAt),
         'dueAt': t.dueAt?.toIso8601String(),
       }).toList(),
       'parts': project.parts.map((p) => p.toJson()).toList(),
@@ -6004,8 +6005,8 @@ class GoogleDriveSyncService {
       'previewSongPath': project.previewSongPath,
       'previewSongFileName': project.previewSongFileName,
       'previewSongHash': project.uploadedPreviewSongHash, // Keep 'previewSongHash' key in JSON for backward compatibility
-      'fileCreatedAt': project.fileCreatedAt?.toIso8601String(),
-      'statusChangedAt': project.statusChangedAt?.toIso8601String(),
+      'fileCreatedAt': syncInstantOrNull(project.fileCreatedAt),
+      'statusChangedAt': syncInstantOrNull(project.statusChangedAt),
       'deadline': project.deadline?.toIso8601String(),
       'totalWorkSeconds': project.totalWorkSeconds,
       'sessions': project.sessions.map((s) => s.toMap()).toList(),
@@ -6042,7 +6043,7 @@ class GoogleDriveSyncService {
       // "missing" — losing both the pointer to the archive and the reason the
       // originals are gone.
       'archivePath': project.archivePath,
-      'archivedAt': project.archivedAt?.toIso8601String(),
+      'archivedAt': syncInstantOrNull(project.archivedAt),
       'archiveEntryPath': project.archiveEntryPath,
       // Song length (#157). Both halves travel: the typed one is user
       // data outright, and the measured one has to survive onto a machine
@@ -6236,14 +6237,14 @@ class GoogleDriveSyncService {
         'filePath': f.filePath,
         'fileType': f.fileType,
         'fileSizeBytes': f.fileSizeBytes,
-        'addedAt': f.addedAt.toIso8601String(),
+        'addedAt': syncInstant(f.addedAt),
         'description': f.description,
       }).toList(),
       'todos': release.todos.map((t) => {
         'id': t.id,
         'text': t.text,
         'completed': t.completed,
-        'createdAt': t.createdAt.toIso8601String(),
+        'createdAt': syncInstant(t.createdAt),
         'dueAt': t.dueAt?.toIso8601String(),
       }).toList(),
     };
@@ -6284,8 +6285,8 @@ class GoogleDriveSyncService {
     return {
       'id': root.id,
       'path': root.path,
-      'addedAt': root.addedAt.toIso8601String(),
-      'lastScanAt': root.lastScanAt?.toIso8601String(),
+      'addedAt': syncInstant(root.addedAt),
+      'lastScanAt': syncInstantOrNull(root.lastScanAt),
       // The four below were silently dropped until #155: a root came back
       // from Drive renamed to its folder name, in Flat mode, and scanning —
       // whatever the user had set. Each is user data, not a device
@@ -6327,8 +6328,8 @@ class GoogleDriveSyncService {
       'id': template.id,
       'name': template.name,
       'items': template.items,
-      'createdAt': template.createdAt.toIso8601String(),
-      'updatedAt': template.updatedAt.toIso8601String(),
+      'createdAt': syncInstant(template.createdAt),
+      'updatedAt': syncInstant(template.updatedAt),
     };
   }
 
@@ -6348,8 +6349,8 @@ class GoogleDriveSyncService {
       'name': template.name,
       'sourceFolderPath': template.sourceFolderPath,
       'mainFileRelativePath': template.mainFileRelativePath,
-      'createdAt': template.createdAt.toIso8601String(),
-      'updatedAt': template.updatedAt.toIso8601String(),
+      'createdAt': syncInstant(template.createdAt),
+      'updatedAt': syncInstant(template.updatedAt),
       'bpm': template.bpm,
       'musicalKey': template.musicalKey,
       'dawVersion': template.dawVersion,
@@ -6378,8 +6379,8 @@ class GoogleDriveSyncService {
     return {
       'id': root.id,
       'path': root.path,
-      'addedAt': root.addedAt.toIso8601String(),
-      'lastRefreshedAt': root.lastRefreshedAt?.toIso8601String(),
+      'addedAt': syncInstant(root.addedAt),
+      'lastRefreshedAt': syncInstantOrNull(root.lastRefreshedAt),
     };
   }
 

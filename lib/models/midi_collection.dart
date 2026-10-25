@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'midi_clip.dart';
 import 'midi_clip_naming.dart';
 import 'stored_midi_clips.dart';
+import '../utils/sync_time.dart';
 
 /// One clip in a [MidiCollection]: a **copy** of the clip, not a link to it.
 ///
@@ -107,7 +108,7 @@ class MidiCollectionItem {
   Map<String, dynamic> toJson() => {
     'id': id,
     'clip': midiClipToMap(clip, bytes: base64Encode),
-    'addedAt': addedAt.toIso8601String(),
+    'addedAt': syncInstant(addedAt),
     if (sourceProjectId != null) 'sourceProjectId': sourceProjectId,
     if (sourceProjectName != null) 'sourceProjectName': sourceProjectName,
     if (sourceFileName != null) 'sourceFile': sourceFileName,
@@ -124,7 +125,7 @@ class MidiCollectionItem {
     if (json is! Map) return null;
     final id = json['id'];
     final clip = midiClipFromMap(json['clip']);
-    final addedAt = DateTime.tryParse(json['addedAt'] as String? ?? '');
+    final addedAt = tryParseSyncInstant(json['addedAt']);
     if (id is! String || clip == null || addedAt == null) return null;
     return MidiCollectionItem(
       id: id,
@@ -323,8 +324,8 @@ class MidiCollection {
   Map<String, dynamic> toJson() => {
     'id': id,
     'name': name,
-    'createdAt': createdAt.toIso8601String(),
-    'updatedAt': updatedAt.toIso8601String(),
+    'createdAt': syncInstant(createdAt),
+    'updatedAt': syncInstant(updatedAt),
     'items': [for (final i in items) i.toJson()],
     if (deleted) 'deleted': true,
     if (folders.isNotEmpty) 'folders': [for (final f in folders) f.toJson()],
@@ -336,8 +337,8 @@ class MidiCollection {
     if (json is! Map) return null;
     final id = json['id'];
     final name = json['name'];
-    final createdAt = DateTime.tryParse(json['createdAt'] as String? ?? '');
-    final updatedAt = DateTime.tryParse(json['updatedAt'] as String? ?? '');
+    final createdAt = tryParseSyncInstant(json['createdAt']);
+    final updatedAt = tryParseSyncInstant(json['updatedAt']);
     if (id is! String ||
         name is! String ||
         createdAt == null ||
