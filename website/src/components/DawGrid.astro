@@ -1,0 +1,44 @@
+---
+import { allReads, daws, deepDaws, logoUrl, type Read } from '../data/daws';
+
+interface Props {
+  /** The homepage's searchable grid, or the guide's grid saying what is read. */
+  variant: 'home' | 'guide';
+}
+
+const { variant } = Astro.props;
+const listedOnly = daws.filter((d) => d.reads.length === 0);
+// A card has room for a word each; MIDI events go with the clips.
+const cardLabels: Record<Read, string | null> = {
+  tempo: 'tempo',
+  key: 'key',
+  version: 'version',
+  notes: 'notes',
+  markers: 'markers',
+  tracks: 'tracks',
+  plugins: 'plug-ins',
+  midiClips: 'MIDI',
+  midiEvents: null,
+};
+const whatIsRead = (reads: Read[]) =>
+  allReads.filter((r) => reads.includes(r)).map((r) => cardLabels[r]).filter(Boolean).join(' · ');
+---
+{variant === 'home' ? (
+<div class="daws-grid" id="daws-grid">
+    {daws.map((daw) => (
+    <div class="daw-item">
+        <img src={logoUrl(daw)} alt={daw.name} class="daw-logo">
+        <span>{daw.name}</span>
+    </div>
+    ))}
+</div>
+) : (
+<div class="daw-grid">
+    {deepDaws.map((daw) => (
+    <div class="daw deep"><img src={logoUrl(daw)} alt=""><b>{daw.short ?? daw.name}</b><small>{whatIsRead(daw.reads)}{daw.qualifier && ` ${daw.qualifier}`}</small></div>
+    ))}
+    {listedOnly.map((daw) => (
+    <div class="daw"><img src={logoUrl(daw)} alt=""><b>{daw.short ?? daw.name}</b><small>listed</small></div>
+    ))}
+</div>
+)}

@@ -1,6 +1,6 @@
 ---
 name: screenshots
-description: Retake DAW Project Manager's screenshots from the real app on a demo library, review them, add screens that are missing, and publish them to the README and the website's user guide (gh-pages docs.html). Use when the user says "refresh the screenshots", "retake screenshots", "screenshots are outdated", "add a screenshot of …", or after a UI change the docs should show.
+description: Retake DAW Project Manager's screenshots from the real app on a demo library, review them, add screens that are missing, and publish them to the README and the website's user guide (website/, docs.html). Use when the user says "refresh the screenshots", "retake screenshots", "screenshots are outdated", "add a screenshot of …", or after a UI change the docs should show.
 argument-hint: "[screen to add]"
 ---
 
@@ -101,8 +101,8 @@ The same goes for pictures: no developer tools (above), no debug output.
 
 - **README** (`main`): references `resources/screenshots/…` directly; the
   feature tiles are a 2-column table.
-- **Website** (`gh-pages` branch, `docs.html` / `index.html`): copy the
-  changed files to the same paths under `gh-pages`'s `resources/screenshots/`.
-  Work in a worktree of that branch; never push it without the user's go —
-  it publishes the site.
+- **Website** (`website/`: the guide in `src/content/docs/guide/`, the homepage in `src/pages/index.astro`): it serves
+  `resources/screenshots/` itself, so a retaken picture needs nothing more. A
+  new one is referenced as `resources/screenshots/<area>/<name>.png`; check it
+  with `npm run dev` in `website/`. Merging to `main` publishes the site.
 - Commit the PNGs with the change that made them differ.

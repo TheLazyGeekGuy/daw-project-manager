@@ -355,6 +355,29 @@ void main() {
       await tester.back();
     });
 
+    // The experimental tools, the sample pack's dialog (its card is the last
+    // one, so its Export is the last), and the DAW plugin's page.
+    await screen('experimental', () async {
+      await tester.tapOn(find.text('Settings').hitTestable());
+      await tester.until(find.text('Project Folders'));
+      await tester.tapOn(find.text('Experimental').first);
+      await tester.shot('settings/settings-experimental.png');
+
+      final export = find.text('Export').hitTestable();
+      await tester.until(export);
+      await tester.tap(export.last);
+      await tester.until(find.text('Export sample pack'));
+      await tester.settle(20);
+      // The dialog's card: a Dialog itself fills the window to centre it.
+      final card = find.ancestor(of: find.text('Export sample pack'), matching: find.byType(Material)).first;
+      await tester.shot('sample-pack/sample-pack-dialog.png', crop: tester.getRect(card).inflate(16));
+      await tester.tapOn(find.text('Cancel').hitTestable());
+
+      await tester.tapOn(find.text('DAW plugin').first);
+      await tester.shot('settings/settings-daw-plugin.png');
+      await tester.back();
+    });
+
     // Google Drive, signed out: the demo library has no account, and a
     // signed-in page would show one.
     await screen('google drive', () async {

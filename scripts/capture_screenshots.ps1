@@ -8,8 +8,7 @@
   daw_project_manager_screenshots), with the version left out of the title,
   and writes resources/screenshots/<area>/<name>.png at 1920x1080.
 
-  Copy what changed to the gh-pages branch's resources/screenshots/ for the
-  website.
+  The website (website/) serves resources/screenshots/ itself.
 
 .EXAMPLE
   scripts/capture_screenshots.ps1

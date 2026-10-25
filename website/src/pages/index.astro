@@ -1,0 +1,381 @@
+---
+import Base from '../layouts/Base.astro';
+import DawGrid from '../components/DawGrid.astro';
+import ReadsTable from '../components/ReadsTable.astro';
+import { daws, logoUrl } from '../data/daws';
+import { latestDownloads, pluginReleasesUrl, repoUrl, storeUrl } from '../lib/release';
+import { changelog } from '../lib/changelog';
+import '../styles/home.css';
+
+const downloads = await latestDownloads();
+const [latest] = changelog();
+
+const shot = (path: string) => `/resources/screenshots/${path}`;
+
+interface Tile {
+  size: 'wide' | 'half' | 'third' | 'full';
+  kicker: string;
+  title: string;
+  text: string;
+  image?: string;
+  alt?: string;
+}
+
+// The features, in the guide's own words.
+const tiles: Tile[] = [
+  {
+    size: 'wide',
+    kicker: 'Inside every project',
+    title: 'Advanced Metadata Extraction',
+    text: 'DAW version, BPM, musical key and project notes — read from every project, no manual tagging. For Ableton Live, Cubase, Nuendo, FL Studio and Reaper it goes further: tracks of each kind, the plug-ins it loads, and every MIDI clip.',
+    image: shot('dashboard/dashboard-extract-metadata.png'),
+    alt: 'Extract Metadata option in a project’s action menu',
+  },
+  {
+    size: 'third',
+    kicker: 'Preview',
+    title: 'Finds your mixdowns',
+    text: 'Export a mix from your DAW and the app finds the file on its own, ready to play.',
+    image: shot('project-detail/preview-player-playback.gif'),
+    alt: 'Playing a found preview song in the app',
+  },
+  {
+    size: 'third',
+    kicker: 'Tasks',
+    title: 'TODO lists',
+    text: 'A checklist per project, and every unfinished task across your library in one queue.',
+    image: shot('task-queue/task-queue-overview.png'),
+    alt: 'Task Queue tab showing pending todos grouped by project',
+  },
+  {
+    size: 'wide',
+    kicker: 'MIDI',
+    title: 'Every MIDI clip, without opening the DAW',
+    text: 'The riffs, chords and drum patterns in every project. Play any clip through the built-in synth, edit it in the piano roll, and drag it into your DAW as a .mid — tempo and key included.',
+    image: shot('midi/midi-piano-roll.png'),
+    alt: 'A MIDI clip open in the piano roll',
+  },
+  {
+    size: 'half',
+    kicker: 'Work sessions',
+    title: 'How long has this song taken?',
+    text: 'In Session Mode you start a session on a project, and the time you work on it adds up: per session, and in total.',
+    image: shot('work-sessions/session-running.png'),
+    alt: 'A work session running on a project',
+  },
+  {
+    size: 'half',
+    kicker: 'Versions',
+    title: 'Song.flp, Song_2.flp, Song_3.flp: one song',
+    text: 'Stack them and the library shows it once, with one set of notes, to-dos and work time. Unstacking gives each version back exactly what it had.',
+  },
+  {
+    size: 'third',
+    kicker: 'Workflow',
+    title: 'Your own phases',
+    text: 'Rename, reorder and color your production phases. Every change is logged to the project’s timeline.',
+    image: shot('settings/settings-phases-customize.png'),
+    alt: 'Phases settings — reorder, recolor and rename production phases',
+  },
+  {
+    size: 'third',
+    kicker: 'Releases',
+    title: 'EPs, albums, singles',
+    text: 'Tracks, artwork, date, to-dos and files in one place — and a ZIP for the distributor.',
+    image: shot('releases/releases-list.png'),
+    alt: 'The releases list',
+  },
+  {
+    size: 'third',
+    kicker: 'Templates',
+    title: 'Save it once, reuse it',
+    text: 'Turn any project into a template — BPM, key, DAW and starter files — and start new songs from it.',
+    image: shot('templates/project-templates-list.png'),
+    alt: 'Project Templates page listing saved templates',
+  },
+  {
+    size: 'full',
+    kicker: 'Privacy',
+    title: 'Offline first',
+    text: 'Everything lives on your machine. Optionally sync your project details to your own Google Drive — your project files are never sent to the cloud.',
+    image: shot('google-drive-sync/drive-setup-signin.png'),
+    alt: 'Settings — Google Drive Sync, with sign-in and auto-backup controls',
+  },
+];
+
+const listedDaws = daws.length;
+
+// The DAWs whose projects the sample pack reads samples from.
+const sampleDaws = ['Ableton Live', 'Cubase', 'FL Studio', 'Reaper', 'Studio One']
+  .map((name) => daws.find((d) => d.name === name)!)
+  .filter(Boolean);
+
+const experimentalTools = [
+  {
+    kicker: 'Experimental',
+    title: 'Melodic MIDI catalog',
+    text: 'The leads, arps and melodies of your projects as .mid files, a folder per project, with a catalog of tempo, key and range.',
+  },
+  {
+    kicker: 'Experimental',
+    title: 'Insert reference page',
+    text: 'A page built from your Cubase projects: the plug-in chains per track role, the master chain, and every insert you have used.',
+  },
+  {
+    kicker: 'Experimental',
+    title: 'Cubase template data',
+    text: 'The track layout of your Cubase projects, written out as the spec for a template of your own.',
+  },
+  {
+    kicker: 'New',
+    title: 'Moved a project folder?',
+    text: 'Point the app at its new place: every project, excluded folder and recently deleted song in it follows.',
+  },
+  {
+    kicker: 'New · Windows',
+    title: 'An installer that updates itself',
+    text: 'The new Windows installer keeps the app up to date from inside it: Update Now, and it restarts on the new version.',
+  },
+  {
+    kicker: 'New · Google Drive',
+    title: 'Sync that merges',
+    text: 'Every device’s changes come together, deletions travel too, and earlier backups can be recovered. Deleted songs wait 30 days in Recently deleted.',
+  },
+];
+---
+<Base
+    page="home"
+    title="DAW Project Manager — Every project, every DAW, one place"
+    description="DAW Project Manager — every project, every DAW, one place. A free, open-source library for your music projects: tempo, key, plug-ins and MIDI read from the files, with phases, to-dos, work time and releases."
+>
+    <section class="hero2">
+        <div class="hero2-glow" aria-hidden="true"></div>
+        <div class="container hero2-content">
+            <a href="#new" class="hero-news"><b>New in 3.0</b> Sample packs, a DAW plug-in, MIDI keyboards →</a>
+            <h1 class="hero2-title">Every project, every DAW,<br><span class="gradient-text">one place.</span></h1>
+            <p class="hero2-subtitle">The songs spread across your project folders, in one library: what's inside each one, where it stands, and what's left to do — from first idea to release.</p>
+            <div class="hero-buttons">
+                <a href="#download" class="btn btn-primary">Download Free</a>
+                <a href="/guide/overview/" class="btn btn-secondary">Read the guide</a>
+            </div>
+            <p class="hero-plats">macOS · Windows · Linux · Android — free &amp; open source</p>
+            <div class="hero2-shot">
+                <img src={shot('dashboard/dashboard-overview.png')} alt="DAW Project Manager dashboard showing a table of projects across several DAWs, phases, and BPMs" class="app-screenshot" width="1920" height="1080">
+            </div>
+        </div>
+    </section>
+
+    <section class="daw-strip" aria-label="Supported DAWs">
+        <p class="daw-strip-caption">Finds the projects of <b>{listedDaws} DAWs</b> — <a href="#daws">see what's read from each</a></p>
+        <div class="marquee">
+            {[0, 1].map((copy) => (
+            <ul class="marquee-row" aria-hidden={copy === 1 ? 'true' : undefined}>
+                {daws.map((daw) => (
+                <li><img src={logoUrl(daw)} alt={copy === 0 ? daw.name : ''} title={daw.name} loading="lazy"></li>
+                ))}
+            </ul>
+            ))}
+        </div>
+    </section>
+
+    <section id="new" class="coming">
+        <div class="container">
+            <div class="section-head">
+                <span class="coming-badge">New in 3.0</span>
+                <h2 class="section-title">What's new</h2>
+                <p class="section-subtitle">The biggest release yet. Here is what it brings — and <a href="/changelog/">every change, version by version</a>.</p>
+            </div>
+
+            <article class="spotlight">
+                <div class="spotlight-copy">
+                    <div class="feature-kicker">Experimental · Sample pack</div>
+                    <h3>Every sample your songs use, in one pack</h3>
+                    <p>The kicks, loops and one-shots your projects play — from audio clips and from samplers — copied into one folder, sorted by kind, with a report of how many songs use each one.</p>
+                    <ul class="spotlight-list">
+                        <li><b>Each sample once</b>, however many projects copied it.</li>
+                        <li><b>Samples that moved</b> are found again in your sample library folders.</li>
+                        <li><b>Your own recordings, bounces and stems stay out</b> unless you ask, and mastering sessions are skipped.</li>
+                        <li><b>Your MIDI collections</b> can go in the pack too.</li>
+                        <li><b>Export again later:</b> only what's new is added. Optionally renamed with their BPM and key.</li>
+                    </ul>
+                    <div class="spotlight-daws">
+                        <span>Read from</span>
+                        {sampleDaws.map((daw) => <img src={logoUrl(daw)} alt={daw.name} title={daw.name}>)}
+                    </div>
+                </div>
+                <div class="spotlight-visual spotlight-visual-pack">
+                    <div class="app-window"><img src={shot('sample-pack/sample-pack-dialog.png')} alt="The sample pack export dialog: profiles, library folders and options" class="app-screenshot" loading="lazy"></div>
+                    <div class="pack-tree" aria-hidden="true">
+                        <b>My Sample Pack/</b>
+                        <span>Kick/</span><span>Snare/</span><span>Hi-Hat/</span><span>Bass/</span><span>FX/</span><span>Vocal/</span>
+                        <i>sample_pack_report.csv</i>
+                    </div>
+                </div>
+            </article>
+
+            <article class="spotlight reverse">
+                <div class="spotlight-copy">
+                    <div class="feature-kicker">New · DAW plug-in</div>
+                    <h3>Your to-dos, inside your DAW</h3>
+                    <p>A plug-in for the master bus of any DAW that loads VST3 — or AU on macOS. Audio passes through untouched.</p>
+                    <ul class="spotlight-list">
+                        <li><b>Pre-listen capture:</b> each playback pass becomes the project's latest capture in the app, ready to play — no bouncing.</li>
+                        <li><b>To-dos and notes in the DAW:</b> tick them off, add new ones, stamp one with the playhead time.</li>
+                        <li><b>Work sessions follow the DAW:</b> the app knows when the project opens and closes.</li>
+                        <li><b>Knows which project is open</b>, from the DAW's window or the app's launch.</li>
+                    </ul>
+                    <a href={pluginReleasesUrl} class="btn btn-secondary spotlight-cta" target="_blank" rel="noopener noreferrer">Get the plug-in</a>
+                </div>
+                <div class="spotlight-visual spotlight-visual-plugin">
+                    <img src="/images/daw-plugin.png" alt="The plug-in in a DAW: the linked project, pre-listen capture, and the project's to-dos" class="app-screenshot" loading="lazy" width="482" height="652">
+                </div>
+            </article>
+
+            <article class="spotlight">
+                <div class="spotlight-copy">
+                    <div class="feature-kicker">New · MIDI keyboard</div>
+                    <h3>Play and record into the piano roll</h3>
+                    <p>Plug in a MIDI keyboard and the piano roll plays it: hear each key, and see it lit on the keyboard.</p>
+                    <ul class="spotlight-list">
+                        <li><b>Record takes</b> over the loop region, cycling as many passes as you like — a whole take is one undo.</li>
+                        <li><b>A metronome</b> on every beat, in time with the clip.</li>
+                        <li><b>Latency calibration:</b> tap along to a click and recordings land where you played them.</li>
+                    </ul>
+                </div>
+                <div class="spotlight-visual">
+                    <div class="app-window"><img src={shot('midi/midi-piano-roll.png')} alt="A MIDI clip open in the piano roll" class="app-screenshot" loading="lazy"></div>
+                </div>
+            </article>
+
+            <div class="exp-grid">
+                {experimentalTools.map((tool) => (
+                <div class="exp-card">
+                    <div class="feature-kicker">{tool.kicker}</div>
+                    <h4>{tool.title}</h4>
+                    <p>{tool.text}</p>
+                </div>
+                ))}
+            </div>
+            <p class="section-more">The experimental tools are in Settings → Experimental: they work, and may still change.</p>
+        </div>
+    </section>
+
+    <section id="features" class="bento-section">
+        <div class="container">
+            <div class="section-head">
+                <h2 class="section-title">Project Management</h2>
+                <p class="section-subtitle">Manage your DAW projects from a single application. No more folders. Never lose track of a project.</p>
+            </div>
+            <div class="bento">
+                {tiles.map((tile) => (
+                <article class={`tile tile-${tile.size}${tile.image ? '' : ' tile-text'}`}>
+                    <div class="tile-copy">
+                        <div class="feature-kicker">{tile.kicker}</div>
+                        <h3>{tile.title}</h3>
+                        <p>{tile.text}</p>
+                    </div>
+                    {tile.image ? (
+                    <div class="tile-shot"><img src={tile.image} alt={tile.alt} class="app-screenshot" loading="lazy"></div>
+                    ) : (
+                    <div class="tile-stack" aria-hidden="true">
+                        <span>Song.flp</span><span>Song_2.flp</span><span>Song_3.flp</span>
+                    </div>
+                    )}
+                </article>
+                ))}
+            </div>
+            <p class="section-more">And much more — the whole tour is in the <a href="/guide/overview/">user guide</a>.</p>
+        </div>
+    </section>
+
+    <section id="daws" class="daws">
+        <div class="container">
+            <h2 class="section-title">Supported DAWs</h2>
+            <p class="section-subtitle">Automatically detects projects from all major Digital Audio Workstations</p>
+
+            <div class="daws-search">
+                <input type="text" id="daw-search-input" class="daw-search-input" placeholder="Find your DAW…" autocomplete="off">
+                <p class="daws-search-empty" id="daw-search-empty" style="display: none;">No DAW matches your search.</p>
+            </div>
+
+            <DawGrid variant="home" />
+
+            <div id="metadata-extraction" class="metadata-extraction">
+                <h3 class="metadata-extraction-title">Metadata Extraction Support</h3>
+                <p class="metadata-extraction-subtitle">These DAWs get BPM, key and version read straight from the project file — and, where supported, project notes, the tracks and plug-ins the project uses, and its MIDI clips. The list keeps growing.</p>
+
+                <label class="metadata-filter">
+                    <svg width="16" height="16" viewBox="0 0 24 24" aria-hidden="true"><path d="M15.5 14h-.79l-.28-.27A6.47 6.47 0 0 0 16 9.5 6.5 6.5 0 1 0 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/></svg>
+                    <input type="search" id="metadata-filter" placeholder="Find your DAW…" aria-label="Find your DAW in the table" autocomplete="off">
+                </label>
+
+                <ReadsTable variant="home" />
+            </div>
+        </div>
+    </section>
+
+    <section id="download" class="download2">
+        <div class="container">
+            <h2 class="section-title">Download</h2>
+            <p class="section-subtitle">Free and open source — always</p>
+
+            <div class="download2-cards">
+                <div class="download2-card" data-os="windows">
+                    <span class="download2-yours">For this computer</span>
+                    <img src="/resources/os/Windows_logo_-_2012.svg" alt="" class="os-logo">
+                    <h3>Windows</h3>
+                    <p>Windows 10 or later (64-bit)</p>
+                    <a href={storeUrl} class="btn btn-primary" target="_blank" rel="noopener noreferrer">Microsoft Store</a>
+                    <a href={downloads.windowsInstaller} class="download2-alt">or the installer (.exe) — updates itself</a>
+                    <p class="download-note">Not code-signed yet: Windows may show <strong>Windows protected your PC</strong> — <strong>More info → Run anyway</strong>.</p>
+                </div>
+
+                <div class="download2-card" data-os="macos">
+                    <span class="download2-yours">For this computer</span>
+                    <img src="/resources/os/MacOS_logo_(2017).svg" alt="" class="os-logo">
+                    <h3>macOS</h3>
+                    <p>macOS 10.14 or later</p>
+                    <a href={downloads.macos} class="btn btn-primary" target="_blank" rel="noopener noreferrer">Download .dmg</a>
+                    <p class="download-note">Not notarized by Apple yet — after opening the app, go to <strong>System Settings → Privacy &amp; Security</strong> and click <strong>Open Anyway</strong>.</p>
+                </div>
+
+                <div class="download2-card" data-os="linux">
+                    <span class="download2-yours">For this computer</span>
+                    <img src="/resources/os/Linux_logo.svg" alt="" class="os-logo">
+                    <h3>Linux</h3>
+                    <p>AppImage — no install, works on most distros</p>
+                    <a href={downloads.linuxAppImage} class="btn btn-primary" target="_blank" rel="noopener noreferrer">Download AppImage</a>
+                    <a href="https://flathub.org/en/apps/com.bandpassrecords.dpm" class="download2-alt" target="_blank" rel="noopener noreferrer">or get it on Flathub</a>
+                </div>
+            </div>
+
+            <div class="android2">
+                <img src="/resources/os/android-head.png" alt="" class="android-testing-icon">
+                <div>
+                    <h3>Android — join the test</h3>
+                    <p>The Android app is in testing. Join the Google Group to get access and the instructions for the testing app.</p>
+                </div>
+                <a href="https://groups.google.com/g/daw-project-manager-android-testers" class="btn btn-secondary" target="_blank" rel="noopener noreferrer">Join now</a>
+            </div>
+
+            <p class="download-info">Source code and every release on <a href={repoUrl} target="_blank" rel="noopener noreferrer">GitHub</a>.</p>
+        </div>
+    </section>
+
+    <div class="lightbox" id="lightbox">
+        <button class="lightbox-close" id="lightbox-close" aria-label="Close">&times;</button>
+        <img src="" alt="" class="lightbox-img" id="lightbox-img">
+    </div>
+
+    <script>
+        import '../scripts/home.js';
+
+        // Marks the download card for the visitor's system; the others stay.
+        const ua = navigator.userAgent;
+        const os = /Mac|iPhone|iPad/.test(ua) ? 'macos'
+            : /Win/.test(ua) ? 'windows'
+            : /Linux|X11/.test(ua) && !/Android/.test(ua) ? 'linux'
+            : null;
+        if (os) document.querySelector(`.download2-card[data-os="${os}"]`)?.classList.add('is-yours');
+    </script>
+</Base>

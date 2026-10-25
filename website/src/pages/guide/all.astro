@@ -1,0 +1,69 @@
+---
+// The whole user guide on one scrolling page — the guide's pages in the
+// sidebar's order, under Starlight's own layout. Kept out of search: every
+// section is already found on its own page.
+import StarlightPage from '@astrojs/starlight/components/StarlightPage.astro';
+import { getCollection, render } from 'astro:content';
+import sidebar from '../../data/guide-sidebar.json';
+import anchors from '../../data/guide-anchors.json';
+
+const entries = new Map((await getCollection('docs')).map((entry) => [entry.id, entry]));
+
+const groups = await Promise.all(
+  sidebar.map(async (group) => ({
+    label: group.label,
+    sections: await Promise.all(
+      group.items.map(async (item) => {
+        const entry = entries.get(item.slug);
+        if (!entry) throw new Error(`No guide page for ${item.slug}`);
+        const id = item.slug.replace(/^guide\//, '');
+        const { Content } = await render(entry);
+        // Old one-page anchors (docs.html#about) that lived in this section.
+        const aliases = Object.entries(anchors as Record<string, string>)
+          .filter(([anchor, page]) => page === id && anchor !== id)
+          .map(([anchor]) => anchor);
+        return { id, title: entry.data.title, aliases, Content };
+      }),
+    ),
+  })),
+);
+
+const headings = groups.flatMap((group) =>
+  group.sections.map((section) => ({ depth: 2, slug: section.id, text: section.title })),
+);
+---
+<StarlightPage
+    frontmatter={{
+      title: 'The whole guide',
+      description: 'The DAW Project Manager user guide on one page.',
+      pagefind: false,
+    }}
+    headings={headings}
+>
+    <p class="lead">Every page of the guide, one after the other. Prefer a page at a time? Pick one in the sidebar.</p>
+    {groups.map((group) => (
+        <>
+            <p class="guide-all-group">{group.label}</p>
+            {group.sections.map(({ id, title, aliases, Content }) => (
+                <section class="guide-all-section">
+                    {aliases.map((alias) => <span id={alias} class="guide-all-anchor" />)}
+                    <h2 id={id}><a href={`/guide/${id}/`} class="guide-all-permalink">{title}</a></h2>
+                    <Content />
+                </section>
+            ))}
+        </>
+    ))}
+</StarlightPage>
+
+<script>
+    // Links between guide pages, and the sidebar's, stay on this page:
+    // /guide/scanning/ → #scanning. A section's title still opens its page.
+    const links = document.querySelectorAll<HTMLAnchorElement>(
+        '.guide-all-section a[href^="/guide/"], nav.sidebar a[href^="/guide/"]',
+    );
+    for (const link of links) {
+        if (link.classList.contains('guide-all-permalink')) continue;
+        const id = link.getAttribute('href')!.replace(/^\/guide\//, '').replace(/\/$/, '');
+        if (document.getElementById(id)) link.setAttribute('href', `#${id}`);
+    }
+</script>

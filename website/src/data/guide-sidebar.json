@@ -1,0 +1,157 @@
+[
+  {
+    "label": "Start",
+    "items": [
+      {
+        "label": "Overview",
+        "slug": "guide/overview"
+      },
+      {
+        "label": "Install",
+        "slug": "guide/installation"
+      },
+      {
+        "label": "First launch",
+        "slug": "guide/first-launch"
+      },
+      {
+        "label": "Project folders",
+        "slug": "guide/adding-folders"
+      },
+      {
+        "label": "Scanning",
+        "slug": "guide/scanning"
+      }
+    ]
+  },
+  {
+    "label": "Your library",
+    "items": [
+      {
+        "label": "Dashboard",
+        "slug": "guide/dashboard"
+      },
+      {
+        "label": "Search & filters",
+        "slug": "guide/searching-filtering"
+      },
+      {
+        "label": "Many at once",
+        "slug": "guide/bulk-actions"
+      },
+      {
+        "label": "A project's page",
+        "slug": "guide/project-details"
+      },
+      {
+        "label": "Phases",
+        "slug": "guide/production-phases"
+      },
+      {
+        "label": "Versions",
+        "slug": "guide/version-stacks"
+      }
+    ]
+  },
+  {
+    "label": "Work",
+    "items": [
+      {
+        "label": "Tasks",
+        "slug": "guide/task-queue"
+      },
+      {
+        "label": "Releases",
+        "slug": "guide/releases"
+      },
+      {
+        "label": "Templates",
+        "slug": "guide/templates"
+      },
+      {
+        "label": "Statistics",
+        "slug": "guide/statistics"
+      },
+      {
+        "label": "Work sessions",
+        "slug": "guide/work-sessions"
+      }
+    ]
+  },
+  {
+    "label": "Music",
+    "items": [
+      {
+        "label": "MIDI clips",
+        "slug": "guide/midi-clips"
+      },
+      {
+        "label": "Music player",
+        "slug": "guide/music-player"
+      },
+      {
+        "label": "Sharing",
+        "slug": "guide/sharing"
+      },
+      {
+        "label": "Sample pack",
+        "slug": "guide/sample-pack"
+      }
+    ]
+  },
+  {
+    "label": "Keep it safe",
+    "items": [
+      {
+        "label": "Google Drive",
+        "slug": "guide/google-drive-sync"
+      },
+      {
+        "label": "Local backup",
+        "slug": "guide/local-backup"
+      },
+      {
+        "label": "Archive",
+        "slug": "guide/archive"
+      },
+      {
+        "label": "Recently deleted",
+        "slug": "guide/recently-deleted"
+      },
+      {
+        "label": "Profiles",
+        "slug": "guide/profiles"
+      }
+    ]
+  },
+  {
+    "label": "Make it yours",
+    "items": [
+      {
+        "label": "Settings",
+        "slug": "guide/settings"
+      },
+      {
+        "label": "Tray mode",
+        "slug": "guide/background-mode"
+      }
+    ]
+  },
+  {
+    "label": "Reference",
+    "items": [
+      {
+        "label": "Shortcuts",
+        "slug": "guide/keyboard-shortcuts"
+      },
+      {
+        "label": "Supported DAWs",
+        "slug": "guide/supported-daws"
+      },
+      {
+        "label": "What's read",
+        "slug": "guide/metadata-extraction"
+      }
+    ]
+  }
+]

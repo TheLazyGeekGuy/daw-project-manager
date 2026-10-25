@@ -1,0 +1,62 @@
+---
+import { allReads, deepDaws, deepDawsByName, footnotes, logoUrl, readLabels, type Daw, type Read } from '../data/daws';
+
+interface Props {
+  /** The homepage's filterable table, or the guide's full matrix. */
+  variant: 'home' | 'guide';
+}
+
+const { variant } = Astro.props;
+
+// The homepage keeps to the columns most people look for.
+const homeColumns: [Read, string][] = [
+  ['tempo', 'BPM'],
+  ['key', 'Key'],
+  ['version', 'Version'],
+  ['notes', 'Project Notes'],
+  ['tracks', 'Tracks'],
+  ['plugins', 'Plug-ins'],
+  ['midiClips', 'MIDI Clips'],
+];
+const reads = (daw: Daw, read: Read) => daw.reads.includes(read);
+const cellMark = (daw: Daw, read: Read) => (daw.markOn === read ? daw.mark : '');
+const nameMark = (daw: Daw) => (daw.mark && !daw.markOn ? daw.mark : '');
+const marks = [...new Set(deepDaws.map((d) => d.mark).filter(Boolean))] as (keyof typeof footnotes)[];
+---
+{variant === 'home' ? (
+<>
+<div class="metadata-table-wrap">
+    <table class="metadata-table">
+        <thead>
+            <tr>
+                <th>DAW</th>
+                {homeColumns.map(([, label]) => <th>{label}</th>)}
+            </tr>
+        </thead>
+        <tbody>
+            {deepDawsByName.map((daw) => (
+            <tr>
+                <td class="metadata-daw"><img src={logoUrl(daw)} alt="" class="metadata-daw-logo">{daw.name}{nameMark(daw)}</td>
+                {homeColumns.map(([read]) => reads(daw, read)
+                    ? <td class="metadata-yes">✓{cellMark(daw, read)}</td>
+                    : <td class="metadata-no">—</td>)}
+            </tr>
+            ))}
+        </tbody>
+    </table>
+    <p class="metadata-empty" id="metadata-empty" hidden>No DAW here matches “<span></span>” — it may still be in the <a href="#daws">full list of supported DAWs</a>, which are all found and scanned.</p>
+</div>
+<p class="metadata-table-footnote" set:html={marks.map((m) => `${m} ${footnotes[m]}`).join('<br>')} />
+</>
+) : (
+<div class="matrix-wrap">
+    <table class="matrix">
+        <thead><tr><th></th>{allReads.map((r) => <th>{readLabels[r]}</th>)}</tr></thead>
+        <tbody>
+        {deepDaws.map((daw) => (
+        <tr><th><img src={logoUrl(daw)} alt="">{daw.name}{daw.qualifier && <> <small>{daw.qualifier}</small></>}</th>{allReads.map((r) => reads(daw, r) ? <td class="yes">✓</td> : <td></td>)}</tr>
+        ))}
+        </tbody>
+    </table>
+</div>
+)}

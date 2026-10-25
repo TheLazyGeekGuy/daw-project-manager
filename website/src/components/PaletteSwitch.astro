@@ -1,0 +1,28 @@
+---
+// The visitor picks the site's palette — the app's Neon Dark or Classic Dark.
+// The choice is kept in this browser, for the homepage and the guide.
+---
+<div class="palette-switch" role="group" aria-label="Palette">
+    <span>Palette</span>
+    <button type="button" data-palette-choice="neon">Neon</button>
+    <button type="button" data-palette-choice="classic">Classic</button>
+</div>
+
+<script>
+    const root = document.documentElement;
+    const buttons = document.querySelectorAll<HTMLButtonElement>('[data-palette-choice]');
+    const show = () =>
+        buttons.forEach((b) =>
+            b.setAttribute('aria-pressed', String(b.dataset.paletteChoice === (root.dataset.palette ?? 'neon'))),
+        );
+    buttons.forEach((b) =>
+        b.addEventListener('click', () => {
+            root.dataset.palette = b.dataset.paletteChoice;
+            try {
+                localStorage.setItem('dpm-palette', b.dataset.paletteChoice ?? 'neon');
+            } catch {}
+            show();
+        }),
+    );
+    show();
+</script>
