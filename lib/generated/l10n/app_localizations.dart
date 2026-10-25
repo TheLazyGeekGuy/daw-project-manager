@@ -13418,6 +13418,36 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'The Flatpak can\'t look into your plug-in folders. The plugin shows up here once a DAW has loaded it.'**
   String get dpmPluginScanUnavailable;
+
+  /// Shown on Windows when the app installed by the self-updating installer finds a copy from the previous installer still installed
+  ///
+  /// In en, this message translates to:
+  /// **'Remove the old installation?'**
+  String get legacyInstallTitle;
+
+  /// Body of the dialog offering to remove a copy installed by the previous Windows installer
+  ///
+  /// In en, this message translates to:
+  /// **'An older copy of DAW Project Manager, from the previous installer, is still installed. This one replaces it and updates itself from now on. Removing the old copy doesn\'t touch your library.'**
+  String get legacyInstallMessage;
+
+  /// Button: run the previous installation's uninstaller
+  ///
+  /// In en, this message translates to:
+  /// **'Remove it'**
+  String get legacyInstallRemove;
+
+  /// Button: leave the previous installation alone and stop asking
+  ///
+  /// In en, this message translates to:
+  /// **'Keep it'**
+  String get legacyInstallKeep;
+
+  /// Snackbar when the previous installation's uninstaller could not be started
+  ///
+  /// In en, this message translates to:
+  /// **'The old copy\'s uninstaller couldn\'t be started.'**
+  String get legacyInstallRemoveFailed;
 }
 
 class _AppLocalizationsDelegate

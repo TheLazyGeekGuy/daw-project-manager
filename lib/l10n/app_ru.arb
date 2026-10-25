@@ -4493,5 +4493,10 @@
   "dpmPluginSearching": "Поиск…",
   "dpmPluginCustomFoldersHint": "Установили в другое место? Добавьте эту папку: приложение будет искать в ней, когда в стандартных папках копии нет.",
   "dpmPluginCustomFolderTag": "ваша папка",
-  "dpmPluginScanUnavailable": "Flatpak не может заглянуть в ваши папки плагинов. Плагин появится здесь, когда его загрузит DAW."
+  "dpmPluginScanUnavailable": "Flatpak не может заглянуть в ваши папки плагинов. Плагин появится здесь, когда его загрузит DAW.",
+  "legacyInstallTitle": "Удалить старую установку?",
+  "legacyInstallMessage": "Старая копия DAW Project Manager, установленная прежним установщиком, всё ещё на компьютере. Эта копия заменяет её и теперь обновляется сама. Удаление старой копии не затрагивает вашу библиотеку.",
+  "legacyInstallRemove": "Удалить",
+  "legacyInstallKeep": "Оставить",
+  "legacyInstallRemoveFailed": "Не удалось запустить деинсталлятор старой копии."
 }

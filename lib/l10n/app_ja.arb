@@ -4493,5 +4493,10 @@
   "dpmPluginSearching": "検索中…",
   "dpmPluginCustomFoldersHint": "別の場所にインストールしましたか？ そのフォルダーを追加すると、標準フォルダーにコピーがない場合にアプリがそこを探します。",
   "dpmPluginCustomFolderTag": "追加したフォルダー",
-  "dpmPluginScanUnavailable": "Flatpak 版はプラグインフォルダーを参照できません。DAW がプラグインを読み込むと、ここに表示されます。"
+  "dpmPluginScanUnavailable": "Flatpak 版はプラグインフォルダーを参照できません。DAW がプラグインを読み込むと、ここに表示されます。",
+  "legacyInstallTitle": "古いインストールを削除しますか？",
+  "legacyInstallMessage": "以前のインストーラーで入れた DAW Project Manager の古いコピーがまだインストールされています。このコピーがそれに代わり、今後は自動で更新されます。古いコピーを削除してもライブラリには影響しません。",
+  "legacyInstallRemove": "削除する",
+  "legacyInstallKeep": "残す",
+  "legacyInstallRemoveFailed": "古いコピーのアンインストーラーを起動できませんでした。"
 }

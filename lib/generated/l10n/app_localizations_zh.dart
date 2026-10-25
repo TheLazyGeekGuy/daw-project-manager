@@ -7890,4 +7890,20 @@ class AppLocalizationsZh extends AppLocalizations {
   @override
   String get dpmPluginScanUnavailable =>
       'Flatpak 版无法查看你的插件文件夹。DAW 加载插件后，它会显示在这里。';
+
+  @override
+  String get legacyInstallTitle => '移除旧的安装？';
+
+  @override
+  String get legacyInstallMessage =>
+      '由旧安装程序安装的 DAW Project Manager 旧副本仍在电脑上。当前副本将取代它，并从此自动更新。移除旧副本不会影响你的资料库。';
+
+  @override
+  String get legacyInstallRemove => '移除';
+
+  @override
+  String get legacyInstallKeep => '保留';
+
+  @override
+  String get legacyInstallRemoveFailed => '无法启动旧副本的卸载程序。';
 }

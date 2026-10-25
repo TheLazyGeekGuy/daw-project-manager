@@ -5,8 +5,10 @@ import 'package:url_launcher/url_launcher.dart';
 
 import '../../generated/l10n/app_localizations.dart';
 import '../../services/appimage_update_service.dart';
+import '../../services/self_updater.dart';
+import '../../services/velopack/velopack_install.dart';
 import '../../utils/windows_install.dart';
-import 'appimage_self_update_dialog.dart';
+import 'self_update_dialog.dart';
 import '../app_snack_bar.dart';
 
 const String _kWindowsStoreId =
@@ -24,8 +26,13 @@ enum UpdateRoute {
   /// The MSIX package: the Microsoft Store updates it.
   microsoftStore,
 
-  /// The `.exe` installer's copy: running the newer installer upgrades it in
-  /// place. Sending it to the Store would install a second copy instead.
+  /// The self-updating Setup's copy (Velopack): it updates itself in place.
+  windowsSelfUpdate,
+
+  /// The Inno Setup installer's copy: running the newer installer upgrades
+  /// it in place. That installer is still published beside the Setup, so
+  /// the copies it installed keep updating as they always have. Sending it
+  /// to the Store would install a second copy instead.
   windowsInstaller,
 
   /// The AppImage updates itself.
@@ -38,10 +45,12 @@ enum UpdateRoute {
 UpdateRoute updateRouteFor({
   required bool isWindows,
   required bool isMsix,
+  required bool isVelopack,
   required bool isAppImage,
 }) {
   if (isWindows) {
-    return isMsix ? UpdateRoute.microsoftStore : UpdateRoute.windowsInstaller;
+    if (isMsix) return UpdateRoute.microsoftStore;
+    return isVelopack ? UpdateRoute.windowsSelfUpdate : UpdateRoute.windowsInstaller;
   }
   return isAppImage ? UpdateRoute.appImage : UpdateRoute.gitHub;
 }
@@ -49,6 +58,7 @@ UpdateRoute updateRouteFor({
 UpdateRoute get _currentUpdateRoute => updateRouteFor(
       isWindows: Platform.isWindows,
       isMsix: isRunningAsMsix,
+      isVelopack: VelopackInstall.current != null,
       isAppImage:
           Platform.isLinux && AppImageUpdateService.isRunningAsAppImage,
     );
@@ -187,6 +197,7 @@ class UpdateAvailableDialog extends StatelessWidget {
                       Icon(
                         switch (route) {
                           UpdateRoute.microsoftStore => Icons.store,
+                          UpdateRoute.windowsSelfUpdate => Icons.system_update_alt,
                           UpdateRoute.windowsInstaller => Icons.install_desktop,
                           UpdateRoute.appImage => Icons.system_update_alt,
                           UpdateRoute.gitHub => Icons.code,
@@ -198,6 +209,7 @@ class UpdateAvailableDialog extends StatelessWidget {
                       Text(
                         switch (route) {
                           UpdateRoute.microsoftStore => 'Microsoft Store',
+                          UpdateRoute.windowsSelfUpdate ||
                           UpdateRoute.windowsInstaller =>
                             l10n.updateWindowsInstallerSourceLabel,
                           UpdateRoute.appImage => l10n.updateAppImageSourceLabel,
@@ -218,6 +230,7 @@ class UpdateAvailableDialog extends StatelessWidget {
                         l10n.updateWindowsInstructions,
                       UpdateRoute.windowsInstaller =>
                         l10n.updateWindowsInstallerInstructions,
+                      UpdateRoute.windowsSelfUpdate ||
                       UpdateRoute.appImage => l10n.updateAppImageInstructions,
                       UpdateRoute.gitHub => l10n.updateMacInstructions,
                     },
@@ -249,7 +262,8 @@ class UpdateAvailableDialog extends StatelessWidget {
                         ),
                       ),
                     )
-                  else if (route == UpdateRoute.appImage)
+                  else if (route == UpdateRoute.appImage ||
+                      route == UpdateRoute.windowsSelfUpdate)
                     SizedBox(
                       width: double.infinity,
                       child: FilledButton.icon(
@@ -257,7 +271,11 @@ class UpdateAvailableDialog extends StatelessWidget {
                         label: Text(l10n.updateNowButtonLabel),
                         onPressed: () {
                           Navigator.of(context).pop();
-                          AppImageSelfUpdateDialog.show(context, version);
+                          SelfUpdateDialog.show(
+                            context,
+                            version,
+                            () => _selfUpdaterFor(route),
+                          );
                         },
                         style: FilledButton.styleFrom(
                           padding: const EdgeInsets.symmetric(vertical: 12),
@@ -297,6 +315,14 @@ class UpdateAvailableDialog extends StatelessWidget {
     );
   }
 }
+
+SelfUpdater _selfUpdaterFor(UpdateRoute route) => switch (route) {
+      UpdateRoute.windowsSelfUpdate => VelopackSelfUpdater(
+          install: VelopackInstall.current!,
+          currentVersion: _kCurrentVersion,
+        ),
+      _ => AppImageSelfUpdater(),
+    };
 
 class _VersionChip extends StatelessWidget {
   final String label;

@@ -8291,4 +8291,21 @@ class AppLocalizationsRu extends AppLocalizations {
   @override
   String get dpmPluginScanUnavailable =>
       'Flatpak не может заглянуть в ваши папки плагинов. Плагин появится здесь, когда его загрузит DAW.';
+
+  @override
+  String get legacyInstallTitle => 'Удалить старую установку?';
+
+  @override
+  String get legacyInstallMessage =>
+      'Старая копия DAW Project Manager, установленная прежним установщиком, всё ещё на компьютере. Эта копия заменяет её и теперь обновляется сама. Удаление старой копии не затрагивает вашу библиотеку.';
+
+  @override
+  String get legacyInstallRemove => 'Удалить';
+
+  @override
+  String get legacyInstallKeep => 'Оставить';
+
+  @override
+  String get legacyInstallRemoveFailed =>
+      'Не удалось запустить деинсталлятор старой копии.';
 }
