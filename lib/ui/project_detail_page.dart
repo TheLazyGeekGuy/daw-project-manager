@@ -20,6 +20,7 @@ import 'package:uuid/uuid.dart';
 
 import '../models/music_project.dart';
 import 'widgets/project_inspection_dialog.dart';
+import 'widgets/legacy_cubase_migration_dialog.dart';
 import '../models/project_attachment.dart';
 import '../models/project_detail_layout.dart';
 import '../models/project_event.dart';
@@ -1010,15 +1011,28 @@ class _ProjectDetailPageState extends ConsumerState<ProjectDetailPage> {
                   children: [
                     Align(
                       alignment: Alignment.centerRight,
-                      child: TextButton.icon(
-                        onPressed: () => showDialog<void>(
-                          context: context,
-                          builder: (_) => ProjectInspectionDialog(
-                            projectFile: File(project.filePath),
+                      child: Wrap(
+                        spacing: 8,
+                        children: [
+                          TextButton.icon(
+                            onPressed: () => showDialog<void>(
+                              context: context,
+                              builder: (_) => ProjectInspectionDialog(
+                                projectFile: File(project.filePath),
+                              ),
+                            ),
+                            icon: const Icon(Icons.fact_check_outlined),
+                            label: const Text('Inspect dependencies'),
                           ),
-                        ),
-                        icon: const Icon(Icons.fact_check_outlined),
-                        label: const Text('Inspect dependencies'),
+                          TextButton.icon(
+                            onPressed: () => showDialog<void>(
+                              context: context,
+                              builder: (_) => const LegacyCubaseMigrationDialog(),
+                            ),
+                            icon: const Icon(Icons.history_outlined),
+                            label: const Text('Legacy Cubase .ALL/.ARR'),
+                          ),
+                        ],
                       ),
                     ),
                     Expanded(
