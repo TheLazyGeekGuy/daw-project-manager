@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 
 import '../../services/release_workflow_validator.dart';
 import '../../services/release_record_editor.dart';
+import '../../services/release_track_editor.dart';
 import '../../services/release_workspace_store.dart';
 
 /// A native, manual metadata editor; no Katsu or distributor API connection.
@@ -124,6 +125,106 @@ class _ReleaseWorkflowEditorState extends State<ReleaseWorkflowEditor> {
     }
   }
 
+
+
+  Future<void> _editTrack([int? index]) async {
+    final source = jsonDecode(_controller.text) as Map<String, dynamic>;
+    final entries = source['tracks'] as List;
+    final previous = index == null ? <String, dynamic>{} :
+        Map<String, dynamic>.from(entries[index] as Map);
+    final id = TextEditingController(text: previous['id']?.toString() ?? '');
+    final title = TextEditingController(text: previous['title']?.toString() ?? '');
+    final isrc = TextEditingController(text: previous['isrc']?.toString() ?? '');
+    final value = await showDialog<Map<String, String>>(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: Text(index == null ? 'Add release track' : 'Edit release track'),
+        content: Column(mainAxisSize: MainAxisSize.min, children: [
+          TextField(controller: id,
+            decoration: const InputDecoration(labelText: 'Stable track ID')),
+          TextField(controller: title,
+            decoration: const InputDecoration(labelText: 'Track title')),
+          TextField(controller: isrc,
+            decoration: const InputDecoration(labelText: 'ISRC (optional)')),
+        ]),
+        actions: [
+          TextButton(onPressed: () => Navigator.pop(context),
+            child: const Text('Cancel')),
+          FilledButton(onPressed: () => Navigator.pop(context, {
+            'id': id.text.trim(),
+            'title': title.text.trim(),
+            if (isrc.text.trim().isNotEmpty) 'isrc': isrc.text.trim(),
+          }), child: const Text('Apply')),
+        ],
+      ),
+    );
+    id.dispose();
+    title.dispose();
+    isrc.dispose();
+    if (value == null || !mounted) return;
+    try {
+      final updated = ReleaseTrackEditor.upsert(source, value, index: index);
+      final problems = _validator.validate(updated);
+      if (problems.isNotEmpty) throw FormatException(problems.join('; '));
+      setState(() {
+        _controller.text = const JsonEncoder.withIndent('  ').convert(updated);
+        _error = null;
+      });
+    } catch (error) {
+      setState(() => _error = error.toString());
+    }
+  }
+
+  void _reorderTrack(int from, int to) {
+    final source = jsonDecode(_controller.text) as Map<String, dynamic>;
+    try {
+      final updated = ReleaseTrackEditor.move(source, from, to);
+      setState(() {
+        _controller.text = const JsonEncoder.withIndent('  ').convert(updated);
+        _error = null;
+      });
+    } catch (error) {
+      setState(() => _error = error.toString());
+    }
+  }
+
+  Widget _trackRecords() {
+    final data = jsonDecode(_controller.text) as Map<String, dynamic>;
+    final tracks = data['tracks'] as List;
+    return Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+      Text('Release tracks', style: Theme.of(context).textTheme.titleSmall),
+      for (var index = 0; index < tracks.length; index++)
+        ListTile(
+          dense: true,
+          title: Text((tracks[index] as Map)['title']?.toString() ??
+              (tracks[index] as Map)['id']?.toString() ?? ''),
+          subtitle: Text((tracks[index] as Map)['isrc']?.toString() ?? 'ISRC not assigned'),
+          trailing: Row(mainAxisSize: MainAxisSize.min, children: [
+            IconButton(
+              tooltip: 'Move up',
+              onPressed: index > 0 ? () => _reorderTrack(index, index - 1) : null,
+              icon: const Icon(Icons.arrow_upward),
+            ),
+            IconButton(
+              tooltip: 'Move down',
+              onPressed: index + 1 < tracks.length ?
+                  () => _reorderTrack(index, index + 1) : null,
+              icon: const Icon(Icons.arrow_downward),
+            ),
+            IconButton(
+              tooltip: 'Edit track',
+              onPressed: () => _editTrack(index),
+              icon: const Icon(Icons.edit_outlined),
+            ),
+          ]),
+        ),
+      TextButton.icon(
+        onPressed: () => _editTrack(),
+        icon: const Icon(Icons.add),
+        label: const Text('Add track'),
+      ),
+    ]);
+  }
 
   Future<void> _editEntry(String section, [int? index]) async {
     final fields = ReleaseRecordEditor.sections[section]!;
@@ -350,6 +451,7 @@ class _ReleaseWorkflowEditorState extends State<ReleaseWorkflowEditor> {
           },
         ),
         const Divider(),
+        _trackRecords(),
         _sectionRecords('rights_filings'),
         _sectionRecords('distribution'),
         _sectionRecords('communications'),
