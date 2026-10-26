@@ -31,4 +31,22 @@ void main() {
       await folder.delete(recursive: true);
     }
   });
+  test('repeated backups never overwrite earlier copies', () async {
+    final folder = await Directory.systemTemp.createTemp('repair-repeat-');
+    try {
+      final original = File('${folder.path}/song.cpr');
+      await original.writeAsString('first state');
+      final first = await VerifiedProjectBackup.create(original);
+      await original.writeAsString('second state');
+      final second = await VerifiedProjectBackup.create(original);
+
+      expect(first.backupPath, isNot(second.backupPath));
+      expect(await File(first.backupPath).readAsString(), 'first state');
+      expect(await File(second.backupPath).readAsString(), 'second state');
+      expect(first.sha256Digest, isNot(second.sha256Digest));
+    } finally {
+      await folder.delete(recursive: true);
+    }
+  });
+
 }
