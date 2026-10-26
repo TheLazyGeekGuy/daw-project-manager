@@ -28,6 +28,12 @@ class _ReleaseWorkflowEditorState extends State<ReleaseWorkflowEditor> {
   String _collectionType = 'album';
   final _artistController = TextEditingController();
   bool _advancedJson = false;
+  final _organization = TextEditingController();
+  final _rightsStatus = TextEditingController(text: 'draft');
+  final _distributor = TextEditingController();
+  final _deliveryStatus = TextEditingController(text: 'draft');
+  final _promotionPlatform = TextEditingController();
+  final _promotionStatus = TextEditingController(text: 'planned');
   bool _loading = true;
   bool _saving = false;
   String? _error;
@@ -47,6 +53,21 @@ class _ReleaseWorkflowEditorState extends State<ReleaseWorkflowEditor> {
         _controller.text = const JsonEncoder.withIndent('  ').convert(data);
         _collectionType = data['collection_type'] as String? ?? 'album';
         _artistController.text = ((data['artist_ids'] as List?) ?? []).join(', ');
+        final rights = (data['rights_filings'] as List?) ?? [];
+        final distribution = (data['distribution'] as List?) ?? [];
+        final communication = (data['communications'] as List?) ?? [];
+        if (rights.isNotEmpty && rights.first is Map) {
+          _organization.text = rights.first['organization']?.toString() ?? '';
+          _rightsStatus.text = rights.first['status']?.toString() ?? 'draft';
+        }
+        if (distribution.isNotEmpty && distribution.first is Map) {
+          _distributor.text = distribution.first['distributor']?.toString() ?? '';
+          _deliveryStatus.text = distribution.first['status']?.toString() ?? 'draft';
+        }
+        if (communication.isNotEmpty && communication.first is Map) {
+          _promotionPlatform.text = communication.first['platform']?.toString() ?? '';
+          _promotionStatus.text = communication.first['status']?.toString() ?? 'planned';
+        }
         _next = _validator.nextSuggestedStep(data);
         _loading = false;
       });
@@ -73,6 +94,18 @@ class _ReleaseWorkflowEditorState extends State<ReleaseWorkflowEditor> {
       if (!_advancedJson) {
         data['collection_type'] = _collectionType;
         data['artist_ids'] = _artistController.text.split(',').map((v) => v.trim()).where((v) => v.isNotEmpty).toSet().toList();
+        void updateFirst(String key, Map<String, String> values, String primary) {
+          final entries = List<dynamic>.from((data[key] as List?) ?? []);
+          if (values[primary]!.isNotEmpty) {
+            if (entries.isEmpty) entries.add(<String, dynamic>{});
+            if (entries.first is! Map) throw FormatException('Invalid $key entry');
+            entries[0] = {...Map<String, dynamic>.from(entries.first as Map), ...values};
+            data[key] = entries;
+          }
+        }
+        updateFirst('rights_filings', {'organization': _organization.text.trim(), 'status': _rightsStatus.text.trim()}, 'organization');
+        updateFirst('distribution', {'distributor': _distributor.text.trim(), 'status': _deliveryStatus.text.trim()}, 'distributor');
+        updateFirst('communications', {'platform': _promotionPlatform.text.trim(), 'status': _promotionStatus.text.trim()}, 'platform');
       }
       final problems = _validator.validate(data);
       if (problems.isNotEmpty) {
@@ -93,6 +126,9 @@ class _ReleaseWorkflowEditorState extends State<ReleaseWorkflowEditor> {
   void dispose() {
     _controller.dispose();
     _artistController.dispose();
+    for (final controller in [_organization, _rightsStatus, _distributor, _deliveryStatus, _promotionPlatform, _promotionStatus]) {
+      controller.dispose();
+    }
     super.dispose();
   }
 
@@ -140,6 +176,24 @@ class _ReleaseWorkflowEditorState extends State<ReleaseWorkflowEditor> {
             border: OutlineInputBorder(),
           ),
         ),
+        const SizedBox(height: 16),
+        Text('Rights filing', style: Theme.of(context).textTheme.titleSmall),
+        TextField(controller: _organization, enabled: !_advancedJson,
+          decoration: const InputDecoration(labelText: 'Rights organization (e.g. SACEM, BMI, PRS)')),
+        TextField(controller: _rightsStatus, enabled: !_advancedJson,
+          decoration: const InputDecoration(labelText: 'Rights filing status')),
+        const SizedBox(height: 12),
+        Text('Distribution', style: Theme.of(context).textTheme.titleSmall),
+        TextField(controller: _distributor, enabled: !_advancedJson,
+          decoration: const InputDecoration(labelText: 'Distributor')),
+        TextField(controller: _deliveryStatus, enabled: !_advancedJson,
+          decoration: const InputDecoration(labelText: 'Delivery status')),
+        const SizedBox(height: 12),
+        Text('Communication', style: Theme.of(context).textTheme.titleSmall),
+        TextField(controller: _promotionPlatform, enabled: !_advancedJson,
+          decoration: const InputDecoration(labelText: 'Promotion platform')),
+        TextField(controller: _promotionStatus, enabled: !_advancedJson,
+          decoration: const InputDecoration(labelText: 'Promotion status')),
         SwitchListTile(
           contentPadding: EdgeInsets.zero,
           title: const Text('Advanced JSON editor'),
