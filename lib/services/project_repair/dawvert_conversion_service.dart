@@ -198,9 +198,17 @@ class DawVertConversionService {
     try {
       outputDescriptor = await _detectFile(output);
     } on FormatException catch (error) {
-      await _writeFailure(manifest, 'Invalid output signature:     if (outputDescriptor.id != targetFormat) {
-      await _writeFailure(manifest, 'Output format signature does not match request',
-          backup.backupPath);
+      await _writeFailure(
+        manifest, 'Invalid output signature: ' + error.message,
+        backup.backupPath,
+      );
+      rethrow;
+    }
+    if (outputDescriptor.id != targetFormat) {
+      await _writeFailure(
+        manifest, 'Output format signature does not match request',
+        backup.backupPath,
+      );
       throw const FormatException('DawVert output signature mismatch');
     }
     if (await _sha256Of(original) != backup.sha256Digest ||
