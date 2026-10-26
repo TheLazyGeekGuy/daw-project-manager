@@ -49,4 +49,37 @@ void main() {
     }
   });
 
+  test('refuses symlinked source paths', () async {
+    if (Platform.isWindows) return;
+    final folder = await Directory.systemTemp.createTemp('repair-link-test-');
+    try {
+      final original = File('${folder.path}/original.cpr');
+      await original.writeAsString('immutable');
+      final link = Link('${folder.path}/linked.cpr');
+      await link.create(original.path);
+      expect(
+        () => VerifiedProjectBackup.create(File(link.path)),
+        throwsA(isA<FileSystemException>()),
+      );
+      expect(await original.readAsString(), 'immutable');
+    } finally {
+      await folder.delete(recursive: true);
+    }
+  });
+
+  test('does not copy an existing managed backup into another backup', () async {
+    final folder = await Directory.systemTemp.createTemp('repair-nesting-test-');
+    try {
+      final source = File('${folder.path}/song.cpr');
+      await source.writeAsString('initial');
+      final first = await VerifiedProjectBackup.create(source);
+      expect(
+        () => VerifiedProjectBackup.create(File(first.backupPath)),
+        throwsA(isA<FileSystemException>()),
+      );
+    } finally {
+      await folder.delete(recursive: true);
+    }
+  });
+
 }
