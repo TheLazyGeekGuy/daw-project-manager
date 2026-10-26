@@ -19,6 +19,7 @@ import 'package:archive/archive_io.dart';
 import 'package:uuid/uuid.dart';
 
 import '../models/music_project.dart';
+import 'widgets/project_inspection_dialog.dart';
 import '../models/project_attachment.dart';
 import '../models/project_detail_layout.dart';
 import '../models/project_event.dart';
@@ -1005,7 +1006,26 @@ class _ProjectDetailPageState extends ConsumerState<ProjectDetailPage> {
                   error: (_, _) => _findProject(repo.getAllProjects()),
                 );
                 if (project == null) return _buildProjectGone();
-                return _buildProjectContent(repo, project, allProjectsAsync);
+                return Column(
+                  children: [
+                    Align(
+                      alignment: Alignment.centerRight,
+                      child: TextButton.icon(
+                        onPressed: () => showDialog<void>(
+                          context: context,
+                          builder: (_) => ProjectInspectionDialog(
+                            projectFile: File(project.filePath),
+                          ),
+                        ),
+                        icon: const Icon(Icons.fact_check_outlined),
+                        label: const Text('Inspect dependencies'),
+                      ),
+                    ),
+                    Expanded(
+                      child: _buildProjectContent(repo, project, allProjectsAsync),
+                    ),
+                  ],
+                );
               },
             ),
           ),
