@@ -1,0 +1,32 @@
+import 'package:flutter_test/flutter_test.dart';
+import 'package:daw_project_manager/services/release_workflow_validator.dart';
+
+void main() {
+  const validator = ReleaseWorkflowValidator();
+  test('requires coherent track identity, ISRC and fields', () {
+    final data = {
+      'schema_version': 1,
+      'collection_type': 'album',
+      'tracks': [
+        {'id': 'a', 'isrc': 'FRABC1234567'},
+        {'id': 'a', 'isrc': 'broken'},
+      ],
+      'rights_filings': <Object>[],
+      'distribution': <Object>[],
+      'communications': <Object>[],
+    };
+    expect(validator.validate(data), contains('Duplicate track ID: a'));
+    expect(validator.validate(data).any((e) => e.contains('Invalid ISRC')), true);
+  });
+  test('reports next manual release step without inventing confirmation', () {
+    final data = {
+      'schema_version': 1,
+      'collection_type': 'single',
+      'tracks': [{'id': 'a', 'isrc': 'FRABC1234567'}],
+      'rights_filings': <Object>[],
+      'distribution': <Object>[],
+      'communications': <Object>[],
+    };
+    expect(validator.nextSuggestedStep(data), 'Prepare distributor delivery');
+  });
+}
