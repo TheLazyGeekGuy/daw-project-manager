@@ -28,7 +28,7 @@ class VerifiedProjectBackup {
     }
     // File.stat follows symlinks. Refuse linked paths explicitly, including
     // symlinked ancestor directories, before copying user projects.
-    await _rejectSymlinkComponents(original.absolute.path);
+    await ensureNoSymlinkComponents(original.absolute.path);
     final originalStat = await original.stat();
     if (originalStat.type != FileSystemEntityType.file) {
       throw const FileSystemException('Expected a regular project file');
@@ -40,7 +40,7 @@ class VerifiedProjectBackup {
       throw const FileSystemException('Cannot back up a managed backup');
     }
     await directory.create(recursive: true);
-    await _rejectSymlinkComponents(directory.absolute.path);
+    await ensureNoSymlinkComponents(directory.absolute.path);
 
     final sourceHash = await _digest(original);
     final sourceLength = await original.length();
@@ -57,7 +57,7 @@ class VerifiedProjectBackup {
       final verifiedLength = await created.length();
       final verifiedHash = await _digest(created);
       final unchangedHash = await _digest(original);
-      await _rejectSymlinkComponents(original.absolute.path);
+      await ensureNoSymlinkComponents(original.absolute.path);
       if (verifiedLength != sourceLength ||
           verifiedHash != sourceHash ||
           unchangedHash != sourceHash ||
@@ -71,7 +71,8 @@ class VerifiedProjectBackup {
     }
   }
 
-  static Future<void> _rejectSymlinkComponents(String targetPath) async {
+  /// Refuse symlinks in each existing path component, including ancestors.
+  static Future<void> ensureNoSymlinkComponents(String targetPath) async {
     var current = p.normalize(p.absolute(targetPath));
     while (true) {
       if (await FileSystemEntity.type(current, followLinks: false) ==
