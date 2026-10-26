@@ -76,3 +76,10 @@ These features are independent of Katsu. Its concepts were used as research only
 ## Release workflow UI update
 
 The release editor now supports direct form inputs for the first rights organization/status, distributor/status and promotional platform/status, in addition to collection type and artist IDs. Additional entries remain accessible through advanced JSON. This is an intermediate UI, **not** finished relational CRUD, validation of real-world filings, external submission or verified delivery. The new tests are committed but have not run on the branch because non-main CI triggers were disabled by request.
+
+## Releases delivery increment (2026-10-26)
+
+- Release workspaces now use per-profile paths under application support; legacy Hive Release records remain untouched. Existing unscoped workspace JSON files are not migrated automatically pending ownership validation.
+- Added immutable CRUD helpers for multiple rights organizations, distributors and promotion entries, preserving unknown custom fields, with focused regression tests.
+- Release workflow UI now exposes multi-entry add/edit/remove actions, ordered track list and track ID/ISRC editing; removal only affects the workflow association, not the underlying DAW project/audio.
+- Production readiness still requires compilation, localization, stable artist/project reference integration, profile-safe migration, backup recovery and multi-platform tests. Non-main CI remains disabled as requested.
