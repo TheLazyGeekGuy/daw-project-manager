@@ -182,7 +182,8 @@ class _ReleaseWorkflowEditorState extends State<ReleaseWorkflowEditor> {
         TextField(controller: _organization, enabled: !_advancedJson,
           decoration: const InputDecoration(labelText: 'Rights organization (e.g. SACEM, BMI, PRS)')),
         DropdownButtonFormField<String>(
-          value: _rightsStatus.text,
+          value: ReleaseWorkflowValidator.rightsStatuses.contains(_rightsStatus.text)
+              ? _rightsStatus.text : 'draft',
           decoration: const InputDecoration(labelText: 'Rights filing status'),
           items: ReleaseWorkflowValidator.rightsStatuses
               .map((status) => DropdownMenuItem(value: status, child: Text(status)))
@@ -196,7 +197,8 @@ class _ReleaseWorkflowEditorState extends State<ReleaseWorkflowEditor> {
         TextField(controller: _distributor, enabled: !_advancedJson,
           decoration: const InputDecoration(labelText: 'Distributor')),
         DropdownButtonFormField<String>(
-          value: _deliveryStatus.text,
+          value: ReleaseWorkflowValidator.deliveryStatuses.contains(_deliveryStatus.text)
+              ? _deliveryStatus.text : 'draft',
           decoration: const InputDecoration(labelText: 'Delivery status'),
           items: ReleaseWorkflowValidator.deliveryStatuses
               .map((status) => DropdownMenuItem(value: status, child: Text(status)))
@@ -210,7 +212,8 @@ class _ReleaseWorkflowEditorState extends State<ReleaseWorkflowEditor> {
         TextField(controller: _promotionPlatform, enabled: !_advancedJson,
           decoration: const InputDecoration(labelText: 'Promotion platform')),
         DropdownButtonFormField<String>(
-          value: _promotionStatus.text,
+          value: ReleaseWorkflowValidator.promotionStatuses.contains(_promotionStatus.text)
+              ? _promotionStatus.text : 'planned',
           decoration: const InputDecoration(labelText: 'Promotion status'),
           items: ReleaseWorkflowValidator.promotionStatuses
               .map((status) => DropdownMenuItem(value: status, child: Text(status)))
