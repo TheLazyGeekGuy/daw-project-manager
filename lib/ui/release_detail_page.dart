@@ -706,8 +706,10 @@ class _ReleaseDetailPageState extends ConsumerState<ReleaseDetailPage>
   Future<void> _openReleaseWorkflow() async {
     final support = await getApplicationSupportDirectory();
     if (!mounted) return;
+    final profile = ref.read(currentProfileProvider).asData?.value;
+    if (profile == null) return;
     final store = ReleaseWorkspaceStore(
-      Directory(path.join(support.path, 'release-workspaces')),
+      Directory(path.join(support.path, 'release-workspaces', profile.id)),
     );
     await showDialog<void>(
       context: context,
