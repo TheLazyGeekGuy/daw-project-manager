@@ -30,6 +30,7 @@ import '../services/metadata_extractor.dart';
 import '../services/mixdown_detector_service.dart';
 import 'row_click_selection.dart';
 import 'widgets/project_info_columns.dart';
+import 'widgets/project_file_inspection_button.dart';
 import 'widgets/on_art_marker.dart';
 import 'widgets/stack_version_badge.dart';
 import 'widgets/now_playing_icon.dart';
@@ -1963,6 +1964,7 @@ class _DashboardPageState extends ConsumerState<DashboardPage>
                                       ),
                                   ]
                                 : [
+                                    const ProjectFileInspectionButton(),
                                     // Search icon (hidden on Playlists tab)
                                     if (_currentTab != AppTab.playlists)
                                       IconButton(
@@ -3589,6 +3591,7 @@ class _DashboardPageState extends ConsumerState<DashboardPage>
                                   context,
                                 )!.appTitleWithVersion(appVersion),
                           actions: [
+                            const ProjectFileInspectionButton(),
                             // Donate button
                             Consumer(
                               builder: (context, ref, child) {

@@ -7,22 +7,6 @@ permissions:
 
 # 1. Gatilhos do Workflow
 on:
-  pull_request:
-    # 'release/**' as well as main: a fix or a test build aimed at an already
-    # released version is opened against a release/vX.Y.Z branch cut from its
-    # tag, and with main alone those PRs matched no trigger at all — they sat
-    # with no checks and, more to the point, produced no build artifact to
-    # hand to anyone.
-    branches: [ main, 'release/**' ]
-    types: [ opened, synchronize, reopened ]
-    # Text nothing builds or tests (path filters don't apply to tag pushes,
-    # so a release always runs in full).
-    paths-ignore:
-      - '**.md'
-      - 'docs/**'
-      - '.claude/**'
-      - 'website/**'
-
   push:
     branches: [ main ]
     tags:

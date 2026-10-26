@@ -1,0 +1,54 @@
+{
+  "schema_version": 1,
+  "description": "Official Steinberg Cubase 12–15 public demo ZIP references. Download manually; usage and redistribution subject to Steinberg's terms. Check actual contents and saved Cubase versions after extraction.",
+  "sources": [
+    {
+      "version": "15",
+      "artist": "Austin Hull",
+      "archive_url": "https://download.steinberg.net/assets/Cubase_15_Demo_Project_-_Austin_Hull.zip",
+      "sha256": null,
+      "archive_size_bytes": null,
+      "validated": false
+    },
+    {
+      "version": "14",
+      "artist": "Austin Hull",
+      "archive_url": "https://download.steinberg.net/assets/Cubase-14/Cubase_14_Demo_Project_-_Austin_Hull_1.zip",
+      "sha256": null,
+      "archive_size_bytes": null,
+      "validated": false
+    },
+    {
+      "version": "13",
+      "artist": "Austin Hull",
+      "archive_url": "https://download.steinberg.net/assets/Cubase-13/Cubase-13-Demo-Project-Austin-Hull.zip",
+      "sha256": null,
+      "archive_size_bytes": null,
+      "validated": false
+    },
+    {
+      "version": "12",
+      "artist": "Austin Hull",
+      "archive_url": "https://download.steinberg.net/downloads_additional_content/Demo_Projects/Cubase_12_-_Demo_Project_By_Austin_Hull.zip",
+      "sha256": null,
+      "archive_size_bytes": null,
+      "validated": false
+    },
+    {
+      "version": "12",
+      "artist": "Mendel Bij De Leij",
+      "archive_url": "https://download.steinberg.net/downloads_additional_content/Demo_Projects/Cubase_12_-_Demo_Project_by_Mendel_Bij_De_Leij.zip",
+      "sha256": null,
+      "archive_size_bytes": null,
+      "validated": false
+    }
+  ],
+  "official_directory_url": "https://www.steinberg.net/cubase/demo-projects/",
+  "fidelity_gate": {
+    "requires_sha256_per_cpr": true,
+    "requires_cubase_native_reopen": true,
+    "requires_plugin_preset_automation_routing_checks": true,
+    "passes_so_far": 0
+  },
+  "licence_notice": "Download only from Steinberg. No music, media, archives or proprietary CPR examples are redistributed in DPM."
+}

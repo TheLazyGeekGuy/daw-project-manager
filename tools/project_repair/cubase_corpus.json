@@ -1,0 +1,88 @@
+{
+  "schemaVersion": 1,
+  "sourcePage": "https://www.steinberg.net/cubase/demo-projects/",
+  "redistribution": "External validation corpus only. Do not commit project or media files to this repository.",
+  "archives": [
+    {
+      "id": "cubase15-austin-hull",
+      "cubaseGeneration": 15,
+      "artist": "Austin Hull",
+      "url": "https://download.steinberg.net/assets/Cubase_15_Demo_Project_-_Austin_Hull.zip",
+      "observedArchiveBytes": 92146828,
+      "projects": [
+        {
+          "archiveMember": "Austin Hull - Cubase 15 Demo Project/Austin Hull - Cubase 15.cpr",
+          "bytes": 11190483,
+          "sha256": "04bdaed7c2a99797b43628998e360e1935388f6aa2da763e0609075a3a9664c4"
+        }
+      ]
+    },
+    {
+      "id": "cubase14-austin-hull",
+      "cubaseGeneration": 14,
+      "artist": "Austin Hull",
+      "url": "https://download.steinberg.net/assets/Cubase-14/Cubase_14_Demo_Project_-_Austin_Hull_1.zip",
+      "observedArchiveBytes": 92649856,
+      "projects": [
+        {
+          "archiveMember": "Cubase 14 Demo Project - Austin Hull/Austin Hull - Cubase 14 Demo Project.cpr",
+          "bytes": 7964203,
+          "sha256": "7b61c5ba3520bff2aba48208b44e835941b6dfaf996599f0533e8556efff65be"
+        }
+      ]
+    },
+    {
+      "id": "cubase13-austin-hull",
+      "cubaseGeneration": 13,
+      "artist": "Austin Hull",
+      "url": "https://download.steinberg.net/assets/Cubase-13/Cubase-13-Demo-Project-Austin-Hull.zip",
+      "observedArchiveBytes": 125895961,
+      "projects": [
+        {
+          "archiveMember": "Cubase 13 Demo Project - Austin Hull/Austin Hull - Cubase 13 Demo Project.cpr",
+          "bytes": 15347699,
+          "sha256": "52c1ae0a1ecea55646253ae59fb3f1db0731ec47f05dcd8f0bc68f5e173315c1"
+        }
+      ]
+    },
+    {
+      "id": "cubase12-austin-hull",
+      "cubaseGeneration": 12,
+      "artist": "Austin Hull",
+      "url": "https://download.steinberg.net/downloads_additional_content/Demo_Projects/Cubase_12_-_Demo_Project_By_Austin_Hull.zip",
+      "observedArchiveBytes": 128287376,
+      "projects": [
+        {
+          "archiveMember": "Cubase 12 - Demo Project By Austin Hull/Cubase 12 - Pop Demo By Austin Hull_UNMIXED.cpr",
+          "bytes": 9408535,
+          "sha256": "9f817ee2bc9173b13b8dcfdd0bb0922fd9126f60e762a772c8b33a13f7a7f38e"
+        },
+        {
+          "archiveMember": "Cubase 12 - Demo Project By Austin Hull/Cubase 12 - Pop Demo By Austin Hull.cpr_MIXED.cpr",
+          "bytes": 12435689,
+          "sha256": "b22b699232970644ef91dc5d6ef89074dabe3a2dab260cb8743d5225c6876a35"
+        }
+      ]
+    },
+    {
+      "id": "cubase12-mendel-bij-de-leij",
+      "cubaseGeneration": 12,
+      "artist": "Mendel Bij De Leij",
+      "url": "https://download.steinberg.net/downloads_additional_content/Demo_Projects/Cubase_12_-_Demo_Project_by_Mendel_Bij_De_Leij.zip",
+      "observedArchiveBytes": 1014186401,
+      "projects": [
+        {
+          "archiveMember": "Cubase 12 - Demo Project by Mendel Bij De Leij/MIXED/Cubase 12 - Demo Project by Mendel Bij De Leij_MIXED.cpr",
+          "bytes": 3636734,
+          "sha256": "6644d45375a601ee94c1af2f6c64b0897c0fb67374ccf9f523cf8b05644b9139"
+        },
+        {
+          "archiveMember": "Cubase 12 - Demo Project by Mendel Bij De Leij/UNMIXED/Cubase 12 - Demo Project by Mendel Bij De Leij_UNMIXED.cpr",
+          "bytes": 3312793,
+          "sha256": "50bdd6d0978da5883b988579842786ac00865ffc46d94874922625b4c57d539a"
+        }
+      ]
+    }
+  ],
+  "verifiedOn": "2026-10-26"
+}

@@ -4498,5 +4498,309 @@
   "legacyInstallMessage": "以前のインストーラーで入れた DAW Project Manager の古いコピーがまだインストールされています。このコピーがそれに代わり、今後は自動で更新されます。古いコピーを削除してもライブラリには影響しません。",
   "legacyInstallRemove": "削除する",
   "legacyInstallKeep": "残す",
-  "legacyInstallRemoveFailed": "古いコピーのアンインストーラーを起動できませんでした。"
+  "legacyInstallRemoveFailed": "古いコピーのアンインストーラーを起動できませんでした。",
+  "releaseManagerWorkflow": "Release workspace",
+  "releaseManagerIntro": "Manage the catalogue, rights, deliveries and promotion for this release. External statuses are recorded manually.",
+  "releaseManagerCollectionType": "Release type",
+  "releaseManagerArtists": "Artists",
+  "releaseManagerSelectedArtists": "Artists credited on this release",
+  "releaseManagerAliases": "Aliases",
+  "releaseManagerRoles": "Roles",
+  "releaseManagerSortName": "Sort name",
+  "releaseManagerTracks": "Release tracks",
+  "releaseManagerProject": "Linked DPM project",
+  "releaseManagerWork": "Composition",
+  "releaseManagerCredits": "Credits",
+  "releaseManagerRole": "Role",
+  "releaseManagerPlaylists": "Profile playlists",
+  "releaseManagerPlaylistTracks": "Ordered tracks",
+  "releaseManagerAssets": "Audio versions and supporting files",
+  "releaseManagerAssetRole": "File role",
+  "releaseManagerPath": "File path",
+  "releaseManagerParentAsset": "Derived from",
+  "releaseManagerVerify": "Verify file",
+  "releaseManagerVerification": "Integrity",
+  "releaseManagerFilePicker": "Choose file",
+  "releaseManagerWorks": "Compositions",
+  "releaseManagerHolders": "Rights holders",
+  "releaseManagerShares": "Ownership shares",
+  "releaseManagerHolder": "Rights holder",
+  "releaseManagerPercentage": "Share (%)",
+  "releaseManagerFilings": "Rights registrations",
+  "releaseManagerOrganization": "Organization (SACEM, BMI, PRS…)",
+  "releaseManagerReference": "Reference number",
+  "releaseManagerEvidence": "Supporting documents",
+  "releaseManagerDistribution": "Distribution",
+  "releaseManagerDistributor": "Distributor",
+  "releaseManagerPlatforms": "Platform deliveries",
+  "releaseManagerPlatform": "Platform",
+  "releaseManagerUrl": "Publication URL",
+  "releaseManagerCampaigns": "Promotion campaigns",
+  "releaseManagerCampaign": "Campaign",
+  "releaseManagerCalendar": "Promotion calendar",
+  "releaseManagerCommunications": "Promotional posts",
+  "releaseManagerScheduledAt": "Scheduled for",
+  "releaseManagerPublishedAt": "Published at",
+  "releaseManagerSubmittedAt": "Submitted at",
+  "releaseManagerStartAt": "Start date",
+  "releaseManagerEndAt": "End date",
+  "releaseManagerText": "Post copy",
+  "releaseManagerTasks": "Workflow tasks",
+  "releaseManagerDependsOn": "Depends on",
+  "releaseManagerDueAt": "Due date",
+  "releaseManagerSave": "Validate and save",
+  "releaseManagerSaving": "Saving…",
+  "releaseManagerSaved": "Release workspace saved",
+  "releaseManagerReload": "Reload saved data",
+  "releaseManagerImportLegacy": "Import previous metadata",
+  "releaseManagerHistory": "Status history",
+  "releaseManagerRemoveQuestion": "Remove this record?",
+  "releaseManagerRemoveHelp": "References are checked before removal. Source projects and files are kept.",
+  "releaseManagerMoveUp": "Move up",
+  "releaseManagerMoveDown": "Move down",
+  "releaseManagerNone": "None",
+  "releaseManagerRequired": "This field is required",
+  "releaseManagerInvalidNumber": "Enter a valid number",
+  "releaseManagerInvalidDate": "Enter a valid date and time",
+  "releaseManagerCommaSeparated": "Separate values with commas",
+  "releaseManagerLocalTime": "Local date/time; stored in UTC",
+  "releaseManagerUnpromoted": "Tracks without promotion",
+  "releaseManagerEmpty": "No records yet",
+  "releaseManagerReleaseDate": "Release date",
+  "releaseManagerUnsaved": "Unsaved changes",
+  "releaseManagerDiscard": "Discard changes",
+  "releaseManagerLeaveQuestion": "Leave without saving?",
+  "releaseManagerUnexpectedStatus": "Unknown saved value",
+  "releaseManagerCoverage": "Publication readiness",
+  "releaseManagerArtist": "Artist",
+  "releaseManagerTrack": "Track",
+  "projectRepairOpen": "Inspect or recover a project file",
+  "projectRepairRecoverMidi": "Recover MIDI from ALL",
+  "projectRepairRecoveryTitle": "Experimental MIDI recovery",
+  "projectRepairRecoveryConsent": "DPM will recover supported MIDI events to a new file and keep a verified backup. Audio, instruments, effects and mixer settings are not recovered. Mid-song tempo changes, SysEx and some legacy variants are unsupported.",
+  "projectRepairRecoverAction": "Recover MIDI",
+  "projectRepairRecoveryCreated": "MIDI recovery file created",
+  "projectRepairWorking": "Processing…",
+  "projectRepairFailed": "The operation could not be completed",
+  "projectRepairNativeAllHint": "Integrated DPM engine · macOS Apple Silicon / Intel and Windows · no Cubase installation required",
+  "projectRepairInspectDependencies": "Inspect dependencies",
+  "projectRepairRecoveryStatus": "Recovery status",
+  "projectRepairRecoveredTracks": "Recovered tracks",
+  "projectRepairRecoveredNotes": "Recovered notes",
+  "projectRepairSkippedParts": "Skipped parts",
+  "projectRepairPartialRecovery": "Partial MIDI recovery; check the result in your DAW.",
+  "projectRepairUnverifiedRecovery": "MIDI recovered; musical fidelity remains unverified.",
+  "projectInspectorTitle": "Project inspection",
+  "projectInspectorFailed": "Inspection failed: {error}",
+  "@projectInspectorFailed": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "projectInspectorEmpty": "No report available",
+  "projectInspectorCopyReport": "Copy JSON report",
+  "projectInspectorCopied": "Inspection report copied",
+  "projectInspectorCopyFailed": "Cannot copy report: {error}",
+  "@projectInspectorCopyFailed": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "projectInspectorDependencies": "Project dependencies",
+  "projectInspectorFormat": "Format: {format}",
+  "@projectInspectorFormat": {
+    "placeholders": {
+      "format": {
+        "type": "String"
+      }
+    }
+  },
+  "projectInspectorTracks": "Tracks: {count}",
+  "@projectInspectorTracks": {
+    "placeholders": {
+      "count": {
+        "type": "String"
+      }
+    }
+  },
+  "projectInspectorTimeline": "Clips: {clips}; notes: {notes}; automation points: {points}",
+  "@projectInspectorTimeline": {
+    "placeholders": {
+      "clips": {
+        "type": "int"
+      },
+      "notes": {
+        "type": "int"
+      },
+      "points": {
+        "type": "int"
+      }
+    }
+  },
+  "projectInspectorReferences": "External references: {external}; missing archive references: {missing}",
+  "@projectInspectorReferences": {
+    "placeholders": {
+      "external": {
+        "type": "int"
+      },
+      "missing": {
+        "type": "int"
+      }
+    }
+  },
+  "projectInspectorSavedVersion": "Saved with DAW version: {version}",
+  "@projectInspectorSavedVersion": {
+    "placeholders": {
+      "version": {
+        "type": "String"
+      }
+    }
+  },
+  "projectInspectorValidatedChunks": "Validated CPR chunks: {chunks} (ARCH blocks: {archives})",
+  "@projectInspectorValidatedChunks": {
+    "placeholders": {
+      "chunks": {
+        "type": "int"
+      },
+      "archives": {
+        "type": "int"
+      }
+    }
+  },
+  "projectInspectorLegacyTitle": "Import legacy Cubase song",
+  "projectInspectorLegacyLosses": "Manual conversion with Cubase SE 3, SL 3 or SX 3. VST instruments, effects and mixer settings will be lost.",
+  "projectInspectorUidEvidence": "Serialized plug-in UID evidence",
+  "projectInspectorUidCaution": "Declared identifiers only. No vendor identity, plug-in state, licence or loadability has been verified.",
+  "projectInspectorUidRecord": "UID {uid}; {count} serialized record(s)",
+  "@projectInspectorUidRecord": {
+    "placeholders": {
+      "uid": {
+        "type": "String"
+      },
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "projectInspectorPlugins": "Plug-ins",
+  "projectInspectorNoPlugins": "No plug-ins decoded (not evidence of an empty session).",
+  "projectInspectorLoadabilityUntested": "Installation and loadability: not tested",
+  "projectInspectorLimitations": "Inspection limitations",
+  "projectInspectorAdditionalFolders": "Additional plug-in folders (optional)",
+  "projectInspectorAdditionalFoldersHelp": "One folder per line; standard locations are included.",
+  "projectInspectorScanButton": "Scan local plug-in candidates (optional)",
+  "projectInspectorScanFailed": "Local scan failed: {error}",
+  "@projectInspectorScanFailed": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "projectInspectorScanSummary": "{candidates} local candidates in {folders} scanned folders",
+  "@projectInspectorScanSummary": {
+    "placeholders": {
+      "candidates": {
+        "type": "int"
+      },
+      "folders": {
+        "type": "int"
+      }
+    }
+  },
+  "projectInspectorPassiveScan": "Passive filenames and VST3 manifests only. No plug-ins were executed. Licence, disabled status and loadability remain untested.",
+  "projectInspectorScanIncomplete": "Scan incomplete: entry or depth limit reached.",
+  "projectInspectorScanWarnings": "Scan coverage and warnings ({count})",
+  "@projectInspectorScanWarnings": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "projectInspectorRequestedId": "Requested ID: {identifier}",
+  "@projectInspectorRequestedId": {
+    "placeholders": {
+      "identifier": {
+        "type": "String"
+      }
+    }
+  },
+  "projectInspectorStatusIdentifierPresent": "Declared identifier found; loading and licence not tested",
+  "projectInspectorStatusReplacement": "Manifest declares a replacement; saved-state migration is unverified",
+  "projectInspectorStatusAmbiguous": "{count} candidates; select and verify in the DAW",
+  "@projectInspectorStatusAmbiguous": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "projectInspectorStatusIdentifierNotFound": "Identifier not found in scanned manifests; absence is inconclusive",
+  "projectInspectorStatusNameCandidate": "Name candidate found; identifier and loading not verified",
+  "projectInspectorStatusNameNotFound": "Name not found in scanned locations; absence is inconclusive",
+  "projectInspectorStatusUnknown": "Insufficient or unsupported plug-in identity evidence",
+  "projectInspectorPreservationIntro": "Create a verified backup and an unchanged reconstructed CPR, with opaque chunk evidence. The source project is preserved.",
+  "projectInspectorPreserveButton": "Preserve CPR and verify round trip",
+  "projectInspectorPreserveFailed": "Preservation failed: {error}",
+  "@projectInspectorPreserveFailed": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "projectInspectorPreserveSummary": "Preservation: {status}\nEvidence folder: {evidencePath}\nBackup: {backupPath}",
+  "@projectInspectorPreserveSummary": {
+    "placeholders": {
+      "status": {
+        "type": "String"
+      },
+      "evidencePath": {
+        "type": "String"
+      },
+      "backupPath": {
+        "type": "String"
+      }
+    }
+  },
+  "projectInspectorPreserveLimit": "This unchanged round trip does not validate a CPR edit or migration.",
+  "legacyMigrationTitle": "旧形式Cubaseの移行 (.ALL/.ARR)",
+  "legacyMigrationOpen": "旧形式のCubaseプロジェクトを移行",
+  "legacyMigrationIntro": "対応するMIDIデータを復元するか、外部ツールによる変換手順を利用します。オーディオ、プラグインの状態、ミックスの再現性は未検証です。",
+  "legacyMigrationNativeTitle": "DPM内蔵のMIDI復元 (.ALL)",
+  "legacyMigrationNativeBody": "DPMは対応する.ALLのMIDIトラックをプレビューし、別の標準MIDIファイルを作成できます。Cubaseのインストールや外部実行ファイルは不要です。形式への対応は実験段階です。",
+  "legacyMigrationOfficialTitle": "Cubase 3の公式インポート機能",
+  "legacyMigrationOfficialBody": "ライセンスがあり、互換性のある環境にインストールされたCubase SE 3、SL 3、SX 3で、File > Import > Cubase Songを選択し、別のCPRとして保存してください。Cubaseでメディアの参照先を確認してください。",
+  "legacyMigrationAtariTitle": "DAWproject経由のAtari変換",
+  "legacyMigrationAtariBody": "サードパーティーのWebサイトatari2cubaseでは、Atariの.ALL/.ARRをDAWprojectまたはMIDIに変換できます。Cubase VST PCへの対応は実験段階です。結果を自分でダウンロードし、Cubase/Nuendo 14以降にDAWprojectをインポートして、新しいCPRとして保存してください。DPMはこのWebサイトを独立に監査していません。",
+  "legacyMigrationOpenConverter": "atari2cubaseをブラウザーで開く",
+  "legacyMigrationAllToMidiTitle": "WindowsのAllToMidi",
+  "legacyMigrationAllToMidiBody": "Windowsに別途インストールしたAllToMidi実行ファイルで.ALLからMIDIを復元する任意の方法です。ARR、オーディオ、VSTプリセット、ミキサー設定には対応していません。MIDIをCubaseにインポートし、新しいCPRとして保存してください。",
+  "legacyMigrationExternalConsent": "復元されるのはMIDIのみです。オーディオ、音源、エフェクト、ミキサー設定は復元されません。テンポ変更やSysExが不完全な場合があります。選択した外部実行ファイルはOSのサンドボックスなしで実行されます。信頼できるローカルのインストールを使用してください。",
+  "legacyMigrationChooseLegacy": ".ALL / .ARRを選択してバックアップを検証",
+  "legacyMigrationSource": "ソース: {path}",
+  "legacyMigrationSourceHash": "ソースのSHA-256: {hash}",
+  "legacyMigrationBackup": "検証済みバックアップ: {path}",
+  "legacyMigrationPreviewTitle": "MIDIプレビュー（実験段階）",
+  "legacyMigrationPreviewSummary": "{tracks}トラック · {notes}ノート · {events} MIDIイベント",
+  "legacyMigrationInitialTempo": "初期テンポ: {bpm} BPM",
+  "legacyMigrationTrackSummary": "チャンネル{channel} · {parts}パート · {notes}ノート",
+  "legacyMigrationMoreTracks": "ほか{count}トラックはプレビューに表示していません",
+  "legacyMigrationUnsupportedPreview": "この.ALLの形式はプレビューできません。手動の移行手順は引き続き利用できます。",
+  "legacyMigrationArrUnsupported": ".ARRのMIDIをDPM内でデコードする機能はありません。手動の変換手順を利用してください。",
+  "legacyMigrationMidiOutput": "MIDIファイル: {path}",
+  "legacyMigrationMidiSummary": "{tracks}トラック · {notes}ノート · {ppq} PPQ",
+  "legacyMigrationCheckDawProject": "中間DAWprojectを確認",
+  "legacyMigrationDawProjectChecked": "DAWprojectアーカイブを検査しました。互換性のあるDAWで開いて比較してください。音楽的な同等性は未検証です。",
+  "legacyMigrationCheckCpr": "生成されたCPRを確認",
+  "legacyMigrationCprChecked": "CPRコンテナーを検査しました。これによって損失のない変換が保証されるわけではありません。",
+  "legacyMigrationRunExternal": "インストール済みAllToMidiでMIDIを復元",
+  "legacyMigrationSelectExecutable": "インストール済みAllToMidi.exeを選択",
+  "legacyMigrationTempoDefaulted": "初期テンポをデコードできなかったため、プレビューでは{bpm} BPMを使用します。",
+  "legacyMigrationOpenFailed": "変換サイトを開けませんでした"
 }
