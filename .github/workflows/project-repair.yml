@@ -1,0 +1,42 @@
+name: Project repair checks
+
+on:
+  push:
+    branches:
+      - feature/project-repair-conversion-architecture
+    paths:
+      - 'lib/services/project_repair/**'
+      - 'lib/ui/widgets/project_*'
+      - 'test/services/project_repair/**'
+      - 'test/ui/widgets/project_dependency_report_panel_test.dart'
+      - 'bin/project_repair_inspect.dart'
+      - '.github/workflows/project-repair.yml'
+  pull_request:
+    paths:
+      - 'lib/services/project_repair/**'
+      - 'lib/ui/widgets/project_*'
+      - 'test/services/project_repair/**'
+      - 'test/ui/widgets/project_dependency_report_panel_test.dart'
+      - 'bin/project_repair_inspect.dart'
+
+jobs:
+  dart-flutter-tests:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, macos-latest, windows-latest]
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+          cache: true
+      - name: Get dependencies
+        run: flutter pub get
+      - name: Format check
+        run: dart format --output=none --set-exit-if-changed lib/services/project_repair test/services/project_repair lib/ui/widgets/project_dependency_report_panel.dart lib/ui/widgets/project_inspection_dialog.dart test/ui/widgets/project_dependency_report_panel_test.dart bin/project_repair_inspect.dart
+      - name: Analyze changes
+        run: flutter analyze --no-pub lib/services/project_repair lib/ui/widgets/project_dependency_report_panel.dart lib/ui/widgets/project_inspection_dialog.dart bin/project_repair_inspect.dart
+      - name: Run repair tests
+        run: flutter test test/services/project_repair test/ui/widgets/project_dependency_report_panel_test.dart
