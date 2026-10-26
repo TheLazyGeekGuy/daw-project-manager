@@ -18,10 +18,6 @@ on:
       - 'resources/os/**'
       - 'assets/changelog/changelog.json'
       - '.github/workflows/site.yml'
-  pull_request:
-    paths:
-      - 'website/**'
-      - '.github/workflows/site.yml'
   workflow_dispatch:
 
 permissions:
@@ -35,6 +31,7 @@ concurrency:
 
 jobs:
   website:
+    if: github.ref == 'refs/heads/main'
     name: Build and publish the website
     runs-on: ubuntu-latest
     steps:
