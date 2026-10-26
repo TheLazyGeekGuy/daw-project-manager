@@ -37,7 +37,7 @@ class ProjectFormatRegistry {
     ProjectFormatDescriptor(id: 'lmms', daw: 'LMMS', extensions: {'.mmp', '.mmpz'}),
     ProjectFormatDescriptor(id: 'waveform', daw: 'Tracktion Waveform', extensions: {'.tracktionedit'}),
     ProjectFormatDescriptor(id: 'renoise', daw: 'Renoise', extensions: {'.xrns'}),
-    ProjectFormatDescriptor(id: 'dawproject', daw: 'DAWproject', extensions: {'.dawproject'}),
+    ProjectFormatDescriptor(id: 'dawproject', daw: 'DAWproject', extensions: {'.dawproject'}, signature: 'ZIP'),
     ProjectFormatDescriptor(id: 'aaf', daw: 'AAF interchange', extensions: {'.aaf'}),
     ProjectFormatDescriptor(id: 'midi', daw: 'Standard MIDI', extensions: {'.mid', '.midi'}, signature: 'MThd'),
   ];
@@ -73,6 +73,10 @@ class ProjectFormatRegistry {
         return starts('FLhd') ? candidate : null;
       case '<REAPER_PROJECT':
         return starts('<REAPER_PROJECT') ? candidate : null;
+      case 'ZIP':
+        return header.length >= 4 &&
+            starts('PK') && header[2] == 3 && header[3] == 4
+            ? candidate : null;
       case 'MThd':
         return starts('MThd') ? candidate : null;
       default:
