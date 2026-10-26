@@ -4,11 +4,11 @@ GitHub Issues are **disabled on this fork** (GitHub API HTTP 410). These are tra
 
 | ID | Milestone | Ticket | Traceability | Status |
 |---|---|---|---|---|
-| TASK-001 | M1 | Flutter dependency-inspection interface | INSP-002 | Partial: widget/dialog implemented, navigation wiring pending |
+| TASK-001 | M1 | Flutter dependency-inspection interface | INSP-002 | Implemented UI entry point; build and cross-platform validation pending |
 | TASK-002 | M1 | Format registry signature and version hardening | INSP-001 | In progress |
 | TASK-003 | M2 | Structural CPR reader, no-op roundtrip | QUAL-001 | Planned |
 | TASK-004 | M2 | Versioned licensed test corpus and semantic diff | QUAL-002 | Planned |
-| TASK-005 | M3 | Installed VST2/VST3/AU/CLAP registry | INSP-004 | Partial: bounded static scan; IDs and validation pending |
+| TASK-005 | M3 | Installed VST2/VST3/AU/CLAP registry | INSP-004 | Static candidate scan and name-based comparison implemented; UID and load tests pending |
 | TASK-006 | M3 | Sandboxed plug-in loadability and licensing checks | PLAT-002 | Planned |
 | TASK-007 | M4 | Fail-closed verified backup and safe output publishing | SAFE-001–007 | In progress |
 | TASK-008 | M5 | CPR rename/writer with real Cubase reopening | REPR-004 | Blocked by TASK-003 |
@@ -49,3 +49,20 @@ The backlog is **not complete**. Implemented components are foundations, not end
 - All new services require green formatter/analyzer/unit/widget tests on Linux, Windows and macOS.
 
 Never close tasks solely because a data model, placeholder adapter or draft UI exists.
+
+## Native Releases extension backlog
+
+| ID | Feature | Current status | Completion gate |
+|---|---|---|---|
+| REL-001 | Artists and stable artist credits | Pure Dart domain model | Profile-scoped CRUD, forms and migrations |
+| REL-002 | Albums, EPs, singles and playlists | Domain model; existing Release/Playlist still separate | Unified UI and ordering/persistence |
+| REL-003 | Track versions and asset lineage | Domain model | File verification, artwork/stem/lyrics UI |
+| REL-004 | Musical works and rightsholder shares | Domain model and validation | Editable forms, evidence, ownership review |
+| REL-005 | Rights filing across organizations | Domain model | Verified/manual statuses and history |
+| REL-006 | Distributor/platform delivery | Domain model | Manual delivery tracking, platform URLs, IDs |
+| REL-007 | Promotion campaigns | Domain model | Scheduling forms, assets and coverage views |
+| REL-008 | Profile-safe release workspace persistence | JSON snapshot store | Migration, crash recovery, profile boundaries |
+| REL-009 | Native release workflow editor | JSON editor in release detail | Structured forms and localization |
+| REL-010 | Distribution and rights workflow verification | Advisory validator | Dataset tests, history and real-world workflow review |
+
+These features are independent of Katsu. Its concepts were used as research only; no code connector or Suno account dependency is planned.
