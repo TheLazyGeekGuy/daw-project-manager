@@ -5,8 +5,9 @@ import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import '../../services/project_repair/legacy_cubase_migration.dart';
+import '../../services/project_repair/all_to_midi_bridge.dart';
 
-/// Guides a licensed Cubase 3 conversion; DPM does not translate ALL/ARR.
+/// Offers licensed/manual legacy routes and a guarded Windows AllToMidi CLI.
 class LegacyCubaseMigrationDialog extends StatefulWidget {
   const LegacyCubaseMigrationDialog({super.key});
 
@@ -20,6 +21,7 @@ class _LegacyCubaseMigrationDialogState
   LegacyCubasePreparation? _preparation;
   LegacyCubaseValidation? _validation;
   LegacyCubaseValidation? _intermediateValidation;
+  AllToMidiConversionResult? _allToMidiResult;
   bool _busy = false;
   String? _error;
 
@@ -34,6 +36,7 @@ class _LegacyCubaseMigrationDialogState
       _error = null;
       _validation = null;
       _intermediateValidation = null;
+      _allToMidiResult = null;
       _preparation = null;
     });
     try {
@@ -45,6 +48,64 @@ class _LegacyCubaseMigrationDialogState
     } catch (error) {
       if (!mounted) return;
       setState(() => _error = 'Cannot prepare legacy project: $error');
+    } finally {
+      if (mounted) setState(() => _busy = false);
+    }
+  }
+
+  Future<void> _convertWithAllToMidi() async {
+    final preparation = _preparation;
+    if (preparation == null || _busy || !Platform.isWindows) return;
+    if (!preparation.legacyPath.toLowerCase().endsWith('.all')) {
+      setState(() => _error = 'AllToMidi accepts .ALL songs only, not .ARR');
+      return;
+    }
+    final confirmed = await showDialog<bool>(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text('Recover MIDI with AllToMidi?'),
+        content: const Text(
+          'This extracts only MIDI data from the selected .ALL file. '
+          'Audio, VST instruments, effect presets and mixer states are not '
+          'converted. Tempo changes and SysEx may be incomplete. '
+          'The external executable is not sandboxed. '
+          'Use only the application you installed and trust.',
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context, false),
+            child: const Text('Cancel'),
+          ),
+          FilledButton(
+            onPressed: () => Navigator.pop(context, true),
+            child: const Text('Accept MIDI-only conversion'),
+          ),
+        ],
+      ),
+    );
+    if (confirmed != true || !mounted) return;
+    final selected = await FilePicker.platform.pickFiles(
+      type: FileType.custom,
+      allowedExtensions: const ['exe'],
+      dialogTitle: 'Select your installed AllToMidi.exe',
+    );
+    if (selected == null || selected.files.single.path == null) return;
+    setState(() {
+      _busy = true;
+      _error = null;
+      _allToMidiResult = null;
+    });
+    try {
+      final result = await AllToMidiBridge().convert(
+        original: File(preparation.legacyPath),
+        executable: File(selected.files.single.path!),
+        acknowledgeLosses: true,
+      );
+      if (!mounted) return;
+      setState(() => _allToMidiResult = result);
+    } catch (error) {
+      if (!mounted) return;
+      setState(() => _error = 'MIDI recovery failed: $error');
     } finally {
       if (mounted) setState(() => _busy = false);
     }
@@ -162,6 +223,16 @@ class _LegacyCubaseMigrationDialogState
               'DPM has not independently audited this third-party website.',
             ),
             const SizedBox(height: 12),
+            Text('Route C: local Windows .ALL to MIDI recovery',
+                style: Theme.of(context).textTheme.titleSmall),
+            const Text(
+              'MIT-licensed AllToMidi 1.0 recovers MIDI type 1 (480 PPQ), '
+              'with names, notes and many channel events. It does not '
+              'support ARR, audio, VST presets or original mixer settings. '
+              'Install the executable yourself. On macOS/Linux, run it '
+              'separately on Windows or wait for a reviewed cross-platform port.',
+            ),
+            const SizedBox(height: 12),
             Text('Known official-route losses',
                 style: Theme.of(context).textTheme.titleSmall),
             for (final issue in LegacyCubaseMigration.documentedLossRisks)
@@ -189,6 +260,29 @@ class _LegacyCubaseMigrationDialogState
                 '2B. Modern route: convert using atari2cubase, '
                 'download the DAWproject, then select it below.',
               ),
+              const SizedBox(height: 8),
+              const Text(
+                '2C. Windows: recover a standard MIDI file from a .ALL '
+                'song using a separately installed AllToMidi.exe.',
+              ),
+              OutlinedButton.icon(
+                onPressed: Platform.isWindows && !_busy &&
+                        preparation.legacyPath.toLowerCase().endsWith('.all')
+                    ? _convertWithAllToMidi : null,
+                icon: const Icon(Icons.piano_outlined),
+                label: const Text('Convert .ALL to MIDI with AllToMidi'),
+              ),
+              if (_allToMidiResult case final result?) ...[
+                SelectableText('MIDI output: ${result.outputPath}'),
+                Text('Tracks: ${result.trackCount} · '
+                    'Notes decoded: ${result.noteCount} · '
+                    'Resolution: ${result.ppq} PPQ'),
+                SelectableText('Verified backup: ${result.backupPath}'),
+                const Text(
+                  'Import the MIDI into a recent Cubase project, then save '
+                  'as CPR. The result is not certified musically equivalent.',
+                ),
+              ],
               OutlinedButton.icon(
                 onPressed: _busy ? null : _chooseDawProject,
                 icon: const Icon(Icons.inventory_2_outlined),
