@@ -62,7 +62,7 @@ Never close tasks solely because a data model, placeholder adapter or draft UI e
 | REL-006 | Distributor/platform delivery | Domain model | Manual delivery tracking, platform URLs, IDs |
 | REL-007 | Promotion campaigns | Domain model | Scheduling forms, assets and coverage views |
 | REL-008 | Profile-safe release workspace persistence | JSON snapshot store | Migration, crash recovery, profile boundaries |
-| REL-009 | Native release workflow editor | Release type and artist fields plus advanced JSON editor | Remaining dedicated rights/distribution/promotion forms and localization |
+| REL-009 | Native release workflow editor | Release type, artist, first rights/distribution/promotion entry fields plus advanced JSON editor | Remaining dedicated rights/distribution/promotion forms and localization |
 | REL-010 | Distribution and rights workflow verification | Advisory validator | Dataset tests, history and real-world workflow review |
 
 These features are independent of Katsu. Its concepts were used as research only; no code connector or Suno account dependency is planned.
@@ -72,3 +72,7 @@ These features are independent of Katsu. Its concepts were used as research only
 - The release-detail editor now exposes collection type and stable artist IDs in native Flutter controls, retaining an advanced JSON mode for still-unimplemented rights, distributor and promotional forms.
 - Added widget test covering native input and profile-local JSON store persistence. This test is committed but not yet CI-verified; CI remains disabled on non-main branches by repository policy.
 - No external Katsu integration was added. This work reuses only cross-platform music-industry concepts.
+
+## Release workflow UI update
+
+The release editor now supports direct form inputs for the first rights organization/status, distributor/status and promotional platform/status, in addition to collection type and artist IDs. Additional entries remain accessible through advanced JSON. This is an intermediate UI, **not** finished relational CRUD, validation of real-world filings, external submission or verified delivery. The new tests are committed but have not run on the branch because non-main CI triggers were disabled by request.
