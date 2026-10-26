@@ -44,4 +44,25 @@ void main() {
     expect(errors, contains('Invalid communication entry'));
   });
 
+  test('refuses unknown lifecycle statuses without claiming publication', () {
+    final data = {
+      'schema_version': 1,
+      'collection_type': 'single',
+      'tracks': <Object>[],
+      'rights_filings': [
+        {'organization': 'SACEM', 'status': 'automatically_approved'}
+      ],
+      'distribution': [
+        {'distributor': 'Example', 'status': 'live_on_every_platform'}
+      ],
+      'communications': [
+        {'platform': 'Video platform', 'status': 'published_everywhere'}
+      ],
+    };
+    final errors = validator.validate(data);
+    expect(errors, contains('Invalid rights filing'));
+    expect(errors, contains('Invalid distribution entry'));
+    expect(errors, contains('Invalid communication entry'));
+  });
+
 }
