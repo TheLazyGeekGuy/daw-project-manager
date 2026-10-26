@@ -1,19 +1,32 @@
 import 'dart:io';
 
+import 'package:crypto/crypto.dart';
+
 import 'package:path/path.dart' as p;
 
 import 'project_dependency_inspector.dart';
 import 'verified_project_backup.dart';
 
-/// An operator-assisted bridge from classic .ALL/.ARR songs to .CPR.
+/// Two independently selected, operator-assisted legacy Cubase migration paths.
 ///
-/// DPM deliberately does NOT parse or serialize the proprietary legacy
-/// formats. Steinberg's original Cubase SE/SL/SX 3 import is required.
-/// Cubase's documented audio/MIDI preservation is NOT full mix fidelity.
+/// 1. Steinberg Cubase SE/SL/SX 3 import -> CPR (official, lossy).
+/// 2. Atari2Cubase in the user's browser -> DAWproject -> Cubase 14+ -> CPR.
+///
+/// The second path is primarily supported for Atari versions. Windows
+/// Cubase VST generations remain experimental in the third-party tool.
+/// DPM deliberately does NOT parse ALL/ARR itself or copy third-party code.
+/// Neither route certifies MIDI/audio, plug-in or mix fidelity.
 class LegacyCubaseMigration {
   static const steinbergGuide =
       'https://helpcenter.steinberg.de/hc/en-us/articles/'
       '115000075750-Converting-Cubase-VST-songs-ALL-ARR-into-CPR-format';
+
+  static const atariConverter =
+      'https://atari2cubase.robert-068.workers.dev/';
+  static const modernImportApplication = 'Cubase/Nuendo 14 or later';
+  static const modernImportInstructions =
+      'In Cubase choose File > Import > DAWproject, open the resulting '
+      'session, then save as a new CPR.';
 
   static const importApplication = 'Cubase SE 3, SL 3 or SX 3';
   static const recommendedApplication = 'Cubase SE 3';
@@ -49,43 +62,97 @@ class LegacyCubaseMigration {
     );
   }
 
-  /// Validate only the resulting CPR and source invariant; never modify it.
+  /// Verify the operator-generated CPR and all immutable source invariants.
   ///
-  /// A successful report means only that DPM recognizes the CPR's structure
-  /// and read-only metadata; it does NOT prove equivalent effects, mix or MIDI.
+  /// This checks readable project metadata, never musical equivalence.
   static Future<LegacyCubaseValidation> validate(
     LegacyCubasePreparation preparation,
     File convertedCpr,
+  ) => _validateOutput(
+    preparation,
+    convertedCpr,
+    expectedExtension: '.cpr',
+    expectedFormat: 'cubase',
+  );
+
+  /// Verify an intermediary DAWproject from an external converter.
+  ///
+  /// In this phase only extension/ZIP signature and the untouched original
+  /// are verified. DAWproject semantics and native reopen remain unverified.
+  static Future<LegacyCubaseValidation> validateDawProject(
+    LegacyCubasePreparation preparation,
+    File convertedDawproject,
+  ) => _validateOutput(
+    preparation,
+    convertedDawproject,
+    expectedExtension: '.dawproject',
+    expectedFormat: 'dawproject',
+  );
+
+  static Future<LegacyCubaseValidation> _validateOutput(
+    LegacyCubasePreparation preparation,
+    File converted,
+    {
+      required String expectedExtension,
+      required String expectedFormat,
+    }
   ) async {
     final source = File(preparation.legacyPath);
-    if (p.normalize(source.absolute.path) ==
-        p.normalize(convertedCpr.absolute.path)) {
-      throw const FormatException('Converted CPR must be a separate file');
+    final backup = File(preparation.backupPath);
+    final outputPath = p.normalize(converted.absolute.path);
+    if (outputPath == p.normalize(source.absolute.path) ||
+        outputPath == p.normalize(backup.absolute.path)) {
+      throw const FormatException('The conversion output must be a new file');
     }
-    if (p.extension(convertedCpr.path).toLowerCase() != '.cpr') {
-      throw const FormatException('Select a .CPR file exported by Cubase');
+    if (p.extension(converted.path).toLowerCase() != expectedExtension) {
+      throw FormatException(
+        'Expected a $expectedExtension file from the external converter',
+      );
     }
-    if (!await File(preparation.backupPath).exists()) {
-      throw const FileSystemException('Required immutable backup is missing');
+    await VerifiedProjectBackup.ensureNoSymlinkComponents(source.absolute.path);
+    await VerifiedProjectBackup.ensureNoSymlinkComponents(backup.absolute.path);
+    await VerifiedProjectBackup.ensureNoSymlinkComponents(converted.absolute.path);
+    if (!await backup.exists() ||
+        await backup.length() != preparation.legacySize ||
+        await _sha256(backup) != preparation.legacySha256) {
+      throw const FileSystemException(
+        'Legacy backup is missing or does not match the prepared source',
+      );
     }
-
-    // A second verified snapshot proves that the source has not changed.
-    // Copies are retained intentionally; no cleanup runs on backup folders.
-    final unchanged = await VerifiedProjectBackup.create(source);
-    if (unchanged.sha256Digest != preparation.legacySha256 ||
-        unchanged.length != preparation.legacySize) {
+    if (!await source.exists() ||
+        await source.length() != preparation.legacySize ||
+        await _sha256(source) != preparation.legacySha256) {
       throw const FileSystemException('Legacy source changed after preparation');
     }
+    if (!await converted.exists() || await converted.length() == 0) {
+      throw const FormatException('External conversion output is missing or empty');
+    }
 
-    final converted = await ProjectDependencyInspector.inspect(convertedCpr);
-    if (converted.formatId != 'cubase') {
-      throw const FormatException('Converted project is not a valid CPR');
+    final report = await ProjectDependencyInspector.inspect(converted);
+    if (report.formatId != expectedFormat) {
+      throw FormatException(
+        'Expected $expectedFormat project, got ${report.formatId}',
+      );
+    }
+    // The external process may have run outside DPM. Do not treat this
+    // read-only validation as evidence that the original stays immutable.
+    if (await _sha256(source) != preparation.legacySha256 ||
+        await _sha256(backup) != preparation.legacySha256) {
+      throw const FileSystemException(
+        'Legacy source or its verified backup changed during inspection',
+      );
     }
     return LegacyCubaseValidation(
       source: preparation,
-      converted: converted,
+      converted: report,
+      migrationRoute: expectedFormat == 'dawproject'
+          ? 'atari2cubase-assisted-dawproject'
+          : 'cubase3-or-modern-cubase-assisted-cpr',
     );
   }
+
+  static Future<String> _sha256(File file) async =>
+      (await sha256.bind(file.openRead()).first).toString();
 }
 
 class LegacyCubasePreparation {
@@ -106,20 +173,26 @@ class LegacyCubaseValidation {
   const LegacyCubaseValidation({
     required this.source,
     required this.converted,
+    required this.migrationRoute,
   });
 
   final LegacyCubasePreparation source;
   final ProjectDependencyReport converted;
+  final String migrationRoute;
 
   Map<String, Object?> toJson() => {
     'source_path': source.legacyPath,
     'source_sha256': source.legacySha256,
     'source_backup': source.backupPath,
     'converted_project': converted.toJson(),
+    'migration_route': migrationRoute,
+    'format_signature_only': converted.formatId == 'dawproject',
     'source_unchanged': true,
     'conversion_performed_by_dpm': false,
     'lossless_conversion_verified': false,
     'limitations': LegacyCubaseMigration.documentedLossRisks,
     'official_guide': LegacyCubaseMigration.steinbergGuide,
+    'alternate_atari_converter': LegacyCubaseMigration.atariConverter,
+    'modern_import': LegacyCubaseMigration.modernImportInstructions,
   };
 }
