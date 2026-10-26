@@ -37,7 +37,8 @@ class LocalPluginInventory {
   static List<String> defaultRoots() {
     final env = Platform.environment;
     final home = env['HOME'] ?? env['USERPROFILE'] ?? '';
-    if (Platform.isMacOS) return [
+    if (Platform.isMacOS) {
+      return [
       '/Library/Audio/Plug-Ins/VST',
       '/Library/Audio/Plug-Ins/VST3',
       '/Library/Audio/Plug-Ins/Components',
@@ -49,19 +50,24 @@ class LocalPluginInventory {
         '$home/Library/Audio/Plug-Ins/CLAP',
       ],
     ];
-    if (Platform.isWindows) return [
+    }
+    if (Platform.isWindows) {
+      return [
       r'C:\Program Files\Common Files\VST3',
       r'C:\Program Files\Common Files\CLAP',
       r'C:\Program Files\VstPlugins',
       r'C:\Program Files (x86)\VstPlugins',
     ];
-    if (Platform.isLinux) return [
+    }
+    if (Platform.isLinux) {
+      return [
       '/usr/lib/vst', '/usr/lib/vst3', '/usr/lib/clap',
       '/usr/local/lib/vst', '/usr/local/lib/vst3', '/usr/local/lib/clap',
       if (home.isNotEmpty) ...[
         '$home/.vst', '$home/.vst3', '$home/.clap',
       ],
     ];
+    }
     return const [];
   }
 
@@ -77,7 +83,9 @@ class LocalPluginInventory {
     var visited = 0;
 
     void visit(Directory folder, int depth) {
-      if (depth > maxDepth || visited >= maxEntries) return;
+      if (depth > maxDepth || visited >= maxEntries) {
+        return;
+      }
       Iterable<FileSystemEntity> entries;
       try {
         entries = folder.listSync(followLinks: false);
@@ -87,7 +95,9 @@ class LocalPluginInventory {
       for (final entry in entries) {
         if (++visited > maxEntries) break;
         final kind = FileSystemEntity.typeSync(entry.path, followLinks: false);
-        if (kind == FileSystemEntityType.link) continue;
+        if (kind == FileSystemEntityType.link) {
+          continue;
+        }
         final name = p.basename(entry.path);
         final lower = name.toLowerCase();
         String? format;
