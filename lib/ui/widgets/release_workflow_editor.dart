@@ -25,6 +25,9 @@ class ReleaseWorkflowEditor extends StatefulWidget {
 class _ReleaseWorkflowEditorState extends State<ReleaseWorkflowEditor> {
   final _controller = TextEditingController();
   final _validator = const ReleaseWorkflowValidator();
+  String _collectionType = 'album';
+  final _artistController = TextEditingController();
+  bool _advancedJson = false;
   bool _loading = true;
   bool _saving = false;
   String? _error;
@@ -42,6 +45,8 @@ class _ReleaseWorkflowEditorState extends State<ReleaseWorkflowEditor> {
       if (!mounted) return;
       setState(() {
         _controller.text = const JsonEncoder.withIndent('  ').convert(data);
+        _collectionType = data['collection_type'] as String? ?? 'album';
+        _artistController.text = ((data['artist_ids'] as List?) ?? []).join(', ');
         _next = _validator.nextSuggestedStep(data);
         _loading = false;
       });
@@ -65,6 +70,10 @@ class _ReleaseWorkflowEditorState extends State<ReleaseWorkflowEditor> {
       if (data is! Map<String, dynamic>) {
         throw const FormatException('Root must be a JSON object');
       }
+      if (!_advancedJson) {
+        data['collection_type'] = _collectionType;
+        data['artist_ids'] = _artistController.text.split(',').map((v) => v.trim()).where((v) => v.isNotEmpty).toSet().toList();
+      }
       final problems = _validator.validate(data);
       if (problems.isNotEmpty) {
         throw FormatException(problems.join('; '));
@@ -83,6 +92,7 @@ class _ReleaseWorkflowEditorState extends State<ReleaseWorkflowEditor> {
   @override
   void dispose() {
     _controller.dispose();
+    _artistController.dispose();
     super.dispose();
   }
 
@@ -105,15 +115,48 @@ class _ReleaseWorkflowEditorState extends State<ReleaseWorkflowEditor> {
         color: Theme.of(context).colorScheme.error,
       )),
       if (!_loading) ...[
+        const SizedBox(height: 12),
+        DropdownButtonFormField<String>(
+          initialValue: _collectionType,
+          decoration: const InputDecoration(labelText: 'Release type'),
+          items: const [
+            DropdownMenuItem(value: 'album', child: Text('Album')),
+            DropdownMenuItem(value: 'ep', child: Text('EP')),
+            DropdownMenuItem(value: 'single', child: Text('Single')),
+            DropdownMenuItem(value: 'compilation', child: Text('Compilation')),
+            DropdownMenuItem(value: 'playlist', child: Text('Playlist')),
+          ],
+          onChanged: _advancedJson ? null : (value) {
+            if (value != null) setState(() => _collectionType = value);
+          },
+        ),
+        const SizedBox(height: 12),
         TextField(
-          controller: _controller,
-          minLines: 8,
-          maxLines: 18,
+          controller: _artistController,
+          enabled: !_advancedJson,
           decoration: const InputDecoration(
-            labelText: 'Release workflow JSON',
+            labelText: 'Artist IDs',
+            helperText: 'Comma-separated stable identifiers; titles are not IDs.',
             border: OutlineInputBorder(),
           ),
         ),
+        SwitchListTile(
+          contentPadding: EdgeInsets.zero,
+          title: const Text('Advanced JSON editor'),
+          subtitle: const Text('Edit tracks, rights filings, distribution and communication details.'),
+          value: _advancedJson,
+          onChanged: (value) => setState(() => _advancedJson = value),
+        ),
+        if (_advancedJson)
+          TextField(
+            controller: _controller,
+            minLines: 8,
+            maxLines: 18,
+            decoration: const InputDecoration(
+              labelText: 'Release workflow JSON',
+              border: OutlineInputBorder(),
+            ),
+          ),
         const SizedBox(height: 8),
         FilledButton(
           onPressed: _saving ? null : _save,
