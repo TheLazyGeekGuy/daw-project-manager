@@ -1,6 +1,3 @@
-import 'package:path_provider/path_provider.dart';
-import '../services/release_workspace_store.dart';
-import 'widgets/release_workflow_editor.dart';
 import 'dart:async';
 import 'dart:io';
 import 'package:desktop_drop/desktop_drop.dart';
@@ -710,7 +707,7 @@ class _ReleaseDetailPageState extends ConsumerState<ReleaseDetailPage>
     final support = await getApplicationSupportDirectory();
     if (!mounted) return;
     final store = ReleaseWorkspaceStore(
-      Directory(p.join(support.path, 'release-workspaces')),
+      Directory(path.join(support.path, 'release-workspaces')),
     );
     await showDialog<void>(
       context: context,
