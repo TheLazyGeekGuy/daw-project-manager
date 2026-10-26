@@ -48,17 +48,27 @@ class ConversionRoutePlanner {
     String? platform,
     bool includeExperimental = false,
   }) {
-    if (source == target || maxHops < 1) return const [];
+    if (source == target || maxHops < 1) {
+      return const [];
+    }
     final result = <ConversionRoute>[];
 
     void visit(String current, List<ConversionAdapter> path, Set<String> seen) {
-      if (path.length >= maxHops) return;
+      if (path.length >= maxHops) {
+        return;
+      }
       for (final adapter in adapters) {
-        if (adapter.sourceFormat != current) continue;
-        if (!includeExperimental && adapter.evidence == ConversionEvidence.experimental) continue;
+        if (adapter.sourceFormat != current) {
+          continue;
+        }
+        if (!includeExperimental && adapter.evidence == ConversionEvidence.experimental) {
+          continue;
+        }
         if (adapter.requiredPlatform != null &&
             adapter.requiredPlatform != platform) continue;
-        if (seen.contains(adapter.targetFormat)) continue;
+        if (seen.contains(adapter.targetFormat)) {
+          continue;
+        }
         final next = [...path, adapter];
         if (adapter.targetFormat == target) {
           result.add(ConversionRoute(next));
