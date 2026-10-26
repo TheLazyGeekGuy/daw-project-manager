@@ -26,6 +26,9 @@ class VerifiedProjectBackup {
     if (!await original.exists()) {
       throw const FileSystemException('Source project does not exist');
     }
+    // File.stat follows symlinks. Refuse linked paths explicitly, including
+    // symlinked ancestor directories, before copying user projects.
+    await _rejectSymlinkComponents(original.absolute.path);
     final originalStat = await original.stat();
     if (originalStat.type != FileSystemEntityType.file) {
       throw const FileSystemException('Expected a regular project file');
@@ -33,7 +36,11 @@ class VerifiedProjectBackup {
     final sourcePath = p.normalize(original.absolute.path);
     final directory = backupDirectory ??
         Directory(p.join(p.dirname(sourcePath), '.project-repair-backups'));
+    if (p.isWithin(p.normalize(directory.absolute.path), sourcePath)) {
+      throw const FileSystemException('Cannot back up a managed backup');
+    }
     await directory.create(recursive: true);
+    await _rejectSymlinkComponents(directory.absolute.path);
 
     final sourceHash = await _digest(original);
     final sourceLength = await original.length();
@@ -50,15 +57,30 @@ class VerifiedProjectBackup {
       final verifiedLength = await created.length();
       final verifiedHash = await _digest(created);
       final unchangedHash = await _digest(original);
+      await _rejectSymlinkComponents(original.absolute.path);
       if (verifiedLength != sourceLength ||
           verifiedHash != sourceHash ||
-          unchangedHash != sourceHash) {
+          unchangedHash != sourceHash ||
+          await original.length() != sourceLength) {
         throw const FileSystemException('Backup verification failed');
       }
       return VerifiedProjectBackup._(sourcePath, created.path, sourceHash, sourceLength);
     } catch (_) {
       // An incomplete copy is deliberately retained for forensic inspection.
       rethrow;
+    }
+  }
+
+  static Future<void> _rejectSymlinkComponents(String targetPath) async {
+    var current = p.normalize(p.absolute(targetPath));
+    while (true) {
+      if (await FileSystemEntity.type(current, followLinks: false) ==
+          FileSystemEntityType.link) {
+        throw FileSystemException('Symlinked project paths are not supported', current);
+      }
+      final parent = p.dirname(current);
+      if (parent == current) break;
+      current = parent;
     }
   }
 
