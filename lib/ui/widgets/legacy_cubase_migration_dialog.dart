@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 import '../../services/project_repair/legacy_cubase_migration.dart';
 
@@ -18,6 +19,7 @@ class _LegacyCubaseMigrationDialogState
     extends State<LegacyCubaseMigrationDialog> {
   LegacyCubasePreparation? _preparation;
   LegacyCubaseValidation? _validation;
+  LegacyCubaseValidation? _intermediateValidation;
   bool _busy = false;
   String? _error;
 
@@ -31,6 +33,7 @@ class _LegacyCubaseMigrationDialogState
       _busy = true;
       _error = null;
       _validation = null;
+      _intermediateValidation = null;
       _preparation = null;
     });
     try {
@@ -44,6 +47,49 @@ class _LegacyCubaseMigrationDialogState
       setState(() => _error = 'Cannot prepare legacy project: $error');
     } finally {
       if (mounted) setState(() => _busy = false);
+    }
+  }
+
+  Future<void> _chooseDawProject() async {
+    final preparation = _preparation;
+    if (preparation == null) return;
+    final selected = await FilePicker.platform.pickFiles(
+      type: FileType.custom,
+      allowedExtensions: const ['dawproject'],
+    );
+    if (selected == null || selected.files.single.path == null) return;
+    setState(() {
+      _busy = true;
+      _error = null;
+      _intermediateValidation = null;
+    });
+    try {
+      final verified = await LegacyCubaseMigration.validateDawProject(
+        preparation, File(selected.files.single.path!),
+      );
+      if (!mounted) return;
+      setState(() => _intermediateValidation = verified);
+    } catch (error) {
+      if (!mounted) return;
+      setState(() => _error = 'DAWproject inspection failed: $error');
+    } finally {
+      if (mounted) setState(() => _busy = false);
+    }
+  }
+
+  Future<void> _openConverter() async {
+    try {
+      final opened = await launchUrl(
+        Uri.parse(LegacyCubaseMigration.atariConverter),
+        mode: LaunchMode.externalApplication,
+      );
+      if (!opened && mounted) {
+        setState(() => _error = 'Could not open the converter website');
+      }
+    } catch (error) {
+      if (mounted) setState(
+        () => _error = 'Could not open converter: $error',
+      );
     }
   }
 
@@ -83,21 +129,41 @@ class _LegacyCubaseMigrationDialogState
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
+            Text('Two independent paths are available. '
+              'Neither can certify native plug-in presets or mix fidelity.'),
+            const SizedBox(height: 12),
+            Text('Route A: official Cubase 3 import',
+                style: Theme.of(context).textTheme.titleSmall),
             const Text(
-              'Official method: use Cubase SE 3 (recommended), SL 3 or SX 3 '
-              'with a compatible licence. Import via File > Import > Cubase '
-              'Song, then save as CPR in a new folder with all audio assets.',
+              'Use licensed Cubase SE/SL/SX 3: File > Import > Cubase Song, '
+              'then save a separate CPR. Steinberg documents losses to VST '
+              'instruments, effects and mixer settings.',
             ),
-            const SizedBox(height: 10),
             const SelectableText(
               LegacyCubaseMigration.steinbergGuide,
             ),
             const SizedBox(height: 12),
+            Text('Route B: Atari conversion without Cubase 3',
+                style: Theme.of(context).textTheme.titleSmall),
             const Text(
-              'Important: Steinberg reports that the official migration '
-              'preserves audio/MIDI parts but loses original VST instruments, '
-              'VST effects and mixer settings. DPM cannot recover them.',
+              'atari2cubase converts classic Atari ALL/ARR to DAWproject '
+              '(or MIDI). This third-party web converter is not bundled in '
+              'DPM; support for Cubase VST PC songs is experimental. '
+              'Download the file yourself, then import DAWproject into '
+              'Cubase/Nuendo 14+ and save as CPR.',
             ),
+            OutlinedButton.icon(
+              onPressed: _busy ? null : _openConverter,
+              icon: const Icon(Icons.open_in_new),
+              label: const Text('Open atari2cubase in browser'),
+            ),
+            const Text(
+              'Author states files are processed locally in the browser. '
+              'DPM has not independently audited this third-party website.',
+            ),
+            const SizedBox(height: 12),
+            Text('Known official-route losses',
+                style: Theme.of(context).textTheme.titleSmall),
             for (final issue in LegacyCubaseMigration.documentedLossRisks)
               Padding(
                 padding: const EdgeInsets.only(top: 4),
@@ -115,15 +181,35 @@ class _LegacyCubaseMigrationDialogState
               SelectableText('Verified backup: ${preparation.backupPath}'),
               const SizedBox(height: 10),
               const Text(
-                '2. Open the legacy file manually with compatible Cubase 3. '
-                'Use Save Project to New Folder to gather audio. '
-                'Do not overwrite the source.',
+                '2A. Legacy official route: import with Cubase SE/SL/SX 3 '
+                'and save a separate CPR.',
               ),
+              const SizedBox(height: 8),
+              const Text(
+                '2B. Modern route: convert using atari2cubase, '
+                'download the DAWproject, then select it below.',
+              ),
+              OutlinedButton.icon(
+                onPressed: _busy ? null : _chooseDawProject,
+                icon: const Icon(Icons.inventory_2_outlined),
+                label: const Text('Check intermediate DAWproject'),
+              ),
+              if (_intermediateValidation case final intermediate?) ...[
+                const Text(
+                  'DAWproject ZIP signature recognized. Musical content '
+                  'and import fidelity have not been verified.',
+                ),
+                Text('Format: ${intermediate.converted.formatId}'),
+                const Text(
+                  'Import it into Cubase/Nuendo 14+ using File > Import > '
+                  'DAWproject, then save a new CPR.',
+                ),
+              ],
               const SizedBox(height: 8),
               OutlinedButton.icon(
                 onPressed: _busy ? null : _chooseConverted,
                 icon: const Icon(Icons.fact_check_outlined),
-                label: const Text('3. Check the resulting .CPR'),
+                label: const Text('3. Check resulting CPR (either route)'),
               ),
             ],
             if (_validation case final validation?) ...[
