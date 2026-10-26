@@ -75,8 +75,13 @@ class VerifiedProjectBackup {
   static Future<void> ensureNoSymlinkComponents(String targetPath) async {
     var current = p.normalize(p.absolute(targetPath));
     while (true) {
-      if (await FileSystemEntity.type(current, followLinks: false) ==
-          FileSystemEntityType.link) {
+      // macOS maps well-known system roots to /private. These OS aliases
+      // must not prevent legitimate projects in Directory.systemTemp.
+      final systemAlias = Platform.isMacOS &&
+          const {'/var', '/tmp', '/etc'}.contains(current);
+      if (!systemAlias &&
+          await FileSystemEntity.type(current, followLinks: false) ==
+              FileSystemEntityType.link) {
         throw FileSystemException('Symlinked project paths are not supported', current);
       }
       final parent = p.dirname(current);
