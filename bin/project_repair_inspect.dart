@@ -6,7 +6,7 @@ import 'package:daw_project_manager/services/project_repair/project_format_regis
 
 /// Read-only diagnostic command. It never changes the source project.
 ///
-/// Usage: dart run bin/project_repair_inspect.dart <project-file> [more-files]
+/// Usage: dart run bin/project_repair_inspect.dart `project-file` [more-files]
 Future<void> main(List<String> args) async {
   if (args.isEmpty || args.contains('--help')) {
     stdout.writeln('Usage: dart run bin/project_repair_inspect.dart <project-file> [more-files]');
