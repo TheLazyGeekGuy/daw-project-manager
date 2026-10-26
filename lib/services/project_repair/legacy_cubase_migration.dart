@@ -14,15 +14,15 @@ import 'verified_project_backup.dart';
 ///
 /// The second path is primarily supported for Atari versions. Windows
 /// Cubase VST generations remain experimental in the third-party tool.
-/// DPM deliberately does NOT parse ALL/ARR itself or copy third-party code.
+/// These manual routes remain separate from DPM's partial, MIT-attributed
+/// native ALL-to-MIDI recovery. ARR parsing is not implemented in DPM.
 /// Neither route certifies MIDI/audio, plug-in or mix fidelity.
 class LegacyCubaseMigration {
   static const steinbergGuide =
       'https://helpcenter.steinberg.de/hc/en-us/articles/'
       '115000075750-Converting-Cubase-VST-songs-ALL-ARR-into-CPR-format';
 
-  static const atariConverter =
-      'https://atari2cubase.robert-068.workers.dev/';
+  static const atariConverter = 'https://atari2cubase.robert-068.workers.dev/';
   static const modernImportApplication = 'Cubase/Nuendo 14 or later';
   static const modernImportInstructions =
       'In Cubase choose File > Import > DAWproject, open the resulting '
@@ -34,7 +34,7 @@ class LegacyCubaseMigration {
   static const documentedLossRisks = <String>[
     'VST plug-in and instrument state is not retained by the official import.',
     'Original mixer parameters and mixing settings are not retained.',
-    'Legacy file parsing by DPM is not implemented; source semantic equivalence cannot be measured.',
+    'Native ALL parsing is partial; source semantic equivalence is not certified and ARR parsing is unsupported.',
     'Media dependency gathering must be completed by the user inside Cubase.',
     'Official conversion requires compatible legacy software, OS and licence.',
   ];
@@ -77,8 +77,8 @@ class LegacyCubaseMigration {
 
   /// Verify an intermediary DAWproject from an external converter.
   ///
-  /// In this phase only extension/ZIP signature and the untouched original
-  /// are verified. DAWproject semantics and native reopen remain unverified.
+  /// Checks the bounded ZIP/XML structure and the untouched original. Full XSD
+  /// validation, musical equivalence and native reopening remain unverified.
   static Future<LegacyCubaseValidation> validateDawProject(
     LegacyCubasePreparation preparation,
     File convertedDawproject,
@@ -91,12 +91,10 @@ class LegacyCubaseMigration {
 
   static Future<LegacyCubaseValidation> _validateOutput(
     LegacyCubasePreparation preparation,
-    File converted,
-    {
-      required String expectedExtension,
-      required String expectedFormat,
-    }
-  ) async {
+    File converted, {
+    required String expectedExtension,
+    required String expectedFormat,
+  }) async {
     final source = File(preparation.legacyPath);
     final backup = File(preparation.backupPath);
     final outputPath = p.normalize(converted.absolute.path);
@@ -111,7 +109,9 @@ class LegacyCubaseMigration {
     }
     await VerifiedProjectBackup.ensureNoSymlinkComponents(source.absolute.path);
     await VerifiedProjectBackup.ensureNoSymlinkComponents(backup.absolute.path);
-    await VerifiedProjectBackup.ensureNoSymlinkComponents(converted.absolute.path);
+    await VerifiedProjectBackup.ensureNoSymlinkComponents(
+      converted.absolute.path,
+    );
     if (!await backup.exists() ||
         await backup.length() != preparation.legacySize ||
         await _sha256(backup) != preparation.legacySha256) {
@@ -122,10 +122,14 @@ class LegacyCubaseMigration {
     if (!await source.exists() ||
         await source.length() != preparation.legacySize ||
         await _sha256(source) != preparation.legacySha256) {
-      throw const FileSystemException('Legacy source changed after preparation');
+      throw const FileSystemException(
+        'Legacy source changed after preparation',
+      );
     }
     if (!await converted.exists() || await converted.length() == 0) {
-      throw const FormatException('External conversion output is missing or empty');
+      throw const FormatException(
+        'External conversion output is missing or empty',
+      );
     }
 
     final report = await ProjectDependencyInspector.inspect(converted);
@@ -186,7 +190,12 @@ class LegacyCubaseValidation {
     'source_backup': source.backupPath,
     'converted_project': converted.toJson(),
     'migration_route': migrationRoute,
-    'format_signature_only': converted.formatId == 'dawproject',
+    'format_signature_only':
+        converted.formatId == 'dawproject' &&
+        converted.dawProjectSummary == null,
+    if (converted.dawProjectSummary != null)
+      'validation_scope': 'bounded_container_and_xml_structure',
+    'native_daw_reopen_verified': false,
     'source_unchanged': true,
     'conversion_performed_by_dpm': false,
     'lossless_conversion_verified': false,

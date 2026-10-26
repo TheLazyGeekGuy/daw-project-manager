@@ -1,5 +1,11 @@
 # Legacy Cubase and official demo corpus
 
+Current evidence: [Sources and corpus](sources-and-corpus.md) records the seven
+official CPR files and their observed byte-identical unchanged reconstruction.
+[Conversion execution](conversion-execution.md) describes the integrated native
+ALL MIDI recovery engine, synthetic positive tests and unsupported real TABSAX
+sample. The manual legacy import workflow below remains a separate route.
+
 ## Classic Cubase .ALL/.ARR → .CPR
 
 Official guide:
@@ -32,9 +38,10 @@ MIDI tracks/parts retain sample-level timing, but used VST effects and
 instruments plus mixer settings are lost. Neither this legacy bridge nor
 DPM's CPR inspector can reconstruct unsupported lost VST states.
 
-The source file formats and required license checks are not decoded or
-circumvented by DPM. Do not claim a lossless converter or a supported
-legacy Cubase release solely because the resulting CPR opens.
+This manual bridge relies on Steinberg's importer and existing usable licences;
+DPM does not circumvent those licence checks. Separately, the native Dart
+recovery engine decodes selected ALL MIDI layouts, with no ARR/full-session
+claim. Do not claim lossless conversion solely because a resulting CPR opens.
 
 ## Versioned modern .CPR demo corpus
 
@@ -67,8 +74,10 @@ Next required test layers per *actual* installed Cubase version:
 
 - **Structural**: safe bounded parse, version identification and
   top-level chunk handling; malformed/truncated/adversarial cases.
-- **Round-trip**: byte-identical output with zero edits on a supported
-  release (not implemented).
+- **Unchanged reconstruction**: implemented for outer/top-level CPR framing
+  with opaque payloads retained; seven official Cubase 12–15 projects passed
+  exact hash equality. Broader versions, reference-aware edits and native
+  reopening remain separate gates; see [the results](sources-and-corpus.md#recorded-container-round-trip-result).
 - **Semantic**: note timing, clips, channels, plug-in IDs and states,
   FX chains, automation, buses and side-chain graphs (not implemented).
 - **Native DAW**: Cubase reopen and playback/render parity (requires

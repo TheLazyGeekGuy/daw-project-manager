@@ -39,6 +39,7 @@ import '../models/midi_collection.dart';
 import 'custom_theme_merge.dart';
 import 'custom_field_merge.dart';
 import 'drive_sync_errors.dart';
+import 'release_workspace_transfer.dart';
 import '../utils/app_paths.dart'
     show
         appDataDirName,
@@ -285,7 +286,12 @@ class GoogleDriveSyncService {
     }
   }
 
-  GoogleDriveSyncService({String? serverClientId}) {
+  final ReleaseWorkspaceTransfer? _releaseWorkspaceTransfer;
+
+  GoogleDriveSyncService({
+    String? serverClientId,
+    ReleaseWorkspaceTransfer? releaseWorkspaceTransfer,
+  }) : _releaseWorkspaceTransfer = releaseWorkspaceTransfer {
     // In 7.x, GoogleSignIn is a singleton accessed via GoogleSignIn.instance
     // Configuration is done via initialize() method
     // For now, we'll store the serverClientId for use in initialize()
@@ -3593,9 +3599,25 @@ class GoogleDriveSyncService {
       // rows instead of keeping them (see SyncTombstone).
       final tombstones = await SyncTombstoneStore.all();
 
+      // Native Releases metadata is part of the same snapshot. Do not swallow
+      // an unreadable document and then replace a complete remote backup with
+      // an apparently successful partial one. Referenced media is not read.
+      final releaseTransfer = _releaseWorkspaceTransfer ??
+          ReleaseWorkspaceTransfer.forRepository(projectRepo);
+      final releaseWorkspacesByProfile = <String, dynamic>{};
+      for (final profile in allProfiles) {
+        final releasesBox =
+            await Hive.openBox<Release>('${profile.id}_releases');
+        releaseWorkspacesByProfile[profile.id] =
+            await releaseTransfer.exportProfile(
+          profile.id,
+          releaseIds: releasesBox.values.map((r) => r.id).toSet(),
+        );
+      }
+
       final data = {
         'timestamp': DateTime.now().toIso8601String(),
-        'version': '1.7', // Incremented to include custom themes
+        'version': '1.8', // Native Releases catalogs and workflow metadata.
         // Which device wrote this ("Drive updated from …"). Also on the
         // Drive file's description, so it can be read without downloading.
         'device': deviceName,
@@ -3609,6 +3631,7 @@ class GoogleDriveSyncService {
         'midiClips': midiClipsByProject,
         // profile id -> [MidiCollection.toJson()]. Absent on older backups.
         'midiCollectionsByProfile': midiCollectionsByProfile,
+        'releaseWorkspacesByProfile': releaseWorkspacesByProfile,
         'releases': [
           for (final (profileId, r) in allReleases)
             {..._serializeRelease(r), 'profileId': profileId},
@@ -4382,6 +4405,38 @@ class GoogleDriveSyncService {
     required ProfileRepository profileRepo,
     bool downloadPreviewSongs = true,
   }) async {
+    // Preflight the new metadata before mutating any legacy records. An older
+    // backup without this key is still accepted. Unlike legacy rows, a native
+    // bundle never falls back to being copied into every profile.
+    final remoteReleaseWorkspaces = <String, Map<String, dynamic>>{};
+    final rawReleaseWorkspaces = remoteData['releaseWorkspacesByProfile'];
+    if (rawReleaseWorkspaces != null) {
+      if (rawReleaseWorkspaces is! Map) {
+        throw const FormatException('Release snapshots must be keyed by profile');
+      }
+      for (final entry in rawReleaseWorkspaces.entries) {
+        if (entry.key is! String) {
+          throw const FormatException('Invalid release snapshot profile key');
+        }
+        remoteReleaseWorkspaces[entry.key as String] =
+            ReleaseWorkspaceTransfer.validateBundle(
+          entry.value,
+          expectedProfileId: entry.key as String,
+        );
+      }
+    }
+    final remoteProfiles = remoteData['profiles'] == null
+        ? <Profile>[]
+        : (remoteData['profiles'] as List)
+            .map((p) => _deserializeProfile(p as Map<String, dynamic>))
+            .toList();
+    final knownProfileIds = {
+      ...profileRepo.getAllProfiles().map((p) => p.id),
+      ...remoteProfiles.map((p) => p.id),
+    };
+    if (remoteReleaseWorkspaces.keys.any((id) => !knownProfileIds.contains(id))) {
+      throw const FormatException('Release snapshot has no matching profile');
+    }
     _mergeHashCache.clear();
 
     int projectsAdded = 0;
@@ -4402,9 +4457,6 @@ class GoogleDriveSyncService {
 
     // First, merge profiles
     if (remoteData['profiles'] != null) {
-      final remoteProfiles = (remoteData['profiles'] as List)
-          .map((p) => _deserializeProfile(p as Map<String, dynamic>))
-          .toList();
       
       // Get profile photo file mappings (if available)
       // Maps profileId -> driveFileId
@@ -5790,6 +5842,22 @@ class GoogleDriveSyncService {
       }
     }
 
+    // Legacy release tombstones have already been applied. Keep orphaned
+    // files locally, but never restore metadata as a new release by itself.
+    final releaseMetadataByProfile = <String, ReleaseWorkspaceTransferResult>{};
+    if (remoteReleaseWorkspaces.isNotEmpty) {
+      final transfer = _releaseWorkspaceTransfer ??
+          ReleaseWorkspaceTransfer.forRepository(projectRepo);
+      for (final entry in remoteReleaseWorkspaces.entries) {
+        final releasesBox = await Hive.openBox<Release>('${entry.key}_releases');
+        releaseMetadataByProfile[entry.key] = await transfer.mergeProfile(
+          entry.value,
+          targetProfileId: entry.key,
+          allowedReleaseIds: releasesBox.values.map((r) => r.id).toSet(),
+        );
+      }
+    }
+
     if (kDebugMode) {
       print('Merge completed:');
       print('  Profiles: merged from backup');
@@ -5814,6 +5882,7 @@ class GoogleDriveSyncService {
       releasesDeleted: releasesDeleted,
       previewSongsDownloaded: previewSongsDownloaded,
       previewSongsUpdated: previewSongsUpdated,
+      releaseMetadataByProfile: releaseMetadataByProfile,
     );
   }
 
@@ -6638,6 +6707,7 @@ class SyncResult {
   final int releasesDeleted;
   final int previewSongsDownloaded;
   final int previewSongsUpdated;
+  final Map<String, ReleaseWorkspaceTransferResult> releaseMetadataByProfile;
 
   SyncResult({
     required this.projectsAdded,
@@ -6648,6 +6718,7 @@ class SyncResult {
     this.releasesDeleted = 0,
     this.previewSongsDownloaded = 0,
     this.previewSongsUpdated = 0,
+    this.releaseMetadataByProfile = const {},
   });
 }
 

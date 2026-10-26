@@ -8266,4 +8266,604 @@ class AppLocalizationsPt extends AppLocalizations {
   @override
   String get legacyInstallRemoveFailed =>
       'Não foi possível iniciar o desinstalador da cópia antiga.';
+
+  @override
+  String get releaseManagerWorkflow => 'Release workspace';
+
+  @override
+  String get releaseManagerIntro =>
+      'Manage the catalogue, rights, deliveries and promotion for this release. External statuses are recorded manually.';
+
+  @override
+  String get releaseManagerCollectionType => 'Release type';
+
+  @override
+  String get releaseManagerArtists => 'Artists';
+
+  @override
+  String get releaseManagerSelectedArtists =>
+      'Artists credited on this release';
+
+  @override
+  String get releaseManagerAliases => 'Aliases';
+
+  @override
+  String get releaseManagerRoles => 'Roles';
+
+  @override
+  String get releaseManagerSortName => 'Sort name';
+
+  @override
+  String get releaseManagerTracks => 'Release tracks';
+
+  @override
+  String get releaseManagerProject => 'Linked DPM project';
+
+  @override
+  String get releaseManagerWork => 'Composition';
+
+  @override
+  String get releaseManagerCredits => 'Credits';
+
+  @override
+  String get releaseManagerRole => 'Role';
+
+  @override
+  String get releaseManagerPlaylists => 'Profile playlists';
+
+  @override
+  String get releaseManagerPlaylistTracks => 'Ordered tracks';
+
+  @override
+  String get releaseManagerAssets => 'Audio versions and supporting files';
+
+  @override
+  String get releaseManagerAssetRole => 'File role';
+
+  @override
+  String get releaseManagerPath => 'File path';
+
+  @override
+  String get releaseManagerParentAsset => 'Derived from';
+
+  @override
+  String get releaseManagerVerify => 'Verify file';
+
+  @override
+  String get releaseManagerVerification => 'Integrity';
+
+  @override
+  String get releaseManagerFilePicker => 'Choose file';
+
+  @override
+  String get releaseManagerWorks => 'Compositions';
+
+  @override
+  String get releaseManagerHolders => 'Rights holders';
+
+  @override
+  String get releaseManagerShares => 'Ownership shares';
+
+  @override
+  String get releaseManagerHolder => 'Rights holder';
+
+  @override
+  String get releaseManagerPercentage => 'Share (%)';
+
+  @override
+  String get releaseManagerFilings => 'Rights registrations';
+
+  @override
+  String get releaseManagerOrganization => 'Organization (SACEM, BMI, PRS…)';
+
+  @override
+  String get releaseManagerReference => 'Reference number';
+
+  @override
+  String get releaseManagerEvidence => 'Supporting documents';
+
+  @override
+  String get releaseManagerDistribution => 'Distribution';
+
+  @override
+  String get releaseManagerDistributor => 'Distributor';
+
+  @override
+  String get releaseManagerPlatforms => 'Platform deliveries';
+
+  @override
+  String get releaseManagerPlatform => 'Platform';
+
+  @override
+  String get releaseManagerUrl => 'Publication URL';
+
+  @override
+  String get releaseManagerCampaigns => 'Promotion campaigns';
+
+  @override
+  String get releaseManagerCampaign => 'Campaign';
+
+  @override
+  String get releaseManagerCalendar => 'Promotion calendar';
+
+  @override
+  String get releaseManagerCommunications => 'Promotional posts';
+
+  @override
+  String get releaseManagerScheduledAt => 'Scheduled for';
+
+  @override
+  String get releaseManagerPublishedAt => 'Published at';
+
+  @override
+  String get releaseManagerSubmittedAt => 'Submitted at';
+
+  @override
+  String get releaseManagerStartAt => 'Start date';
+
+  @override
+  String get releaseManagerEndAt => 'End date';
+
+  @override
+  String get releaseManagerText => 'Post copy';
+
+  @override
+  String get releaseManagerTasks => 'Workflow tasks';
+
+  @override
+  String get releaseManagerDependsOn => 'Depends on';
+
+  @override
+  String get releaseManagerDueAt => 'Due date';
+
+  @override
+  String get releaseManagerSave => 'Validate and save';
+
+  @override
+  String get releaseManagerSaving => 'Saving…';
+
+  @override
+  String get releaseManagerSaved => 'Release workspace saved';
+
+  @override
+  String get releaseManagerReload => 'Reload saved data';
+
+  @override
+  String get releaseManagerImportLegacy => 'Import previous metadata';
+
+  @override
+  String get releaseManagerHistory => 'Status history';
+
+  @override
+  String get releaseManagerRemoveQuestion => 'Remove this record?';
+
+  @override
+  String get releaseManagerRemoveHelp =>
+      'References are checked before removal. Source projects and files are kept.';
+
+  @override
+  String get releaseManagerMoveUp => 'Move up';
+
+  @override
+  String get releaseManagerMoveDown => 'Move down';
+
+  @override
+  String get releaseManagerNone => 'None';
+
+  @override
+  String get releaseManagerRequired => 'This field is required';
+
+  @override
+  String get releaseManagerInvalidNumber => 'Enter a valid number';
+
+  @override
+  String get releaseManagerInvalidDate => 'Enter a valid date and time';
+
+  @override
+  String get releaseManagerCommaSeparated => 'Separate values with commas';
+
+  @override
+  String get releaseManagerLocalTime => 'Local date/time; stored in UTC';
+
+  @override
+  String get releaseManagerUnpromoted => 'Tracks without promotion';
+
+  @override
+  String get releaseManagerEmpty => 'No records yet';
+
+  @override
+  String get releaseManagerReleaseDate => 'Release date';
+
+  @override
+  String get releaseManagerUnsaved => 'Unsaved changes';
+
+  @override
+  String get releaseManagerDiscard => 'Discard changes';
+
+  @override
+  String get releaseManagerLeaveQuestion => 'Leave without saving?';
+
+  @override
+  String get releaseManagerUnexpectedStatus => 'Unknown saved value';
+
+  @override
+  String get releaseManagerCoverage => 'Publication readiness';
+
+  @override
+  String get releaseManagerArtist => 'Artist';
+
+  @override
+  String get releaseManagerTrack => 'Track';
+
+  @override
+  String get projectRepairOpen => 'Inspect or recover a project file';
+
+  @override
+  String get projectRepairRecoverMidi => 'Recover MIDI from ALL';
+
+  @override
+  String get projectRepairRecoveryTitle => 'Experimental MIDI recovery';
+
+  @override
+  String get projectRepairRecoveryConsent =>
+      'DPM will recover supported MIDI events to a new file and keep a verified backup. Audio, instruments, effects and mixer settings are not recovered. Mid-song tempo changes, SysEx and some legacy variants are unsupported.';
+
+  @override
+  String get projectRepairRecoverAction => 'Recover MIDI';
+
+  @override
+  String get projectRepairRecoveryCreated => 'MIDI recovery file created';
+
+  @override
+  String get projectRepairWorking => 'Processing…';
+
+  @override
+  String get projectRepairFailed => 'The operation could not be completed';
+
+  @override
+  String get projectRepairNativeAllHint =>
+      'Integrated DPM engine · macOS Apple Silicon / Intel and Windows · no Cubase installation required';
+
+  @override
+  String get projectRepairInspectDependencies => 'Inspect dependencies';
+
+  @override
+  String get projectRepairRecoveryStatus => 'Recovery status';
+
+  @override
+  String get projectRepairRecoveredTracks => 'Recovered tracks';
+
+  @override
+  String get projectRepairRecoveredNotes => 'Recovered notes';
+
+  @override
+  String get projectRepairSkippedParts => 'Skipped parts';
+
+  @override
+  String get projectRepairPartialRecovery =>
+      'Partial MIDI recovery; check the result in your DAW.';
+
+  @override
+  String get projectRepairUnverifiedRecovery =>
+      'MIDI recovered; musical fidelity remains unverified.';
+
+  @override
+  String get projectInspectorTitle => 'Project inspection';
+
+  @override
+  String projectInspectorFailed(String error) {
+    return 'Inspection failed: $error';
+  }
+
+  @override
+  String get projectInspectorEmpty => 'No report available';
+
+  @override
+  String get projectInspectorCopyReport => 'Copy JSON report';
+
+  @override
+  String get projectInspectorCopied => 'Inspection report copied';
+
+  @override
+  String projectInspectorCopyFailed(String error) {
+    return 'Cannot copy report: $error';
+  }
+
+  @override
+  String get projectInspectorDependencies => 'Project dependencies';
+
+  @override
+  String projectInspectorFormat(String format) {
+    return 'Format: $format';
+  }
+
+  @override
+  String projectInspectorTracks(String count) {
+    return 'Tracks: $count';
+  }
+
+  @override
+  String projectInspectorTimeline(int clips, int notes, int points) {
+    return 'Clips: $clips; notes: $notes; automation points: $points';
+  }
+
+  @override
+  String projectInspectorReferences(int external, int missing) {
+    return 'External references: $external; missing archive references: $missing';
+  }
+
+  @override
+  String projectInspectorSavedVersion(String version) {
+    return 'Saved with DAW version: $version';
+  }
+
+  @override
+  String projectInspectorValidatedChunks(int chunks, int archives) {
+    return 'Validated CPR chunks: $chunks (ARCH blocks: $archives)';
+  }
+
+  @override
+  String get projectInspectorLegacyTitle => 'Import legacy Cubase song';
+
+  @override
+  String get projectInspectorLegacyLosses =>
+      'Manual conversion with Cubase SE 3, SL 3 or SX 3. VST instruments, effects and mixer settings will be lost.';
+
+  @override
+  String get projectInspectorUidEvidence => 'Serialized plug-in UID evidence';
+
+  @override
+  String get projectInspectorUidCaution =>
+      'Declared identifiers only. No vendor identity, plug-in state, licence or loadability has been verified.';
+
+  @override
+  String projectInspectorUidRecord(String uid, int count) {
+    return 'UID $uid; $count serialized record(s)';
+  }
+
+  @override
+  String get projectInspectorPlugins => 'Plug-ins';
+
+  @override
+  String get projectInspectorNoPlugins =>
+      'No plug-ins decoded (not evidence of an empty session).';
+
+  @override
+  String get projectInspectorLoadabilityUntested =>
+      'Installation and loadability: not tested';
+
+  @override
+  String get projectInspectorLimitations => 'Inspection limitations';
+
+  @override
+  String get projectInspectorAdditionalFolders =>
+      'Additional plug-in folders (optional)';
+
+  @override
+  String get projectInspectorAdditionalFoldersHelp =>
+      'One folder per line; standard locations are included.';
+
+  @override
+  String get projectInspectorScanButton =>
+      'Scan local plug-in candidates (optional)';
+
+  @override
+  String projectInspectorScanFailed(String error) {
+    return 'Local scan failed: $error';
+  }
+
+  @override
+  String projectInspectorScanSummary(int candidates, int folders) {
+    return '$candidates local candidates in $folders scanned folders';
+  }
+
+  @override
+  String get projectInspectorPassiveScan =>
+      'Passive filenames and VST3 manifests only. No plug-ins were executed. Licence, disabled status and loadability remain untested.';
+
+  @override
+  String get projectInspectorScanIncomplete =>
+      'Scan incomplete: entry or depth limit reached.';
+
+  @override
+  String projectInspectorScanWarnings(int count) {
+    return 'Scan coverage and warnings ($count)';
+  }
+
+  @override
+  String projectInspectorRequestedId(String identifier) {
+    return 'Requested ID: $identifier';
+  }
+
+  @override
+  String get projectInspectorStatusIdentifierPresent =>
+      'Declared identifier found; loading and licence not tested';
+
+  @override
+  String get projectInspectorStatusReplacement =>
+      'Manifest declares a replacement; saved-state migration is unverified';
+
+  @override
+  String projectInspectorStatusAmbiguous(int count) {
+    return '$count candidates; select and verify in the DAW';
+  }
+
+  @override
+  String get projectInspectorStatusIdentifierNotFound =>
+      'Identifier not found in scanned manifests; absence is inconclusive';
+
+  @override
+  String get projectInspectorStatusNameCandidate =>
+      'Name candidate found; identifier and loading not verified';
+
+  @override
+  String get projectInspectorStatusNameNotFound =>
+      'Name not found in scanned locations; absence is inconclusive';
+
+  @override
+  String get projectInspectorStatusUnknown =>
+      'Insufficient or unsupported plug-in identity evidence';
+
+  @override
+  String get projectInspectorPreservationIntro =>
+      'Create a verified backup and an unchanged reconstructed CPR, with opaque chunk evidence. The source project is preserved.';
+
+  @override
+  String get projectInspectorPreserveButton =>
+      'Preserve CPR and verify round trip';
+
+  @override
+  String projectInspectorPreserveFailed(String error) {
+    return 'Preservation failed: $error';
+  }
+
+  @override
+  String projectInspectorPreserveSummary(
+    String status,
+    String evidencePath,
+    String backupPath,
+  ) {
+    return 'Preservation: $status\nEvidence folder: $evidencePath\nBackup: $backupPath';
+  }
+
+  @override
+  String get projectInspectorPreserveLimit =>
+      'This unchanged round trip does not validate a CPR edit or migration.';
+
+  @override
+  String get legacyMigrationTitle => 'Migração do Cubase clássico (.ALL/.ARR)';
+
+  @override
+  String get legacyMigrationOpen => 'Migrar um projeto antigo do Cubase';
+
+  @override
+  String get legacyMigrationIntro =>
+      'Recupere os dados MIDI compatíveis ou siga uma rota de conversão externa. O áudio, o estado dos plug-ins e a fidelidade da mixagem continuam sem verificação.';
+
+  @override
+  String get legacyMigrationNativeTitle => 'Recuperação MIDI integrada (.ALL)';
+
+  @override
+  String get legacyMigrationNativeBody =>
+      'O DPM pode exibir uma prévia das faixas MIDI compatíveis de arquivos .ALL e criar um arquivo MIDI padrão separado. Não é necessário instalar o Cubase nem usar um executável externo. A compatibilidade com os formatos é experimental.';
+
+  @override
+  String get legacyMigrationOfficialTitle => 'Importação oficial com Cubase 3';
+
+  @override
+  String get legacyMigrationOfficialBody =>
+      'Em uma instalação compatível e licenciada do Cubase SE 3, SL 3 ou SX 3, escolha File > Import > Cubase Song e salve um CPR separado. Confira as referências de mídia no Cubase.';
+
+  @override
+  String get legacyMigrationAtariTitle => 'Conversão de Atari via DAWproject';
+
+  @override
+  String get legacyMigrationAtariBody =>
+      'O site de terceiros atari2cubase oferece a conversão de arquivos Atari .ALL/.ARR para DAWproject ou MIDI. O suporte ao Cubase VST PC é experimental. Baixe o resultado, importe o DAWproject no Cubase/Nuendo 14 ou posterior e salve um novo CPR. O DPM não realizou uma auditoria independente desse site.';
+
+  @override
+  String get legacyMigrationOpenConverter => 'Abrir atari2cubase no navegador';
+
+  @override
+  String get legacyMigrationAllToMidiTitle => 'AllToMidi no Windows';
+
+  @override
+  String get legacyMigrationAllToMidiBody =>
+      'Recuperação MIDI opcional de arquivos .ALL com um executável AllToMidi instalado separadamente no Windows. ARR, áudio, presets VST e configurações do mixer não são compatíveis. Importe o MIDI no Cubase e salve um novo CPR.';
+
+  @override
+  String get legacyMigrationExternalConsent =>
+      'Isso recupera apenas MIDI. Áudio, instrumentos, efeitos e configurações do mixer não são recuperados. As mudanças de andamento e mensagens SysEx podem ficar incompletas. O executável externo selecionado roda sem isolamento pelo sistema operacional. Use uma instalação local confiável.';
+
+  @override
+  String get legacyMigrationChooseLegacy =>
+      'Escolher .ALL / .ARR e verificar o backup';
+
+  @override
+  String legacyMigrationSource(String path) {
+    return 'Origem: $path';
+  }
+
+  @override
+  String legacyMigrationSourceHash(String hash) {
+    return 'SHA-256 da origem: $hash';
+  }
+
+  @override
+  String legacyMigrationBackup(String path) {
+    return 'Backup verificado: $path';
+  }
+
+  @override
+  String get legacyMigrationPreviewTitle => 'Prévia MIDI (experimental)';
+
+  @override
+  String legacyMigrationPreviewSummary(int tracks, int notes, int events) {
+    return '$tracks faixas · $notes notas · $events eventos MIDI';
+  }
+
+  @override
+  String legacyMigrationInitialTempo(String bpm) {
+    return 'Andamento inicial: $bpm BPM';
+  }
+
+  @override
+  String legacyMigrationTrackSummary(int channel, int parts, int notes) {
+    return 'Canal $channel · $parts partes · $notes notas';
+  }
+
+  @override
+  String legacyMigrationMoreTracks(int count) {
+    return '$count faixas adicionais omitidas da prévia';
+  }
+
+  @override
+  String get legacyMigrationUnsupportedPreview =>
+      'Não é possível exibir uma prévia desta variante de .ALL. As rotas de migração manual continuam disponíveis.';
+
+  @override
+  String get legacyMigrationArrUnsupported =>
+      'A decodificação MIDI integrada de .ARR não está disponível. Use uma rota de conversão manual.';
+
+  @override
+  String legacyMigrationMidiOutput(String path) {
+    return 'Arquivo MIDI: $path';
+  }
+
+  @override
+  String legacyMigrationMidiSummary(int tracks, int notes, int ppq) {
+    return '$tracks faixas · $notes notas · $ppq PPQ';
+  }
+
+  @override
+  String get legacyMigrationCheckDawProject =>
+      'Verificar DAWproject intermediário';
+
+  @override
+  String get legacyMigrationDawProjectChecked =>
+      'Arquivo DAWproject inspecionado. Abra e compare em um DAW compatível; a equivalência musical continua sem verificação.';
+
+  @override
+  String get legacyMigrationCheckCpr => 'Verificar CPR resultante';
+
+  @override
+  String get legacyMigrationCprChecked =>
+      'Contêiner CPR inspecionado. Isso não certifica uma conversão sem perdas.';
+
+  @override
+  String get legacyMigrationRunExternal =>
+      'Recuperar MIDI com o AllToMidi instalado';
+
+  @override
+  String get legacyMigrationSelectExecutable =>
+      'Selecionar o AllToMidi.exe instalado';
+
+  @override
+  String legacyMigrationTempoDefaulted(String bpm) {
+    return 'Não foi possível decodificar o andamento inicial; a prévia usa $bpm BPM.';
+  }
+
+  @override
+  String get legacyMigrationOpenFailed =>
+      'Não foi possível abrir o site do conversor';
 }

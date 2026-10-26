@@ -6,7 +6,7 @@ import 'dart:typed_data';
 import 'package:crypto/crypto.dart';
 import 'package:path/path.dart' as p;
 
-import '../midi/midi_file_reader.dart';
+import 'midi_file_validator.dart';
 import 'legacy_cubase_migration.dart';
 import 'verified_project_backup.dart';
 
@@ -15,12 +15,13 @@ import 'verified_project_backup.dart';
 /// AllToMidi 1.0 accepts Cubase .ALL songs, not .ARR arrangements, and
 /// produces type-1 MIDI files. Audio, plug-in states and mixer settings are
 /// explicitly outside this bridge. No third-party executable is bundled.
-typedef AllToMidiRunner = Future<AllToMidiProcessOutcome> Function(
-  String executable,
-  List<String> arguments,
-  String workingDirectory,
-  Duration timeout,
-);
+typedef AllToMidiRunner =
+    Future<AllToMidiProcessOutcome> Function(
+      String executable,
+      List<String> arguments,
+      String workingDirectory,
+      Duration timeout,
+    );
 
 class AllToMidiProcessOutcome {
   const AllToMidiProcessOutcome({
@@ -39,53 +40,16 @@ class AllToMidiProcessOutcome {
 /// equivalence with the legacy Cubase source.
 class AllToMidiOutputProbe {
   static ({int tracks, int ppq, int notes}) inspect(Uint8List bytes) {
-    if (bytes.length < 22 || bytes.length > 128 * 1024 * 1024) {
-      throw const FormatException('Invalid MIDI output file size');
-    }
-    final view = ByteData.sublistView(bytes);
-    bool starts(int offset, String value) {
-      if (offset < 0 || offset + value.length > bytes.length) return false;
-      for (var i = 0; i < value.length; i++) {
-        if (bytes[offset + i] != value.codeUnitAt(i)) return false;
-      }
-      return true;
-    }
-
-    if (!starts(0, 'MThd') ||
-        view.getUint32(4, Endian.big) != 6 ||
-        view.getUint16(8, Endian.big) != 1) {
-      throw const FormatException('Expected Standard MIDI File type 1');
-    }
-    final declaredTracks = view.getUint16(10, Endian.big);
-    final ppq = view.getUint16(12, Endian.big);
-    if (declaredTracks == 0 || declaredTracks > 1024 || ppq != 480) {
-      throw const FormatException('Invalid MIDI track count or PPQ');
-    }
-
-    var at = 14;
-    for (var track = 0; track < declaredTracks; track++) {
-      if (!starts(at, 'MTrk') || at + 8 > bytes.length) {
-        throw const FormatException('Missing MIDI track chunk');
-      }
-      final length = view.getUint32(at + 4, Endian.big);
-      if (length > bytes.length - (at + 8)) {
-        throw const FormatException('Truncated MIDI track chunk');
-      }
-      at += 8 + length;
-    }
-    if (at != bytes.length) {
-      throw const FormatException('Trailing bytes or unexpected MIDI chunks');
-    }
-    final tracks = decodeMidiFileTracks(bytes);
-    if (tracks == null || tracks.tracks.length != declaredTracks) {
-      throw const FormatException('MIDI track decoding failed');
+    final parsed = MidiFileValidator.inspect(bytes);
+    if (parsed.format != 1 || parsed.division != 480) {
+      throw const FormatException(
+        'Expected Standard MIDI File type 1 at 480 PPQ',
+      );
     }
     return (
-      tracks: declaredTracks,
-      ppq: ppq,
-      notes: tracks.tracks.fold<int>(
-        0, (sum, track) => sum + track.notes.length,
-      ),
+      tracks: parsed.trackCount,
+      ppq: parsed.division,
+      notes: parsed.noteCount,
     );
   }
 }
@@ -139,11 +103,9 @@ class AllToMidiConversionResult {
 /// The external executable is NOT operating-system sandboxed. It must be
 /// locally installed and trusted by the user. No hidden downloads occur.
 class AllToMidiBridge {
-  AllToMidiBridge({
-    AllToMidiRunner? runner,
-    bool? windowsOverrideForTests,
-  })  : _runner = runner ?? _runProcess,
-        _isWindows = windowsOverrideForTests ?? Platform.isWindows;
+  AllToMidiBridge({AllToMidiRunner? runner, bool? windowsOverrideForTests})
+    : _runner = runner ?? _runProcess,
+      _isWindows = windowsOverrideForTests ?? Platform.isWindows;
 
   final AllToMidiRunner _runner;
   final bool _isWindows;
@@ -156,10 +118,12 @@ class AllToMidiBridge {
     Duration timeout = const Duration(minutes: 2),
   }) async {
     if (!acknowledgeLosses) {
-      throw const FormatException('Explicit acceptance of MIDI-only recovery is required');
+      throw const FormatException(
+        'Explicit acceptance of MIDI-only recovery is required',
+      );
     }
     if (!_isWindows) {
-      throw const UnsupportedError(
+      throw UnsupportedError(
         'AllToMidi.exe requires Windows; use the manual route or a port',
       );
     }
@@ -170,26 +134,39 @@ class AllToMidiBridge {
     if (!p.isAbsolute(executable.path) ||
         p.basename(executable.path).toLowerCase() != 'alltomidi.exe' ||
         !await executable.exists()) {
-      throw const FileSystemException('Select an installed AllToMidi.exe using an absolute path');
+      throw const FileSystemException(
+        'Select an installed AllToMidi.exe using an absolute path',
+      );
     }
-    await VerifiedProjectBackup.ensureNoSymlinkComponents(executable.absolute.path);
+    await VerifiedProjectBackup.ensureNoSymlinkComponents(
+      executable.absolute.path,
+    );
     if (await FileSystemEntity.type(executable.path, followLinks: false) !=
         FileSystemEntityType.file) {
-      throw const FileSystemException('AllToMidi executable is not a regular file');
+      throw const FileSystemException(
+        'AllToMidi executable is not a regular file',
+      );
     }
     if (!await original.exists() ||
         await original.length() == 0 ||
         await original.length() > 128 * 1024 * 1024) {
-      throw const FormatException('Legacy Cubase source is missing or oversized');
+      throw const FormatException(
+        'Legacy Cubase source is missing or oversized',
+      );
     }
 
     // A hash-verified original backup is a prerequisite for any execution.
     final prepared = await LegacyCubaseMigration.prepare(original);
-    final parent = outputRoot ??
-        Directory(p.join(original.parent.absolute.path, '.project-repair-exports'));
+    final parent =
+        outputRoot ??
+        Directory(
+          p.join(original.parent.absolute.path, '.project-repair-exports'),
+        );
     await VerifiedProjectBackup.ensureNoSymlinkComponents(parent.absolute.path);
     if (p.split(parent.absolute.path).contains('.project-repair-backups')) {
-      throw const FileSystemException('Output must not be inside managed backups');
+      throw const FileSystemException(
+        'Output must not be inside managed backups',
+      );
     }
     await parent.create(recursive: true);
     await VerifiedProjectBackup.ensureNoSymlinkComponents(parent.absolute.path);
@@ -202,13 +179,16 @@ class AllToMidiBridge {
     await original.copy(input.path);
     if (await _sha256(input) != prepared.legacySha256 ||
         await _sha256(original) != prepared.legacySha256) {
-      throw const FileSystemException('Source changed during conversion staging');
+      throw const FileSystemException(
+        'Source changed during conversion staging',
+      );
     }
 
     // AllToMidi v1.0 honors --output-folder and --same-name and produces
     // exactly one Song.mid for a staged Song.ALL file.
     final args = <String>[
-      '--output-folder', outputs.absolute.path,
+      '--output-folder',
+      outputs.absolute.path,
       '--same-name',
       '--no-preserve-date',
       input.absolute.path,
@@ -216,42 +196,70 @@ class AllToMidiBridge {
     AllToMidiProcessOutcome outcome;
     try {
       outcome = await _runner(
-        executable.absolute.path, args, run.path, timeout,
+        executable.absolute.path,
+        args,
+        run.path,
+        timeout,
       );
     } catch (error) {
-      await _failure(report, prepared.backupPath,
-          'External converter execution failed: ' + error.toString());
+      await _failure(
+        report,
+        prepared.backupPath,
+        'External converter execution failed: $error',
+      );
       rethrow;
     }
 
     if (outcome.exitCode != 0) {
-      await _failure(report, prepared.backupPath,
-          'AllToMidi exited with status ${outcome.exitCode}: '
-          '${_truncated(outcome.stderr)}');
+      await _failure(
+        report,
+        prepared.backupPath,
+        'AllToMidi exited with status ${outcome.exitCode}: '
+        '${_truncated(outcome.stderr)}',
+      );
       throw ProcessException(
-        executable.path, args, 'AllToMidi failed', outcome.exitCode,
+        executable.path,
+        args,
+        'AllToMidi failed',
+        outcome.exitCode,
       );
     }
-    final output = File(p.join(
-      outputs.path, p.basenameWithoutExtension(input.path) + '.mid',
-    ));
+    final output = File(
+      p.join(outputs.path, '${p.basenameWithoutExtension(input.path)}.mid'),
+    );
     late final ({int tracks, int ppq, int notes}) midi;
     try {
+      await VerifiedProjectBackup.ensureNoSymlinkComponents(
+        output.absolute.path,
+      );
+      await VerifiedProjectBackup.ensureNoSymlinkComponents(
+        original.absolute.path,
+      );
+      await VerifiedProjectBackup.ensureNoSymlinkComponents(
+        prepared.backupPath,
+      );
       if (await FileSystemEntity.type(output.path, followLinks: false) !=
               FileSystemEntityType.file ||
           !await output.exists() ||
           await output.length() > 128 * 1024 * 1024) {
-        throw const FormatException('Converter did not produce one safe MIDI file');
+        throw const FormatException(
+          'Converter did not produce one safe MIDI file',
+        );
       }
       midi = AllToMidiOutputProbe.inspect(await output.readAsBytes());
       if (await _sha256(original) != prepared.legacySha256 ||
           await _sha256(File(prepared.backupPath)) != prepared.legacySha256 ||
           await original.length() != prepared.legacySize) {
-        throw const FileSystemException('Original or protected backup changed during conversion');
+        throw const FileSystemException(
+          'Original or protected backup changed during conversion',
+        );
       }
     } catch (error) {
-      await _failure(report, prepared.backupPath,
-          'MIDI validation failed: ' + error.toString());
+      await _failure(
+        report,
+        prepared.backupPath,
+        'MIDI validation failed: $error',
+      );
       rethrow;
     }
 
@@ -292,7 +300,10 @@ class AllToMidiBridge {
       value.length > 4096 ? value.substring(0, 4096) : value;
 
   static Future<void> _failure(
-      File report, String backup, String message) async {
+    File report,
+    String backup,
+    String message,
+  ) async {
     await report.writeAsString(
       const JsonEncoder.withIndent('  ').convert({
         'status': 'failed',
@@ -311,37 +322,65 @@ class AllToMidiBridge {
     Duration timeout,
   ) async {
     final process = await Process.start(
-      executable, args,
+      executable,
+      args,
       workingDirectory: workingDirectory,
       runInShell: false,
     );
+    await process.stdin.close();
 
     Future<String> drain(Stream<List<int>> stream) async {
       final buffer = BytesBuilder(copy: false);
       var copied = 0;
       await for (final part in stream) {
         if (copied >= 4096) continue;
-        final count = part.length < 4096 - copied
-            ? part.length : 4096 - copied;
+        final count = part.length < 4096 - copied ? part.length : 4096 - copied;
         buffer.add(part.sublist(0, count));
         copied += count;
       }
       return utf8.decode(buffer.takeBytes(), allowMalformed: true);
     }
 
-    final out = drain(process.stdout);
-    final err = drain(process.stderr);
-    int result;
+    // A descendant may retain pipes after the direct child exits. Include
+    // both pipe drains in the deadline and detach them during cleanup.
+    final stdoutController = StreamController<List<int>>();
+    final stderrController = StreamController<List<int>>();
+    final stdoutSubscription = process.stdout.listen(
+      stdoutController.add,
+      onError: stdoutController.addError,
+      onDone: stdoutController.close,
+    );
+    final stderrSubscription = process.stderr.listen(
+      stderrController.add,
+      onError: stderrController.addError,
+      onDone: stderrController.close,
+    );
+    final out = drain(stdoutController.stream);
+    final err = drain(stderrController.stream);
     try {
-      result = await process.exitCode.timeout(timeout);
+      final values = await Future.wait<Object>([
+        process.exitCode,
+        out,
+        err,
+      ]).timeout(timeout);
+      return AllToMidiProcessOutcome(
+        exitCode: values[0] as int,
+        stdout: values[1] as String,
+        stderr: values[2] as String,
+      );
     } on TimeoutException {
       process.kill();
+      try {
+        await process.exitCode.timeout(const Duration(seconds: 2));
+      } on TimeoutException {
+        process.kill(ProcessSignal.sigkill);
+      }
       throw TimeoutException('AllToMidi timed out');
+    } finally {
+      await stdoutSubscription.cancel();
+      await stderrSubscription.cancel();
+      await stdoutController.close();
+      await stderrController.close();
     }
-    return AllToMidiProcessOutcome(
-      exitCode: result,
-      stdout: await out,
-      stderr: await err,
-    );
   }
 }

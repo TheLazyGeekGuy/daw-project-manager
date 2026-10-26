@@ -13448,6 +13448,1018 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'The old copy\'s uninstaller couldn\'t be started.'**
   String get legacyInstallRemoveFailed;
+
+  /// No description provided for @releaseManagerWorkflow.
+  ///
+  /// In en, this message translates to:
+  /// **'Release workspace'**
+  String get releaseManagerWorkflow;
+
+  /// No description provided for @releaseManagerIntro.
+  ///
+  /// In en, this message translates to:
+  /// **'Manage the catalogue, rights, deliveries and promotion for this release. External statuses are recorded manually.'**
+  String get releaseManagerIntro;
+
+  /// No description provided for @releaseManagerCollectionType.
+  ///
+  /// In en, this message translates to:
+  /// **'Release type'**
+  String get releaseManagerCollectionType;
+
+  /// No description provided for @releaseManagerArtists.
+  ///
+  /// In en, this message translates to:
+  /// **'Artists'**
+  String get releaseManagerArtists;
+
+  /// No description provided for @releaseManagerSelectedArtists.
+  ///
+  /// In en, this message translates to:
+  /// **'Artists credited on this release'**
+  String get releaseManagerSelectedArtists;
+
+  /// No description provided for @releaseManagerAliases.
+  ///
+  /// In en, this message translates to:
+  /// **'Aliases'**
+  String get releaseManagerAliases;
+
+  /// No description provided for @releaseManagerRoles.
+  ///
+  /// In en, this message translates to:
+  /// **'Roles'**
+  String get releaseManagerRoles;
+
+  /// No description provided for @releaseManagerSortName.
+  ///
+  /// In en, this message translates to:
+  /// **'Sort name'**
+  String get releaseManagerSortName;
+
+  /// No description provided for @releaseManagerTracks.
+  ///
+  /// In en, this message translates to:
+  /// **'Release tracks'**
+  String get releaseManagerTracks;
+
+  /// No description provided for @releaseManagerProject.
+  ///
+  /// In en, this message translates to:
+  /// **'Linked DPM project'**
+  String get releaseManagerProject;
+
+  /// No description provided for @releaseManagerWork.
+  ///
+  /// In en, this message translates to:
+  /// **'Composition'**
+  String get releaseManagerWork;
+
+  /// No description provided for @releaseManagerCredits.
+  ///
+  /// In en, this message translates to:
+  /// **'Credits'**
+  String get releaseManagerCredits;
+
+  /// No description provided for @releaseManagerRole.
+  ///
+  /// In en, this message translates to:
+  /// **'Role'**
+  String get releaseManagerRole;
+
+  /// No description provided for @releaseManagerPlaylists.
+  ///
+  /// In en, this message translates to:
+  /// **'Profile playlists'**
+  String get releaseManagerPlaylists;
+
+  /// No description provided for @releaseManagerPlaylistTracks.
+  ///
+  /// In en, this message translates to:
+  /// **'Ordered tracks'**
+  String get releaseManagerPlaylistTracks;
+
+  /// No description provided for @releaseManagerAssets.
+  ///
+  /// In en, this message translates to:
+  /// **'Audio versions and supporting files'**
+  String get releaseManagerAssets;
+
+  /// No description provided for @releaseManagerAssetRole.
+  ///
+  /// In en, this message translates to:
+  /// **'File role'**
+  String get releaseManagerAssetRole;
+
+  /// No description provided for @releaseManagerPath.
+  ///
+  /// In en, this message translates to:
+  /// **'File path'**
+  String get releaseManagerPath;
+
+  /// No description provided for @releaseManagerParentAsset.
+  ///
+  /// In en, this message translates to:
+  /// **'Derived from'**
+  String get releaseManagerParentAsset;
+
+  /// No description provided for @releaseManagerVerify.
+  ///
+  /// In en, this message translates to:
+  /// **'Verify file'**
+  String get releaseManagerVerify;
+
+  /// No description provided for @releaseManagerVerification.
+  ///
+  /// In en, this message translates to:
+  /// **'Integrity'**
+  String get releaseManagerVerification;
+
+  /// No description provided for @releaseManagerFilePicker.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose file'**
+  String get releaseManagerFilePicker;
+
+  /// No description provided for @releaseManagerWorks.
+  ///
+  /// In en, this message translates to:
+  /// **'Compositions'**
+  String get releaseManagerWorks;
+
+  /// No description provided for @releaseManagerHolders.
+  ///
+  /// In en, this message translates to:
+  /// **'Rights holders'**
+  String get releaseManagerHolders;
+
+  /// No description provided for @releaseManagerShares.
+  ///
+  /// In en, this message translates to:
+  /// **'Ownership shares'**
+  String get releaseManagerShares;
+
+  /// No description provided for @releaseManagerHolder.
+  ///
+  /// In en, this message translates to:
+  /// **'Rights holder'**
+  String get releaseManagerHolder;
+
+  /// No description provided for @releaseManagerPercentage.
+  ///
+  /// In en, this message translates to:
+  /// **'Share (%)'**
+  String get releaseManagerPercentage;
+
+  /// No description provided for @releaseManagerFilings.
+  ///
+  /// In en, this message translates to:
+  /// **'Rights registrations'**
+  String get releaseManagerFilings;
+
+  /// No description provided for @releaseManagerOrganization.
+  ///
+  /// In en, this message translates to:
+  /// **'Organization (SACEM, BMI, PRS…)'**
+  String get releaseManagerOrganization;
+
+  /// No description provided for @releaseManagerReference.
+  ///
+  /// In en, this message translates to:
+  /// **'Reference number'**
+  String get releaseManagerReference;
+
+  /// No description provided for @releaseManagerEvidence.
+  ///
+  /// In en, this message translates to:
+  /// **'Supporting documents'**
+  String get releaseManagerEvidence;
+
+  /// No description provided for @releaseManagerDistribution.
+  ///
+  /// In en, this message translates to:
+  /// **'Distribution'**
+  String get releaseManagerDistribution;
+
+  /// No description provided for @releaseManagerDistributor.
+  ///
+  /// In en, this message translates to:
+  /// **'Distributor'**
+  String get releaseManagerDistributor;
+
+  /// No description provided for @releaseManagerPlatforms.
+  ///
+  /// In en, this message translates to:
+  /// **'Platform deliveries'**
+  String get releaseManagerPlatforms;
+
+  /// No description provided for @releaseManagerPlatform.
+  ///
+  /// In en, this message translates to:
+  /// **'Platform'**
+  String get releaseManagerPlatform;
+
+  /// No description provided for @releaseManagerUrl.
+  ///
+  /// In en, this message translates to:
+  /// **'Publication URL'**
+  String get releaseManagerUrl;
+
+  /// No description provided for @releaseManagerCampaigns.
+  ///
+  /// In en, this message translates to:
+  /// **'Promotion campaigns'**
+  String get releaseManagerCampaigns;
+
+  /// No description provided for @releaseManagerCampaign.
+  ///
+  /// In en, this message translates to:
+  /// **'Campaign'**
+  String get releaseManagerCampaign;
+
+  /// No description provided for @releaseManagerCalendar.
+  ///
+  /// In en, this message translates to:
+  /// **'Promotion calendar'**
+  String get releaseManagerCalendar;
+
+  /// No description provided for @releaseManagerCommunications.
+  ///
+  /// In en, this message translates to:
+  /// **'Promotional posts'**
+  String get releaseManagerCommunications;
+
+  /// No description provided for @releaseManagerScheduledAt.
+  ///
+  /// In en, this message translates to:
+  /// **'Scheduled for'**
+  String get releaseManagerScheduledAt;
+
+  /// No description provided for @releaseManagerPublishedAt.
+  ///
+  /// In en, this message translates to:
+  /// **'Published at'**
+  String get releaseManagerPublishedAt;
+
+  /// No description provided for @releaseManagerSubmittedAt.
+  ///
+  /// In en, this message translates to:
+  /// **'Submitted at'**
+  String get releaseManagerSubmittedAt;
+
+  /// No description provided for @releaseManagerStartAt.
+  ///
+  /// In en, this message translates to:
+  /// **'Start date'**
+  String get releaseManagerStartAt;
+
+  /// No description provided for @releaseManagerEndAt.
+  ///
+  /// In en, this message translates to:
+  /// **'End date'**
+  String get releaseManagerEndAt;
+
+  /// No description provided for @releaseManagerText.
+  ///
+  /// In en, this message translates to:
+  /// **'Post copy'**
+  String get releaseManagerText;
+
+  /// No description provided for @releaseManagerTasks.
+  ///
+  /// In en, this message translates to:
+  /// **'Workflow tasks'**
+  String get releaseManagerTasks;
+
+  /// No description provided for @releaseManagerDependsOn.
+  ///
+  /// In en, this message translates to:
+  /// **'Depends on'**
+  String get releaseManagerDependsOn;
+
+  /// No description provided for @releaseManagerDueAt.
+  ///
+  /// In en, this message translates to:
+  /// **'Due date'**
+  String get releaseManagerDueAt;
+
+  /// No description provided for @releaseManagerSave.
+  ///
+  /// In en, this message translates to:
+  /// **'Validate and save'**
+  String get releaseManagerSave;
+
+  /// No description provided for @releaseManagerSaving.
+  ///
+  /// In en, this message translates to:
+  /// **'Saving…'**
+  String get releaseManagerSaving;
+
+  /// No description provided for @releaseManagerSaved.
+  ///
+  /// In en, this message translates to:
+  /// **'Release workspace saved'**
+  String get releaseManagerSaved;
+
+  /// No description provided for @releaseManagerReload.
+  ///
+  /// In en, this message translates to:
+  /// **'Reload saved data'**
+  String get releaseManagerReload;
+
+  /// No description provided for @releaseManagerImportLegacy.
+  ///
+  /// In en, this message translates to:
+  /// **'Import previous metadata'**
+  String get releaseManagerImportLegacy;
+
+  /// No description provided for @releaseManagerHistory.
+  ///
+  /// In en, this message translates to:
+  /// **'Status history'**
+  String get releaseManagerHistory;
+
+  /// No description provided for @releaseManagerRemoveQuestion.
+  ///
+  /// In en, this message translates to:
+  /// **'Remove this record?'**
+  String get releaseManagerRemoveQuestion;
+
+  /// No description provided for @releaseManagerRemoveHelp.
+  ///
+  /// In en, this message translates to:
+  /// **'References are checked before removal. Source projects and files are kept.'**
+  String get releaseManagerRemoveHelp;
+
+  /// No description provided for @releaseManagerMoveUp.
+  ///
+  /// In en, this message translates to:
+  /// **'Move up'**
+  String get releaseManagerMoveUp;
+
+  /// No description provided for @releaseManagerMoveDown.
+  ///
+  /// In en, this message translates to:
+  /// **'Move down'**
+  String get releaseManagerMoveDown;
+
+  /// No description provided for @releaseManagerNone.
+  ///
+  /// In en, this message translates to:
+  /// **'None'**
+  String get releaseManagerNone;
+
+  /// No description provided for @releaseManagerRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'This field is required'**
+  String get releaseManagerRequired;
+
+  /// No description provided for @releaseManagerInvalidNumber.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter a valid number'**
+  String get releaseManagerInvalidNumber;
+
+  /// No description provided for @releaseManagerInvalidDate.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter a valid date and time'**
+  String get releaseManagerInvalidDate;
+
+  /// No description provided for @releaseManagerCommaSeparated.
+  ///
+  /// In en, this message translates to:
+  /// **'Separate values with commas'**
+  String get releaseManagerCommaSeparated;
+
+  /// No description provided for @releaseManagerLocalTime.
+  ///
+  /// In en, this message translates to:
+  /// **'Local date/time; stored in UTC'**
+  String get releaseManagerLocalTime;
+
+  /// No description provided for @releaseManagerUnpromoted.
+  ///
+  /// In en, this message translates to:
+  /// **'Tracks without promotion'**
+  String get releaseManagerUnpromoted;
+
+  /// No description provided for @releaseManagerEmpty.
+  ///
+  /// In en, this message translates to:
+  /// **'No records yet'**
+  String get releaseManagerEmpty;
+
+  /// No description provided for @releaseManagerReleaseDate.
+  ///
+  /// In en, this message translates to:
+  /// **'Release date'**
+  String get releaseManagerReleaseDate;
+
+  /// No description provided for @releaseManagerUnsaved.
+  ///
+  /// In en, this message translates to:
+  /// **'Unsaved changes'**
+  String get releaseManagerUnsaved;
+
+  /// No description provided for @releaseManagerDiscard.
+  ///
+  /// In en, this message translates to:
+  /// **'Discard changes'**
+  String get releaseManagerDiscard;
+
+  /// No description provided for @releaseManagerLeaveQuestion.
+  ///
+  /// In en, this message translates to:
+  /// **'Leave without saving?'**
+  String get releaseManagerLeaveQuestion;
+
+  /// No description provided for @releaseManagerUnexpectedStatus.
+  ///
+  /// In en, this message translates to:
+  /// **'Unknown saved value'**
+  String get releaseManagerUnexpectedStatus;
+
+  /// No description provided for @releaseManagerCoverage.
+  ///
+  /// In en, this message translates to:
+  /// **'Publication readiness'**
+  String get releaseManagerCoverage;
+
+  /// No description provided for @releaseManagerArtist.
+  ///
+  /// In en, this message translates to:
+  /// **'Artist'**
+  String get releaseManagerArtist;
+
+  /// No description provided for @releaseManagerTrack.
+  ///
+  /// In en, this message translates to:
+  /// **'Track'**
+  String get releaseManagerTrack;
+
+  /// No description provided for @projectRepairOpen.
+  ///
+  /// In en, this message translates to:
+  /// **'Inspect or recover a project file'**
+  String get projectRepairOpen;
+
+  /// No description provided for @projectRepairRecoverMidi.
+  ///
+  /// In en, this message translates to:
+  /// **'Recover MIDI from ALL'**
+  String get projectRepairRecoverMidi;
+
+  /// No description provided for @projectRepairRecoveryTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Experimental MIDI recovery'**
+  String get projectRepairRecoveryTitle;
+
+  /// No description provided for @projectRepairRecoveryConsent.
+  ///
+  /// In en, this message translates to:
+  /// **'DPM will recover supported MIDI events to a new file and keep a verified backup. Audio, instruments, effects and mixer settings are not recovered. Mid-song tempo changes, SysEx and some legacy variants are unsupported.'**
+  String get projectRepairRecoveryConsent;
+
+  /// No description provided for @projectRepairRecoverAction.
+  ///
+  /// In en, this message translates to:
+  /// **'Recover MIDI'**
+  String get projectRepairRecoverAction;
+
+  /// No description provided for @projectRepairRecoveryCreated.
+  ///
+  /// In en, this message translates to:
+  /// **'MIDI recovery file created'**
+  String get projectRepairRecoveryCreated;
+
+  /// No description provided for @projectRepairWorking.
+  ///
+  /// In en, this message translates to:
+  /// **'Processing…'**
+  String get projectRepairWorking;
+
+  /// No description provided for @projectRepairFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'The operation could not be completed'**
+  String get projectRepairFailed;
+
+  /// No description provided for @projectRepairNativeAllHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Integrated DPM engine · macOS Apple Silicon / Intel and Windows · no Cubase installation required'**
+  String get projectRepairNativeAllHint;
+
+  /// No description provided for @projectRepairInspectDependencies.
+  ///
+  /// In en, this message translates to:
+  /// **'Inspect dependencies'**
+  String get projectRepairInspectDependencies;
+
+  /// No description provided for @projectRepairRecoveryStatus.
+  ///
+  /// In en, this message translates to:
+  /// **'Recovery status'**
+  String get projectRepairRecoveryStatus;
+
+  /// No description provided for @projectRepairRecoveredTracks.
+  ///
+  /// In en, this message translates to:
+  /// **'Recovered tracks'**
+  String get projectRepairRecoveredTracks;
+
+  /// No description provided for @projectRepairRecoveredNotes.
+  ///
+  /// In en, this message translates to:
+  /// **'Recovered notes'**
+  String get projectRepairRecoveredNotes;
+
+  /// No description provided for @projectRepairSkippedParts.
+  ///
+  /// In en, this message translates to:
+  /// **'Skipped parts'**
+  String get projectRepairSkippedParts;
+
+  /// No description provided for @projectRepairPartialRecovery.
+  ///
+  /// In en, this message translates to:
+  /// **'Partial MIDI recovery; check the result in your DAW.'**
+  String get projectRepairPartialRecovery;
+
+  /// No description provided for @projectRepairUnverifiedRecovery.
+  ///
+  /// In en, this message translates to:
+  /// **'MIDI recovered; musical fidelity remains unverified.'**
+  String get projectRepairUnverifiedRecovery;
+
+  /// No description provided for @projectInspectorTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Project inspection'**
+  String get projectInspectorTitle;
+
+  /// No description provided for @projectInspectorFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Inspection failed: {error}'**
+  String projectInspectorFailed(String error);
+
+  /// No description provided for @projectInspectorEmpty.
+  ///
+  /// In en, this message translates to:
+  /// **'No report available'**
+  String get projectInspectorEmpty;
+
+  /// No description provided for @projectInspectorCopyReport.
+  ///
+  /// In en, this message translates to:
+  /// **'Copy JSON report'**
+  String get projectInspectorCopyReport;
+
+  /// No description provided for @projectInspectorCopied.
+  ///
+  /// In en, this message translates to:
+  /// **'Inspection report copied'**
+  String get projectInspectorCopied;
+
+  /// No description provided for @projectInspectorCopyFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Cannot copy report: {error}'**
+  String projectInspectorCopyFailed(String error);
+
+  /// No description provided for @projectInspectorDependencies.
+  ///
+  /// In en, this message translates to:
+  /// **'Project dependencies'**
+  String get projectInspectorDependencies;
+
+  /// No description provided for @projectInspectorFormat.
+  ///
+  /// In en, this message translates to:
+  /// **'Format: {format}'**
+  String projectInspectorFormat(String format);
+
+  /// No description provided for @projectInspectorTracks.
+  ///
+  /// In en, this message translates to:
+  /// **'Tracks: {count}'**
+  String projectInspectorTracks(String count);
+
+  /// No description provided for @projectInspectorTimeline.
+  ///
+  /// In en, this message translates to:
+  /// **'Clips: {clips}; notes: {notes}; automation points: {points}'**
+  String projectInspectorTimeline(int clips, int notes, int points);
+
+  /// No description provided for @projectInspectorReferences.
+  ///
+  /// In en, this message translates to:
+  /// **'External references: {external}; missing archive references: {missing}'**
+  String projectInspectorReferences(int external, int missing);
+
+  /// No description provided for @projectInspectorSavedVersion.
+  ///
+  /// In en, this message translates to:
+  /// **'Saved with DAW version: {version}'**
+  String projectInspectorSavedVersion(String version);
+
+  /// No description provided for @projectInspectorValidatedChunks.
+  ///
+  /// In en, this message translates to:
+  /// **'Validated CPR chunks: {chunks} (ARCH blocks: {archives})'**
+  String projectInspectorValidatedChunks(int chunks, int archives);
+
+  /// No description provided for @projectInspectorLegacyTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Import legacy Cubase song'**
+  String get projectInspectorLegacyTitle;
+
+  /// No description provided for @projectInspectorLegacyLosses.
+  ///
+  /// In en, this message translates to:
+  /// **'Manual conversion with Cubase SE 3, SL 3 or SX 3. VST instruments, effects and mixer settings will be lost.'**
+  String get projectInspectorLegacyLosses;
+
+  /// No description provided for @projectInspectorUidEvidence.
+  ///
+  /// In en, this message translates to:
+  /// **'Serialized plug-in UID evidence'**
+  String get projectInspectorUidEvidence;
+
+  /// No description provided for @projectInspectorUidCaution.
+  ///
+  /// In en, this message translates to:
+  /// **'Declared identifiers only. No vendor identity, plug-in state, licence or loadability has been verified.'**
+  String get projectInspectorUidCaution;
+
+  /// No description provided for @projectInspectorUidRecord.
+  ///
+  /// In en, this message translates to:
+  /// **'UID {uid}; {count} serialized record(s)'**
+  String projectInspectorUidRecord(String uid, int count);
+
+  /// No description provided for @projectInspectorPlugins.
+  ///
+  /// In en, this message translates to:
+  /// **'Plug-ins'**
+  String get projectInspectorPlugins;
+
+  /// No description provided for @projectInspectorNoPlugins.
+  ///
+  /// In en, this message translates to:
+  /// **'No plug-ins decoded (not evidence of an empty session).'**
+  String get projectInspectorNoPlugins;
+
+  /// No description provided for @projectInspectorLoadabilityUntested.
+  ///
+  /// In en, this message translates to:
+  /// **'Installation and loadability: not tested'**
+  String get projectInspectorLoadabilityUntested;
+
+  /// No description provided for @projectInspectorLimitations.
+  ///
+  /// In en, this message translates to:
+  /// **'Inspection limitations'**
+  String get projectInspectorLimitations;
+
+  /// No description provided for @projectInspectorAdditionalFolders.
+  ///
+  /// In en, this message translates to:
+  /// **'Additional plug-in folders (optional)'**
+  String get projectInspectorAdditionalFolders;
+
+  /// No description provided for @projectInspectorAdditionalFoldersHelp.
+  ///
+  /// In en, this message translates to:
+  /// **'One folder per line; standard locations are included.'**
+  String get projectInspectorAdditionalFoldersHelp;
+
+  /// No description provided for @projectInspectorScanButton.
+  ///
+  /// In en, this message translates to:
+  /// **'Scan local plug-in candidates (optional)'**
+  String get projectInspectorScanButton;
+
+  /// No description provided for @projectInspectorScanFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Local scan failed: {error}'**
+  String projectInspectorScanFailed(String error);
+
+  /// No description provided for @projectInspectorScanSummary.
+  ///
+  /// In en, this message translates to:
+  /// **'{candidates} local candidates in {folders} scanned folders'**
+  String projectInspectorScanSummary(int candidates, int folders);
+
+  /// No description provided for @projectInspectorPassiveScan.
+  ///
+  /// In en, this message translates to:
+  /// **'Passive filenames and VST3 manifests only. No plug-ins were executed. Licence, disabled status and loadability remain untested.'**
+  String get projectInspectorPassiveScan;
+
+  /// No description provided for @projectInspectorScanIncomplete.
+  ///
+  /// In en, this message translates to:
+  /// **'Scan incomplete: entry or depth limit reached.'**
+  String get projectInspectorScanIncomplete;
+
+  /// No description provided for @projectInspectorScanWarnings.
+  ///
+  /// In en, this message translates to:
+  /// **'Scan coverage and warnings ({count})'**
+  String projectInspectorScanWarnings(int count);
+
+  /// No description provided for @projectInspectorRequestedId.
+  ///
+  /// In en, this message translates to:
+  /// **'Requested ID: {identifier}'**
+  String projectInspectorRequestedId(String identifier);
+
+  /// No description provided for @projectInspectorStatusIdentifierPresent.
+  ///
+  /// In en, this message translates to:
+  /// **'Declared identifier found; loading and licence not tested'**
+  String get projectInspectorStatusIdentifierPresent;
+
+  /// No description provided for @projectInspectorStatusReplacement.
+  ///
+  /// In en, this message translates to:
+  /// **'Manifest declares a replacement; saved-state migration is unverified'**
+  String get projectInspectorStatusReplacement;
+
+  /// No description provided for @projectInspectorStatusAmbiguous.
+  ///
+  /// In en, this message translates to:
+  /// **'{count} candidates; select and verify in the DAW'**
+  String projectInspectorStatusAmbiguous(int count);
+
+  /// No description provided for @projectInspectorStatusIdentifierNotFound.
+  ///
+  /// In en, this message translates to:
+  /// **'Identifier not found in scanned manifests; absence is inconclusive'**
+  String get projectInspectorStatusIdentifierNotFound;
+
+  /// No description provided for @projectInspectorStatusNameCandidate.
+  ///
+  /// In en, this message translates to:
+  /// **'Name candidate found; identifier and loading not verified'**
+  String get projectInspectorStatusNameCandidate;
+
+  /// No description provided for @projectInspectorStatusNameNotFound.
+  ///
+  /// In en, this message translates to:
+  /// **'Name not found in scanned locations; absence is inconclusive'**
+  String get projectInspectorStatusNameNotFound;
+
+  /// No description provided for @projectInspectorStatusUnknown.
+  ///
+  /// In en, this message translates to:
+  /// **'Insufficient or unsupported plug-in identity evidence'**
+  String get projectInspectorStatusUnknown;
+
+  /// No description provided for @projectInspectorPreservationIntro.
+  ///
+  /// In en, this message translates to:
+  /// **'Create a verified backup and an unchanged reconstructed CPR, with opaque chunk evidence. The source project is preserved.'**
+  String get projectInspectorPreservationIntro;
+
+  /// No description provided for @projectInspectorPreserveButton.
+  ///
+  /// In en, this message translates to:
+  /// **'Preserve CPR and verify round trip'**
+  String get projectInspectorPreserveButton;
+
+  /// No description provided for @projectInspectorPreserveFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Preservation failed: {error}'**
+  String projectInspectorPreserveFailed(String error);
+
+  /// No description provided for @projectInspectorPreserveSummary.
+  ///
+  /// In en, this message translates to:
+  /// **'Preservation: {status}\nEvidence folder: {evidencePath}\nBackup: {backupPath}'**
+  String projectInspectorPreserveSummary(
+    String status,
+    String evidencePath,
+    String backupPath,
+  );
+
+  /// No description provided for @projectInspectorPreserveLimit.
+  ///
+  /// In en, this message translates to:
+  /// **'This unchanged round trip does not validate a CPR edit or migration.'**
+  String get projectInspectorPreserveLimit;
+
+  /// No description provided for @legacyMigrationTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Classic Cubase migration (.ALL/.ARR)'**
+  String get legacyMigrationTitle;
+
+  /// No description provided for @legacyMigrationOpen.
+  ///
+  /// In en, this message translates to:
+  /// **'Migrate a legacy Cubase project'**
+  String get legacyMigrationOpen;
+
+  /// No description provided for @legacyMigrationIntro.
+  ///
+  /// In en, this message translates to:
+  /// **'Recover supported MIDI or follow an external conversion route. Audio, plug-in state and mix fidelity remain unverified.'**
+  String get legacyMigrationIntro;
+
+  /// No description provided for @legacyMigrationNativeTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Native MIDI recovery (.ALL)'**
+  String get legacyMigrationNativeTitle;
+
+  /// No description provided for @legacyMigrationNativeBody.
+  ///
+  /// In en, this message translates to:
+  /// **'DPM can preview supported .ALL MIDI tracks and create a separate standard MIDI file. No Cubase installation or external executable is required. Format coverage is experimental.'**
+  String get legacyMigrationNativeBody;
+
+  /// No description provided for @legacyMigrationOfficialTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Official Cubase 3 import'**
+  String get legacyMigrationOfficialTitle;
+
+  /// No description provided for @legacyMigrationOfficialBody.
+  ///
+  /// In en, this message translates to:
+  /// **'With a licensed, compatible installation of Cubase SE 3, SL 3 or SX 3, choose File > Import > Cubase Song, then save a separate CPR. Check media references in Cubase.'**
+  String get legacyMigrationOfficialBody;
+
+  /// No description provided for @legacyMigrationAtariTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Atari conversion via DAWproject'**
+  String get legacyMigrationAtariTitle;
+
+  /// No description provided for @legacyMigrationAtariBody.
+  ///
+  /// In en, this message translates to:
+  /// **'The third-party atari2cubase website offers Atari .ALL/.ARR conversion to DAWproject or MIDI. Cubase VST PC support is experimental. Download the result yourself, import DAWproject into Cubase/Nuendo 14 or later, and save a new CPR. DPM has not independently audited this website.'**
+  String get legacyMigrationAtariBody;
+
+  /// No description provided for @legacyMigrationOpenConverter.
+  ///
+  /// In en, this message translates to:
+  /// **'Open atari2cubase in browser'**
+  String get legacyMigrationOpenConverter;
+
+  /// No description provided for @legacyMigrationAllToMidiTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'AllToMidi on Windows'**
+  String get legacyMigrationAllToMidiTitle;
+
+  /// No description provided for @legacyMigrationAllToMidiBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Optional MIDI recovery from .ALL using a separately installed AllToMidi executable on Windows. ARR, audio, VST presets and mixer settings are unsupported. Import the MIDI into Cubase and save a new CPR.'**
+  String get legacyMigrationAllToMidiBody;
+
+  /// No description provided for @legacyMigrationExternalConsent.
+  ///
+  /// In en, this message translates to:
+  /// **'This recovers MIDI only. Audio, instruments, effects and mixer settings are not recovered. Tempo changes and SysEx may be incomplete. The selected external executable runs without an OS sandbox. Use a local installation you trust.'**
+  String get legacyMigrationExternalConsent;
+
+  /// No description provided for @legacyMigrationChooseLegacy.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose .ALL / .ARR and verify backup'**
+  String get legacyMigrationChooseLegacy;
+
+  /// No description provided for @legacyMigrationSource.
+  ///
+  /// In en, this message translates to:
+  /// **'Source: {path}'**
+  String legacyMigrationSource(String path);
+
+  /// No description provided for @legacyMigrationSourceHash.
+  ///
+  /// In en, this message translates to:
+  /// **'Source SHA-256: {hash}'**
+  String legacyMigrationSourceHash(String hash);
+
+  /// No description provided for @legacyMigrationBackup.
+  ///
+  /// In en, this message translates to:
+  /// **'Verified backup: {path}'**
+  String legacyMigrationBackup(String path);
+
+  /// No description provided for @legacyMigrationPreviewTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'MIDI preview (experimental)'**
+  String get legacyMigrationPreviewTitle;
+
+  /// No description provided for @legacyMigrationPreviewSummary.
+  ///
+  /// In en, this message translates to:
+  /// **'{tracks} tracks · {notes} notes · {events} MIDI events'**
+  String legacyMigrationPreviewSummary(int tracks, int notes, int events);
+
+  /// No description provided for @legacyMigrationInitialTempo.
+  ///
+  /// In en, this message translates to:
+  /// **'Initial tempo: {bpm} BPM'**
+  String legacyMigrationInitialTempo(String bpm);
+
+  /// No description provided for @legacyMigrationTrackSummary.
+  ///
+  /// In en, this message translates to:
+  /// **'Channel {channel} · {parts} parts · {notes} notes'**
+  String legacyMigrationTrackSummary(int channel, int parts, int notes);
+
+  /// No description provided for @legacyMigrationMoreTracks.
+  ///
+  /// In en, this message translates to:
+  /// **'{count} additional tracks omitted from preview'**
+  String legacyMigrationMoreTracks(int count);
+
+  /// No description provided for @legacyMigrationUnsupportedPreview.
+  ///
+  /// In en, this message translates to:
+  /// **'This .ALL variant cannot be previewed. Manual migration routes remain available.'**
+  String get legacyMigrationUnsupportedPreview;
+
+  /// No description provided for @legacyMigrationArrUnsupported.
+  ///
+  /// In en, this message translates to:
+  /// **'Native .ARR MIDI decoding is unavailable. Use a manual conversion route.'**
+  String get legacyMigrationArrUnsupported;
+
+  /// No description provided for @legacyMigrationMidiOutput.
+  ///
+  /// In en, this message translates to:
+  /// **'MIDI file: {path}'**
+  String legacyMigrationMidiOutput(String path);
+
+  /// No description provided for @legacyMigrationMidiSummary.
+  ///
+  /// In en, this message translates to:
+  /// **'{tracks} tracks · {notes} notes · {ppq} PPQ'**
+  String legacyMigrationMidiSummary(int tracks, int notes, int ppq);
+
+  /// No description provided for @legacyMigrationCheckDawProject.
+  ///
+  /// In en, this message translates to:
+  /// **'Check intermediate DAWproject'**
+  String get legacyMigrationCheckDawProject;
+
+  /// No description provided for @legacyMigrationDawProjectChecked.
+  ///
+  /// In en, this message translates to:
+  /// **'DAWproject archive inspected. Open and compare it in a compatible DAW; musical equivalence remains unverified.'**
+  String get legacyMigrationDawProjectChecked;
+
+  /// No description provided for @legacyMigrationCheckCpr.
+  ///
+  /// In en, this message translates to:
+  /// **'Check resulting CPR'**
+  String get legacyMigrationCheckCpr;
+
+  /// No description provided for @legacyMigrationCprChecked.
+  ///
+  /// In en, this message translates to:
+  /// **'CPR container inspected. This does not certify a lossless conversion.'**
+  String get legacyMigrationCprChecked;
+
+  /// No description provided for @legacyMigrationRunExternal.
+  ///
+  /// In en, this message translates to:
+  /// **'Recover MIDI with installed AllToMidi'**
+  String get legacyMigrationRunExternal;
+
+  /// No description provided for @legacyMigrationSelectExecutable.
+  ///
+  /// In en, this message translates to:
+  /// **'Select your installed AllToMidi.exe'**
+  String get legacyMigrationSelectExecutable;
+
+  /// No description provided for @legacyMigrationTempoDefaulted.
+  ///
+  /// In en, this message translates to:
+  /// **'The initial tempo could not be decoded; the preview uses {bpm} BPM.'**
+  String legacyMigrationTempoDefaulted(String bpm);
+
+  /// No description provided for @legacyMigrationOpenFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not open the converter website'**
+  String get legacyMigrationOpenFailed;
 }
 
 class _AppLocalizationsDelegate

@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'dart:convert';
 import 'dart:typed_data';
 
 import 'package:flutter_test/flutter_test.dart';
@@ -7,6 +8,10 @@ import 'package:daw_project_manager/services/project_repair/native_legacy_all_re
 import 'package:daw_project_manager/services/project_repair/native_legacy_all_midi_encoder.dart';
 import 'package:daw_project_manager/services/project_repair/native_legacy_all_conversion.dart';
 import 'package:daw_project_manager/services/project_repair/all_to_midi_bridge.dart';
+import 'package:daw_project_manager/services/project_repair/legacy_all_midi_decoder.dart'
+    as canonical;
+import 'package:daw_project_manager/services/project_repair/legacy_all_conversion_service.dart';
+import '../../helpers/legacy_all_fixture.dart' as bounded_fixture;
 
 /// Synthetic .ALL layouts derived from the publicly documented MIT
 /// AllToMidi 1.0 heuristics. They contain no redistributed Steinberg data.
@@ -24,8 +29,13 @@ Uint8List legacyAllFixture({bool fixed = false}) {
     file[pos + 2] = number & 255;
   }
 
-  void definition(int pos, String name, int record, int track,
-      {int startTick = 0}) {
+  void definition(
+    int pos,
+    String name,
+    int record,
+    int track, {
+    int startTick = 0,
+  }) {
     file[pos - 8] = 0x99;
     file[pos - 10] = 0;
     file[pos - 9] = 0;
@@ -75,6 +85,129 @@ Uint8List legacyAllFixture({bool fixed = false}) {
 }
 
 void main() {
+  test(
+    'preview and compatibility encoder retain canonical events and timing',
+    () {
+      for (final fixed in [false, true]) {
+        final bytes = legacyAllFixture(fixed: fixed);
+        final decoded = canonical.LegacyAllMidiDecoder.decode(
+          bytes,
+          songName: 'Parity',
+        );
+        final preview = const NativeLegacyAllReader().read(bytes);
+        expect(
+          preview.tracks.single.events.map(
+            (event) => (
+              event.tick,
+              event.status,
+              event.data1,
+              event.data2,
+              event.duration,
+            ),
+          ),
+          decoded.tracks.single.events.map(
+            (event) => (
+              event.tick,
+              event.status,
+              event.data1,
+              event.data2,
+              event.duration,
+            ),
+          ),
+        );
+        expect(
+          const NativeLegacyAllMidiEncoder().encode(
+            preview,
+            songName: 'Parity',
+          ),
+          orderedEquals(decoded.midi),
+        );
+        expect(
+          () => decoded.tracks.single.events.clear(),
+          throwsUnsupportedError,
+        );
+        expect(() => decoded.timeSignatures.clear(), throwsUnsupportedError);
+        expect(
+          () => preview.tracks.single.events.clear(),
+          throwsUnsupportedError,
+        );
+        expect(() => preview.signatures.clear(), throwsUnsupportedError);
+      }
+    },
+  );
+
+  test('both native entry routes reject a compact trailing fragment', () async {
+    final bytes = bounded_fixture.legacyAllFixture();
+    // Move the terminator by one byte: the part now has a stray tail byte.
+    bytes.setRange(566, 571, [7, 0, 255, 255, 255]);
+    expect(
+      () => canonical.LegacyAllMidiDecoder.decode(bytes),
+      throwsFormatException,
+    );
+    expect(
+      () => const NativeLegacyAllReader().read(bytes),
+      throwsFormatException,
+    );
+    final directory = await Directory.systemTemp.createTemp('dpm-all-tail-');
+    addTearDown(() => directory.delete(recursive: true));
+    final source = await File('${directory.path}/tail.ALL').writeAsBytes(bytes);
+    await expectLater(
+      const NativeLegacyAllConversion().convert(original: source),
+      throwsFormatException,
+    );
+    await expectLater(
+      LegacyAllConversionService.convert(
+        original: source,
+        acknowledgeFidelityRisks: true,
+      ),
+      throwsFormatException,
+    );
+    expect(await source.readAsBytes(), orderedEquals(bytes));
+    expect(
+      await Directory('${directory.path}/.project-repair-exports').exists(),
+      false,
+    );
+  });
+
+  test(
+    'preview and both reports disclose skipped parts and fallback tempo',
+    () async {
+      final bytes = legacyAllFixture();
+      bytes[850 + 42 + 4] =
+          0xf0; // Unsupported second part, first remains recoverable.
+      ByteData.sublistView(bytes).setUint32(0xa2, 0);
+      final preview = const NativeLegacyAllReader().read(bytes);
+      expect(preview.skippedParts, 1);
+      expect(preview.tempoDefaulted, true);
+      expect(preview.noteCount, 1);
+      final directory = await Directory.systemTemp.createTemp(
+        'dpm-all-partial-',
+      );
+      addTearDown(() => directory.delete(recursive: true));
+      final source = await File(
+        '${directory.path}/partial.ALL',
+      ).writeAsBytes(bytes);
+      final result = await const NativeLegacyAllConversion().convert(
+        original: source,
+      );
+      expect(result.skippedParts, 1);
+      expect(result.summary['initial_tempo_defaulted'], true);
+      final compatibility = jsonDecode(
+        await File(result.reportPath).readAsString(),
+      );
+      final safety = jsonDecode(
+        await File(result.canonicalReportPath!).readAsString(),
+      );
+      expect(compatibility['status'], 'partial_recovery_unverified');
+      expect(safety['status'], 'partial_recovery_unverified');
+      expect(safety['skipped_parts'], 1);
+      expect(safety['output'], result.outputPath);
+      expect(safety['backup'], result.backupPath);
+      expect(await File(result.backupPath).readAsBytes(), orderedEquals(bytes));
+      expect(await source.readAsBytes(), orderedEquals(bytes));
+    },
+  );
+
   test('native compact ALL reader merges repeated parts by track', () {
     final song = const NativeLegacyAllReader().read(legacyAllFixture());
     expect(song.tracks, hasLength(1));
@@ -89,8 +222,9 @@ void main() {
   });
 
   test('native fixed layout is recognized with correct note scaling', () {
-    final song = const NativeLegacyAllReader()
-        .read(legacyAllFixture(fixed: true));
+    final song = const NativeLegacyAllReader().read(
+      legacyAllFixture(fixed: true),
+    );
     expect(song.tracks.single.layout, 'fixed');
     expect(song.tracks.single.noteCount, 1);
     expect(song.tracks.single.events.single.duration, greaterThan(0));
@@ -127,7 +261,7 @@ void main() {
   test('native conversion creates verified backup and separate MIDI', () async {
     final directory = await Directory.systemTemp.createTemp('dpm-native-all-');
     try {
-      final original = File(directory.path + '/song.ALL');
+      final original = File('${directory.path}/song.ALL');
       final content = legacyAllFixture();
       await original.writeAsBytes(content);
       final result = await const NativeLegacyAllConversion().convert(
@@ -144,8 +278,10 @@ void main() {
         ).notes,
         2,
       );
-      expect(await File(result.reportPath).readAsString(),
-          contains('native_midi_generated_unverified'));
+      expect(
+        await File(result.reportPath).readAsString(),
+        contains('native_midi_generated_unverified'),
+      );
     } finally {
       await directory.delete(recursive: true);
     }
@@ -154,7 +290,7 @@ void main() {
   test('native conversion rejects ARR without mutating it', () async {
     final directory = await Directory.systemTemp.createTemp('dpm-arr-native-');
     try {
-      final original = File(directory.path + '/arrangement.ARR');
+      final original = File('${directory.path}/arrangement.ARR');
       await original.writeAsBytes(legacyAllFixture());
       await expectLater(
         const NativeLegacyAllConversion().convert(original: original),

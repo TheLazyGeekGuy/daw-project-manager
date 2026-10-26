@@ -1,95 +1,133 @@
-# Implementation backlog
+# Implementation backlog and observed delivery state
 
-GitHub Issues are **disabled on this fork** (GitHub API HTTP 410). These are tracked specifications, **not issue URLs**. Enable Settings → General → Features → Issues to migrate them to native issues.
+Updated: **2026-10-26**. These are repository-local task identifiers and tracked
+acceptance criteria, not GitHub issue URLs. The initial fork API reported Issues
+disabled; no issue was created merely by adding a row here.
 
-| ID | Milestone | Ticket | Traceability | Status |
+The current implementation is integrated into **DAW Project Manager**. The
+requested desktop targets are **macOS Apple Silicon, macOS Intel and Windows**,
+using shared Dart/Flutter code. Local development and the observed automated
+checks below ran on Linux; they do not replace native builds and smoke tests on
+those three targets. This work does not require a separate Mac recovery app.
+
+**Releases** below means DPM's music catalog and release-management module.
+It does not mean publishing a GitHub Release. No software release publication,
+merge to `main`, or automatic upload to a music platform is part of this change.
+Branch CI remains **main-only** as requested. Local tests are run independently
+of that trigger policy.
+
+## Inspection, recovery and conversion
+
+| ID | Milestone | Task | Traceability | Implemented state and remaining gate |
 |---|---|---|---|---|
-| TASK-001 | M1 | Flutter dependency-inspection interface | INSP-002 | Implemented UI entry point; build and cross-platform validation pending |
-| TASK-002 | M1 | Format registry signature and version hardening | INSP-001 | Partial: ZIP signature and bounded RIFF/NUND chunk preflight; format/version matrix pending |
-| TASK-003 | M2 | Structural CPR reader, no-op roundtrip | QUAL-001 | Partial: complete top-level chunk table; no binary serializer or no-op roundtrip |
-| TASK-004 | M2 | Versioned licensed test corpus and semantic diff | QUAL-002 | Planned |
-| TASK-005 | M3 | Installed VST2/VST3/AU/CLAP registry | INSP-004 | Partial: passive scan and typed CPR UID evidence; vendor UID matching and loadability still unverified |
-| TASK-006 | M3 | Sandboxed plug-in loadability and licensing checks | PLAT-002 | Planned |
-| TASK-007 | M4 | Fail-closed verified backup and safe output publishing | SAFE-001–007 | Partial: SHA-256 immutable backups, symlink checks, staged export paths; crash durability/rollback and race checks pending |
-| TASK-008 | M5 | CPR rename/writer with real Cubase reopening | REPR-004 | Blocked by TASK-003 |
-| TASK-009 | M6 | Plug-in state archive and migration profiles | REPR-001–005 | Partial: compatibility registry only; no state extraction |
-| TASK-010 | M6 | Automation, routing and side-chain mapping | REPR-006–007 | Planned |
-| TASK-011 | M7 | Conversion graph and direct/pivot route planner | CONV-001–006 | Partial: declarative planner plus opt-in one-hop DawVert runner; multi-hop orchestration pending |
-| TASK-012 | M7 | External DawVert and ProjectConverter bridges | SEC-002 | Partial: opt-in DawVert CLI written with backup/staging; ProjectConverter bridge and native validation pending |
-| TASK-013 | M8 | Fidelity, semantic and audio render validation | CONV-005 | Planned |
-| TASK-014 | M8 | Batch processing and cleanup backup exclusions | SAFE-003 | Partial: managed backup/export paths excluded from scanners; batch queue/cleanup contract pending |
-| TASK-015 | Upstream | Maintainer discussion and focused PR sequence | Contribution | Planned |
+| TASK-001 | M1 | Flutter dependency-inspection interface | INSP-002 | Integrated project-detail action and direct project-file picker within DPM; native recovery, preservation and passive-scan controls, localization and focused widget tests. Native platform acceptance remains. |
+| TASK-002 | M1 | Format signatures and version hardening | INSP-001 | Bounded RIFF/NUND framing, saved-version evidence, DAWproject ZIP/XML and MIDI preflight. Detection of legacy ALL/ARR by extension is only a hint. Wider version/variant corpus remains. |
+| TASK-003 | M2 | CPR structural reader and unchanged reconstruction | QUAL-001 | Top-level framing reconstructed with opaque payloads retained; all seven official Cubase 12–15 CPRs passed exact SHA-256 equality. Object graph, reference rebasing and modified serialization are unverified. |
+| TASK-004 | M2 | Versioned corpus and semantic comparison | QUAL-002 | Official CPR source/hash manifest, bounded range downloader, synthetic malformed-input tests and external specimen provenance exist. Licensed semantic expectations, complete media and native reopen/render comparisons remain. |
+| TASK-005 | M3 | Installed VST2/VST3/AU/CLAP inventory | INSP-004 | Opt-in passive inventory, typed CPR UID evidence and declared-identifier/compatibility matching. Candidate identity does not certify vendor identity, licence, preset compatibility or loadability. |
+| TASK-006 | M3 | Isolated plug-in load and licensing diagnostics | PLAT-002 | Not implemented. No third-party plug-in binary is loaded by the inventory. |
+| TASK-007 | M4 | Verified backups and safe output publication | SAFE-001–007 | SHA-256 backups, bounded staging, source preservation, path/link checks and retained failure reports support current export actions. Full restore UX, hostile-writer/race coverage and platform durability acceptance remain before modified CPR writing. |
+| TASK-008 | M5 | Modified CPR writer and real Cubase reopening | REPR-004 | Disabled. The unchanged-container prerequisite is observed; reference-aware mutations and reopening with presets/automation/routing preserved are still required. |
+| TASK-009 | M6 | Plug-in state archive and migration profiles | REPR-001–005 | Compatibility declarations and bounded DAWproject embedded-state hash evidence exist. CPR preset extraction/translation and state migration remain unsupported. |
+| TASK-010 | M6 | Automation, routing and side-chain mapping | REPR-006–007 | Readable observations do not constitute translation. Cross-DAW mappings and musical validation remain. |
+| TASK-011 | M7 | Direct and pivot conversion execution | CONV-001–006 | Planner plus explicit DawVert pipeline of up to three steps, intermediate validation, cumulative report and stop-on-failure. Manual/unknown adapters are refused; route/version fidelity is still experimental. |
+| TASK-012 | M7 | External converter bridges | SEC-002 | Opt-in DawVert subprocess adapter exercised with the real converter in both RPP → DAWproject and RPP → DAWproject → RPP. ProjectConverter remains a manual candidate; no unverified headless interface is invented. |
+| TASK-013 | M8 | Semantic and audio fidelity evidence | CONV-005 | Reports compare supported track/name/plug-in observations; one generated audio fixture retained its exact media bytes through the real pipeline. Native playback, presets, automation, routing and mix-render equivalence remain unverified. |
+| TASK-014 | M8 | Batch processing and backup exclusions | SAFE-003 | Managed backup/export directories are excluded from scanners. General batch scheduling, cleanup/restore UX and production acceptance remain. |
+| TASK-015 | Upstream | Review and focused contribution sequence | Contribution | Changes prepared on the working branch; maintainer review, upstream sequencing and merge are separate actions. |
+| TASK-016 | M2/M7 | Native legacy ALL MIDI recovery | CONV-001–006 | Attributed MIT AllToMidi Dart port integrated into DPM, verified backup, new MIDI/report output and explicit partial/unverified results. Synthetic positive layouts pass; the real TABSAX sample is unsupported. ARR/full-session recovery remains a research gate. |
 
-## Cross-cutting Definition of Done
+### Observed evidence and its limits
 
-- English code, comments, tests and documentation.
-- Applicable requirements linked in PR.
-- Security review of untrusted project and plug-in inputs.
-- Automated tests plus observed run on supported platforms; otherwise explicitly marked untested.
-- Original files unchanged, verified backups before writing, managed backups excluded from cleanup.
-- No unsupported migration described as successful.
+**CPR:** the seven official demo projects cover saved Cubase versions 12.0.0,
+13.0.0, 14.0.5 and 15.0.0. Reconstructing the outer container and top-level chunk
+framing retained every opaque payload and produced identical hashes on all
+seven. This is an unchanged reconstruction check, not a verified CPR editor,
+repair of corrupted internals, plug-in-state migration or Cubase reopen test.
+The demo media was not downloaded into the validation corpus. See
+[Sources and corpus](sources-and-corpus.md) for individual hashes and limits.
 
-## Implementation order
+**Legacy ALL:** synthetic compact/fixed-layout fixtures exercise event timing,
+repeated parts, channels, notes, controller/meta events, malformed input and
+source preservation. The publicly shared `TABSAX.ALL` is a **negative** sample:
+the upstream candidate predicate and DPM find no supported records, so recovery
+is refused. Its Cubase version and reference MIDI are unconfirmed. There is no
+positive real-song compatibility claim. The historical Steinberg ALL/ARR → CPR
+workflow remains a separate manual route with known losses and legacy licence
+constraints. See [Conversion execution](conversion-execution.md),
+[Legacy Cubase](legacy-cubase.md) and
+[Reverse-engineering scope](legacy-reverse-engineering.md).
 
-TASK-002 → TASK-001 → TASK-005; TASK-003 + TASK-004 → TASK-008 → TASK-009/TASK-010. TASK-011 → TASK-012 → TASK-013; TASK-007 is a hard prerequisite for any writer.
+**Real DawVert execution:** a generated one-second mono WAV and one-track RPP
+passed through the actual subprocess adapter at DawVert revision
+`c6c8be9e0660d9e75a3acecce43a13b0dbe0029c`. The two-step return RPP retained the
+source project hash, track name/count and exact referenced WAV bytes:
+`ac8b253193999a1510dce352420a9c7ef8e407d0f714daf2393cf9bfaecbbc3c`.
+No DAW was opened and no audio render, plug-in-state, routing or automation
+comparison was performed. See [Conversion execution](conversion-execution.md)
+for runtime staging, timeout evidence, archive validation and remaining limits.
 
-## Implementation notes (2026-10-26)
+## Native Releases module
 
-Implemented in this branch: read-only inspection CLI, dependency-report Flutter widgets, bounded passive VST/VST3/AU/CLAP filesystem scan, migration-profile data model, conversion route candidate planner, verified backup helper, targeted tests and 3-platform CI workflow. No Flutter build/test result has been observed yet; statuses remain partial until green CI and full app integration. Modern CPR mutation, state migration, DAW reopening and audio validation remain blocked on real native fixtures and installed DAWs.
+The release-detail editor now provides native typed forms and local CRUD for
+catalog and workflow records. An advanced JSON editor is not required to edit
+rights, distribution, promotion or multiple records. Existing Hive release and
+project relationships are bridged to richer profile-local documents without a
+new Hive adapter. See [Releases domain](releases-domain.md) for the current
+feature and persistence contracts.
 
-## Completion gate review (2026-10-26)
-
-The backlog is **not complete**. Implemented components are foundations, not end-to-end outcomes. Explicit blockers for acceptance:
-
-- Native CPR write/migration: lossless serializer for each supported era, pointer/reference rebasing, byte-for-byte identity and successful Cubase reopen with state and automation preservation.
-- External DAW conversion: one opt-in DawVert CLI has been implemented; controlled native-fixture tests, ProjectConverter adapter, multi-hop runner, semantic reports and DAW reopen/render checks remain.
-- Optional plug-in load diagnostics: isolated host workers, licensing/error classification and testing on all supported platforms.
-- UI: project detail navigation now invokes read-only inspection; opt-in passive inventory scan and UID evidence displayed. Formatter, analyzer and platform acceptance remain unverified.
-- Managed backup: SHA-256 checks, symlink guards and scanner exclusions exist; durable fsync, race/fault injection and a tested rollback workflow remain required before any CPR writer is enabled.
-- All new services require green formatter/analyzer/unit/widget tests on Linux, Windows and macOS.
-
-Never close tasks solely because a data model, placeholder adapter or draft UI exists.
-
-## Native Releases extension backlog
-
-| ID | Feature | Current status | Completion gate |
+| ID | Feature | Current implementation | Remaining acceptance gate |
 |---|---|---|---|
-| REL-001 | Artists and stable artist credits | Pure Dart domain model | Profile-scoped CRUD, forms and migrations |
-| REL-002 | Albums, EPs, singles and playlists | Domain model; existing Release/Playlist still separate | Unified UI and ordering/persistence |
-| REL-003 | Track versions and asset lineage | Domain model | File verification, artwork/stem/lyrics UI |
-| REL-004 | Musical works and rightsholder shares | Domain model and validation | Editable forms, evidence, ownership review |
-| REL-005 | Rights filing across organizations | Domain model | Verified/manual statuses and history |
-| REL-006 | Distributor/platform delivery | Domain model | Manual delivery tracking, platform URLs, IDs |
-| REL-007 | Promotion campaigns | Domain model | Scheduling forms, assets and coverage views |
-| REL-008 | Profile-safe release workspace persistence | JSON snapshot store | Migration, crash recovery, profile boundaries |
-| REL-009 | Native release workflow editor | Release type, artist, first rights/distribution/promotion entry fields plus advanced JSON editor | Remaining dedicated rights/distribution/promotion forms and localization |
-| REL-010 | Distribution and rights workflow verification | Advisory validator | Dataset tests, history and real-world workflow review |
+| REL-001 | Artists and credits | Profile catalog CRUD for stable artists, aliases, roles and recording credits; shared-reference checks before removal. | Native platform UX and realistic multi-release dataset review. |
+| REL-002 | Albums, EPs, singles and playlists | Collection metadata, ordered release tracks, DPM project links and reusable ordered catalog playlists. Native release bridge preserves workflow metadata. | Broader existing-library compatibility and platform acceptance. |
+| REL-003 | Asset versions and lineage | Native audio/cover/stem/lyrics/MIDI/document forms, parent links, evidence associations and streamed SHA-256 verification with baseline preservation. | Real workflow review; hash integrity is not audio quality or distributor certification. |
+| REL-004 | Works and rightsholder shares | Catalog works/holders, ISWC/IPI/ISNI fields, editable credit/share records and reference/share validation. | User review of actual ownership; no registry or legal verification is implied. |
+| REL-005 | Rights registrations | Multiple organizations, evidence links, references, manual states and status history. | Authenticated external submission/verification is outside current scope. |
+| REL-006 | Distributor/platform deliveries | Multiple distributor records, nested platform deliveries, UPC/EAN validation, URLs, dates, manual states and history. | Real external acceptance/publication remains a manual fact to verify. |
+| REL-007 | Campaigns and communications | Native campaign/post forms, associated tracks/assets, calendar, coverage findings and publication history. | Live platform posting is not implemented. |
+| REL-008 | Profile-safe persistence | Catalog/workspace stores, v1 → v2 migration in memory, explicit legacy-file import, revision checks, unique previous snapshots and interrupted-write recovery. | Wider filesystem/native-platform acceptance; no global catalog/workspace/Hive transaction. |
+| REL-009 | Native workflow UI | Dedicated add/edit/remove forms, ordered lists, validation, unsaved-change handling and local asset checks. Form regression tests include explicit-null clearing and UTC/calendar semantics. | Whole local suite passed; native desktop builds/smoke tests remain. |
+| REL-010 | Workflow readiness | Local validation, task dependencies, overdue/blocked tasks, asset verification findings, promotion calendar and next-action guidance. | Real-world workflow review; readiness never certifies rights or delivery. |
+| REL-011 | Local backup and Drive metadata | Native profile catalog/workspaces included in backup/Drive snapshots, ID-based merge, timestamps, explicit deletion records and preflight; focused tests use temporary storage and an in-memory Drive. | Full-suite completion and a separately authorized live-device/account exercise; no asset upload or multi-document atomicity claim. |
 
-These features are independent of Katsu. Its concepts were used as research only; no code connector or Suno account dependency is planned.
+These features are native DPM concepts. Katsu informed domain research only;
+there is no Katsu connector, copied provider code or Suno-account dependency.
 
-## Incremental delivery note (2026-10-26)
+## Validation checkpoint
 
-- The release-detail editor now exposes collection type and stable artist IDs in native Flutter controls, retaining an advanced JSON mode for still-unimplemented rights, distributor and promotional forms.
-- Added widget test covering native input and profile-local JSON store persistence. This test is committed but not yet CI-verified; CI remains disabled on non-main branches by repository policy.
-- No external Katsu integration was added. This work reuses only cross-platform music-industry concepts.
+Observed local checks include real CPR reconstruction, real DawVert execution,
+synthetic native ALL recovery, negative real ALL refusal, store recovery/profile
+boundaries, workflow/asset tests and widget interaction. In particular:
 
-## Release workflow UI update
+- The 29 focused persistence tests passed using real temporary files.
+- The 12 inspection/recovery/panel widget tests passed, including French labels,
+  cancellation, busy/error states, partial counts and selected-file identity.
+- The seven typed-form tests passed, including a UTC+14 run that would expose a
+  calendar date shifted through UTC, unknown-field preservation and cancellation.
+- The 207-test focused backup/Drive regression run passed, including 20 native
+  metadata transfer/backup/Drive cases. These exercise the production services
+  with temporary libraries and an in-memory Drive client; no live account is
+  used. Imported verified assets require a new local check.
+- Focused analysis for the changed inspection and typed-form widgets is clean.
 
-The release editor now supports direct form inputs for the first rights organization/status, distributor/status and promotional platform/status, in addition to collection type and artist IDs. Additional entries remain accessible through advanced JSON. This is an intermediate UI, **not** finished relational CRUD, validation of real-world filings, external submission or verified delivery. The new tests are committed but have not run on the branch because non-main CI triggers were disabled by request.
+**Whole Flutter application suite: 4,744 passed, 12 skipped** on Linux with
+Flutter 3.47.8 / Dart 3.13.7. The 14 Python corpus-tool tests also passed. The
+broad 77-path Dart analysis had 0 errors, 0 warnings and 91 informational
+findings; this is not a blanket clean-analysis claim. See the
+[dated validation record](validation-2026-10-26.md) for commands and scope. CI
+remains main-only. Native macOS Apple Silicon, macOS Intel and Windows
+builds/smoke tests, native DAW reopening and render comparisons remain unobserved.
 
-## Releases delivery increment (2026-10-26)
+## Definition of done and ordering
 
-- Release workspaces now use per-profile paths under application support; legacy Hive Release records remain untouched. Existing unscoped workspace JSON files are not migrated automatically pending ownership validation.
-- Added immutable CRUD helpers for multiple rights organizations, distributors and promotion entries, preserving unknown custom fields, with focused regression tests.
-- Release workflow UI now exposes multi-entry add/edit/remove actions, ordered track list and track ID/ISRC editing; removal only affects the workflow association, not the underlying DAW project/audio.
-- Production readiness still requires compilation, localization, stable artist/project reference integration, profile-safe migration, backup recovery and multi-platform tests. Non-main CI remains disabled as requested.
+An acceptance claim needs English code/documentation, linked requirements,
+meaningful automated checks and recorded platform evidence. Untrusted files
+must remain bounded; originals and verified backups must survive failures.
+Unknown or lossy behavior must remain visible in reports and UI.
 
-## CPR / conversion implementation increment (2026-10-26)
-
-- Read-only RIFF/NUND preflight now checks big-endian container and top-level chunk lengths with explicit bounds. Typed `Plugin UID` / `GUID` / `Plugin Name` sequences are correlated as *serialized evidence*, never as vendor-authenticated VST identity.
-- A public Cubase 10.5.20 CPR fixture (915,847 bytes; SHA-256 `03819e64419d25045de04ea6ea0e18ec048e4c869c426f076218465b84b7141b`) has a 14-chunk top-level table, seven ARCH chunks and 342 typed UID/name records grouped into eight pairs. These numbers were cross-checked independently on the specimen, not through compiled Dart tests. The CPR file is not bundled or redistributed.
-- The project detail UI exposes UID evidence and an **opt-in, passive, off-UI-isolate** filesystem name match. It does not load third-party code.
-- A one-hop external DawVert runner and `bin/project_repair_convert.dart` are committed, with explicit user loss consent, local script/runtime, verified backup, source clone, new export directory, bounded timeout, format checks, failure report and no direct source overwrite.
-- REAPER relative `FILE` references for audio and external MIDI are staged under matching paths with hash verification. Absolute, missing, linked and traversal paths fail closed. Other DAWs' media dependencies and opaque plug-in data remain unverified.
-- Project scanners now exclude `.project-repair-backups` and `.project-repair-exports`. Focused tests were added but are **not run** because non-main CI is disabled by request.
-- No modern CPR writer, VST state migrator, automation transcode, isolated plug-in host or audio rendering check has been enabled. Do not claim any unsupported conversion complete.
+Modified CPR work remains gated by TASK-003/004 semantic coverage, TASK-007
+write safety and TASK-008 native reopen checks before state/routing migrations.
+Wider conversion support follows TASK-011/012 with TASK-013 fidelity evidence.
+Releases acceptance continues with native-platform results,
+profile/reference integrity and realistic local workflow review. A data model,
+export file or green unit test alone does not close those product gates.

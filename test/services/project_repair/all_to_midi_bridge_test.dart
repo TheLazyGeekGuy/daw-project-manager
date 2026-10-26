@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'dart:async';
 import 'dart:typed_data';
 
 import 'package:flutter_test/flutter_test.dart';
@@ -25,9 +26,26 @@ void main() {
 
   test('refuses unexpected formats and truncated tracks', () {
     final formatZero = Uint8List.fromList(validMidi)..[9] = 0;
-    expect(() => AllToMidiOutputProbe.inspect(formatZero), throwsFormatException);
+    expect(
+      () => AllToMidiOutputProbe.inspect(formatZero),
+      throwsFormatException,
+    );
     expect(
       () => AllToMidiOutputProbe.inspect(validMidi.sublist(0, 24)),
+      throwsFormatException,
+    );
+  });
+
+  test('rejects structurally sized tracks with malformed MIDI events', () {
+    final noEndOfTrack = Uint8List.fromList(validMidi)
+      ..[validMidi.length - 2] = 0x51;
+    final invalidDataByte = Uint8List.fromList(validMidi)..[24] = 0xff;
+    expect(
+      () => AllToMidiOutputProbe.inspect(noEndOfTrack),
+      throwsFormatException,
+    );
+    expect(
+      () => AllToMidiOutputProbe.inspect(invalidDataByte),
       throwsFormatException,
     );
   });
@@ -47,8 +65,7 @@ void main() {
 
   test('blocks .ARR and non-Windows execution', () async {
     final bridge = AllToMidiBridge(
-      runner: (_, __, ___, ____) async =>
-          throw StateError('Must not execute'),
+      runner: (_, _, _, _) async => throw StateError('Must not execute'),
     );
     await expectLater(
       bridge.convert(
@@ -60,8 +77,7 @@ void main() {
     );
     final mockWindows = AllToMidiBridge(
       windowsOverrideForTests: true,
-      runner: (_, __, ___, ____) async =>
-          throw StateError('Must not execute'),
+      runner: (_, _, _, _) async => throw StateError('Must not execute'),
     );
     final arr = File('${root.path}/arrangement.ARR');
     await arr.writeAsBytes([1, 2]);
@@ -79,14 +95,15 @@ void main() {
     String? stagedInput;
     final bridge = AllToMidiBridge(
       windowsOverrideForTests: true,
-      runner: (_, args, __, ___) async {
+      runner: (_, args, _, _) async {
         final index = args.indexOf('--output-folder');
         final outputFolder = Directory(args[index + 1]);
         stagedInput = args.last;
         expect(stagedInput, isNot(source.path));
         expect(await File(stagedInput!).readAsBytes(), [1, 2, 3, 4, 5]);
-        await File('${outputFolder.path}/original.mid')
-            .writeAsBytes(validMidi, flush: true);
+        await File(
+          '${outputFolder.path}/original.mid',
+        ).writeAsBytes(validMidi, flush: true);
         return const AllToMidiProcessOutcome(
           exitCode: 0,
           stdout: 'Saved: original.mid Tracks: 1 Notes: 1',
@@ -110,31 +127,38 @@ void main() {
     expect(await File(result.reportPath).exists(), true);
   });
 
-  test('malformed converter output keeps a failure report and backup', () async {
-    final bridge = AllToMidiBridge(
-      windowsOverrideForTests: true,
-      runner: (_, args, __, ___) async {
-        final folder = Directory(args[args.indexOf('--output-folder') + 1]);
-        await File('${folder.path}/original.mid').writeAsString('not-midi');
-        return const AllToMidiProcessOutcome(
-          exitCode: 0, stdout: '', stderr: '',
-        );
-      },
-    );
-    await expectLater(
-      bridge.convert(
-        original: source,
-        executable: application,
-        acknowledgeLosses: true,
-      ),
-      throwsFormatException,
-    );
-    final exports = Directory('${root.path}/.project-repair-exports');
-    final run = (await exports.list().toList()).single;
-    expect(await File('${run.path}/alltomidi-report.json').readAsString(),
-        contains('"status": "failed"'));
-    expect(await source.readAsBytes(), [1, 2, 3, 4, 5]);
-  });
+  test(
+    'malformed converter output keeps a failure report and backup',
+    () async {
+      final bridge = AllToMidiBridge(
+        windowsOverrideForTests: true,
+        runner: (_, args, _, _) async {
+          final folder = Directory(args[args.indexOf('--output-folder') + 1]);
+          await File('${folder.path}/original.mid').writeAsString('not-midi');
+          return const AllToMidiProcessOutcome(
+            exitCode: 0,
+            stdout: '',
+            stderr: '',
+          );
+        },
+      );
+      await expectLater(
+        bridge.convert(
+          original: source,
+          executable: application,
+          acknowledgeLosses: true,
+        ),
+        throwsFormatException,
+      );
+      final exports = Directory('${root.path}/.project-repair-exports');
+      final run = (await exports.list().toList()).single;
+      expect(
+        await File('${run.path}/alltomidi-report.json').readAsString(),
+        contains('"status": "failed"'),
+      );
+      expect(await source.readAsBytes(), [1, 2, 3, 4, 5]);
+    },
+  );
 
   test('rejects conversion until user acknowledges MIDI-only losses', () async {
     final bridge = AllToMidiBridge(windowsOverrideForTests: true);
@@ -147,4 +171,33 @@ void main() {
       throwsFormatException,
     );
   });
+
+  test(
+    'external runner enforces its deadline and keeps failure evidence',
+    () async {
+      await application.writeAsString('#!/bin/sh\nexec sleep 30\n');
+      final permissions = await Process.run('chmod', ['+x', application.path]);
+      expect(permissions.exitCode, 0);
+      final bridge = AllToMidiBridge(windowsOverrideForTests: true);
+      final watch = Stopwatch()..start();
+      await expectLater(
+        bridge.convert(
+          original: source,
+          executable: application,
+          acknowledgeLosses: true,
+          timeout: const Duration(milliseconds: 200),
+        ),
+        throwsA(isA<TimeoutException>()),
+      );
+      expect(watch.elapsed, lessThan(const Duration(seconds: 8)));
+      expect(await source.readAsBytes(), [1, 2, 3, 4, 5]);
+      final exports = Directory('${root.path}/.project-repair-exports');
+      final run = (await exports.list().toList()).single;
+      expect(
+        await File('${run.path}/alltomidi-report.json').readAsString(),
+        contains('"status": "failed"'),
+      );
+    },
+    skip: Platform.isWindows,
+  );
 }

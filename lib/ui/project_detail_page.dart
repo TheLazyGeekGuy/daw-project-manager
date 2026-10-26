@@ -1022,7 +1022,7 @@ class _ProjectDetailPageState extends ConsumerState<ProjectDetailPage> {
                               ),
                             ),
                             icon: const Icon(Icons.fact_check_outlined),
-                            label: const Text('Inspect dependencies'),
+                            label: Text(AppLocalizations.of(context)!.projectRepairInspectDependencies),
                           ),
                           TextButton.icon(
                             onPressed: () => showDialog<void>(
@@ -1030,7 +1030,7 @@ class _ProjectDetailPageState extends ConsumerState<ProjectDetailPage> {
                               builder: (_) => const LegacyCubaseMigrationDialog(),
                             ),
                             icon: const Icon(Icons.history_outlined),
-                            label: const Text('Legacy Cubase .ALL/.ARR'),
+                            label: Text(AppLocalizations.of(context)!.legacyMigrationTitle),
                           ),
                         ],
                       ),

@@ -24,22 +24,111 @@ class ProjectFormatDescriptor {
 /// Extensions are hints; byte signatures take precedence when available.
 class ProjectFormatRegistry {
   static const formats = <ProjectFormatDescriptor>[
-    ProjectFormatDescriptor(id: 'cubase', daw: 'Cubase', extensions: {'.cpr'}, inspectionSupported: true, signature: 'RIFF/NUND'),
-    ProjectFormatDescriptor(id: 'nuendo', daw: 'Nuendo', extensions: {'.npr'}, inspectionSupported: true, signature: 'RIFF/NUND'),
-    ProjectFormatDescriptor(id: 'ableton', daw: 'Ableton Live', extensions: {'.als'}, inspectionSupported: true, signature: 'GZIP'),
-    ProjectFormatDescriptor(id: 'flstudio', daw: 'FL Studio', extensions: {'.flp'}, inspectionSupported: true, signature: 'FLhd'),
-    ProjectFormatDescriptor(id: 'reaper', daw: 'REAPER', extensions: {'.rpp'}, inspectionSupported: true, signature: '<REAPER_PROJECT'),
-    ProjectFormatDescriptor(id: 'logic', daw: 'Logic Pro', extensions: {'.logicx'}),
-    ProjectFormatDescriptor(id: 'bitwig', daw: 'Bitwig Studio', extensions: {'.bwproject'}),
-    ProjectFormatDescriptor(id: 'studioone', daw: 'Studio One', extensions: {'.song'}, inspectionSupported: true),
-    ProjectFormatDescriptor(id: 'protools', daw: 'Pro Tools', extensions: {'.ptx'}),
-    ProjectFormatDescriptor(id: 'ardour', daw: 'Ardour', extensions: {'.ardour'}),
-    ProjectFormatDescriptor(id: 'lmms', daw: 'LMMS', extensions: {'.mmp', '.mmpz'}),
-    ProjectFormatDescriptor(id: 'waveform', daw: 'Tracktion Waveform', extensions: {'.tracktionedit'}),
-    ProjectFormatDescriptor(id: 'renoise', daw: 'Renoise', extensions: {'.xrns'}),
-    ProjectFormatDescriptor(id: 'dawproject', daw: 'DAWproject', extensions: {'.dawproject'}, signature: 'ZIP'),
-    ProjectFormatDescriptor(id: 'aaf', daw: 'AAF interchange', extensions: {'.aaf'}),
-    ProjectFormatDescriptor(id: 'midi', daw: 'Standard MIDI', extensions: {'.mid', '.midi'}, signature: 'MThd'),
+    ProjectFormatDescriptor(
+      id: 'cubase',
+      daw: 'Cubase',
+      extensions: {'.cpr'},
+      inspectionSupported: true,
+      signature: 'RIFF/NUND',
+    ),
+    // Legacy formats have no verified signature reader in DPM. Detection by
+    // extension is a hint for the documented manual SE/SL/SX 3 import path.
+    ProjectFormatDescriptor(
+      id: 'cubase-all',
+      daw: 'Cubase VST song (legacy)',
+      extensions: {'.all'},
+    ),
+    ProjectFormatDescriptor(
+      id: 'cubase-arr',
+      daw: 'Cubase VST arrangement (legacy)',
+      extensions: {'.arr'},
+    ),
+    ProjectFormatDescriptor(
+      id: 'nuendo',
+      daw: 'Nuendo',
+      extensions: {'.npr'},
+      inspectionSupported: true,
+      signature: 'RIFF/NUND',
+    ),
+    ProjectFormatDescriptor(
+      id: 'ableton',
+      daw: 'Ableton Live',
+      extensions: {'.als'},
+      inspectionSupported: true,
+      signature: 'GZIP',
+    ),
+    ProjectFormatDescriptor(
+      id: 'flstudio',
+      daw: 'FL Studio',
+      extensions: {'.flp'},
+      inspectionSupported: true,
+      signature: 'FLhd',
+    ),
+    ProjectFormatDescriptor(
+      id: 'reaper',
+      daw: 'REAPER',
+      extensions: {'.rpp'},
+      inspectionSupported: true,
+      signature: '<REAPER_PROJECT',
+    ),
+    ProjectFormatDescriptor(
+      id: 'logic',
+      daw: 'Logic Pro',
+      extensions: {'.logicx'},
+    ),
+    ProjectFormatDescriptor(
+      id: 'bitwig',
+      daw: 'Bitwig Studio',
+      extensions: {'.bwproject'},
+    ),
+    ProjectFormatDescriptor(
+      id: 'studioone',
+      daw: 'Studio One',
+      extensions: {'.song'},
+      inspectionSupported: true,
+    ),
+    ProjectFormatDescriptor(
+      id: 'protools',
+      daw: 'Pro Tools',
+      extensions: {'.ptx'},
+    ),
+    ProjectFormatDescriptor(
+      id: 'ardour',
+      daw: 'Ardour',
+      extensions: {'.ardour'},
+    ),
+    ProjectFormatDescriptor(
+      id: 'lmms',
+      daw: 'LMMS',
+      extensions: {'.mmp', '.mmpz'},
+    ),
+    ProjectFormatDescriptor(
+      id: 'waveform',
+      daw: 'Tracktion Waveform',
+      extensions: {'.tracktionedit'},
+    ),
+    ProjectFormatDescriptor(
+      id: 'renoise',
+      daw: 'Renoise',
+      extensions: {'.xrns'},
+    ),
+    ProjectFormatDescriptor(
+      id: 'dawproject',
+      daw: 'DAWproject',
+      extensions: {'.dawproject'},
+      signature: 'ZIP',
+    ),
+    ProjectFormatDescriptor(
+      id: 'aaf',
+      daw: 'AAF interchange',
+      extensions: {'.aaf'},
+    ),
+    ProjectFormatDescriptor(
+      id: 'midi',
+      daw: 'Standard MIDI',
+      extensions: {'.mid', '.midi'},
+      signature: 'MThd',
+    ),
   ];
 
   static ProjectFormatDescriptor? byExtension(String path) {
@@ -68,15 +157,20 @@ class ProjectFormatRegistry {
       case 'RIFF/NUND':
         return starts('RIFF') && starts('NUND', 8) ? candidate : null;
       case 'GZIP':
-        return header.length >= 2 && header[0] == 0x1f && header[1] == 0x8b ? candidate : null;
+        return header.length >= 2 && header[0] == 0x1f && header[1] == 0x8b
+            ? candidate
+            : null;
       case 'FLhd':
         return starts('FLhd') ? candidate : null;
       case '<REAPER_PROJECT':
         return starts('<REAPER_PROJECT') ? candidate : null;
       case 'ZIP':
         return header.length >= 4 &&
-            starts('PK') && header[2] == 3 && header[3] == 4
-            ? candidate : null;
+                starts('PK') &&
+                header[2] == 3 &&
+                header[3] == 4
+            ? candidate
+            : null;
       case 'MThd':
         return starts('MThd') ? candidate : null;
       default:

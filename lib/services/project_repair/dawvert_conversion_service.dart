@@ -9,17 +9,20 @@ import 'package:path/path.dart' as p;
 import 'project_format_registry.dart';
 import 'verified_project_backup.dart';
 import 'reaper_sidecar_stager.dart';
+import 'converter_runtime_stager.dart';
+import 'conversion_fidelity_report.dart';
 
 /// The script and Python runtime are user-supplied, trusted local executables.
 ///
 /// Processes are not OS-sandboxed. Nothing is automatically downloaded, and
 /// this bridge never offers a CPR/native Cubase target.
-typedef DawVertProcessRunner = Future<DawVertProcessOutcome> Function(
-  String executable,
-  List<String> arguments,
-  String workingDirectory,
-  Duration timeout,
-);
+typedef DawVertProcessRunner =
+    Future<DawVertProcessOutcome> Function(
+      String executable,
+      List<String> arguments,
+      String workingDirectory,
+      Duration timeout,
+    );
 
 class DawVertProcessOutcome {
   const DawVertProcessOutcome({
@@ -81,7 +84,7 @@ class DawVertConversionResult {
 /// over an existing project. No helper silently downloads third-party code.
 class DawVertConversionService {
   DawVertConversionService({DawVertProcessRunner? runner})
-      : _runner = runner ?? _runProcess;
+    : _runner = runner ?? _runProcess;
 
   final DawVertProcessRunner _runner;
 
@@ -113,7 +116,9 @@ class DawVertConversionService {
     if (timeout <= Duration.zero) throw ArgumentError.value(timeout);
     if (!p.isAbsolute(pythonExecutable) ||
         !await File(pythonExecutable).exists()) {
-      throw const FileSystemException('An existing absolute Python runtime is required');
+      throw const FileSystemException(
+        'An existing absolute Python runtime is required',
+      );
     }
     if (!await dawvertScript.exists() ||
         p.basename(dawvertScript.path) != 'dawvert_cmd.py') {
@@ -122,9 +127,14 @@ class DawVertConversionService {
     if (!await original.exists()) {
       throw const FileSystemException('The input project does not exist');
     }
+    await VerifiedProjectBackup.ensureNoSymlinkComponents(
+      original.absolute.path,
+    );
     final size = await original.length();
     if (size == 0 || size > 256 * 1024 * 1024) {
-      throw const FormatException('Input project outside conversion size bounds');
+      throw const FormatException(
+        'Input project outside conversion size bounds',
+      );
     }
 
     final sourceDescriptor = await _detectFile(original);
@@ -133,21 +143,55 @@ class DawVertConversionService {
     if (from == null || to == null || sourceDescriptor.id == targetFormat) {
       throw const FormatException('Unsupported DawVert conversion direction');
     }
+    final before = await ConversionSemanticSnapshot.read(
+      original,
+      sourceDescriptor.id,
+    );
+    _requireSelfContained(before);
 
     // Always complete the verified backup before any third-party process.
     final backup = await VerifiedProjectBackup.create(original);
-    final parent = outputRoot ??
-        Directory(p.join(p.dirname(original.absolute.path), '.project-repair-exports'));
+    final parent =
+        (outputRoot ??
+                Directory(
+                  p.join(
+                    p.dirname(original.absolute.path),
+                    '.project-repair-exports',
+                  ),
+                ))
+            .absolute;
     if (p.split(parent.absolute.path).contains('.project-repair-backups')) {
-      throw const FileSystemException('Conversion output cannot be inside managed backups');
+      throw const FileSystemException(
+        'Conversion output cannot be inside managed backups',
+      );
     }
     await VerifiedProjectBackup.ensureNoSymlinkComponents(parent.absolute.path);
     await parent.create(recursive: true);
     await VerifiedProjectBackup.ensureNoSymlinkComponents(parent.absolute.path);
     final run = await parent.createTemp('dpm-dawvert-');
-    final clone = File(p.join(run.path, p.basename(original.path)));
-    final output = File(p.join(run.path, 'converted' + to.$2));
+    final inputDirectory = await Directory(p.join(run.path, 'input')).create();
+    final outputDirectory = await Directory(
+      p.join(run.path, 'output'),
+    ).create();
+    final runtimeDirectory = Directory(p.join(run.path, 'runtime'));
+    final clone = File(p.join(inputDirectory.path, p.basename(original.path)));
+    final output = File(p.join(outputDirectory.path, 'converted${to.$2}'));
     final manifest = File(p.join(run.path, 'conversion-report.json'));
+
+    late final Map<String, Object?> runtime;
+    try {
+      runtime = await ConverterRuntimeStager.stageDawVert(
+        script: dawvertScript.absolute,
+        destination: runtimeDirectory,
+      );
+    } catch (error) {
+      await _writeFailure(
+        manifest,
+        'Converter runtime staging failed: $error',
+        backup.backupPath,
+      );
+      rethrow;
+    }
 
     await original.copy(clone.path);
     if (await _sha256Of(clone) != backup.sha256Digest ||
@@ -161,22 +205,28 @@ class DawVertConversionService {
     if (sourceDescriptor.id == 'reaper') {
       try {
         media = await ReaperSidecarStager.stage(
-          original: original, workspace: run,
+          original: original,
+          workspace: inputDirectory,
         );
       } catch (error) {
         await _writeFailure(
-          manifest, 'Media staging failed: ' + error.toString(),
+          manifest,
+          'Media staging failed: $error',
           backup.backupPath,
         );
         rethrow;
       }
     }
     final args = <String>[
-      dawvertScript.absolute.path,
-      '-it', from.$1,
-      '-i', clone.path,
-      '-ot', to.$1,
-      '-o', output.path,
+      p.join(runtimeDirectory.path, 'dawvert_cmd.py'),
+      '-it',
+      from.$1,
+      '-i',
+      clone.path,
+      '-ot',
+      to.$1,
+      '-o',
+      output.path,
     ];
 
     DawVertProcessOutcome process;
@@ -184,32 +234,50 @@ class DawVertConversionService {
       // The process receives only the staged project as its input argument.
       // This is not an OS security sandbox: only use a trusted local script.
       process = await _runner(
-        pythonExecutable, args, run.path, timeout,
+        pythonExecutable,
+        args,
+        runtimeDirectory.path,
+        timeout,
       );
     } catch (error) {
-      await _writeFailure(manifest, 'External converter could not run: $error',
-          backup.backupPath);
+      await _writeFailure(
+        manifest,
+        'External converter could not run: $error',
+        backup.backupPath,
+      );
       rethrow;
     }
     if (process.exitCode != 0) {
-      await _writeFailure(manifest,
-          'DawVert failed with exit code ${process.exitCode}: '
-          '${_bounded(process.stderr)}', backup.backupPath);
+      await _writeFailure(
+        manifest,
+        'DawVert failed with exit code ${process.exitCode}: '
+        '${_bounded(process.stderr)}',
+        backup.backupPath,
+      );
       throw ProcessException(
-        'DawVert', args, 'Converter returned a failure code', process.exitCode,
+        'DawVert',
+        args,
+        'Converter returned a failure code',
+        process.exitCode,
       );
     }
     if (!await output.exists() ||
         await output.length() == 0 ||
         await output.length() > 512 * 1024 * 1024) {
-      await _writeFailure(manifest, 'Missing or excessive converter output',
-          backup.backupPath);
+      await _writeFailure(
+        manifest,
+        'Missing or excessive converter output',
+        backup.backupPath,
+      );
       throw const FormatException('Converter produced no bounded output');
     }
     if (await FileSystemEntity.type(output.path, followLinks: false) !=
         FileSystemEntityType.file) {
-      await _writeFailure(manifest, 'Conversion output is not a regular file',
-          backup.backupPath);
+      await _writeFailure(
+        manifest,
+        'Conversion output is not a regular file',
+        backup.backupPath,
+      );
       throw const FormatException('Unsafe converter output');
     }
     late final ProjectFormatDescriptor outputDescriptor;
@@ -217,23 +285,49 @@ class DawVertConversionService {
       outputDescriptor = await _detectFile(output);
     } on FormatException catch (error) {
       await _writeFailure(
-        manifest, 'Invalid output signature: ' + error.message,
+        manifest,
+        'Invalid output signature: ${error.message}',
         backup.backupPath,
       );
       rethrow;
     }
     if (outputDescriptor.id != targetFormat) {
       await _writeFailure(
-        manifest, 'Output format signature does not match request',
+        manifest,
+        'Output format signature does not match request',
         backup.backupPath,
       );
       throw const FormatException('DawVert output signature mismatch');
     }
+    Map<String, Object?>? outputMedia;
+    late final ConversionSemanticSnapshot after;
+    try {
+      if (targetFormat == 'reaper') {
+        outputMedia = await ReaperSidecarStager.materializeOutput(
+          output: output,
+          trustedWorkspace: run,
+        );
+      }
+      after = await ConversionSemanticSnapshot.read(output, targetFormat);
+      _requireSelfContained(after);
+    } catch (error) {
+      await _writeFailure(
+        manifest,
+        'Output structure is invalid or incomplete: $error',
+        backup.backupPath,
+      );
+      rethrow;
+    }
     if (await _sha256Of(original) != backup.sha256Digest ||
         await original.length() != backup.length) {
-      await _writeFailure(manifest, 'Original project differs from verified backup',
-          backup.backupPath);
-      throw const FileSystemException('Original project changed during conversion');
+      await _writeFailure(
+        manifest,
+        'Original project differs from verified backup',
+        backup.backupPath,
+      );
+      throw const FileSystemException(
+        'Original project changed during conversion',
+      );
     }
 
     if (media != null) {
@@ -242,10 +336,13 @@ class DawVertConversionService {
         if (!await file.exists() ||
             await _sha256Of(file) != sidecar.sha256Digest) {
           await _writeFailure(
-            manifest, 'Source media changed during conversion',
+            manifest,
+            'Source media changed during conversion',
             backup.backupPath,
           );
-          throw const FileSystemException('Source media changed during conversion');
+          throw const FileSystemException(
+            'Source media changed during conversion',
+          );
         }
       }
     }
@@ -265,15 +362,19 @@ class DawVertConversionService {
         ...result.toJson(),
         'converter': 'DawVert (external, locally supplied)',
         'converter_exit_code': process.exitCode,
-        'media_staging': media?.toJson() ?? const {
-          'status': 'unverified_for_this_source_format',
-        },
+        'converter_runtime': runtime,
+        'semantic_fidelity': ConversionFidelityReport.compare(before, after),
+        'output_media': outputMedia,
+        'media_staging':
+            media?.toJson() ??
+            const {'status': 'unverified_for_this_source_format'},
         'stdout_excerpt': _bounded(process.stdout),
         'stderr_excerpt': _bounded(process.stderr),
         'warnings': const [
           'This output has not been reopened in the destination DAW.',
           'Missing plug-ins, states, routing and automations may be lost.',
           'The external converter is not an operating-system sandbox.',
+          'DPM does not download tools; the trusted external process may access the network.',
         ],
       }),
       flush: true,
@@ -281,8 +382,21 @@ class DawVertConversionService {
     return result;
   }
 
+  static void _requireSelfContained(ConversionSemanticSnapshot snapshot) {
+    final summary = snapshot.dawProject;
+    if (summary == null) return;
+    if (!summary.selfContained || summary.duplicateIds.isNotEmpty) {
+      throw const FormatException(
+        'DAWproject must embed its referenced files and use unique IDs for conversion',
+      );
+    }
+  }
+
   static Future<void> _writeFailure(
-      File manifest, String detail, String backup) async {
+    File manifest,
+    String detail,
+    String backup,
+  ) async {
     await manifest.writeAsString(
       const JsonEncoder.withIndent('  ').convert({
         'status': 'failed',
@@ -306,7 +420,8 @@ class DawVertConversionService {
       header.addAll(part);
     }
     final result = ProjectFormatRegistry.detect(
-      file.path, Uint8List.fromList(header),
+      file.path,
+      Uint8List.fromList(header),
     );
     if (result == null) {
       throw const FormatException('Unrecognized project file signature');
@@ -326,6 +441,7 @@ class DawVertConversionService {
       workingDirectory: workingDirectory,
       runInShell: false,
     );
+    await child.stdin.close();
 
     Future<String> collect(Stream<List<int>> stream) async {
       final bytes = BytesBuilder(copy: false);
@@ -333,145 +449,52 @@ class DawVertConversionService {
       await for (final part in stream) {
         if (captured >= 4096) continue;
         final take = part.length < 4096 - captured
-            ? part.length : 4096 - captured;
+            ? part.length
+            : 4096 - captured;
         bytes.add(part.sublist(0, take));
         captured += take;
       }
       return utf8.decode(bytes.takeBytes(), allowMalformed: true);
     }
 
-    final out = collect(child.stdout);
-    final err = collect(child.stderr);
-    int exitCode;
+    // Pipe collection must be part of the deadline: a descendant can retain
+    // inherited stdout even after the direct child has exited.
+    final stdoutController = StreamController<List<int>>();
+    final stderrController = StreamController<List<int>>();
+    final stdoutSubscription = child.stdout.listen(
+      stdoutController.add,
+      onError: stdoutController.addError,
+      onDone: stdoutController.close,
+    );
+    final stderrSubscription = child.stderr.listen(
+      stderrController.add,
+      onError: stderrController.addError,
+      onDone: stderrController.close,
+    );
+    final out = collect(stdoutController.stream);
+    final err = collect(stderrController.stream);
     try {
-      exitCode = await child.exitCode.timeout(timeout);
+      return await (() async {
+        final exitCode = await child.exitCode;
+        return DawVertProcessOutcome(
+          exitCode: exitCode,
+          stdout: await out,
+          stderr: await err,
+        );
+      })().timeout(timeout);
     } on TimeoutException {
       child.kill();
-      throw TimeoutException('DawVert exceeded the requested time limit');
-    }
-    return DawVertProcessOutcome(
-      exitCode: exitCode,
-      stdout: await out,
-      stderr: await err,
-    );
-  }
-}
- + '{error.message}',
-          backup.backupPath);
-      rethrow;
-    }
-    if (outputDescriptor.id != targetFormat) {
-      await _writeFailure(manifest, 'Output format signature does not match request',
-          backup.backupPath);
-      throw const FormatException('DawVert output signature mismatch');
-    }
-    if (await _sha256Of(original) != backup.sha256Digest ||
-        await original.length() != backup.length) {
-      await _writeFailure(manifest, 'Original project differs from verified backup',
-          backup.backupPath);
-      throw const FileSystemException('Original project changed during conversion');
-    }
-
-    final result = DawVertConversionResult(
-      sourcePath: original.absolute.path,
-      outputPath: output.path,
-      backupPath: backup.backupPath,
-      reportPath: manifest.path,
-      sourceSha256: backup.sha256Digest,
-      outputSha256: await _sha256Of(output),
-      sourceFormat: sourceDescriptor.id,
-      targetFormat: targetFormat,
-    );
-    await manifest.writeAsString(
-      const JsonEncoder.withIndent('  ').convert({
-        ...result.toJson(),
-        'converter': 'DawVert (external, locally supplied)',
-        'converter_exit_code': process.exitCode,
-        'stdout_excerpt': _bounded(process.stdout),
-        'stderr_excerpt': _bounded(process.stderr),
-        'warnings': const [
-          'This output has not been reopened in the destination DAW.',
-          'Missing plug-ins, states, routing and automations may be lost.',
-          'The external converter is not an operating-system sandbox.',
-        ],
-      }),
-      flush: true,
-    );
-    return result;
-  }
-
-  static Future<void> _writeFailure(
-      File manifest, String detail, String backup) async {
-    await manifest.writeAsString(
-      const JsonEncoder.withIndent('  ').convert({
-        'status': 'failed',
-        'detail': detail,
-        'verified_backup': backup,
-        'native_daw_reopen_verified': false,
-      }),
-      flush: true,
-    );
-  }
-
-  static String _bounded(String value) =>
-      value.length > 4096 ? value.substring(0, 4096) : value;
-
-  static Future<String> _sha256Of(File file) async =>
-      (await sha256.bind(file.openRead()).first).toString();
-
-  static Future<ProjectFormatDescriptor> _detectFile(File file) async {
-    final header = <int>[];
-    await for (final part in file.openRead(0, 128)) {
-      header.addAll(part);
-    }
-    final result = ProjectFormatRegistry.detect(
-      file.path, Uint8List.fromList(header),
-    );
-    if (result == null) {
-      throw const FormatException('Unrecognized project file signature');
-    }
-    return result;
-  }
-
-  static Future<DawVertProcessOutcome> _runProcess(
-    String executable,
-    List<String> arguments,
-    String workingDirectory,
-    Duration timeout,
-  ) async {
-    final child = await Process.start(
-      executable,
-      arguments,
-      workingDirectory: workingDirectory,
-      runInShell: false,
-    );
-
-    Future<String> collect(Stream<List<int>> stream) async {
-      final bytes = BytesBuilder(copy: false);
-      var captured = 0;
-      await for (final part in stream) {
-        if (captured >= 4096) continue;
-        final take = part.length < 4096 - captured
-            ? part.length : 4096 - captured;
-        bytes.add(part.sublist(0, take));
-        captured += take;
+      try {
+        await child.exitCode.timeout(const Duration(seconds: 2));
+      } on TimeoutException {
+        child.kill(ProcessSignal.sigkill);
       }
-      return utf8.decode(bytes.takeBytes(), allowMalformed: true);
-    }
-
-    final out = collect(child.stdout);
-    final err = collect(child.stderr);
-    int exitCode;
-    try {
-      exitCode = await child.exitCode.timeout(timeout);
-    } on TimeoutException {
-      child.kill();
       throw TimeoutException('DawVert exceeded the requested time limit');
+    } finally {
+      await stdoutSubscription.cancel();
+      await stderrSubscription.cancel();
+      await stdoutController.close();
+      await stderrController.close();
     }
-    return DawVertProcessOutcome(
-      exitCode: exitCode,
-      stdout: await out,
-      stderr: await err,
-    );
   }
 }

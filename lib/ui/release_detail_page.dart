@@ -47,6 +47,9 @@ import 'widgets/release_total_length_footer.dart';
 import 'widgets/release_tracks_table.dart';
 import 'widgets/waveform_widget.dart';
 import 'app_snack_bar.dart';
+import '../services/release_workspace_store.dart';
+import '../services/release_catalog_store.dart';
+import 'widgets/release_workflow_editor.dart';
 
 class ReleaseDetailPage extends ConsumerStatefulWidget {
   final String releaseId;
@@ -702,32 +705,109 @@ class _ReleaseDetailPageState extends ConsumerState<ReleaseDetailPage>
   // MOBILE LAYOUT
   // ============================================================================
   
-  /// Opens the optional release workflow layer without migrating legacy Hive data.
+  /// Opens the profile catalogue and synchronizes only supported Release fields.
   Future<void> _openReleaseWorkflow() async {
-    final support = await getApplicationSupportDirectory();
+    if (_autoSaveTimer?.isActive == true) {
+      _autoSaveTimer?.cancel();
+      await _saveTitleAndDescription();
+    }
     if (!mounted) return;
     final profile = ref.read(currentProfileProvider).asData?.value;
     if (profile == null) return;
+    final repository = await ref.read(repositoryProvider.future);
+    if (!mounted || ref.read(currentProfileProvider).asData?.value?.id != profile.id) return;
+    final release = repository.getReleaseById(widget.releaseId);
+    if (release == null) return;
+    var nativeSnapshot = release;
+    Release requireCurrentNativeRelease() {
+      if (!mounted || ref.read(currentProfileProvider).asData?.value?.id != profile.id) {
+        throw StateError('Profile changed. Reopen this release to synchronize its details.');
+      }
+      final latest = repository.getReleaseById(widget.releaseId);
+      if (latest == null) throw StateError('Release no longer exists.');
+      if (latest.title != nativeSnapshot.title ||
+          latest.description != nativeSnapshot.description ||
+          latest.releaseDate != nativeSnapshot.releaseDate ||
+          !listEquals(latest.trackIds, nativeSnapshot.trackIds)) {
+        throw StateError('Release details changed elsewhere. Reopen this editor before saving.');
+      }
+      return latest;
+    }
+    final projects = repository.projectsBox.values.toList();
+    final projectsById = {for (final project in projects) project.id: project};
+    final boxPath = repository.projectsBox.path;
+    final supportPath = boxPath == null
+        ? await getLocalAppDataPath() : path.dirname(boxPath);
+    if (!mounted || ref.read(currentProfileProvider).asData?.value?.id != profile.id) return;
+    final directory = Directory(path.join(supportPath, 'release-workspaces', profile.id));
     final store = ReleaseWorkspaceStore(
-      Directory(path.join(support.path, 'release-workspaces', profile.id)),
+      directory,
+      profileId: profile.id,
     );
     await showDialog<void>(
       context: context,
       builder: (dialogContext) => AlertDialog(
-        title: const Text('Release workflow'),
+        title: Text(AppLocalizations.of(context)!.releaseManagerWorkflow),
         content: SizedBox(
           width: 680,
           child: SingleChildScrollView(
             child: ReleaseWorkflowEditor(
               releaseId: widget.releaseId,
               store: store,
+              catalogStore: ReleaseCatalogStore(directory, profileId: profile.id),
+              syncNativeRelease: true,
+              initialTitle: release.title,
+              initialDescription: release.description,
+              initialReleaseDate: release.releaseDate == null ? null
+                  : DateFormat('yyyy-MM-dd').format(release.releaseDate!),
+              beforeSave: () async { requireCurrentNativeRelease(); },
+              availableProjects: [
+                for (final project in projects)
+                  {'id': project.id, 'title': project.displayName},
+              ],
+              initialTracks: [
+                for (final id in release.trackIds)
+                  {'id': id, 'project_id': id, 'title': projectsById[id]?.displayName ?? id},
+              ],
+              initialAssets: [
+                if (release.artworkImagePath != null)
+                  {'id': 'artwork-${release.id}', 'title': AppLocalizations.of(context)!.artwork,
+                    'role': 'artwork', 'path': release.artworkImagePath,
+                    'validation': 'unverified'},
+                for (final file in release.files)
+                  {'id': file.id, 'title': file.fileName, 'role': 'document',
+                    'path': file.filePath, 'validation': 'unverified'},
+              ],
+              onSaved: (workspace) async {
+                // Pin writes to the captured profile; a background profile
+                // switch must never modify another profile's release.
+                final latest = requireCurrentNativeRelease();
+                final linked = <String>{
+                  for (final track in (workspace['tracks'] as List).whereType<Map>())
+                    if (track['project_id'] is String) track['project_id'] as String,
+                }.toList();
+                final title = workspace['title'] as String?;
+                final date = workspace['release_date'] is String
+                    ? DateTime.tryParse(workspace['release_date'] as String)
+                    : null;
+                final updated = latest.copyWith(
+                  title: title == null || title.trim().isEmpty ? latest.title : title,
+                  description: workspace['description'] as String?,
+                  clearDescription: workspace['description'] == null,
+                  trackIds: linked,
+                  releaseDate: date,
+                  clearReleaseDate: date == null,
+                );
+                await repository.updateRelease(updated);
+                nativeSnapshot = updated;
+              },
             ),
           ),
         ),
         actions: [
           TextButton(
-            onPressed: () => Navigator.of(dialogContext).pop(),
-            child: const Text('Close'),
+            onPressed: () => Navigator.of(dialogContext).maybePop(),
+            child: Text(AppLocalizations.of(context)!.close),
           ),
         ],
       ),
@@ -738,7 +818,7 @@ class _ReleaseDetailPageState extends ConsumerState<ReleaseDetailPage>
     return Scaffold(
       appBar: AppBar(
         title: Text(release.title),
-        actions: [IconButton(tooltip: 'Release workflow', icon: const Icon(Icons.account_tree_outlined), onPressed: _openReleaseWorkflow)],
+        actions: [IconButton(tooltip: AppLocalizations.of(context)!.releaseManagerWorkflow, icon: const Icon(Icons.account_tree_outlined), onPressed: _openReleaseWorkflow)],
         leading: IconButton(
           icon: const Icon(Icons.arrow_back),
           onPressed: () => Navigator.pop(context),
@@ -769,7 +849,7 @@ class _ReleaseDetailPageState extends ConsumerState<ReleaseDetailPage>
       body: Column(
         children: [
           DesktopTitleBar(title: release.title, showBack: true),
-          Align(alignment: Alignment.centerRight, child: TextButton.icon(onPressed: _openReleaseWorkflow, icon: const Icon(Icons.account_tree_outlined), label: const Text('Release workflow'))),
+          Align(alignment: Alignment.centerRight, child: TextButton.icon(onPressed: _openReleaseWorkflow, icon: const Icon(Icons.account_tree_outlined), label: Text(AppLocalizations.of(context)!.releaseManagerWorkflow))),
           Expanded(
             child: Row(
               crossAxisAlignment: CrossAxisAlignment.start,

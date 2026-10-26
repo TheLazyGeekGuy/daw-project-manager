@@ -28,6 +28,7 @@ import '../repository/midi_clip_store.dart';
 import '../models/midi_collection.dart';
 import '../repository/profile_repository.dart';
 import 'custom_theme_merge.dart';
+import 'release_workspace_transfer.dart';
 import '../utils/app_paths.dart';
 import '../utils/save_file_dialog.dart';
 import '../utils/sync_time.dart';
@@ -39,7 +40,11 @@ class BackupService {
     required ProjectRepository projectRepo,
     required ProfileRepository profileRepo,
     required String profileId,
+    ReleaseWorkspaceTransfer? releaseWorkspaceTransfer,
   }) async {
+    if (projectRepo.profileId != profileId) {
+      throw const FormatException('Backup repository and profile do not match');
+    }
       // Get all data
     final projects = projectRepo.getAllProjects();
     final roots = projectRepo.getRoots();
@@ -69,6 +74,9 @@ class BackupService {
     final midiClips = await projectRepo.midiClips.getAll(
       onlyProjects: projects.map((p) => p.id).toSet(),
     );
+    final releaseWorkspace = await (releaseWorkspaceTransfer ??
+            ReleaseWorkspaceTransfer.forRepository(projectRepo))
+        .exportProfile(profileId, releaseIds: releases.map((r) => r.id).toSet());
 
     // Create backup data structure
     final backupData = {
@@ -77,8 +85,9 @@ class BackupService {
       // each project, its parts). 1.3 added customThemes. 1.4 added
       // customFieldDefinitions (and, on each project, customFields),
       // midiClips and midiCollections. Importing an older file still works —
-      // every new key is read with a null check on the way back in.
-      'version': '1.4',
+      // every new key is read with a null check on the way back in. 1.5 adds
+      // the profile's native Releases catalog and workflow metadata.
+      'version': '1.5',
       'exportDate': DateTime.now().toIso8601String(),
       'profileId': profileId,
       'profile': profile != null ? await _profileToJson(profile) : null,
@@ -91,6 +100,7 @@ class BackupService {
       'roots': roots.map((r) => _rootToJson(r)).toList(),
       'ignoredPaths': ignoredPaths.map((ip) => _ignoredPathToJson(ip)).toList(),
       'releases': await Future.wait(releases.map((r) => _releaseToJson(r))),
+      'releaseWorkspace': releaseWorkspace,
       'templates': templates.map(_todoTemplateToJson).toList(),
       'partTemplates': partTemplates.map((t) => t.toJson()).toList(),
       'projectTemplates': projectTemplates.map(_projectTemplateToJson).toList(),
@@ -196,14 +206,29 @@ class BackupService {
     String? invalidBackupFormatMessage,
     String? profileNameRequiredMessage,
     String? currentProfileRequiredMessage,
+    ReleaseWorkspaceTransfer? releaseWorkspaceTransfer,
   }) async {
     try {
+      if (importMode != ImportMode.createNewProfile &&
+          projectRepo != null &&
+          projectRepo.profileId != currentProfileId) {
+        throw const FormatException('Import repository and profile do not match');
+      }
       final backupData = jsonDecode(jsonString) as Map<String, dynamic>;
 
       // Validate backup format
       if (backupData['version'] == null) {
         throw Exception(invalidBackupFormatMessage ?? 'Invalid backup file format: missing version');
       }
+      // Validate all native metadata before legacy import starts. Older
+      // backups simply have no such section. Profile mapping happens only
+      // after the user-selected destination profile has been resolved.
+      final releaseWorkspace = backupData['releaseWorkspace'] == null
+          ? null
+          : ReleaseWorkspaceTransfer.validateBundle(
+              backupData['releaseWorkspace'],
+              expectedProfileId: backupData['profileId'] as String?,
+            );
 
       final importedProjects = <MusicProject>[];
       final importedRoots = <ScanRoot>[];
@@ -420,6 +445,16 @@ class BackupService {
       for (final release in importedReleases) {
         await targetRepo.updateRelease(release);
       }
+      final releaseMetadataResult = releaseWorkspace == null
+          ? null
+          : await (releaseWorkspaceTransfer ??
+                  ReleaseWorkspaceTransfer.forRepository(targetRepo))
+              .mergeProfile(
+                releaseWorkspace,
+                targetProfileId: targetProfileId,
+                allowedReleaseIds:
+                    targetRepo.getAllReleases().map((r) => r.id).toSet(),
+              );
 
       // Restore global (non-per-profile) data. These boxes are shared across
       // every profile, so — unlike the per-profile data above — writing them
@@ -467,6 +502,7 @@ class BackupService {
         templatesCount: importedTemplates.length,
         projectTemplatesCount: importedProjectTemplates.length,
         newProfileId: createdProfileId,
+        releaseMetadata: releaseMetadataResult,
       );
     } catch (e) {
       throw Exception('Failed to import backup: $e');
@@ -1439,6 +1475,7 @@ class ImportResult {
   final int templatesCount;
   final int projectTemplatesCount;
   final String? newProfileId;
+  final ReleaseWorkspaceTransferResult? releaseMetadata;
 
   ImportResult({
     this.cancelled = false,
@@ -1449,6 +1486,7 @@ class ImportResult {
     this.templatesCount = 0,
     this.projectTemplatesCount = 0,
     this.newProfileId,
+    this.releaseMetadata,
   });
 }
 
