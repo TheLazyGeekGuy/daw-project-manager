@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 
 import '../../services/release_workflow_validator.dart';
+import '../../services/release_record_editor.dart';
 import '../../services/release_workspace_store.dart';
 
 /// A native, manual metadata editor; no Katsu or distributor API connection.
@@ -123,6 +124,132 @@ class _ReleaseWorkflowEditorState extends State<ReleaseWorkflowEditor> {
     }
   }
 
+
+  Future<void> _editEntry(String section, [int? index]) async {
+    final fields = ReleaseRecordEditor.sections[section]!;
+    final source = jsonDecode(_controller.text) as Map<String, dynamic>;
+    final entries = (source[section] as List?) ?? [];
+    final entry = index == null ? <String, dynamic>{} :
+        Map<String, dynamic>.from(entries[index] as Map);
+    final name = TextEditingController(text: entry[fields.$1]?.toString() ?? '');
+    final existing = entry[fields.$2]?.toString() ?? '';
+    final statuses = section == 'rights_filings'
+        ? ReleaseWorkflowValidator.rightsStatuses
+        : section == 'distribution'
+            ? ReleaseWorkflowValidator.deliveryStatuses
+            : ReleaseWorkflowValidator.promotionStatuses;
+    String selected = statuses.contains(existing) ? existing :
+        section == 'communications' ? 'planned' : 'draft';
+    final values = await showDialog<Map<String, String>>(
+      context: context,
+      builder: (context) => StatefulBuilder(
+        builder: (context, setDialogState) => AlertDialog(
+          title: Text(index == null ? 'Add record' : 'Edit record'),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              TextField(controller: name, decoration: InputDecoration(
+                labelText: fields.$1,
+              )),
+              DropdownButtonFormField<String>(
+                value: selected,
+                items: [
+                  for (final status in statuses)
+                    DropdownMenuItem(value: status, child: Text(status)),
+                ],
+                onChanged: (value) {
+                  if (value != null) setDialogState(() => selected = value);
+                },
+              ),
+            ],
+          ),
+          actions: [
+            TextButton(onPressed: () => Navigator.pop(context),
+              child: const Text('Cancel')),
+            FilledButton(onPressed: () => Navigator.pop(context, {
+              fields.$1: name.text.trim(),
+              fields.$2: selected,
+            }), child: const Text('Apply')),
+          ],
+        ),
+      ),
+    );
+    name.dispose();
+    if (values == null || !mounted) return;
+    try {
+      final changed = ReleaseRecordEditor.update(source, section, index, values);
+      setState(() {
+        _controller.text = const JsonEncoder.withIndent('  ').convert(changed);
+        _syncFirst(changed);
+        _error = null;
+      });
+    } catch (error) {
+      setState(() => _error = error.toString());
+    }
+  }
+
+  void _syncFirst(Map<String, dynamic> source) {
+    void sync(String key, TextEditingController name,
+        TextEditingController status, String label) {
+      final values = (source[key] as List?) ?? [];
+      final first = values.isEmpty ? null : values.first as Map?;
+      name.text = first?[label]?.toString() ?? '';
+      status.text = first?['status']?.toString() ??
+          (key == 'communications' ? 'planned' : 'draft');
+    }
+    sync('rights_filings', _organization, _rightsStatus, 'organization');
+    sync('distribution', _distributor, _deliveryStatus, 'distributor');
+    sync('communications', _promotionPlatform, _promotionStatus, 'platform');
+  }
+
+  void _removeEntry(String section, int index) {
+    try {
+      final source = jsonDecode(_controller.text) as Map<String, dynamic>;
+      final changed = ReleaseRecordEditor.remove(source, section, index);
+      setState(() {
+        _controller.text = const JsonEncoder.withIndent('  ').convert(changed);
+        _syncFirst(changed);
+        _error = null;
+      });
+    } catch (error) {
+      setState(() => _error = error.toString());
+    }
+  }
+
+  Widget _sectionRecords(String section) {
+    final fields = ReleaseRecordEditor.sections[section]!;
+    final data = jsonDecode(_controller.text) as Map<String, dynamic>;
+    final entries = (data[section] as List?) ?? [];
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        for (var index = 0; index < entries.length; index++)
+          ListTile(
+            dense: true,
+            title: Text((entries[index] as Map)[fields.$1]?.toString() ?? ''),
+            subtitle: Text((entries[index] as Map)['status']?.toString() ?? ''),
+            trailing: Row(mainAxisSize: MainAxisSize.min, children: [
+              IconButton(
+                tooltip: 'Edit record',
+                icon: const Icon(Icons.edit_outlined),
+                onPressed: () => _editEntry(section, index),
+              ),
+              IconButton(
+                tooltip: 'Remove record',
+                icon: const Icon(Icons.remove_circle_outline),
+                onPressed: () => _removeEntry(section, index),
+              ),
+            ]),
+          ),
+        TextButton.icon(
+          onPressed: () => _editEntry(section),
+          icon: const Icon(Icons.add),
+          label: Text('Add ${fields.$1}'),
+        ),
+      ],
+    );
+  }
+
   @override
   void dispose() {
     _controller.dispose();
@@ -222,6 +349,10 @@ class _ReleaseWorkflowEditorState extends State<ReleaseWorkflowEditor> {
             if (value != null) setState(() => _promotionStatus.text = value);
           },
         ),
+        const Divider(),
+        _sectionRecords('rights_filings'),
+        _sectionRecords('distribution'),
+        _sectionRecords('communications'),
         SwitchListTile(
           contentPadding: EdgeInsets.zero,
           title: const Text('Advanced JSON editor'),
