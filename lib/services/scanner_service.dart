@@ -96,6 +96,8 @@ class ScannerService {
     'history',              // Studio One
     'autosave',             // Cakewalk
     'auto save',            // FL Studio (alternate)
+    '.project-repair-backups', // DPM immutable repair backups
+    '.project-repair-exports', // Unverified conversion workspaces
   };
 
   bool _isInBackupFolder(String path) {
@@ -178,7 +180,7 @@ class ScannerService {
 
     await for (final depth1 in rootDir.list(recursive: false, followLinks: false)) {
       if (depth1 is! Directory) continue;
-      if (isIgnored(depth1.path)) continue;
+      if (isIgnored(depth1.path) || _isInBackupFolder(depth1.path)) continue;
 
       final best1 = await _bestFileInFolder(depth1);
       if (best1 != null) {
@@ -188,7 +190,7 @@ class ScannerService {
       if (maxDepth >= 2) {
         await for (final depth2 in depth1.list(recursive: false, followLinks: false)) {
           if (depth2 is! Directory) continue;
-          if (isIgnored(depth2.path)) continue;
+          if (isIgnored(depth2.path) || _isInBackupFolder(depth2.path)) continue;
 
           final best2 = await _bestFileInFolder(depth2);
           if (best2 != null) {
@@ -229,7 +231,7 @@ class ScannerService {
     final stack = <Directory>[rootDir];
     while (stack.isNotEmpty) {
       final dir = stack.removeLast();
-      if (isIgnoredPath(dir.path)) {
+      if (isIgnoredPath(dir.path) || _isInBackupFolder(dir.path)) {
         continue;
       }
 
@@ -238,7 +240,7 @@ class ScannerService {
       final stream = dir.list(recursive: false, followLinks: false);
       await for (final entity in stream) {
         entityCount++;
-        if (isIgnoredPath(entity.path)) {
+        if (isIgnoredPath(entity.path) || _isInBackupFolder(entity.path)) {
           continue;
         }
 
