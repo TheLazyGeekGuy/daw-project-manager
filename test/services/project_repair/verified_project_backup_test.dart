@@ -25,7 +25,7 @@ void main() {
     try {
       expect(
         () => VerifiedProjectBackup.create(File('${folder.path}/absent.cpr')),
-        throwsFileSystemException,
+        throwsA(isA<FileSystemException>()),
       );
     } finally {
       await folder.delete(recursive: true);
