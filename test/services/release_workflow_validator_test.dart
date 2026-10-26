@@ -29,4 +29,19 @@ void main() {
     };
     expect(validator.nextSuggestedStep(data), 'Prepare distributor delivery');
   });
+  test('rejects invalid nested rights, distributor and promotion entries', () {
+    final data = {
+      'schema_version': 1,
+      'collection_type': 'album',
+      'tracks': <Object>[],
+      'rights_filings': [{'organization': 42, 'status': 'draft'}],
+      'distribution': [{'distributor': 'Example', 'status': 1}],
+      'communications': [{'platform': null, 'status': 'planned'}],
+    };
+    final errors = validator.validate(data);
+    expect(errors, contains('Invalid rights filing'));
+    expect(errors, contains('Invalid distribution entry'));
+    expect(errors, contains('Invalid communication entry'));
+  });
+
 }
