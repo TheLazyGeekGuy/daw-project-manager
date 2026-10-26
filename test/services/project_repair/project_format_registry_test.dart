@@ -22,6 +22,21 @@ void main() {
     expect(ProjectFormatRegistry.detect('song.als', Uint8List.fromList('<Ableton>'.codeUnits)), isNull);
   });
 
+  test('DAWproject ZIP must begin with a local file header', () {
+    expect(
+      ProjectFormatRegistry.detect(
+        'album.dawproject', Uint8List.fromList([0x50, 0x4b, 0x03, 0x04]),
+      )?.id,
+      'dawproject',
+    );
+    expect(
+      ProjectFormatRegistry.detect(
+        'album.dawproject', Uint8List.fromList('not a ZIP'.codeUnits),
+      ),
+      isNull,
+    );
+  });
+
   test('native writing is not marked verified for any format', () {
     expect(ProjectFormatRegistry.formats.every((f) => !f.nativeWritingVerified), isTrue);
   });
