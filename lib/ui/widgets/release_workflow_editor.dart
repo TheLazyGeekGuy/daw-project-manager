@@ -112,6 +112,7 @@ class _ReleaseWorkflowEditorState extends State<ReleaseWorkflowEditor> {
         throw FormatException(problems.join('; '));
       }
       await widget.store.save(widget.releaseId, data);
+      _controller.text = const JsonEncoder.withIndent('  ').convert(data);
       if (!mounted) return;
       setState(() => _next = _validator.nextSuggestedStep(data));
     } catch (error) {
@@ -180,20 +181,44 @@ class _ReleaseWorkflowEditorState extends State<ReleaseWorkflowEditor> {
         Text('Rights filing', style: Theme.of(context).textTheme.titleSmall),
         TextField(controller: _organization, enabled: !_advancedJson,
           decoration: const InputDecoration(labelText: 'Rights organization (e.g. SACEM, BMI, PRS)')),
-        TextField(controller: _rightsStatus, enabled: !_advancedJson,
-          decoration: const InputDecoration(labelText: 'Rights filing status')),
+        DropdownButtonFormField<String>(
+          value: _rightsStatus.text,
+          decoration: const InputDecoration(labelText: 'Rights filing status'),
+          items: ReleaseWorkflowValidator.rightsStatuses
+              .map((status) => DropdownMenuItem(value: status, child: Text(status)))
+              .toList(),
+          onChanged: _advancedJson ? null : (value) {
+            if (value != null) setState(() => _rightsStatus.text = value);
+          },
+        ),
         const SizedBox(height: 12),
         Text('Distribution', style: Theme.of(context).textTheme.titleSmall),
         TextField(controller: _distributor, enabled: !_advancedJson,
           decoration: const InputDecoration(labelText: 'Distributor')),
-        TextField(controller: _deliveryStatus, enabled: !_advancedJson,
-          decoration: const InputDecoration(labelText: 'Delivery status')),
+        DropdownButtonFormField<String>(
+          value: _deliveryStatus.text,
+          decoration: const InputDecoration(labelText: 'Delivery status'),
+          items: ReleaseWorkflowValidator.deliveryStatuses
+              .map((status) => DropdownMenuItem(value: status, child: Text(status)))
+              .toList(),
+          onChanged: _advancedJson ? null : (value) {
+            if (value != null) setState(() => _deliveryStatus.text = value);
+          },
+        ),
         const SizedBox(height: 12),
         Text('Communication', style: Theme.of(context).textTheme.titleSmall),
         TextField(controller: _promotionPlatform, enabled: !_advancedJson,
           decoration: const InputDecoration(labelText: 'Promotion platform')),
-        TextField(controller: _promotionStatus, enabled: !_advancedJson,
-          decoration: const InputDecoration(labelText: 'Promotion status')),
+        DropdownButtonFormField<String>(
+          value: _promotionStatus.text,
+          decoration: const InputDecoration(labelText: 'Promotion status'),
+          items: ReleaseWorkflowValidator.promotionStatuses
+              .map((status) => DropdownMenuItem(value: status, child: Text(status)))
+              .toList(),
+          onChanged: _advancedJson ? null : (value) {
+            if (value != null) setState(() => _promotionStatus.text = value);
+          },
+        ),
         SwitchListTile(
           contentPadding: EdgeInsets.zero,
           title: const Text('Advanced JSON editor'),
