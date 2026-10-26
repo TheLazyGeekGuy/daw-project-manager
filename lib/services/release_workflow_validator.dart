@@ -4,6 +4,19 @@
 class ReleaseWorkflowValidator {
   const ReleaseWorkflowValidator();
 
+  static const rightsStatuses = {
+    'draft', 'ready', 'submitted', 'acknowledged', 'accepted',
+    'rejected', 'needs_review', 'unknown',
+  };
+  static const deliveryStatuses = {
+    'draft', 'prepared', 'submitted', 'in_review', 'accepted',
+    'delivered', 'live', 'rejected', 'taken_down', 'unknown',
+  };
+  static const promotionStatuses = {
+    'idea', 'planned', 'creating', 'ready', 'scheduled',
+    'published', 'cancelled', 'unknown',
+  };
+
   List<String> validate(Map<String, dynamic> workspace) {
     final problems = <String>[];
     if (workspace['schema_version'] != 1) {
@@ -39,7 +52,9 @@ class ReleaseWorkflowValidator {
     } else {
       for (final filing in rights) {
         if (filing is! Map || filing['organization'] is! String ||
-            filing['status'] is! String) {
+            filing['status'] is! String ||
+            !rightsStatuses.contains(filing['status']) ||
+            (filing['organization'] as String).trim().isEmpty) {
           problems.add('Invalid rights filing');
         }
       }
@@ -50,7 +65,9 @@ class ReleaseWorkflowValidator {
     } else {
       for (final delivery in distribution) {
         if (delivery is! Map || delivery['distributor'] is! String ||
-            delivery['status'] is! String) {
+            delivery['status'] is! String ||
+            !deliveryStatuses.contains(delivery['status']) ||
+            (delivery['distributor'] as String).trim().isEmpty) {
           problems.add('Invalid distribution entry');
         }
       }
@@ -61,7 +78,9 @@ class ReleaseWorkflowValidator {
     } else {
       for (final post in communication) {
         if (post is! Map || post['platform'] is! String ||
-            post['status'] is! String) {
+            post['status'] is! String ||
+            !promotionStatuses.contains(post['status']) ||
+            (post['platform'] as String).trim().isEmpty) {
           problems.add('Invalid communication entry');
         }
       }
