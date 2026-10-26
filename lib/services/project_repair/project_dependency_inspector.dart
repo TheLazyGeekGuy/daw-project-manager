@@ -4,6 +4,7 @@ import 'dart:typed_data';
 import '../daw_parsers/cubase_project_parser.dart';
 import '../daw_parsers/reaper_project_parser.dart';
 import 'project_format_registry.dart';
+import 'cubase_structural_probe.dart';
 
 /// Machine-readable dependency report. A name is not a stable plug-in UID.
 class ProjectDependencyReport {
@@ -12,6 +13,9 @@ class ProjectDependencyReport {
   final List<String> pluginNames;
   final int? trackCount;
   final List<String> limitations;
+  final String? savedDawVersion;
+  final CubaseContainerManifest? cubaseContainer;
+  final List<CubasePluginUidEvidence> pluginUidEvidence;
 
   const ProjectDependencyReport({
     required this.path,
@@ -19,6 +23,9 @@ class ProjectDependencyReport {
     required this.pluginNames,
     required this.trackCount,
     required this.limitations,
+    this.savedDawVersion,
+    this.cubaseContainer,
+    this.pluginUidEvidence = const [],
   });
 
   Map<String, Object?> toJson() => {
@@ -28,6 +35,11 @@ class ProjectDependencyReport {
     'plugin_names': pluginNames,
     'track_count': trackCount,
     'limitations': limitations,
+    'saved_daw_version': savedDawVersion,
+    if (cubaseContainer != null) 'container': cubaseContainer!.toJson(),
+    'plugin_uid_evidence': [
+      for (final plugin in pluginUidEvidence) plugin.toJson(),
+    ],
     'plugin_loadability': 'untested',
     'plugin_state_preservation': 'untested',
     'original_modified': false,
@@ -54,15 +66,21 @@ class ProjectDependencyInspector {
     switch (descriptor.id) {
       case 'cubase':
       case 'nuendo':
+        final container = CubaseContainerManifest.inspect(bytes);
+        final uidEvidence = CubasePluginUidProbe.inspect(bytes);
         final parser = CubaseProjectParser(bytes);
         final tracks = parser.readTracks();
         return ProjectDependencyReport(
           path: path,
           formatId: descriptor.id,
+          savedDawVersion: CubaseProjectParser.appVersion(bytes),
+          cubaseContainer: container,
+          pluginUidEvidence: uidEvidence,
           pluginNames: List.unmodifiable(parser.readPluginNames()),
           trackCount: tracks.length,
           limitations: const [
-            'Plug-in UIDs and saved states are not verified by this report.',
+            'Serialized plug-in UIDs are read-only evidence, not verified vendor identities or state compatibility.',
+            'The typed UID scan targets one known Cubase attribute layout; absence of a UID is inconclusive.',
             'The project may contain routing or plug-in information not decoded by the reader.',
             'Installed, disabled, missing, and loadable statuses have not been tested.',
           ],
