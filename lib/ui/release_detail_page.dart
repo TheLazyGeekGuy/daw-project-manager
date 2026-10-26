@@ -1,3 +1,6 @@
+import 'package:path_provider/path_provider.dart';
+import '../services/release_workspace_store.dart';
+import 'widgets/release_workflow_editor.dart';
 import 'dart:async';
 import 'dart:io';
 import 'package:desktop_drop/desktop_drop.dart';
@@ -702,10 +705,41 @@ class _ReleaseDetailPageState extends ConsumerState<ReleaseDetailPage>
   // MOBILE LAYOUT
   // ============================================================================
   
+  /// Opens the optional release workflow layer without migrating legacy Hive data.
+  Future<void> _openReleaseWorkflow() async {
+    final support = await getApplicationSupportDirectory();
+    if (!mounted) return;
+    final store = ReleaseWorkspaceStore(
+      Directory(p.join(support.path, 'release-workspaces')),
+    );
+    await showDialog<void>(
+      context: context,
+      builder: (dialogContext) => AlertDialog(
+        title: const Text('Release workflow'),
+        content: SizedBox(
+          width: 680,
+          child: SingleChildScrollView(
+            child: ReleaseWorkflowEditor(
+              releaseId: widget.releaseId,
+              store: store,
+            ),
+          ),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(dialogContext).pop(),
+            child: const Text('Close'),
+          ),
+        ],
+      ),
+    );
+  }
+
   Widget _buildMobileLayout(BuildContext context, Release release, List<MusicProject> releaseProjects) {
     return Scaffold(
       appBar: AppBar(
         title: Text(release.title),
+        actions: [IconButton(tooltip: 'Release workflow', icon: const Icon(Icons.account_tree_outlined), onPressed: _openReleaseWorkflow)],
         leading: IconButton(
           icon: const Icon(Icons.arrow_back),
           onPressed: () => Navigator.pop(context),
@@ -736,6 +770,7 @@ class _ReleaseDetailPageState extends ConsumerState<ReleaseDetailPage>
       body: Column(
         children: [
           DesktopTitleBar(title: release.title, showBack: true),
+          Align(alignment: Alignment.centerRight, child: TextButton.icon(onPressed: _openReleaseWorkflow, icon: const Icon(Icons.account_tree_outlined), label: const Text('Release workflow'))),
           Expanded(
             child: Row(
               crossAxisAlignment: CrossAxisAlignment.start,
