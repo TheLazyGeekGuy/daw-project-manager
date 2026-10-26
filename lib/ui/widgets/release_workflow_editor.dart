@@ -188,6 +188,30 @@ class _ReleaseWorkflowEditorState extends State<ReleaseWorkflowEditor> {
     }
   }
 
+  Future<void> _deleteTrack(int index) async {
+    final confirmed = await showDialog<bool>(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text('Remove track from release?'),
+        content: const Text(
+          'This removes the association from this release workflow. '
+          'The underlying music project and audio files remain unchanged.',
+        ),
+        actions: [
+          TextButton(onPressed: () => Navigator.pop(context, false),
+            child: const Text('Cancel')),
+          FilledButton(onPressed: () => Navigator.pop(context, true),
+            child: const Text('Remove')),
+        ],
+      ),
+    );
+    if (confirmed != true || !mounted) return;
+    final source = jsonDecode(_controller.text) as Map<String, dynamic>;
+    final changed = ReleaseTrackEditor.remove(source, index);
+    setState(() => _controller.text =
+        const JsonEncoder.withIndent('  ').convert(changed));
+  }
+
   Widget _trackRecords() {
     final data = jsonDecode(_controller.text) as Map<String, dynamic>;
     final tracks = data['tracks'] as List;
@@ -215,6 +239,11 @@ class _ReleaseWorkflowEditorState extends State<ReleaseWorkflowEditor> {
               tooltip: 'Edit track',
               onPressed: () => _editTrack(index),
               icon: const Icon(Icons.edit_outlined),
+            ),
+            IconButton(
+              tooltip: 'Remove track from release',
+              onPressed: () => _deleteTrack(index),
+              icon: const Icon(Icons.remove_circle_outline),
             ),
           ]),
         ),
