@@ -3,7 +3,7 @@ name: Project repair checks
 on:
   push:
     branches:
-      - feature/project-repair-conversion-architecture
+      - main
     paths:
       - 'lib/services/project_repair/**'
       - 'lib/ui/widgets/project_*'
@@ -11,13 +11,6 @@ on:
       - 'test/ui/widgets/project_dependency_report_panel_test.dart'
       - 'bin/project_repair_inspect.dart'
       - '.github/workflows/project-repair.yml'
-  pull_request:
-    paths:
-      - 'lib/services/project_repair/**'
-      - 'lib/ui/widgets/project_*'
-      - 'test/services/project_repair/**'
-      - 'test/ui/widgets/project_dependency_report_panel_test.dart'
-      - 'bin/project_repair_inspect.dart'
 
 jobs:
   dart-flutter-tests:
