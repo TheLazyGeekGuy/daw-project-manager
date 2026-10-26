@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'dart:isolate';
 
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
@@ -6,6 +7,8 @@ import 'package:url_launcher/url_launcher.dart';
 
 import '../../services/project_repair/legacy_cubase_migration.dart';
 import '../../services/project_repair/all_to_midi_bridge.dart';
+import '../../services/project_repair/native_legacy_all_conversion.dart';
+import '../../services/project_repair/native_legacy_all_reader.dart';
 
 /// Offers licensed/manual legacy routes and a guarded Windows AllToMidi CLI.
 class LegacyCubaseMigrationDialog extends StatefulWidget {
@@ -22,6 +25,9 @@ class _LegacyCubaseMigrationDialogState
   LegacyCubaseValidation? _validation;
   LegacyCubaseValidation? _intermediateValidation;
   AllToMidiConversionResult? _allToMidiResult;
+  NativeLegacyAllResult? _nativeResult;
+  LegacyAllSong? _nativePreview;
+  String? _nativePreviewError;
   bool _busy = false;
   String? _error;
 
@@ -37,6 +43,9 @@ class _LegacyCubaseMigrationDialogState
       _validation = null;
       _intermediateValidation = null;
       _allToMidiResult = null;
+      _nativeResult = null;
+      _nativePreview = null;
+      _nativePreviewError = null;
       _preparation = null;
     });
     try {
@@ -45,9 +54,72 @@ class _LegacyCubaseMigrationDialogState
       );
       if (!mounted) return;
       setState(() => _preparation = prep);
+      if (prep.legacyPath.toLowerCase().endsWith('.all')) {
+        try {
+          final backupPath = prep.backupPath;
+          final parsed = await Isolate.run(() async {
+            final input = await File(backupPath).readAsBytes();
+            return const NativeLegacyAllReader().read(input);
+          });
+          if (mounted) setState(() => _nativePreview = parsed);
+        } catch (error) {
+          if (mounted) {
+            setState(() => _nativePreviewError =
+                'This ALL variant is not recognized by the native reader: $error');
+          }
+        }
+      }
     } catch (error) {
       if (!mounted) return;
       setState(() => _error = 'Cannot prepare legacy project: $error');
+    } finally {
+      if (mounted) setState(() => _busy = false);
+    }
+  }
+
+  Future<void> _convertNatively() async {
+    final preparation = _preparation;
+    if (_busy || preparation == null ||
+        !preparation.legacyPath.toLowerCase().endsWith('.all')) return;
+    if (_nativePreview == null) {
+      setState(() => _error =
+          'This ALL layout is not recognized. No unverified MIDI will be written.');
+      return;
+    }
+    final confirmed = await showDialog<bool>(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text('Native .ALL MIDI recovery'),
+        content: const Text(
+          'DPM will produce a new MIDI file without Cubase 3 or an external '
+          'executable. This is experimental: audio, VST instruments, presets, '
+          'mixer states and SysEx are not recovered, and later tempo changes '
+          'may be incomplete. Your original and verified backup stay intact.',
+        ),
+        actions: [
+          TextButton(onPressed: () => Navigator.pop(context, false),
+            child: const Text('Cancel')),
+          FilledButton(onPressed: () => Navigator.pop(context, true),
+            child: const Text('Generate MIDI copy')),
+        ],
+      ),
+    );
+    if (confirmed != true || !mounted) return;
+    setState(() {
+      _busy = true;
+      _error = null;
+      _nativeResult = null;
+    });
+    try {
+      final sourcePath = preparation.legacyPath;
+      final result = await Isolate.run(() =>
+          const NativeLegacyAllConversion().convert(
+            original: File(sourcePath),
+          ));
+      if (!mounted) return;
+      setState(() => _nativeResult = result);
+    } catch (error) {
+      if (mounted) setState(() => _error = 'Native MIDI recovery failed: $error');
     } finally {
       if (mounted) setState(() => _busy = false);
     }
@@ -193,7 +265,18 @@ class _LegacyCubaseMigrationDialogState
             Text('Two independent paths are available. '
               'Neither can certify native plug-in presets or mix fidelity.'),
             const SizedBox(height: 12),
-            Text('Route A: official Cubase 3 import',
+            Text('Primary route: native DPM .ALL reader on Apple Silicon, '
+                'Intel Mac, Windows and Linux',
+                style: Theme.of(context).textTheme.titleSmall),
+            const Text(
+              'Reads supported Cubase VST .ALL MIDI tracks and arrangements '
+              'directly in Dart, then exports a new standard MIDI type 1 file. '
+              'No Cubase 3 installation, Windows executable, Python runtime '
+              'or upload is required. Format coverage remains experimental. '
+              'The .ARR format is not yet supported by the native reader.',
+            ),
+            const SizedBox(height: 12),
+            Text('Alternative A: official Cubase 3 import',
                 style: Theme.of(context).textTheme.titleSmall),
             const Text(
               'Use licensed Cubase SE/SL/SX 3: File > Import > Cubase Song, '
@@ -204,7 +287,7 @@ class _LegacyCubaseMigrationDialogState
               LegacyCubaseMigration.steinbergGuide,
             ),
             const SizedBox(height: 12),
-            Text('Route B: Atari conversion without Cubase 3',
+            Text('Alternative B: Atari conversion without Cubase 3',
                 style: Theme.of(context).textTheme.titleSmall),
             const Text(
               'atari2cubase converts classic Atari ALL/ARR to DAWproject '
@@ -223,7 +306,7 @@ class _LegacyCubaseMigrationDialogState
               'DPM has not independently audited this third-party website.',
             ),
             const SizedBox(height: 12),
-            Text('Route C: local Windows .ALL to MIDI recovery',
+            Text('Alternative C: separate Windows AllToMidi executable',
                 style: Theme.of(context).textTheme.titleSmall),
             const Text(
               'MIT-licensed AllToMidi 1.0 recovers MIDI type 1 (480 PPQ), '
@@ -250,6 +333,47 @@ class _LegacyCubaseMigrationDialogState
               SelectableText('Legacy source: ${preparation.legacyPath}'),
               SelectableText('SHA-256: ${preparation.legacySha256}'),
               SelectableText('Verified backup: ${preparation.backupPath}'),
+              const SizedBox(height: 12),
+              Text('Native DPM MIDI preview',
+                  style: Theme.of(context).textTheme.titleSmall),
+              if (_nativePreview case final song?) ...[
+                Text('Recovered: ${song.tracks.length} MIDI tracks, '
+                    '${song.noteCount} notes, ${song.eventCount} events'),
+                Text('Initial tempo: '
+                    '${(60000000 / song.microsecondsPerQuarter).toStringAsFixed(2)} BPM'),
+                for (final track in song.tracks.take(20))
+                  ListTile(
+                    dense: true,
+                    title: Text(track.name),
+                    subtitle: Text(
+                      'Channel ${track.channel} · '
+                      '${track.partCount} part(s) · '
+                      '${track.noteCount} note(s) · '
+                      '${track.layout}',
+                    ),
+                  ),
+                if (song.tracks.length > 20)
+                  Text('${song.tracks.length - 20} more tracks not displayed'),
+                FilledButton.icon(
+                  onPressed: _busy ? null : _convertNatively,
+                  icon: const Icon(Icons.piano),
+                  label: const Text('Convert natively to MIDI (macOS/Windows)'),
+                ),
+              ],
+              if (_nativePreviewError != null)
+                Text(_nativePreviewError!,
+                    style: TextStyle(color: Theme.of(context).colorScheme.error)),
+              if (preparation.legacyPath.toLowerCase().endsWith('.arr'))
+                const Text('Native .ARR decoding not available yet. '
+                    'Use the external migration paths below.'),
+              if (_nativeResult case final result?) ...[
+                SelectableText('Native MIDI file: ${result.outputPath}'),
+                Text('${result.trackCount} tracks · '
+                    '${result.noteCount} notes · 480 PPQ'),
+                SelectableText('Report: ${result.reportPath}'),
+                const Text('Import into Cubase and save as a new CPR. '
+                    'VST/mixer/audio restoration is not claimed.'),
+              ],
               const SizedBox(height: 10),
               const Text(
                 '2A. Legacy official route: import with Cubase SE/SL/SX 3 '
