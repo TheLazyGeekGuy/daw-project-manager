@@ -8,6 +8,7 @@ import 'package:path/path.dart' as p;
 
 import 'project_format_registry.dart';
 import 'verified_project_backup.dart';
+import 'reaper_sidecar_stager.dart';
 
 /// The script and Python runtime are user-supplied, trusted local executables.
 ///
@@ -153,6 +154,23 @@ class DawVertConversionService {
         await _sha256Of(original) != backup.sha256Digest) {
       throw const FileSystemException('Input changed during safe staging');
     }
+    // Stage the REAPER FILE sidecars under the same relative names as in RPP.
+    // Absolute or missing references fail closed instead of making a silent
+    // conversion that has dropped its audio or external MIDI assets.
+    ReaperSidecarManifest? media;
+    if (sourceDescriptor.id == 'reaper') {
+      try {
+        media = await ReaperSidecarStager.stage(
+          original: original, workspace: run,
+        );
+      } catch (error) {
+        await _writeFailure(
+          manifest, 'Media staging failed: ' + error.toString(),
+          backup.backupPath,
+        );
+        rethrow;
+      }
+    }
     final args = <String>[
       dawvertScript.absolute.path,
       '-it', from.$1,
@@ -218,6 +236,20 @@ class DawVertConversionService {
       throw const FileSystemException('Original project changed during conversion');
     }
 
+    if (media != null) {
+      for (final sidecar in media.files) {
+        final file = File(p.join(original.parent.path, sidecar.relativePath));
+        if (!await file.exists() ||
+            await _sha256Of(file) != sidecar.sha256Digest) {
+          await _writeFailure(
+            manifest, 'Source media changed during conversion',
+            backup.backupPath,
+          );
+          throw const FileSystemException('Source media changed during conversion');
+        }
+      }
+    }
+
     final result = DawVertConversionResult(
       sourcePath: original.absolute.path,
       outputPath: output.path,
@@ -233,6 +265,9 @@ class DawVertConversionService {
         ...result.toJson(),
         'converter': 'DawVert (external, locally supplied)',
         'converter_exit_code': process.exitCode,
+        'media_staging': media?.toJson() ?? const {
+          'status': 'unverified_for_this_source_format',
+        },
         'stdout_excerpt': _bounded(process.stdout),
         'stderr_excerpt': _bounded(process.stderr),
         'warnings': const [
