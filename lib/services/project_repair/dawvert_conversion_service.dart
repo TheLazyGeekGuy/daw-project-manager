@@ -137,7 +137,12 @@ class DawVertConversionService {
     final backup = await VerifiedProjectBackup.create(original);
     final parent = outputRoot ??
         Directory(p.join(p.dirname(original.absolute.path), '.project-repair-exports'));
+    if (p.split(parent.absolute.path).contains('.project-repair-backups')) {
+      throw const FileSystemException('Conversion output cannot be inside managed backups');
+    }
+    await VerifiedProjectBackup.ensureNoSymlinkComponents(parent.absolute.path);
     await parent.create(recursive: true);
+    await VerifiedProjectBackup.ensureNoSymlinkComponents(parent.absolute.path);
     final run = await parent.createTemp('dpm-dawvert-');
     final clone = File(p.join(run.path, p.basename(original.path)));
     final output = File(p.join(run.path, 'converted' + to.$2));
@@ -172,7 +177,9 @@ class DawVertConversionService {
       await _writeFailure(manifest,
           'DawVert failed with exit code ${process.exitCode}: '
           '${_bounded(process.stderr)}', backup.backupPath);
-      throw const ProcessException('DawVert', [], 'Converter returned a failure code');
+      throw ProcessException(
+        'DawVert', args, 'Converter returned a failure code', process.exitCode,
+      );
     }
     if (!await output.exists() ||
         await output.length() == 0 ||
@@ -181,7 +188,135 @@ class DawVertConversionService {
           backup.backupPath);
       throw const FormatException('Converter produced no bounded output');
     }
-    final outputDescriptor = await _detectFile(output);
+    if (await FileSystemEntity.type(output.path, followLinks: false) !=
+        FileSystemEntityType.file) {
+      await _writeFailure(manifest, 'Conversion output is not a regular file',
+          backup.backupPath);
+      throw const FormatException('Unsafe converter output');
+    }
+    late final ProjectFormatDescriptor outputDescriptor;
+    try {
+      outputDescriptor = await _detectFile(output);
+    } on FormatException catch (error) {
+      await _writeFailure(manifest, 'Invalid output signature:     if (outputDescriptor.id != targetFormat) {
+      await _writeFailure(manifest, 'Output format signature does not match request',
+          backup.backupPath);
+      throw const FormatException('DawVert output signature mismatch');
+    }
+    if (await _sha256Of(original) != backup.sha256Digest ||
+        await original.length() != backup.length) {
+      await _writeFailure(manifest, 'Original project differs from verified backup',
+          backup.backupPath);
+      throw const FileSystemException('Original project changed during conversion');
+    }
+
+    final result = DawVertConversionResult(
+      sourcePath: original.absolute.path,
+      outputPath: output.path,
+      backupPath: backup.backupPath,
+      reportPath: manifest.path,
+      sourceSha256: backup.sha256Digest,
+      outputSha256: await _sha256Of(output),
+      sourceFormat: sourceDescriptor.id,
+      targetFormat: targetFormat,
+    );
+    await manifest.writeAsString(
+      const JsonEncoder.withIndent('  ').convert({
+        ...result.toJson(),
+        'converter': 'DawVert (external, locally supplied)',
+        'converter_exit_code': process.exitCode,
+        'stdout_excerpt': _bounded(process.stdout),
+        'stderr_excerpt': _bounded(process.stderr),
+        'warnings': const [
+          'This output has not been reopened in the destination DAW.',
+          'Missing plug-ins, states, routing and automations may be lost.',
+          'The external converter is not an operating-system sandbox.',
+        ],
+      }),
+      flush: true,
+    );
+    return result;
+  }
+
+  static Future<void> _writeFailure(
+      File manifest, String detail, String backup) async {
+    await manifest.writeAsString(
+      const JsonEncoder.withIndent('  ').convert({
+        'status': 'failed',
+        'detail': detail,
+        'verified_backup': backup,
+        'native_daw_reopen_verified': false,
+      }),
+      flush: true,
+    );
+  }
+
+  static String _bounded(String value) =>
+      value.length > 4096 ? value.substring(0, 4096) : value;
+
+  static Future<String> _sha256Of(File file) async =>
+      (await sha256.bind(file.openRead()).first).toString();
+
+  static Future<ProjectFormatDescriptor> _detectFile(File file) async {
+    final header = <int>[];
+    await for (final part in file.openRead(0, 128)) {
+      header.addAll(part);
+    }
+    final result = ProjectFormatRegistry.detect(
+      file.path, Uint8List.fromList(header),
+    );
+    if (result == null) {
+      throw const FormatException('Unrecognized project file signature');
+    }
+    return result;
+  }
+
+  static Future<DawVertProcessOutcome> _runProcess(
+    String executable,
+    List<String> arguments,
+    String workingDirectory,
+    Duration timeout,
+  ) async {
+    final child = await Process.start(
+      executable,
+      arguments,
+      workingDirectory: workingDirectory,
+      runInShell: false,
+    );
+
+    Future<String> collect(Stream<List<int>> stream) async {
+      final bytes = BytesBuilder(copy: false);
+      var captured = 0;
+      await for (final part in stream) {
+        if (captured >= 4096) continue;
+        final take = part.length < 4096 - captured
+            ? part.length : 4096 - captured;
+        bytes.add(part.sublist(0, take));
+        captured += take;
+      }
+      return utf8.decode(bytes.takeBytes(), allowMalformed: true);
+    }
+
+    final out = collect(child.stdout);
+    final err = collect(child.stderr);
+    int exitCode;
+    try {
+      exitCode = await child.exitCode.timeout(timeout);
+    } on TimeoutException {
+      child.kill();
+      throw TimeoutException('DawVert exceeded the requested time limit');
+    }
+    return DawVertProcessOutcome(
+      exitCode: exitCode,
+      stdout: await out,
+      stderr: await err,
+    );
+  }
+}
+ + '{error.message}',
+          backup.backupPath);
+      rethrow;
+    }
     if (outputDescriptor.id != targetFormat) {
       await _writeFailure(manifest, 'Output format signature does not match request',
           backup.backupPath);
