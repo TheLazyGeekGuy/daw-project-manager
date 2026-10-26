@@ -36,3 +36,16 @@ TASK-002 → TASK-001 → TASK-005; TASK-003 + TASK-004 → TASK-008 → TASK-00
 ## Implementation notes (2026-10-26)
 
 Implemented in this branch: read-only inspection CLI, dependency-report Flutter widgets, bounded passive VST/VST3/AU/CLAP filesystem scan, migration-profile data model, conversion route candidate planner, verified backup helper, targeted tests and 3-platform CI workflow. No Flutter build/test result has been observed yet; statuses remain partial until green CI and full app integration. Modern CPR mutation, state migration, DAW reopening and audio validation remain blocked on real native fixtures and installed DAWs.
+
+## Completion gate review (2026-10-26)
+
+The backlog is **not complete**. Implemented components are foundations, not end-to-end outcomes. Explicit blockers for acceptance:
+
+- Native CPR write/migration: lossless serializer for each supported era, pointer/reference rebasing, byte-for-byte identity and successful Cubase reopen with state and automation preservation.
+- External DAW conversion: executable adapters, controlled fixture suite, semantic reports and host reopen/render checks.
+- Optional plug-in load diagnostics: isolated host workers, licensing/error classification and testing on all supported platforms.
+- UI: inspection dialog exists but is not yet invoked from normal project navigation.
+- Managed backup: helper exists; file durability, symlink/race protection, cleanup exclusions and rollback workflow must be validated before any writer is enabled.
+- All new services require green formatter/analyzer/unit/widget tests on Linux, Windows and macOS.
+
+Never close tasks solely because a data model, placeholder adapter or draft UI exists.
