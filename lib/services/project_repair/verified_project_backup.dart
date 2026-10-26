@@ -37,26 +37,16 @@ class VerifiedProjectBackup {
 
     final sourceHash = await _digest(original);
     final sourceLength = await original.length();
-    final stamp = DateTime.now().toUtc().microsecondsSinceEpoch;
     final originalName = p.basename(sourcePath);
-    File? created;
+    // createTemp generates a collision-safe directory without overwriting
+    // an existing backup; FileMode.writeOnlyExclusive does not exist in Dart.
+    final reserved = await directory.createTemp('backup-');
+    final created = File(p.join(reserved.path, originalName));
     try {
-      for (var attempt = 0; attempt < 10; attempt++) {
-        final path = p.join(directory.path, '${originalName}.${stamp}_${attempt}.backup');
-        final target = File(path);
-        try {
-          final sink = target.openWrite(mode: FileMode.writeOnlyExclusive);
-          created = target;
-          await sink.addStream(original.openRead());
-          await sink.flush();
-          await sink.close();
-          break;
-        } on FileSystemException {
-          if (await target.exists()) rethrow;
-          rethrow;
-        }
-      }
-      if (created == null) throw const FileSystemException('Backup name exhausted');
+      final sink = created.openWrite(mode: FileMode.writeOnly);
+      await sink.addStream(original.openRead());
+      await sink.flush();
+      await sink.close();
       final verifiedLength = await created.length();
       final verifiedHash = await _digest(created);
       final unchangedHash = await _digest(original);
